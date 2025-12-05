@@ -16,7 +16,7 @@ Assicurati che il tuo server abbia installato:
 # Installazione rapida su Ubuntu
 sudo apt update
 sudo apt install mysql-server nginx git -y
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
 sudo apt install -y nodejs
 sudo npm install -g pm2
 ```
@@ -33,9 +33,9 @@ sudo mysql -u root -p
 
 ```sql
 -- Dentro la shell MySQL
-CREATE DATABASE sports_organizer;
-CREATE USER 'app_user'@'localhost' IDENTIFIED BY 'LaTuaPasswordSicura';
-GRANT ALL PRIVILEGES ON sports_organizer.* TO 'app_user'@'localhost';
+CREATE DATABASE match_day;
+CREATE USER 'matchdayuser'@'localhost' IDENTIFIED BY 'Utopia39!';
+GRANT ALL PRIVILEGES ON match_day.* TO 'matchdayuser'@'localhost';
 FLUSH PRIVILEGES;
 EXIT;
 ```
@@ -44,7 +44,7 @@ Importa lo schema iniziale:
 
 ```bash
 # Dalla root del progetto
-mysql -u app_user -p sports_organizer < backend/init.sql
+mysql -u matchdayuser -p match_day < backend/init.sql
 ```
 
 ---
@@ -69,17 +69,17 @@ mysql -u app_user -p sports_organizer < backend/init.sql
     ```env
     PORT=3000
     DB_HOST=localhost
-    DB_USER=app_user
+    DB_USER=matchdayuser
     DB_PASSWORD=LaTuaPasswordSicura
-    DB_NAME=sports_organizer
-    JWT_SECRET=UnaStringaMoltoLungaESegreta
+    DB_NAME=match_day
+    JWT_SECRET=e9f8c1b2a3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6
     ```
 
 4.  **Avvia con PM2**:
     PM2 manterrà l'app attiva e la riavvierà in caso di crash.
 
     ```bash
-    pm2 start server.js --name "sports-backend"
+    pm2 start server.js --name "match-day"
     pm2 save
     pm2 startup
     ```
@@ -119,7 +119,7 @@ Configura Nginx per servire il frontend statico e girare le richieste API al bac
 Crea un file di configurazione:
 
 ```bash
-sudo nano /etc/nginx/sites-available/sports-organizer
+sudo nano /etc/nginx/sites-available/match-day
 ```
 
 Incolla la seguente configurazione (sostituisci `tuo-dominio.com` o l'IP del server):
@@ -176,7 +176,7 @@ git pull
 # 2. Backend
 cd backend
 npm install
-pm2 restart sports-backend
+pm2 restart match-day
 
 # 3. Frontend
 cd ../frontend

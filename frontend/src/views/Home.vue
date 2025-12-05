@@ -3,7 +3,7 @@
     <ion-content class="ion-padding" :fullscreen="true">
       <div class="container">
         <div class="logo-container">
-          <img src="/match-day/logo.jpg" alt="MatchDay Logo" class="main-logo" />
+          <img :src="logoUrl" alt="MatchDay Logo" class="main-logo" />
         </div>
         <h1>MatchDay</h1>
         <p class="subtitle">Manage your amateur sports matches easily.</p>
@@ -19,6 +19,7 @@
 
 <script setup>
 import { IonPage, IonContent, IonButton } from "@ionic/vue";
+const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
 </script>
 
 <style scoped>

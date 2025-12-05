@@ -152,7 +152,7 @@ server {
 Attiva il sito e riavvia Nginx:
 
 ```bash
-sudo ln -s /etc/nginx/sites-available/sports-organizer /etc/nginx/sites-enabled/
+sudo ln -s /etc/nginx/sites-available/match-day /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
 ```

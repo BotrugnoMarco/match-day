@@ -12,8 +12,8 @@ echo "=========================================="
 
 # 1. Scarica le ultime modifiche dal repository
 echo "📥 Scaricando il codice aggiornato..."
-git pull origin main
-# Nota: Se usi un branch diverso da 'main', cambialo qui sopra (es. master)
+git pull origin master
+# Nota: Se usi un branch diverso da 'master', cambialo qui sopra (es. master)
 
 # 2. Aggiorna il Backend
 echo "------------------------------------------"

@@ -1,0 +1,16 @@
+# Dipendenze
+node_modules/
+
+# Build di produzione
+dist/
+build/
+
+# Variabili d'ambiente (le ricreerai sul server)
+# .env
+# .env.local
+
+# Log e file di sistema
+npm-debug.log*
+.DS_Store
+.vscode/
+.history/

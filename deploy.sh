@@ -47,8 +47,16 @@ cd ..
 # 4. Aggiorna Nginx
 echo "------------------------------------------"
 echo "🌐 Aggiornamento Nginx..."
+
+# Percorso assoluto della cartella corrente
+CURRENT_DIR=$(pwd)
+echo "   -> Cartella progetto rilevata: $CURRENT_DIR"
+
+# Aggiorna il percorso in nginx.conf prima di copiarlo
+# Sostituisce qualsiasi percorso in 'alias .../frontend/dist' con quello corrente
+sed -i "s|alias .*/frontend/dist;|alias $CURRENT_DIR/frontend/dist;|g" nginx.conf
+
 # Copia la configurazione (richiede sudo)
-# Assicurati che il nome del file di destinazione corrisponda alla tua configurazione (es. 'default' o 'match-day')
 if [ -f "/etc/nginx/sites-available/match-day" ]; then
     echo "   -> Aggiornamento file di configurazione..."
     sudo cp nginx.conf /etc/nginx/sites-available/match-day
@@ -60,7 +68,6 @@ if [ -f "/etc/nginx/sites-available/match-day" ]; then
     sudo systemctl restart nginx
 else
     echo "⚠️  File /etc/nginx/sites-available/match-day non trovato. Configurazione Nginx saltata."
-    echo "    Se usi un nome diverso (es. 'default'), modifica questo script."
 fi
 
 echo "=========================================="

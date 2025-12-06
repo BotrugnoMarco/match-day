@@ -60,7 +60,7 @@
         </div>
 
         <!-- Admin/Creator Controls -->
-        <div v-if="match.status === 'open' || match.status === 'locked'" class="admin-controls">
+        <div v-if="isCreator && (match.status === 'open' || match.status === 'locked')" class="admin-controls">
           <ion-button expand="block" color="secondary" @click="generateTeams" class="ion-margin-top">
             <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
             Generate Teams
@@ -70,7 +70,7 @@
             Start Voting
           </ion-button>
         </div>
-        <div v-if="match.status === 'voting'">
+        <div v-if="isCreator && match.status === 'voting'">
           <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="ion-margin-top">
             <ion-icon :icon="flagOutline" slot="start"></ion-icon>
             Finish Match
@@ -254,6 +254,11 @@ const getStatusColor = (status) => {
 const isParticipant = computed(() => {
   if (!match.value || !match.value.participants || !currentUser.value) return false;
   return match.value.participants.some((p) => p.user_id === currentUser.value.id);
+});
+
+const isCreator = computed(() => {
+  if (!match.value || !currentUser.value) return false;
+  return match.value.creator_id === currentUser.value.id;
 });
 
 const results = computed(() => {

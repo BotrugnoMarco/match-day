@@ -17,7 +17,10 @@ CREATE TABLE IF NOT EXISTS matches (
     status ENUM('open', 'locked', 'finished', 'voting') DEFAULT 'open',
     price_total DECIMAL(10, 2),
     -- Costo campo
-    max_players INT DEFAULT 10 -- Limite giocatori
+    max_players INT DEFAULT 10,
+    -- Limite giocatori
+    creator_id INT,
+    FOREIGN KEY (creator_id) REFERENCES users(id)
 );
 -- Partecipazione (Logistica)
 CREATE TABLE IF NOT EXISTS participants (

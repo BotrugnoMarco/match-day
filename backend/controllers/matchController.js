@@ -4,6 +4,7 @@ const notificationController = require('./notificationController');
 // Create a new match
 exports.createMatch = async (req, res) => {
     const { date_time, location, sport_type, price_total, max_players } = req.body;
+    const creator_id = req.user.id;
 
     if (!date_time || !sport_type) {
         return res.status(400).json({ error: 'Date and sport type are required' });
@@ -11,8 +12,8 @@ exports.createMatch = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players) VALUES (?, ?, ?, ?, ?)',
-            [date_time, location, sport_type, price_total, max_players || 10]
+            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, creator_id) VALUES (?, ?, ?, ?, ?, ?)',
+            [date_time, location, sport_type, price_total, max_players || 10, creator_id]
         );
 
         // Emit socket event
@@ -24,7 +25,8 @@ exports.createMatch = async (req, res) => {
             sport_type,
             price_total,
             max_players: max_players || 10,
-            status: 'open'
+            status: 'open',
+            creator_id
         });
 
         res.status(201).json({ message: 'Match created successfully', matchId: result.insertId });
@@ -146,12 +148,25 @@ exports.joinMatch = async (req, res) => {
 exports.updateMatchStatus = async (req, res) => {
     const matchId = req.params.id;
     const { status } = req.body;
+    const userId = req.user.id;
 
     if (!['open', 'locked', 'finished', 'voting'].includes(status)) {
         return res.status(400).json({ error: 'Invalid status' });
     }
 
     try {
+        // Check if user is creator
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+
+        // Allow if user is creator OR if creator_id is null (legacy matches) allow anyone or maybe restrict to admin? 
+        // For now, let's enforce creator check only if creator_id exists.
+        if (matches[0].creator_id && matches[0].creator_id !== userId) {
+            return res.status(403).json({ error: 'Only the match creator can update status' });
+        }
+
         await db.query('UPDATE matches SET status = ? WHERE id = ?', [status, matchId]);
 
         const io = req.app.get('io');
@@ -228,8 +243,19 @@ exports.getUserMatches = async (req, res) => {
 // Generate balanced teams
 exports.generateTeams = async (req, res) => {
     const matchId = req.params.id;
+    const userId = req.user.id;
 
     try {
+        // Check if user is creator
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+
+        if (matches[0].creator_id && matches[0].creator_id !== userId) {
+            return res.status(403).json({ error: 'Only the match creator can generate teams' });
+        }
+
         // Get confirmed participants with skill rating
         const [participants] = await db.query(
             `SELECT p.id, p.user_id, u.skill_rating 

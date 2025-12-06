@@ -25,10 +25,11 @@ npm install
 # Riavvio del servizio backend
 # Se usi PM2 (consigliato per produzione):
 if command -v pm2 &> /dev/null; then
-    echo "   -> Riavvio processo PM2..."
-    # Sostituisci 'match-day' con il nome o ID del tuo processo PM2 se diverso
-    # Se non hai ancora avviato il processo, usa: pm2 start index.js --name match-day
-    pm2 restart match-day || pm2 restart index.js || echo "⚠️ Impossibile riavviare PM2 automaticamente. Verifica il nome del processo."
+    echo "   -> Ricreazione processo PM2..."
+    # Elimina il vecchio processo se esiste e ne crea uno nuovo
+    pm2 delete match-day || true
+    pm2 start server.js --name match-day
+    pm2 save
 else
     echo "⚠️  PM2 non trovato. Ricordati di riavviare il server Node manualmente."
 fi

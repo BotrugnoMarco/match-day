@@ -166,10 +166,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useStore } from "vuex";
 import api from "../services/api";
+import socket from "../services/socket";
 import {
   IonPage,
   IonHeader,
@@ -357,7 +358,19 @@ const openVoteModal = async (participant) => {
   await modal.present();
 };
 
-onMounted(fetchMatch);
+onMounted(() => {
+  fetchMatch();
+
+  socket.on("match_updated", (data) => {
+    if (data.matchId == route.params.id) {
+      fetchMatch();
+    }
+  });
+});
+
+onUnmounted(() => {
+  socket.off("match_updated");
+});
 </script>
 
 <style scoped>

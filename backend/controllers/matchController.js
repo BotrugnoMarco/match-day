@@ -14,6 +14,19 @@ exports.createMatch = async (req, res) => {
             'INSERT INTO matches (date_time, location, sport_type, price_total, max_players) VALUES (?, ?, ?, ?, ?)',
             [date_time, location, sport_type, price_total, max_players || 10]
         );
+
+        // Emit socket event
+        const io = req.app.get('io');
+        io.emit('match_created', {
+            id: result.insertId,
+            date_time,
+            location,
+            sport_type,
+            price_total,
+            max_players: max_players || 10,
+            status: 'open'
+        });
+
         res.status(201).json({ message: 'Match created successfully', matchId: result.insertId });
     } catch (error) {
         console.error('Create match error:', error);
@@ -106,6 +119,10 @@ exports.joinMatch = async (req, res) => {
                 'UPDATE participants SET status = ?, team = ? WHERE id = ?',
                 [newStatus, team || null, existing[0].id]
             );
+
+            const io = req.app.get('io');
+            io.emit('match_updated', { matchId });
+
             return res.json({ message: newStatus === 'waitlist' ? 'Added to waitlist' : 'Participation updated', status: newStatus });
         }
 
@@ -114,6 +131,9 @@ exports.joinMatch = async (req, res) => {
             'INSERT INTO participants (match_id, user_id, team, status) VALUES (?, ?, ?, ?)',
             [matchId, userId, team || null, newStatus]
         );
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
 
         res.status(201).json({ message: newStatus === 'waitlist' ? 'Added to waitlist' : 'Joined match successfully', status: newStatus });
     } catch (error) {
@@ -133,6 +153,9 @@ exports.updateMatchStatus = async (req, res) => {
 
     try {
         await db.query('UPDATE matches SET status = ? WHERE id = ?', [status, matchId]);
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId, status });
 
         // Notify participants about status change
         if (status === 'voting' || status === 'finished') {

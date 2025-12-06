@@ -8,8 +8,21 @@ const matchRoutes = require('./routes/matchRoutes');
 const voteRoutes = require('./routes/voteRoutes');
 const userRoutes = require('./routes/userRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const http = require('http');
+const { Server } = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+    cors: {
+        origin: "*", // In produzione, specifica l'URL del frontend
+        methods: ["GET", "POST"]
+    }
+});
+
+// Make io accessible to our router
+app.set('io', io);
+
 const PORT = process.env.PORT || 3000;
 
 // Middleware
@@ -41,7 +54,16 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to MatchDay API' });
 });
 
+// Socket.io Connection
+io.on('connection', (socket) => {
+    console.log('A user connected:', socket.id);
+
+    socket.on('disconnect', () => {
+        console.log('User disconnected:', socket.id);
+    });
+});
+
 // Start Server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

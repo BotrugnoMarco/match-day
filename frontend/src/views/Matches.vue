@@ -64,9 +64,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import socket from "../services/socket";
 import {
   IonPage,
   IonHeader,
@@ -139,6 +140,18 @@ const getStatusColor = (status) => {
 onMounted(() => {
   store.dispatch("fetchMatches");
   store.dispatch("fetchNotifications");
+
+  socket.on("match_created", () => {
+    store.dispatch("fetchMatches");
+  });
+  socket.on("match_updated", () => {
+    store.dispatch("fetchMatches");
+  });
+});
+
+onUnmounted(() => {
+  socket.off("match_created");
+  socket.off("match_updated");
 });
 
 const goToProfile = () => {

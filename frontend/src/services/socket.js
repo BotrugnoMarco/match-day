@@ -1,8 +1,7 @@
 import { io } from "socket.io-client";
 
-// URL del backend. In sviluppo è spesso localhost:3000.
-// In produzione dovresti usare una variabile d'ambiente.
-const URL = "http://localhost:3000";
+// URL del backend. Usa l'hostname corrente (localhost o IP del server)
+const URL = `http://${window.location.hostname}:3000`;
 
 const socket = io(URL, {
     autoConnect: true,

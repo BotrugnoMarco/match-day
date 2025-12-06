@@ -11,6 +11,7 @@ router.get('/:id', matchController.getMatchById);
 // Protected routes
 router.post('/', authMiddleware, matchController.createMatch);
 router.post('/:id/join', authMiddleware, matchController.joinMatch);
+router.post('/:id/leave', authMiddleware, matchController.leaveMatch);
 router.put('/:id/status', authMiddleware, matchController.updateMatchStatus);
 router.post('/:id/generate-teams', authMiddleware, matchController.generateTeams);
 

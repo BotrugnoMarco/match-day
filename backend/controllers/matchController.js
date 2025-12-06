@@ -144,6 +144,63 @@ exports.joinMatch = async (req, res) => {
     }
 };
 
+// Leave a match
+exports.leaveMatch = async (req, res) => {
+    const matchId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        // Check if match exists and is open
+        const [matches] = await db.query('SELECT status FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+        if (matches[0].status !== 'open') {
+            return res.status(400).json({ error: 'Cannot leave a match that is not open' });
+        }
+
+        // Remove participant
+        const [result] = await db.query(
+            'DELETE FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(400).json({ error: 'You are not a participant of this match' });
+        }
+
+        // Check if there is someone in the waitlist to promote
+        const [waitlist] = await db.query(
+            "SELECT * FROM participants WHERE match_id = ? AND status = 'waitlist' ORDER BY id ASC LIMIT 1",
+            [matchId]
+        );
+
+        if (waitlist.length > 0) {
+            // Promote first person in waitlist
+            await db.query(
+                "UPDATE participants SET status = 'confirmed' WHERE id = ?",
+                [waitlist[0].id]
+            );
+            
+            // Notify promoted user
+            await notificationController.createNotification(
+                waitlist[0].user_id, 
+                'A spot opened up! You have been promoted from waitlist to confirmed.', 
+                'success', 
+                matchId
+            );
+        }
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Left match successfully' });
+    } catch (error) {
+        console.error('Leave match error:', error);
+        res.status(500).json({ error: 'Server error leaving match' });
+    }
+};
+
 // Update match status (Admin/Creator only - simplified to just authenticated for now)
 exports.updateMatchStatus = async (req, res) => {
     const matchId = req.params.id;

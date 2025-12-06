@@ -47,15 +47,15 @@
           </ion-button>
         </div>
         <div v-if="match.status === 'open' && isConfirmed">
-          <ion-button expand="block" color="medium" disabled>
-            <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
-            Joined
+          <ion-button expand="block" color="danger" @click="leaveMatch">
+            <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+            Leave Match
           </ion-button>
         </div>
         <div v-if="match.status === 'open' && isWaitlisted">
-          <ion-button expand="block" color="warning" disabled>
-            <ion-icon :icon="timeOutline" slot="start"></ion-icon>
-            On Waitlist
+          <ion-button expand="block" color="danger" @click="leaveMatch">
+            <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+            Leave Waitlist
           </ion-button>
         </div>
 
@@ -204,6 +204,7 @@ import {
   flagOutline,
   trophyOutline,
   timeOutline,
+  closeCircleOutline
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 
@@ -319,6 +320,18 @@ const joinMatch = async () => {
   } catch (error) {
     console.error("Error joining match:", error);
     alert("Failed to join match: " + (error.response?.data?.error || error.message));
+  }
+};
+
+const leaveMatch = async () => {
+  try {
+    if (!confirm("Are you sure you want to leave this match?")) return;
+    
+    await api.post(`/matches/${route.params.id}/leave`);
+    await fetchMatch();
+  } catch (error) {
+    console.error("Error leaving match:", error);
+    alert("Failed to leave match: " + (error.response?.data?.error || error.message));
   }
 };
 

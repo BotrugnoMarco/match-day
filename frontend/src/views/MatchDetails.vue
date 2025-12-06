@@ -204,7 +204,7 @@ import {
   flagOutline,
   trophyOutline,
   timeOutline,
-  closeCircleOutline
+  closeCircleOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 
@@ -326,7 +326,7 @@ const joinMatch = async () => {
 const leaveMatch = async () => {
   try {
     if (!confirm("Are you sure you want to leave this match?")) return;
-    
+
     await api.post(`/matches/${route.params.id}/leave`);
     await fetchMatch();
   } catch (error) {

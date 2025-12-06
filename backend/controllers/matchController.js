@@ -181,12 +181,12 @@ exports.leaveMatch = async (req, res) => {
                 "UPDATE participants SET status = 'confirmed' WHERE id = ?",
                 [waitlist[0].id]
             );
-            
+
             // Notify promoted user
             await notificationController.createNotification(
-                waitlist[0].user_id, 
-                'A spot opened up! You have been promoted from waitlist to confirmed.', 
-                'success', 
+                waitlist[0].user_id,
+                'A spot opened up! You have been promoted from waitlist to confirmed.',
+                'success',
                 matchId
             );
         }

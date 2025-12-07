@@ -9,24 +9,32 @@
   </ion-header>
   <ion-content class="ion-padding">
     <form @submit.prevent="submitVote">
-      <ion-item>
-        <ion-label position="stacked">Rating (1-10)</ion-label>
-        <ion-range v-model="rating" min="1" max="10" pin="true" ticks="true" snaps="true">
-          <ion-label slot="start">1</ion-label>
-          <ion-label slot="end">10</ion-label>
-        </ion-range>
-        <div class="ion-text-center ion-padding-bottom">
-          <h1>{{ rating }}</h1>
+      <ion-item lines="none" class="rating-item">
+        <ion-label position="stacked">Rating</ion-label>
+        <div class="rating-display">
+          <span class="rating-value">{{ rating }}</span>
+          <span class="rating-max">/ 10</span>
         </div>
+        <ion-range v-model="rating" min="1" max="10" pin="true" ticks="true" snaps="true" color="primary"></ion-range>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="floating">Tags (comma separated)</ion-label>
-        <ion-input v-model="tags" placeholder="e.g. MVP, Good Defense"></ion-input>
-      </ion-item>
+      <div class="tags-section">
+        <ion-label class="tags-label">Select a Tag (Optional)</ion-label>
+        <div class="tags-container">
+          <ion-chip
+            v-for="tag in availableTags"
+            :key="tag"
+            :color="selectedTag === tag ? 'primary' : 'medium'"
+            :outline="selectedTag !== tag"
+            @click="toggleTag(tag)"
+          >
+            <ion-label>{{ tag }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
 
       <div class="ion-padding-top">
-        <ion-button expand="block" type="submit">Submit Vote</ion-button>
+        <ion-button expand="block" type="submit" size="large">Submit Vote</ion-button>
       </div>
     </form>
   </ion-content>
@@ -44,7 +52,7 @@ import {
   IonItem,
   IonLabel,
   IonRange,
-  IonInput,
+  IonChip,
   modalController,
 } from "@ionic/vue";
 import api from "../services/api";
@@ -56,7 +64,17 @@ const props = defineProps({
 });
 
 const rating = ref(6);
-const tags = ref("");
+const selectedTag = ref(null);
+
+const availableTags = ["MVP", "Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Goalkeeper", "Team Spirit", "Hustle", "Clutch", "Leader"];
+
+const toggleTag = (tag) => {
+  if (selectedTag.value === tag) {
+    selectedTag.value = null;
+  } else {
+    selectedTag.value = tag;
+  }
+};
 
 const cancel = () => {
   modalController.dismiss(null, "cancel");
@@ -68,7 +86,7 @@ const submitVote = async () => {
       match_id: props.matchId,
       target_id: props.targetId,
       rating: rating.value,
-      tags: tags.value,
+      tags: selectedTag.value || "",
     });
     modalController.dismiss(null, "confirm");
   } catch (error) {
@@ -77,3 +95,51 @@ const submitVote = async () => {
   }
 };
 </script>
+
+<style scoped>
+.rating-item {
+  --background: transparent;
+  margin-bottom: 20px;
+}
+
+.rating-display {
+  text-align: center;
+  margin: 20px 0;
+}
+
+.rating-value {
+  font-size: 4rem;
+  font-weight: 800;
+  color: var(--ion-color-primary);
+}
+
+.rating-max {
+  font-size: 1.5rem;
+  color: var(--ion-color-medium);
+  margin-left: 5px;
+}
+
+.tags-section {
+  margin-top: 20px;
+  padding: 0 10px;
+}
+
+.tags-label {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-bottom: 10px;
+  display: block;
+  font-weight: 600;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+ion-chip {
+  margin: 0;
+  font-weight: 600;
+}
+</style>

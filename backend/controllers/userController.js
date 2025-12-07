@@ -81,6 +81,28 @@ exports.getUserStats = async (req, res) => {
         );
         const mvpCount = mvpResult[0].count;
 
+        // Get all tags
+        const [tagsResult] = await db.query(
+            `SELECT tags FROM votes WHERE target_id = ? AND tags IS NOT NULL AND tags != ''`,
+            [userId]
+        );
+
+        const tagCounts = {};
+        tagsResult.forEach(row => {
+            if (row.tags) {
+                // Split by comma in case of multiple tags (legacy support)
+                const tags = row.tags.split(',').map(t => t.trim()).filter(t => t);
+                tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
+        });
+
+        // Convert to array for frontend
+        const tagsList = Object.entries(tagCounts)
+            .map(([tag, count]) => ({ tag, count }))
+            .sort((a, b) => b.count - a.count);
+
         // Recent Ratings
         const [recentRatings] = await db.query(
             `SELECT v.rating, m.date_time, m.sport_type 
@@ -96,6 +118,7 @@ exports.getUserStats = async (req, res) => {
             matchesPlayed,
             matchesWon,
             mvpCount,
+            tags: tagsList,
             recentRatings
         });
     } catch (error) {

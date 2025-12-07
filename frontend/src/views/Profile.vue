@@ -57,37 +57,52 @@
       </div>
 
       <!-- Skills Section -->
-      <div class="section-container ion-padding">
+      <div class="section-container ion-padding-horizontal">
         <div class="section-title">
-          <ion-icon :icon="star" color="warning"></ion-icon>
-          <h3>Skill Ratings</h3>
+          <ion-icon :icon="trophy" color="warning"></ion-icon>
+          <h3>Skills</h3>
         </div>
-
         <ion-card class="skills-card">
-          <ion-list lines="none">
-            <ion-item v-for="skill in user?.skills" :key="skill.sport_type">
-              <ion-icon :icon="getSportIcon(skill.sport_type)" slot="start" class="sport-icon"></ion-icon>
-              <ion-label>
-                <div class="skill-header">
-                  <h3>{{ capitalize(skill.sport_type) }}</h3>
-                  <span class="skill-rating">{{ skill.rating }}</span>
-                </div>
-                <ion-progress-bar :value="skill.rating / 10" :color="getSkillColor(skill.rating)"></ion-progress-bar>
-              </ion-label>
-            </ion-item>
-          </ion-list>
+          <ion-card-content>
+            <ion-list lines="none">
+              <ion-item v-for="skill in user?.skills" :key="skill.sport_type">
+                <ion-icon :icon="getSportIcon(skill.sport_type)" slot="start" class="sport-icon"></ion-icon>
+                <ion-label>
+                  <div class="skill-header">
+                    <h3>{{ capitalize(skill.sport_type) }}</h3>
+                    <span class="skill-rating">{{ skill.rating }}</span>
+                  </div>
+                  <ion-progress-bar :value="skill.rating / 10" :color="getSkillColor(skill.rating)"></ion-progress-bar>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </ion-card-content>
         </ion-card>
       </div>
 
+      <!-- Badges / Tags Section -->
+      <div class="section-container ion-padding-horizontal" v-if="stats && stats.tags && stats.tags.length > 0">
+        <div class="section-title">
+          <ion-icon :icon="ribbon" color="secondary"></ion-icon>
+          <h3>Badges</h3>
+        </div>
+        <div class="badges-container">
+          <div v-for="tagItem in stats.tags" :key="tagItem.tag" class="badge-chip">
+            <span class="badge-name">{{ tagItem.tag }}</span>
+            <span class="badge-count">x{{ tagItem.count }}</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Match History -->
-      <div class="section-container ion-padding-horizontal ion-padding-bottom">
+      <div class="section-container ion-padding-horizontal">
         <div class="section-title">
           <ion-icon :icon="timeOutline" color="medium"></ion-icon>
-          <h3>Match History</h3>
+          <h3>History</h3>
         </div>
 
-        <div v-if="history && history.length > 0">
-          <ion-card v-for="match in history" :key="match.id" class="match-card" button @click="goToMatch(match.id)">
+        <div v-if="history.length > 0">
+          <ion-card v-for="match in history" :key="match.id" class="match-card" @click="goToMatch(match.id)">
             <ion-card-content class="match-card-content">
               <div class="match-left">
                 <div class="match-date">
@@ -95,7 +110,7 @@
                   <span class="month">{{ new Date(match.date_time).toLocaleString("default", { month: "short" }) }}</span>
                 </div>
                 <div class="match-info">
-                  <h3 class="sport-name">{{ capitalize(match.sport_type) }}</h3>
+                  <h3 class="sport-name">{{ match.sport_type.toUpperCase() }}</h3>
                   <p class="location">{{ match.location }}</p>
                 </div>
               </div>
@@ -321,7 +336,7 @@ const getSkillColor = (rating) => {
 }
 
 .section-container {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .section-title {
@@ -365,6 +380,38 @@ const getSkillColor = (rating) => {
 .sport-icon {
   font-size: 1.4rem;
   color: var(--ion-color-medium);
+}
+
+.badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.badge-chip {
+  background: white;
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f2f5;
+}
+
+.badge-name {
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  font-size: 0.9rem;
+}
+
+.badge-count {
+  background: var(--ion-color-secondary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
 }
 
 .match-card {

@@ -347,16 +347,19 @@ exports.generateTeams = async (req, res) => {
 
         // Update database
         for (const p of teamA) {
-            await db.query('UPDATE participants SET team = ? WHERE id = ?', ['Team A', p.id]);
+            await db.query('UPDATE participants SET team = ? WHERE id = ?', ['A', p.id]);
         }
         for (const p of teamB) {
-            await db.query('UPDATE participants SET team = ? WHERE id = ?', ['Team B', p.id]);
+            await db.query('UPDATE participants SET team = ? WHERE id = ?', ['B', p.id]);
         }
 
         // Notify participants
         for (const p of participants) {
             await notificationController.createNotification(p.user_id, 'Teams have been generated for your match!', 'info', matchId);
         }
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
 
         res.json({
             message: 'Teams generated successfully',

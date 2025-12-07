@@ -228,6 +228,11 @@
                   <p>
                     Rating: <strong>{{ r.averageRating.toFixed(1) }}</strong> / 10
                   </p>
+                  <div class="badges-row" v-if="r.badges && r.badges.length > 0">
+                    <ion-badge v-for="badge in r.badges" :key="badge.name" color="secondary" class="result-badge-chip">
+                      {{ badge.name }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
+                    </ion-badge>
+                  </div>
                 </ion-label>
                 <ion-badge slot="end" color="light">{{ r.voteCount }} votes</ion-badge>
               </ion-item>
@@ -381,16 +386,30 @@ const results = computed(() => {
         target_name: v.target_name,
         totalRating: 0,
         voteCount: 0,
+        tags: {},
       };
     }
     grouped[v.target_id].totalRating += v.rating;
     grouped[v.target_id].voteCount++;
+
+    if (v.tags) {
+      const tagList = v.tags
+        .split(",")
+        .map((t) => t.trim())
+        .filter((t) => t);
+      tagList.forEach((tag) => {
+        grouped[v.target_id].tags[tag] = (grouped[v.target_id].tags[tag] || 0) + 1;
+      });
+    }
   });
 
   return Object.values(grouped)
     .map((g) => ({
       ...g,
       averageRating: g.totalRating / g.voteCount,
+      badges: Object.entries(g.tags)
+        .map(([name, count]) => ({ name, count }))
+        .sort((a, b) => b.count - a.count),
     }))
     .sort((a, b) => b.averageRating - a.averageRating);
 });
@@ -705,5 +724,19 @@ onUnmounted(() => {
 .rating-bar {
   height: 100%;
   background-color: var(--ion-color-warning);
+}
+
+.badges-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.result-badge-chip {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 10px;
 }
 </style>

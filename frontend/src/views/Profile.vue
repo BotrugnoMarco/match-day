@@ -48,7 +48,7 @@
         <div v-if="history && history.length > 0" class="history-section ion-padding-top">
           <h3>Match History</h3>
           <ion-list>
-            <ion-item v-for="match in history" :key="match.id" class="history-item">
+            <ion-item v-for="match in history" :key="match.id" class="history-item" button @click="goToMatch(match.id)">
               <ion-label>
                 <h2>{{ match.sport_type.toUpperCase() }}</h2>
                 <p>{{ new Date(match.date_time).toLocaleDateString() }} - {{ match.location }}</p>
@@ -114,6 +114,10 @@ onMounted(() => {
   store.dispatch("fetchUserStats");
   fetchHistory();
 });
+
+const goToMatch = (matchId) => {
+  router.push(`/matches/${matchId}`);
+};
 
 const fetchHistory = async () => {
   try {

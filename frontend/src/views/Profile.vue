@@ -45,15 +45,24 @@
           </ion-card-content>
         </ion-card>
 
-        <div v-if="stats && stats.recentRatings && stats.recentRatings.length > 0" class="recent-ratings ion-padding-top">
-          <h3>Recent Ratings</h3>
+        <div v-if="history && history.length > 0" class="history-section ion-padding-top">
+          <h3>Match History</h3>
           <ion-list>
-            <ion-item v-for="(rating, index) in stats.recentRatings" :key="index">
+            <ion-item v-for="match in history" :key="match.id" class="history-item">
               <ion-label>
-                <h2>{{ rating.sport_type.toUpperCase() }}</h2>
-                <p>{{ new Date(rating.date_time).toLocaleDateString() }}</p>
+                <h2>{{ match.sport_type.toUpperCase() }}</h2>
+                <p>{{ new Date(match.date_time).toLocaleDateString() }} - {{ match.location }}</p>
+                <div v-if="match.tags && match.tags.length > 0" class="tags-container">
+                  <ion-badge v-for="tag in match.tags" :key="tag" color="tertiary" class="tag-badge">{{ tag }}</ion-badge>
+                </div>
               </ion-label>
-              <ion-badge slot="end" :color="getRatingColor(rating.rating)">{{ rating.rating }}</ion-badge>
+              <div slot="end" class="rating-display" v-if="match.avg_rating">
+                <span class="rating-value">{{ match.avg_rating }}</span>
+                <ion-icon :icon="star" color="warning"></ion-icon>
+              </div>
+              <div slot="end" v-else>
+                <ion-badge color="medium">No Votes</ion-badge>
+              </div>
             </ion-item>
           </ion-list>
         </div>
@@ -98,16 +107,21 @@ const store = useStore();
 const router = useRouter();
 const user = computed(() => store.getters.currentUser);
 const stats = computed(() => store.getters.userStats);
+const history = ref([]);
 const fileInput = ref(null);
 
 onMounted(() => {
   store.dispatch("fetchUserStats");
+  fetchHistory();
 });
 
-const getRatingColor = (rating) => {
-  if (rating >= 8) return "success";
-  if (rating >= 6) return "warning";
-  return "danger";
+const fetchHistory = async () => {
+  try {
+    const response = await api.get("/users/history");
+    history.value = response.data;
+  } catch (error) {
+    console.error("Error fetching history:", error);
+  }
 };
 
 const triggerFileInput = () => {
@@ -218,5 +232,38 @@ const logout = () => {
   margin: 0;
   font-size: 0.8em;
   color: var(--ion-color-medium);
+}
+
+.history-section {
+  width: 100%;
+}
+
+.history-section h3 {
+  margin-left: 10px;
+  margin-bottom: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 5px;
+}
+
+.tag-badge {
+  font-size: 0.7em;
+}
+
+.rating-display {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.rating-value {
+  font-weight: bold;
+  font-size: 1.1em;
 }
 </style>

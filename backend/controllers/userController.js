@@ -77,3 +77,46 @@ exports.getUserStats = async (req, res) => {
         res.status(500).json({ error: 'Server error fetching user stats' });
     }
 };
+
+exports.getMatchHistory = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        const [history] = await db.query(
+            `SELECT 
+                m.id, 
+                m.date_time, 
+                m.location, 
+                m.sport_type,
+                AVG(v.rating) as avg_rating,
+                COUNT(v.id) as vote_count,
+                GROUP_CONCAT(v.tags) as tags
+             FROM matches m
+             JOIN participants p ON m.id = p.match_id
+             LEFT JOIN votes v ON m.id = v.match_id AND v.target_id = ?
+             WHERE p.user_id = ? 
+               AND p.status = 'confirmed'
+               AND m.status = 'finished'
+             GROUP BY m.id
+             ORDER BY m.date_time DESC`,
+            [userId, userId]
+        );
+
+        // Clean up tags (remove nulls and duplicates if needed)
+        const cleanedHistory = history.map(match => {
+            let tagList = [];
+            if (match.tags) {
+                tagList = match.tags.split(',').filter(t => t && t.trim() !== '');
+            }
+            return {
+                ...match,
+                avg_rating: match.avg_rating ? parseFloat(match.avg_rating).toFixed(1) : null,
+                tags: [...new Set(tagList)] // Unique tags
+            };
+        });
+
+        res.json(cleanedHistory);
+    } catch (error) {
+        console.error('Get match history error:', error);
+        res.status(500).json({ error: 'Server error fetching match history' });
+    }
+};

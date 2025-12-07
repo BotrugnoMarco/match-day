@@ -6,6 +6,7 @@ const upload = require('../middleware/uploadMiddleware');
 
 router.get('/profile', authMiddleware, userController.getProfile);
 router.get('/stats', authMiddleware, userController.getUserStats);
+router.get('/history', authMiddleware, userController.getMatchHistory);
 router.post('/avatar', authMiddleware, upload.single('avatar'), userController.uploadAvatar);
 
 module.exports = router;

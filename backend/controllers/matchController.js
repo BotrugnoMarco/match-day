@@ -57,11 +57,12 @@ exports.getMatchById = async (req, res) => {
         }
 
         const [participants] = await db.query(
-            `SELECT p.*, u.username, u.avatar_url, u.skill_rating 
+            `SELECT p.*, u.username, u.avatar_url, COALESCE(us.rating, 6.0) as skill_rating 
        FROM participants p 
        JOIN users u ON p.user_id = u.id 
+       LEFT JOIN user_skills us ON u.id = us.user_id AND us.sport_type = ?
        WHERE p.match_id = ?`,
-            [matchId]
+            [matches[0].sport_type, matchId]
         );
 
         const match = matches[0];
@@ -251,6 +252,9 @@ exports.updateMatchStatus = async (req, res) => {
 
         // If match is finished, update skill ratings
         if (status === 'finished') {
+            const [matchInfo] = await db.query('SELECT sport_type FROM matches WHERE id = ?', [matchId]);
+            const sportType = matchInfo[0].sport_type;
+
             // Find all users who received votes in this match
             const [votedUsers] = await db.query(
                 'SELECT DISTINCT target_id FROM votes WHERE match_id = ?',
@@ -259,17 +263,21 @@ exports.updateMatchStatus = async (req, res) => {
 
             for (const user of votedUsers) {
                 const userId = user.target_id;
-                // Calculate average rating for this user across ALL matches
+                // Calculate average rating for this user across ALL matches of this sport
                 const [avgResult] = await db.query(
-                    'SELECT AVG(rating) as avgRating FROM votes WHERE target_id = ?',
-                    [userId]
+                    `SELECT AVG(v.rating) as avgRating 
+                     FROM votes v 
+                     JOIN matches m ON v.match_id = m.id 
+                     WHERE v.target_id = ? AND m.sport_type = ?`,
+                    [userId, sportType]
                 );
 
                 if (avgResult.length > 0 && avgResult[0].avgRating) {
                     const newRating = parseFloat(avgResult[0].avgRating).toFixed(2);
                     await db.query(
-                        'UPDATE users SET skill_rating = ? WHERE id = ?',
-                        [newRating, userId]
+                        `INSERT INTO user_skills (user_id, sport_type, rating) VALUES (?, ?, ?)
+                         ON DUPLICATE KEY UPDATE rating = ?`,
+                        [userId, sportType, newRating, newRating]
                     );
                 }
             }
@@ -319,11 +327,12 @@ exports.generateTeams = async (req, res) => {
 
         // Get confirmed participants with skill rating
         const [participants] = await db.query(
-            `SELECT p.id, p.user_id, u.skill_rating 
+            `SELECT p.id, p.user_id, COALESCE(us.rating, 6.0) as skill_rating 
              FROM participants p 
              JOIN users u ON p.user_id = u.id 
+             LEFT JOIN user_skills us ON u.id = us.user_id AND us.sport_type = ?
              WHERE p.match_id = ? AND p.status = 'confirmed'`,
-            [matchId]
+            [matches[0].sport_type, matchId]
         );
 
         if (participants.length < 2) {

@@ -26,11 +26,6 @@
         <ion-card class="stats-card">
           <ion-card-content>
             <div class="stats-grid">
-              <div class="stat-item">
-                <ion-icon :icon="star" color="warning" class="stat-icon"></ion-icon>
-                <h3>{{ user.skill_rating || "N/A" }}</h3>
-                <p>Skill Rating</p>
-              </div>
               <div class="stat-item" v-if="stats">
                 <ion-icon :icon="football" color="success" class="stat-icon"></ion-icon>
                 <h3>{{ stats.matchesPlayed }}</h3>
@@ -46,6 +41,21 @@
                 <h3>{{ stats.mvpCount }}</h3>
                 <p>MVP</p>
               </div>
+            </div>
+
+            <div class="skills-section ion-margin-top" v-if="user.skills && user.skills.length > 0">
+              <ion-list lines="none">
+                <ion-list-header>
+                  <ion-label>Skill Ratings</ion-label>
+                </ion-list-header>
+                <ion-item v-for="skill in user.skills" :key="skill.sport_type">
+                  <ion-icon :icon="star" slot="start" color="warning"></ion-icon>
+                  <ion-label>
+                    <h3>{{ skill.sport_type.toUpperCase() }}</h3>
+                  </ion-label>
+                  <ion-badge slot="end" color="light">{{ skill.rating }}</ion-badge>
+                </ion-item>
+              </ion-list>
             </div>
           </ion-card-content>
         </ion-card>

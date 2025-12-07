@@ -8,6 +8,14 @@ CREATE TABLE IF NOT EXISTS users (
     -- Voto medio (es. 6.5)
     role VARCHAR(20) DEFAULT 'player' -- 'admin' or 'player'
 );
+CREATE TABLE IF NOT EXISTS user_skills (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    sport_type ENUM('soccer', 'volleyball', 'padel', 'tennis') NOT NULL,
+    rating DECIMAL(3, 1) DEFAULT 6.0,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    UNIQUE(user_id, sport_type)
+);
 -- Partite
 CREATE TABLE IF NOT EXISTS matches (
     id INT AUTO_INCREMENT PRIMARY KEY,

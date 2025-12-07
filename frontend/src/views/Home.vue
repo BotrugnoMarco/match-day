@@ -10,12 +10,19 @@
       </div>
 
       <div class="actions-container">
-        <div class="welcome-text">
+        <div class="welcome-text" v-if="!isAuthenticated">
           <h2>Welcome!</h2>
           <p>Organize matches, track scores, and rank up with your friends.</p>
         </div>
+        <div class="welcome-text" v-else>
+          <h2>Welcome back, {{ user?.username }}!</h2>
+          <p>Ready for your next match?</p>
+          <div class="user-info-pills" v-if="user">
+            <ion-badge color="light" class="info-pill">{{ user.role?.toUpperCase() }}</ion-badge>
+          </div>
+        </div>
 
-        <div class="buttons-wrapper">
+        <div class="buttons-wrapper" v-if="!isAuthenticated">
           <ion-button expand="block" size="large" router-link="/login" class="action-btn primary-btn">
             Login
             <ion-icon slot="end" :icon="logInOutline"></ion-icon>
@@ -25,16 +32,33 @@
             <ion-icon slot="end" :icon="personAddOutline"></ion-icon>
           </ion-button>
         </div>
+
+        <div class="buttons-wrapper" v-else>
+          <ion-button expand="block" size="large" router-link="/matches" class="action-btn primary-btn">
+            Go to Matches
+            <ion-icon slot="end" :icon="calendarOutline"></ion-icon>
+          </ion-button>
+          <ion-button expand="block" size="large" fill="outline" router-link="/profile" class="action-btn secondary-btn">
+            My Profile
+            <ion-icon slot="end" :icon="personCircleOutline"></ion-icon>
+          </ion-button>
+        </div>
       </div>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { IonPage, IonContent, IonButton, IonIcon } from "@ionic/vue";
-import { logInOutline, personAddOutline } from "ionicons/icons";
+import { computed } from "vue";
+import { useStore } from "vuex";
+import { IonPage, IonContent, IonButton, IonIcon, IonBadge } from "@ionic/vue";
+import { logInOutline, personAddOutline, calendarOutline, personCircleOutline } from "ionicons/icons";
 
+const store = useStore();
 const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
+
+const isAuthenticated = computed(() => store.getters.isAuthenticated);
+const user = computed(() => store.getters.currentUser);
 </script>
 
 <style scoped>
@@ -117,6 +141,17 @@ const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
   color: var(--ion-color-medium);
   font-size: 1rem;
   line-height: 1.5;
+}
+
+.user-info-pills {
+  margin-top: 15px;
+}
+
+.info-pill {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border-radius: 12px;
 }
 
 .buttons-wrapper {

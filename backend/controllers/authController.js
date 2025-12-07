@@ -26,7 +26,18 @@ exports.register = async (req, res) => {
             [username, passwordHash]
         );
 
-        res.status(201).json({ message: 'User registered successfully', userId: result.insertId });
+        const userId = result.insertId;
+        const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
+
+        // Initialize default skills
+        for (const sport of sports) {
+            await db.query(
+                'INSERT INTO user_skills (user_id, sport_type, rating) VALUES (?, ?, ?)',
+                [userId, sport, 6.0]
+            );
+        }
+
+        res.status(201).json({ message: 'User registered successfully', userId });
     } catch (error) {
         console.error('Register error:', error);
         res.status(500).json({ error: 'Server error during registration' });

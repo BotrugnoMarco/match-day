@@ -33,8 +33,14 @@ exports.getProfile = async (req, res) => {
 
         const [skills] = await db.query('SELECT sport_type, rating FROM user_skills WHERE user_id = ?', [userId]);
 
+        const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
+        const completeSkills = sports.map(sport => {
+            const found = skills.find(s => s.sport_type === sport);
+            return found ? found : { sport_type: sport, rating: 6.0 };
+        });
+
         const user = users[0];
-        user.skills = skills;
+        user.skills = completeSkills;
 
         res.json(user);
     } catch (error) {

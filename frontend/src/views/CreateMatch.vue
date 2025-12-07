@@ -1,6 +1,6 @@
 <template>
   <ion-page>
-    <ion-header>
+    <ion-header class="ion-no-border">
       <ion-toolbar>
         <ion-buttons slot="start">
           <ion-back-button default-href="/matches"></ion-back-button>
@@ -10,54 +10,62 @@
     </ion-header>
     <ion-content class="ion-padding">
       <div class="create-container">
-        <ion-card>
-          <ion-card-header>
-            <ion-card-title>New Match Details</ion-card-title>
-            <ion-card-subtitle>Fill in the information below</ion-card-subtitle>
-          </ion-card-header>
-          <ion-card-content>
-            <form @submit.prevent="createMatch">
-              <ion-item lines="full" class="ion-margin-bottom">
-                <ion-label position="stacked">Date & Time</ion-label>
-                <ion-datetime-button datetime="datetime"></ion-datetime-button>
-                <ion-modal :keep-contents-mounted="true">
-                  <ion-datetime id="datetime" v-model="dateTime"></ion-datetime>
-                </ion-modal>
-              </ion-item>
+        <!-- Sport Selection -->
+        <div class="section-title">Choose Sport</div>
+        <div class="sports-grid">
+          <div
+            v-for="sport in sports"
+            :key="sport.value"
+            class="sport-card"
+            :class="{ active: sportType === sport.value }"
+            @click="selectSport(sport.value)"
+          >
+            <ion-icon :icon="sport.icon"></ion-icon>
+            <span>{{ sport.label }}</span>
+          </div>
+        </div>
 
-              <ion-item lines="full" class="ion-margin-bottom">
-                <ion-label position="floating">Location</ion-label>
-                <ion-input v-model="location" required placeholder="e.g. Central Park Field 1"></ion-input>
-              </ion-item>
+        <form @submit.prevent="createMatch" class="match-form">
+          <!-- Date & Time -->
+          <div class="form-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="calendarOutline" slot="start" color="primary"></ion-icon>
+              <ion-label>Date & Time</ion-label>
+              <ion-datetime-button datetime="datetime"></ion-datetime-button>
+            </ion-item>
+            <ion-modal :keep-contents-mounted="true">
+              <ion-datetime id="datetime" v-model="dateTime" presentation="date-time"></ion-datetime>
+            </ion-modal>
+          </div>
 
-              <ion-item lines="full" class="ion-margin-bottom">
-                <ion-select v-model="sportType" label="Sport Type" placeholder="Select Sport" @ionChange="updateMaxPlayers">
-                  <ion-select-option value="soccer">Soccer</ion-select-option>
-                  <ion-select-option value="volleyball">Volleyball</ion-select-option>
-                  <ion-select-option value="padel">Padel</ion-select-option>
-                  <ion-select-option value="tennis">Tennis</ion-select-option>
-                </ion-select>
-              </ion-item>
+          <!-- Location -->
+          <div class="form-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
+              <ion-input v-model="location" label="Location" label-placement="floating" placeholder="Where are we playing?"></ion-input>
+            </ion-item>
+          </div>
 
-              <ion-item lines="full" class="ion-margin-bottom">
-                <ion-label position="floating">Max Players</ion-label>
-                <ion-input type="number" v-model="maxPlayers" required></ion-input>
-              </ion-item>
+          <!-- Max Players -->
+          <div class="form-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="peopleOutline" slot="start" color="primary"></ion-icon>
+              <ion-input type="number" v-model="maxPlayers" label="Max Players" label-placement="floating"></ion-input>
+            </ion-item>
+          </div>
 
-              <ion-item lines="full" class="ion-margin-bottom">
-                <ion-label position="floating">Total Price (€)</ion-label>
-                <ion-input type="number" v-model="priceTotal" required placeholder="0.00"></ion-input>
-              </ion-item>
+          <!-- Price -->
+          <div class="form-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+              <ion-input type="number" v-model="priceTotal" label="Total Price (€)" label-placement="floating" placeholder="0.00"></ion-input>
+            </ion-item>
+          </div>
 
-              <div class="ion-padding-top">
-                <ion-button expand="block" type="submit" size="large">
-                  <ion-icon :icon="addCircleOutline" slot="start"></ion-icon>
-                  Create Match
-                </ion-button>
-              </div>
-            </form>
-          </ion-card-content>
-        </ion-card>
+          <div class="ion-padding-top ion-margin-top">
+            <ion-button expand="block" type="submit" class="create-btn" size="large"> Create Match </ion-button>
+          </div>
+        </form>
       </div>
     </ion-content>
   </ion-page>
@@ -79,19 +87,12 @@ import {
   IonButton,
   IonButtons,
   IonBackButton,
-  IonSelect,
-  IonSelectOption,
   IonDatetime,
   IonDatetimeButton,
   IonModal,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
-  IonCardSubtitle,
-  IonCardContent,
   IonIcon,
 } from "@ionic/vue";
-import { addCircleOutline } from "ionicons/icons";
+import { addCircleOutline, football, basketball, tennisball, calendarOutline, locationOutline, peopleOutline, cashOutline } from "ionicons/icons";
 
 const router = useRouter();
 const dateTime = ref(new Date().toISOString());
@@ -99,6 +100,18 @@ const location = ref("");
 const sportType = ref("soccer");
 const priceTotal = ref("");
 const maxPlayers = ref(10);
+
+const sports = [
+  { value: "soccer", label: "Soccer", icon: football },
+  { value: "volleyball", label: "Volleyball", icon: basketball }, // Placeholder icon
+  { value: "padel", label: "Padel", icon: tennisball },
+  { value: "tennis", label: "Tennis", icon: tennisball },
+];
+
+const selectSport = (type) => {
+  sportType.value = type;
+  updateMaxPlayers();
+};
 
 const updateMaxPlayers = () => {
   if (sportType.value === "soccer") {
@@ -125,7 +138,7 @@ const createMatch = async () => {
       max_players: maxPlayers.value,
     });
 
-    alert("Match created successfully!");
+    // alert("Match created successfully!");
     router.push("/matches");
   } catch (error) {
     console.error("Error creating match:", error);
@@ -138,5 +151,82 @@ const createMatch = async () => {
 .create-container {
   max-width: 600px;
   margin: 0 auto;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  margin-bottom: 12px;
+  margin-left: 4px;
+}
+
+.sports-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.sport-card {
+  background: var(--ion-card-background, #fff);
+  border-radius: 12px;
+  padding: 12px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.sport-card ion-icon {
+  font-size: 24px;
+  margin-bottom: 4px;
+  color: var(--ion-color-medium);
+}
+
+.sport-card span {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ion-color-medium);
+}
+
+.sport-card.active {
+  border-color: var(--ion-color-primary);
+  background: var(--ion-color-light);
+}
+
+.sport-card.active ion-icon,
+.sport-card.active span {
+  color: var(--ion-color-primary);
+  font-weight: 600;
+}
+
+.match-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  background: var(--ion-card-background, #fff);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.custom-item {
+  --background: transparent;
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+}
+
+.create-btn {
+  --border-radius: 12px;
+  font-weight: 600;
+  margin-top: 16px;
 }
 </style>

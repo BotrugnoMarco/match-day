@@ -191,7 +191,8 @@ const createMatch = () => {
 
 .page-banner {
   background: var(--ion-color-primary);
-  padding: 10px 20px 40px;
+  padding: 10px 20px;
+  height: auto;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   margin-bottom: 20px;

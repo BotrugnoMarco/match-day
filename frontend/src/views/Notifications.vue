@@ -105,7 +105,8 @@ const handleNotificationClick = (notification) => {
 
 .page-banner {
   background: var(--ion-color-primary);
-  padding: 20px 20px 50px;
+  padding: 20px 20px;
+  height: auto;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   margin-bottom: 20px;

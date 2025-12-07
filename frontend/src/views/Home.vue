@@ -69,7 +69,7 @@ const user = computed(() => store.getters.currentUser);
 
 .home-banner {
   background: var(--ion-color-primary);
-  height: 55%;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;

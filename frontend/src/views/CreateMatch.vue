@@ -1,15 +1,20 @@
 <template>
   <ion-page>
     <ion-header class="ion-no-border">
-      <ion-toolbar>
+      <ion-toolbar color="primary">
         <ion-buttons slot="start">
           <ion-back-button default-href="/matches"></ion-back-button>
         </ion-buttons>
         <ion-title>Create Match</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
-      <div class="create-container">
+    <ion-content class="page-content">
+      <div class="page-banner">
+        <h2>New Match</h2>
+        <p>Set up a new game</p>
+      </div>
+
+      <div class="create-container ion-padding-horizontal">
         <!-- Sport Selection -->
         <div class="section-title">Choose Sport</div>
         <div class="sports-grid">
@@ -29,7 +34,7 @@
           <!-- Date & Time -->
           <div class="form-group">
             <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="calendarOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="calendarOutline" slot="start" class="form-icon"></ion-icon>
               <ion-label>Date & Time</ion-label>
               <ion-datetime-button datetime="datetime"></ion-datetime-button>
             </ion-item>
@@ -41,7 +46,7 @@
           <!-- Location -->
           <div class="form-group">
             <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="locationOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="locationOutline" slot="start" class="form-icon"></ion-icon>
               <ion-input v-model="location" label="Location" label-placement="floating" placeholder="Where are we playing?"></ion-input>
             </ion-item>
           </div>
@@ -49,7 +54,7 @@
           <!-- Max Players -->
           <div class="form-group">
             <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="peopleOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="peopleOutline" slot="start" class="form-icon"></ion-icon>
               <ion-input type="number" v-model="maxPlayers" label="Max Players" label-placement="floating"></ion-input>
             </ion-item>
           </div>
@@ -57,7 +62,7 @@
           <!-- Price -->
           <div class="form-group">
             <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="cashOutline" slot="start" color="primary"></ion-icon>
+              <ion-icon :icon="cashOutline" slot="start" class="form-icon"></ion-icon>
               <ion-input type="number" v-model="priceTotal" label="Total Price (€)" label-placement="floating" placeholder="0.00"></ion-input>
             </ion-item>
           </div>
@@ -92,7 +97,17 @@ import {
   IonModal,
   IonIcon,
 } from "@ionic/vue";
-import { addCircleOutline, football, basketball, tennisball, calendarOutline, locationOutline, peopleOutline, cashOutline } from "ionicons/icons";
+import {
+  addCircleOutline,
+  football,
+  basketball,
+  tennisball,
+  calendarOutline,
+  locationOutline,
+  peopleOutline,
+  cashOutline,
+  baseballOutline,
+} from "ionicons/icons";
 
 const router = useRouter();
 const dateTime = ref(new Date().toISOString());
@@ -103,7 +118,7 @@ const maxPlayers = ref(10);
 
 const sports = [
   { value: "soccer", label: "Soccer", icon: football },
-  { value: "volleyball", label: "Volleyball", icon: basketball }, // Placeholder icon
+  { value: "volleyball", label: "Volleyball", icon: baseballOutline },
   { value: "padel", label: "Padel", icon: tennisball },
   { value: "tennis", label: "Tennis", icon: tennisball },
 ];
@@ -125,9 +140,6 @@ const updateMaxPlayers = () => {
 
 const createMatch = async () => {
   try {
-    // Ensure date is in MySQL compatible format or ISO string that backend can handle
-    // The backend expects DATETIME, mysql2 usually handles JS Date objects or ISO strings well.
-    // ion-datetime returns ISO string.
     const formattedDate = dateTime.value.replace("T", " ").slice(0, 19);
 
     await api.post("/matches", {
@@ -138,7 +150,6 @@ const createMatch = async () => {
       max_players: maxPlayers.value,
     });
 
-    // alert("Match created successfully!");
     router.push("/matches");
   } catch (error) {
     console.error("Error creating match:", error);
@@ -148,14 +159,42 @@ const createMatch = async () => {
 </script>
 
 <style scoped>
+.page-content {
+  --background: #f4f5f8;
+}
+
+.page-banner {
+  background: var(--ion-color-primary);
+  padding: 20px 20px 50px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: white;
+}
+
+.page-banner h2 {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.8rem;
+}
+
+.page-banner p {
+  margin: 5px 0 0;
+  opacity: 0.9;
+}
+
 .create-container {
+  margin-top: -40px;
   max-width: 600px;
-  margin: 0 auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .section-title {
   font-size: 1.1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--ion-color-dark);
   margin-bottom: 12px;
   margin-left: 4px;
@@ -169,14 +208,14 @@ const createMatch = async () => {
 }
 
 .sport-card {
-  background: var(--ion-card-background, #fff);
-  border-radius: 12px;
-  padding: 12px 4px;
+  background: white;
+  border-radius: 15px;
+  padding: 15px 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border: 2px solid transparent;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -184,25 +223,24 @@ const createMatch = async () => {
 
 .sport-card ion-icon {
   font-size: 24px;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
   color: var(--ion-color-medium);
 }
 
 .sport-card span {
   font-size: 0.75rem;
-  font-weight: 500;
+  font-weight: 600;
   color: var(--ion-color-medium);
 }
 
 .sport-card.active {
   border-color: var(--ion-color-primary);
-  background: var(--ion-color-light);
+  background: rgba(var(--ion-color-primary-rgb), 0.05);
 }
 
 .sport-card.active ion-icon,
 .sport-card.active span {
   color: var(--ion-color-primary);
-  font-weight: 600;
 }
 
 .match-form {
@@ -212,21 +250,28 @@ const createMatch = async () => {
 }
 
 .form-group {
-  background: var(--ion-card-background, #fff);
-  border-radius: 16px;
+  background: white;
+  border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
 .custom-item {
   --background: transparent;
   --padding-start: 16px;
   --inner-padding-end: 16px;
+  --min-height: 60px;
+}
+
+.form-icon {
+  color: var(--ion-color-primary);
+  margin-right: 10px;
 }
 
 .create-btn {
-  --border-radius: 12px;
-  font-weight: 600;
-  margin-top: 16px;
+  --border-radius: 15px;
+  font-weight: 700;
+  margin-top: 10px;
+  --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.4);
 }
 </style>

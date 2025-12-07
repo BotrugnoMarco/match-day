@@ -1,219 +1,239 @@
 <template>
   <ion-page>
-    <ion-header>
-      <ion-toolbar>
+    <ion-header class="ion-no-border">
+      <ion-toolbar color="primary">
         <ion-buttons slot="start">
           <ion-back-button default-href="/matches"></ion-back-button>
         </ion-buttons>
         <ion-title>Match Details</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding" v-if="match">
-      <!-- Match Info Card -->
-      <ion-card class="match-info-card">
-        <ion-card-header>
-          <div class="status-badge-container">
-            <ion-badge :color="getStatusColor(match.status)">{{ match.status.toUpperCase() }}</ion-badge>
+
+    <ion-content class="page-content" v-if="match">
+      <!-- Banner -->
+      <div class="page-banner">
+        <div class="match-banner-content">
+          <ion-icon :icon="getSportIcon(match.sport_type)" class="banner-icon"></ion-icon>
+          <h2>{{ match.sport_type.toUpperCase() }}</h2>
+          <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ match.status.toUpperCase() }}</ion-badge>
+        </div>
+      </div>
+
+      <div class="details-container ion-padding-horizontal">
+        <!-- Info Card -->
+        <div class="custom-card info-card">
+          <div class="info-row">
+            <div class="info-item">
+              <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Date</div>
+                <div class="value">{{ new Date(match.date_time).toLocaleDateString() }}</div>
+              </div>
+            </div>
+            <div class="info-item">
+              <ion-icon :icon="timeOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Time</div>
+                <div class="value">{{ new Date(match.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }}</div>
+              </div>
+            </div>
           </div>
-          <ion-card-title class="ion-text-center">{{ match.sport_type.toUpperCase() }}</ion-card-title>
-          <ion-card-subtitle class="ion-text-center">{{ new Date(match.date_time).toLocaleString() }}</ion-card-subtitle>
-        </ion-card-header>
-        <ion-card-content>
-          <ion-list lines="none">
-            <ion-item>
-              <ion-icon :icon="locationOutline" slot="start"></ion-icon>
-              <ion-label>
-                <h3>Location</h3>
-                <p>{{ match.location }}</p>
-              </ion-label>
-            </ion-item>
-            <ion-item>
-              <ion-icon :icon="cashOutline" slot="start"></ion-icon>
-              <ion-label>
-                <h3>Price</h3>
-                <p>€{{ match.price_total }}</p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-        </ion-card-content>
-      </ion-card>
-
-      <!-- Actions -->
-      <div class="ion-padding-horizontal ion-margin-bottom">
-        <div v-if="match.status === 'open' && !isParticipant">
-          <ion-button expand="block" @click="joinMatch" size="large" :color="isFull ? 'warning' : 'primary'">
-            <ion-icon :icon="isFull ? timeOutline : personAddOutline" slot="start"></ion-icon>
-            {{ isFull ? "Join Waitlist" : "Join Match" }}
-          </ion-button>
-        </div>
-        <div v-if="match.status === 'open' && isConfirmed">
-          <ion-button expand="block" color="danger" @click="leaveMatch">
-            <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-            Leave Match
-          </ion-button>
-        </div>
-        <div v-if="match.status === 'open' && isWaitlisted">
-          <ion-button expand="block" color="danger" @click="leaveMatch">
-            <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-            Leave Waitlist
-          </ion-button>
+          <div class="divider"></div>
+          <div class="info-row">
+            <div class="info-item">
+              <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Location</div>
+                <div class="value">{{ match.location }}</div>
+              </div>
+            </div>
+            <div class="info-item">
+              <ion-icon :icon="cashOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Price</div>
+                <div class="value">€{{ match.price_total }}</div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Admin/Creator Controls -->
-        <div v-if="isCreator && (match.status === 'open' || match.status === 'locked')" class="admin-controls">
-          <ion-button expand="block" color="secondary" @click="generateTeams" class="ion-margin-top">
-            <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-            Generate Teams
-          </ion-button>
-          <ion-button expand="block" color="warning" @click="changeStatus('voting')" class="ion-margin-top">
-            <ion-icon :icon="starOutline" slot="start"></ion-icon>
-            Start Voting
-          </ion-button>
-        </div>
-        <div v-if="isCreator && match.status === 'voting'">
-          <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="ion-margin-top">
-            <ion-icon :icon="flagOutline" slot="start"></ion-icon>
-            Finish Match
-          </ion-button>
-        </div>
-      </div>
-
-      <!-- Waitlist -->
-      <div v-if="waitlistParticipants.length > 0" class="section-header ion-margin-top">
-        <h3>Waitlist</h3>
-        <ion-badge color="warning">{{ waitlistParticipants.length }}</ion-badge>
-      </div>
-
-      <ion-card class="participants-card" v-if="waitlistParticipants.length > 0">
-        <ion-list>
-          <ion-item v-for="p in waitlistParticipants" :key="p.id">
-            <ion-avatar slot="start">
-              <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-            </ion-avatar>
-            <ion-label>
-              <h2>{{ p.username }}</h2>
-              <p>Waiting...</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-      </ion-card>
-
-      <!-- Participants List -->
-      <div class="section-header">
-        <h3>Participants</h3>
-        <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }}</ion-badge>
-      </div>
-
-      <div v-if="hasTeams">
-        <div class="ion-padding-start ion-margin-top">
-          <ion-badge color="primary">TEAM A</ion-badge>
-        </div>
-        <ion-card class="participants-card">
-          <ion-list>
-            <ion-item v-for="p in teamAParticipants" :key="p.id">
-              <ion-avatar slot="start">
-                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-              </ion-avatar>
-              <ion-label>
-                <h2>{{ p.username }}</h2>
-                <p>Skill: {{ p.skill_rating || "N/A" }}</p>
-              </ion-label>
-              <ion-button
-                slot="end"
-                fill="outline"
-                size="small"
-                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-                :disabled="myVotes.includes(p.user_id)"
-                @click="openVoteModal(p)"
-              >
-                {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
-              </ion-button>
-            </ion-item>
-          </ion-list>
-        </ion-card>
-
-        <div class="ion-padding-start ion-margin-top">
-          <ion-badge color="tertiary">TEAM B</ion-badge>
-        </div>
-        <ion-card class="participants-card">
-          <ion-list>
-            <ion-item v-for="p in teamBParticipants" :key="p.id">
-              <ion-avatar slot="start">
-                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-              </ion-avatar>
-              <ion-label>
-                <h2>{{ p.username }}</h2>
-                <p>Skill: {{ p.skill_rating || "N/A" }}</p>
-              </ion-label>
-              <ion-button
-                slot="end"
-                fill="outline"
-                size="small"
-                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-                :disabled="myVotes.includes(p.user_id)"
-                @click="openVoteModal(p)"
-              >
-                {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
-              </ion-button>
-            </ion-item>
-          </ion-list>
-        </ion-card>
-      </div>
-
-      <ion-card class="participants-card" v-else>
-        <ion-list>
-          <ion-item v-for="p in activeParticipants" :key="p.id">
-            <ion-avatar slot="start">
-              <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-            </ion-avatar>
-            <ion-label>
-              <h2>{{ p.username }}</h2>
-              <p>{{ p.status }}</p>
-            </ion-label>
-            <ion-button
-              slot="end"
-              fill="outline"
-              size="small"
-              v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-              :disabled="myVotes.includes(p.user_id)"
-              @click="openVoteModal(p)"
-            >
-              {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+        <!-- Actions -->
+        <div class="actions-container ion-margin-bottom">
+          <div v-if="match.status === 'open' && !isParticipant">
+            <ion-button expand="block" @click="joinMatch" size="large" :color="isFull ? 'warning' : 'primary'" class="action-btn">
+              <ion-icon :icon="isFull ? timeOutline : personAddOutline" slot="start"></ion-icon>
+              {{ isFull ? "Join Waitlist" : "Join Match" }}
             </ion-button>
-          </ion-item>
-        </ion-list>
-      </ion-card>
+          </div>
+          <div v-if="match.status === 'open' && isConfirmed">
+            <ion-button expand="block" color="danger" @click="leaveMatch" class="action-btn">
+              <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+              Leave Match
+            </ion-button>
+          </div>
+          <div v-if="match.status === 'open' && isWaitlisted">
+            <ion-button expand="block" color="danger" @click="leaveMatch" class="action-btn">
+              <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+              Leave Waitlist
+            </ion-button>
+          </div>
 
-      <!-- Results Section -->
-      <div v-if="match.status === 'finished'">
-        <div class="section-header">
-          <h3>Match Results</h3>
-          <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
+          <!-- Admin/Creator Controls -->
+          <div v-if="isCreator && (match.status === 'open' || match.status === 'locked')" class="admin-controls">
+            <ion-button expand="block" color="secondary" @click="generateTeams" class="action-btn ion-margin-top">
+              <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
+              Generate Teams
+            </ion-button>
+            <ion-button expand="block" color="warning" @click="changeStatus('voting')" class="action-btn ion-margin-top">
+              <ion-icon :icon="starOutline" slot="start"></ion-icon>
+              Start Voting
+            </ion-button>
+          </div>
+          <div v-if="isCreator && match.status === 'voting'">
+            <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="action-btn ion-margin-top">
+              <ion-icon :icon="flagOutline" slot="start"></ion-icon>
+              Finish Match
+            </ion-button>
+          </div>
         </div>
 
-        <ion-card v-if="match.winner" class="ion-text-center ion-padding">
-          <ion-card-subtitle>WINNER</ion-card-subtitle>
-          <ion-card-title color="primary" v-if="match.winner !== 'Draw'">TEAM {{ match.winner }}</ion-card-title>
-          <ion-card-title color="medium" v-else>DRAW</ion-card-title>
-        </ion-card>
+        <!-- Waitlist -->
+        <div v-if="waitlistParticipants.length > 0" class="section-header">
+          <h3>Waitlist</h3>
+          <ion-badge color="warning">{{ waitlistParticipants.length }}</ion-badge>
+        </div>
 
-        <ion-card v-if="results.length > 0">
-          <ion-list>
-            <ion-item v-for="(r, index) in results" :key="r.target_id">
-              <div slot="start" class="rank-number">{{ index + 1 }}</div>
+        <div class="custom-card participants-list" v-if="waitlistParticipants.length > 0">
+          <ion-list lines="none">
+            <ion-item v-for="p in waitlistParticipants" :key="p.id">
+              <ion-avatar slot="start">
+                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              </ion-avatar>
               <ion-label>
-                <h2>{{ r.target_name }}</h2>
-                <div class="rating-bar-container">
-                  <div class="rating-bar" :style="{ width: r.averageRating * 10 + '%' }"></div>
-                </div>
-                <p>
-                  Rating: <strong>{{ r.averageRating.toFixed(1) }}</strong> / 10
-                </p>
+                <h2>{{ p.username }}</h2>
+                <p>Waiting...</p>
               </ion-label>
-              <ion-badge slot="end" color="light">{{ r.voteCount }} votes</ion-badge>
             </ion-item>
           </ion-list>
-        </ion-card>
+        </div>
+
+        <!-- Participants List -->
+        <div class="section-header">
+          <h3>Participants</h3>
+          <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }}</ion-badge>
+        </div>
+
+        <div v-if="hasTeams">
+          <div class="team-header">
+            <ion-badge color="primary">TEAM A</ion-badge>
+          </div>
+          <div class="custom-card participants-list">
+            <ion-list lines="none">
+              <ion-item v-for="p in teamAParticipants" :key="p.id">
+                <ion-avatar slot="start">
+                  <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{ p.username }}</h2>
+                  <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+                </ion-label>
+                <ion-button
+                  slot="end"
+                  fill="outline"
+                  size="small"
+                  v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                  :disabled="myVotes.includes(p.user_id)"
+                  @click="openVoteModal(p)"
+                >
+                  {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </div>
+
+          <div class="team-header">
+            <ion-badge color="tertiary">TEAM B</ion-badge>
+          </div>
+          <div class="custom-card participants-list">
+            <ion-list lines="none">
+              <ion-item v-for="p in teamBParticipants" :key="p.id">
+                <ion-avatar slot="start">
+                  <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{ p.username }}</h2>
+                  <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+                </ion-label>
+                <ion-button
+                  slot="end"
+                  fill="outline"
+                  size="small"
+                  v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                  :disabled="myVotes.includes(p.user_id)"
+                  @click="openVoteModal(p)"
+                >
+                  {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                </ion-button>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+
+        <div class="custom-card participants-list" v-else>
+          <ion-list lines="none">
+            <ion-item v-for="p in activeParticipants" :key="p.id">
+              <ion-avatar slot="start">
+                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              </ion-avatar>
+              <ion-label>
+                <h2>{{ p.username }}</h2>
+                <p>{{ p.status }}</p>
+              </ion-label>
+              <ion-button
+                slot="end"
+                fill="outline"
+                size="small"
+                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                :disabled="myVotes.includes(p.user_id)"
+                @click="openVoteModal(p)"
+              >
+                {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </div>
+
+        <!-- Results Section -->
+        <div v-if="match.status === 'finished'">
+          <div class="section-header">
+            <h3>Match Results</h3>
+            <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
+          </div>
+
+          <div class="custom-card ion-text-center ion-padding ion-margin-bottom">
+            <ion-card-subtitle>WINNER</ion-card-subtitle>
+            <h1 class="winner-text" v-if="match.winner !== 'Draw'">TEAM {{ match.winner }}</h1>
+            <h1 class="winner-text draw" v-else>DRAW</h1>
+          </div>
+
+          <div class="custom-card participants-list" v-if="results.length > 0">
+            <ion-list lines="none">
+              <ion-item v-for="(r, index) in results" :key="r.target_id">
+                <div slot="start" class="rank-number">{{ index + 1 }}</div>
+                <ion-label>
+                  <h2>{{ r.target_name }}</h2>
+                  <div class="rating-bar-container">
+                    <div class="rating-bar" :style="{ width: r.averageRating * 10 + '%' }"></div>
+                  </div>
+                  <p>
+                    Rating: <strong>{{ r.averageRating.toFixed(1) }}</strong> / 10
+                  </p>
+                </ion-label>
+                <ion-badge slot="end" color="light">{{ r.voteCount }} votes</ion-badge>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
       </div>
     </ion-content>
     <ion-content v-else class="ion-padding">
@@ -237,11 +257,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonCard,
-  IonCardHeader,
-  IonCardTitle,
   IonCardSubtitle,
-  IonCardContent,
   IonList,
   IonItem,
   IonLabel,
@@ -259,13 +275,17 @@ import {
   locationOutline,
   cashOutline,
   personAddOutline,
-  checkmarkCircleOutline,
   peopleOutline,
   starOutline,
   flagOutline,
   trophyOutline,
   timeOutline,
   closeCircleOutline,
+  calendarOutline,
+  football,
+  basketball,
+  tennisball,
+  baseballOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 
@@ -323,6 +343,20 @@ const getStatusColor = (status) => {
       return "tertiary";
     default:
       return "primary";
+  }
+};
+
+const getSportIcon = (type) => {
+  switch (type) {
+    case "soccer":
+      return football;
+    case "volleyball":
+      return baseballOutline;
+    case "padel":
+    case "tennis":
+      return tennisball;
+    default:
+      return calendarOutline;
   }
 };
 
@@ -492,7 +526,6 @@ const openVoteModal = async (participant) => {
 
   modal.onDidDismiss().then((data) => {
     if (data.role === "confirm") {
-      // Maybe refresh or show success toast
       console.log("Vote submitted");
     }
   });
@@ -516,14 +549,103 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-.match-info-card {
-  margin-top: 0;
-  margin-bottom: 20px;
+.page-content {
+  --background: #f4f5f8;
 }
 
-.status-badge-container {
+.page-banner {
+  background: var(--ion-color-primary);
+  padding: 20px 20px 50px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: white;
+}
+
+.match-banner-content {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.banner-icon {
+  font-size: 3rem;
+}
+
+.match-banner-content h2 {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.8rem;
+}
+
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.details-container {
+  margin-top: -40px;
+}
+
+.custom-card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.info-card {
+  padding: 20px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+}
+
+.info-icon {
+  font-size: 1.5rem;
+  color: var(--ion-color-primary);
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.divider {
+  height: 1px;
+  background: #f0f2f5;
+  margin: 15px 0;
+}
+
+.action-btn {
+  --border-radius: 12px;
   margin-bottom: 10px;
 }
 
@@ -531,25 +653,41 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 10px;
-  margin-top: 20px;
+  padding: 0 5px;
   margin-bottom: 10px;
 }
 
 .section-header h3 {
   margin: 0;
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: var(--ion-color-dark);
 }
 
-.participants-card {
-  margin: 0;
+.participants-list ion-item {
+  --padding-start: 10px;
+  --inner-padding-end: 10px;
+}
+
+.team-header {
+  padding-left: 5px;
+  margin-bottom: 5px;
+  margin-top: 15px;
+}
+
+.winner-text {
+  font-weight: 900;
+  color: var(--ion-color-primary);
+  margin: 10px 0;
+}
+
+.winner-text.draw {
+  color: var(--ion-color-medium);
 }
 
 .rank-number {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 1.2rem;
+  font-weight: 800;
   color: var(--ion-color-medium);
   width: 30px;
   text-align: center;
@@ -557,20 +695,15 @@ onUnmounted(() => {
 
 .rating-bar-container {
   height: 6px;
-  background-color: var(--ion-color-light-shade);
+  background-color: #f0f2f5;
   border-radius: 3px;
   margin: 5px 0;
   overflow: hidden;
+  width: 100px;
 }
 
 .rating-bar {
   height: 100%;
   background-color: var(--ion-color-warning);
-}
-
-.admin-controls {
-  border-top: 1px solid var(--ion-color-light);
-  padding-top: 10px;
-  margin-top: 10px;
 }
 </style>

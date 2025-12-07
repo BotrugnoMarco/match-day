@@ -186,8 +186,6 @@ const createMatch = () => {
 <style scoped>
 .page-content {
   --background: #f4f5f8;
-  min-height: 100vh;
-  height: 100%;
   overflow-y: auto;
 }
 

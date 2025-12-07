@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS matches (
     location VARCHAR(100),
     sport_type ENUM('soccer', 'volleyball', 'padel', 'tennis') NOT NULL,
     status ENUM('open', 'locked', 'finished', 'voting') DEFAULT 'open',
+    winner ENUM('A', 'B', 'Draw'),
     price_total DECIMAL(10, 2),
     -- Costo campo
     max_players INT DEFAULT 10,

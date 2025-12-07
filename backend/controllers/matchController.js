@@ -204,7 +204,7 @@ exports.leaveMatch = async (req, res) => {
 // Update match status (Admin/Creator only - simplified to just authenticated for now)
 exports.updateMatchStatus = async (req, res) => {
     const matchId = req.params.id;
-    const { status } = req.body;
+    const { status, winner } = req.body;
     const userId = req.user.id;
 
     if (!['open', 'locked', 'finished', 'voting'].includes(status)) {
@@ -224,10 +224,14 @@ exports.updateMatchStatus = async (req, res) => {
             return res.status(403).json({ error: 'Only the match creator can update status' });
         }
 
-        await db.query('UPDATE matches SET status = ? WHERE id = ?', [status, matchId]);
+        if (winner) {
+            await db.query('UPDATE matches SET status = ?, winner = ? WHERE id = ?', [status, winner, matchId]);
+        } else {
+            await db.query('UPDATE matches SET status = ? WHERE id = ?', [status, matchId]);
+        }
 
         const io = req.app.get('io');
-        io.emit('match_updated', { matchId, status });
+        io.emit('match_updated', { matchId, status, winner });
 
         // Notify participants about status change
         if (status === 'voting' || status === 'finished') {

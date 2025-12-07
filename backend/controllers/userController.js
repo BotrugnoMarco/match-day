@@ -48,6 +48,19 @@ exports.getUserStats = async (req, res) => {
         );
         const matchesPlayed = matchesResult[0].count;
 
+        // Matches Won
+        const [winsResult] = await db.query(
+            `SELECT COUNT(*) as count 
+             FROM matches m
+             JOIN participants p ON m.id = p.match_id
+             WHERE p.user_id = ? 
+               AND p.status = 'confirmed'
+               AND m.status = 'finished'
+               AND m.winner = p.team`,
+            [userId]
+        );
+        const matchesWon = winsResult[0].count;
+
         // MVP Count (based on tags containing 'MVP')
         const [mvpResult] = await db.query(
             `SELECT COUNT(*) as count FROM votes 
@@ -69,6 +82,7 @@ exports.getUserStats = async (req, res) => {
 
         res.json({
             matchesPlayed,
+            matchesWon,
             mvpCount,
             recentRatings
         });
@@ -87,6 +101,8 @@ exports.getMatchHistory = async (req, res) => {
                 m.date_time, 
                 m.location, 
                 m.sport_type,
+                m.winner,
+                p.team as user_team,
                 AVG(v.rating) as avg_rating,
                 COUNT(v.id) as vote_count,
                 GROUP_CONCAT(v.tags) as tags
@@ -107,10 +123,23 @@ exports.getMatchHistory = async (req, res) => {
             if (match.tags) {
                 tagList = match.tags.split(',').filter(t => t && t.trim() !== '');
             }
+
+            let result = 'draw';
+            if (match.winner && match.user_team) {
+                if (match.winner === 'Draw') {
+                    result = 'draw';
+                } else if (match.winner === match.user_team) {
+                    result = 'win';
+                } else {
+                    result = 'loss';
+                }
+            }
+
             return {
                 ...match,
                 avg_rating: match.avg_rating ? parseFloat(match.avg_rating).toFixed(1) : null,
-                tags: [...new Set(tagList)] // Unique tags
+                tags: [...new Set(tagList)], // Unique tags
+                result
             };
         });
 

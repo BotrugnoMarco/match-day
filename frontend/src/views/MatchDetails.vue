@@ -104,7 +104,61 @@
         <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }}</ion-badge>
       </div>
 
-      <ion-card class="participants-card">
+      <div v-if="hasTeams">
+        <div class="ion-padding-start ion-margin-top">
+          <ion-badge color="primary">TEAM A</ion-badge>
+        </div>
+        <ion-card class="participants-card">
+          <ion-list>
+            <ion-item v-for="p in teamAParticipants" :key="p.id">
+              <ion-avatar slot="start">
+                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              </ion-avatar>
+              <ion-label>
+                <h2>{{ p.username }}</h2>
+                <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+              </ion-label>
+              <ion-button
+                slot="end"
+                fill="outline"
+                size="small"
+                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                @click="openVoteModal(p)"
+              >
+                Vote
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+
+        <div class="ion-padding-start ion-margin-top">
+          <ion-badge color="tertiary">TEAM B</ion-badge>
+        </div>
+        <ion-card class="participants-card">
+          <ion-list>
+            <ion-item v-for="p in teamBParticipants" :key="p.id">
+              <ion-avatar slot="start">
+                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              </ion-avatar>
+              <ion-label>
+                <h2>{{ p.username }}</h2>
+                <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+              </ion-label>
+              <ion-button
+                slot="end"
+                fill="outline"
+                size="small"
+                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                @click="openVoteModal(p)"
+              >
+                Vote
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </ion-card>
+      </div>
+
+      <ion-card class="participants-card" v-else>
         <ion-list>
           <ion-item v-for="p in activeParticipants" :key="p.id">
             <ion-avatar slot="start">
@@ -114,30 +168,24 @@
               <h2>{{ p.username }}</h2>
               <p>{{ p.status }}</p>
             </ion-label>
-            <ion-badge slot="end" v-if="p.team" :color="p.team === 'Team A' ? 'primary' : 'tertiary'" class="ion-margin-end">
-              {{ p.team }}
-            </ion-badge>
-
-            <ion-button
-              slot="end"
-              fill="outline"
-              size="small"
-              v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-              @click="openVoteModal(p)"
-            >
-              Vote
-            </ion-button>
           </ion-item>
         </ion-list>
       </ion-card>
 
       <!-- Results Section -->
-      <div v-if="match.status === 'finished' && results.length > 0">
+      <div v-if="match.status === 'finished'">
         <div class="section-header">
           <h3>Match Results</h3>
           <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
         </div>
-        <ion-card>
+
+        <ion-card v-if="match.winner" class="ion-text-center ion-padding">
+          <ion-card-subtitle>WINNER</ion-card-subtitle>
+          <ion-card-title color="primary" v-if="match.winner !== 'Draw'">TEAM {{ match.winner }}</ion-card-title>
+          <ion-card-title color="medium" v-else>DRAW</ion-card-title>
+        </ion-card>
+
+        <ion-card v-if="results.length > 0">
           <ion-list>
             <ion-item v-for="(r, index) in results" :key="r.target_id">
               <div slot="start" class="rank-number">{{ index + 1 }}</div>
@@ -191,6 +239,7 @@ import {
   IonButtons,
   IonBackButton,
   modalController,
+  alertController,
   IonIcon,
   IonSpinner,
 } from "@ionic/vue";
@@ -230,6 +279,18 @@ const waitlistParticipants = computed(() => {
 
 const activeParticipants = computed(() => {
   return match.value?.participants?.filter((p) => p.status !== "waitlist") || [];
+});
+
+const hasTeams = computed(() => {
+  return activeParticipants.value.some((p) => p.team);
+});
+
+const teamAParticipants = computed(() => {
+  return activeParticipants.value.filter((p) => p.team === "A" || p.team === "Team A");
+});
+
+const teamBParticipants = computed(() => {
+  return activeParticipants.value.filter((p) => p.team === "B" || p.team === "Team B");
 });
 
 const isFull = computed(() => {
@@ -337,7 +398,45 @@ const leaveMatch = async () => {
 
 const changeStatus = async (newStatus) => {
   try {
-    await api.put(`/matches/${route.params.id}/status`, { status: newStatus });
+    let winner = null;
+    if (newStatus === "finished") {
+      const alert = await alertController.create({
+        header: "Select Winner",
+        buttons: [
+          {
+            text: "Team A",
+            role: "A",
+            handler: () => {
+              winner = "A";
+            },
+          },
+          {
+            text: "Team B",
+            role: "B",
+            handler: () => {
+              winner = "B";
+            },
+          },
+          {
+            text: "Draw",
+            role: "Draw",
+            handler: () => {
+              winner = "Draw";
+            },
+          },
+        ],
+      });
+
+      await alert.present();
+      const { role } = await alert.onDidDismiss();
+      if (role && role !== "backdrop") {
+        winner = role;
+      } else {
+        return; // Cancelled
+      }
+    }
+
+    await api.put(`/matches/${route.params.id}/status`, { status: newStatus, winner });
     await fetchMatch();
   } catch (error) {
     console.error("Error updating status:", error);

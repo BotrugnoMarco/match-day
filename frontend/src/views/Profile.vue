@@ -37,6 +37,11 @@
                 <p>Matches</p>
               </div>
               <div class="stat-item" v-if="stats">
+                <ion-icon :icon="ribbon" color="primary" class="stat-icon"></ion-icon>
+                <h3>{{ stats.matchesWon }}</h3>
+                <p>Won</p>
+              </div>
+              <div class="stat-item" v-if="stats">
                 <ion-icon :icon="trophy" color="warning" class="stat-icon"></ion-icon>
                 <h3>{{ stats.mvpCount }}</h3>
                 <p>MVP</p>
@@ -56,12 +61,15 @@
                   <ion-badge v-for="tag in match.tags" :key="tag" color="tertiary" class="tag-badge">{{ tag }}</ion-badge>
                 </div>
               </ion-label>
-              <div slot="end" class="rating-display" v-if="match.avg_rating">
-                <span class="rating-value">{{ match.avg_rating }}</span>
-                <ion-icon :icon="star" color="warning"></ion-icon>
-              </div>
-              <div slot="end" v-else>
-                <ion-badge color="medium">No Votes</ion-badge>
+              <div slot="end" class="result-display ion-text-end">
+                <ion-badge v-if="match.result === 'win'" color="success">WIN</ion-badge>
+                <ion-badge v-else-if="match.result === 'loss'" color="danger">LOSS</ion-badge>
+                <ion-badge v-else-if="match.result === 'draw'" color="medium">DRAW</ion-badge>
+
+                <div class="rating-display ion-margin-top" v-if="match.avg_rating">
+                  <span class="rating-value">{{ match.avg_rating }}</span>
+                  <ion-icon :icon="star" color="warning"></ion-icon>
+                </div>
               </div>
             </ion-item>
           </ion-list>
@@ -101,7 +109,7 @@ import {
   IonLabel,
   IonBadge,
 } from "@ionic/vue";
-import { camera, star, logOutOutline, football, trophy } from "ionicons/icons";
+import { camera, star, logOutOutline, football, trophy, ribbon } from "ionicons/icons";
 
 const store = useStore();
 const router = useRouter();

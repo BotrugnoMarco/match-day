@@ -64,6 +64,9 @@ const user = computed(() => store.getters.currentUser);
 <style scoped>
 .home-content {
   --background: #ffffff;
+  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
 }
 
 .home-banner {

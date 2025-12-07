@@ -570,6 +570,14 @@ onUnmounted(() => {
 <style scoped>
 .page-content {
   --background: #f4f5f8;
+  min-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.details-container {
+  min-height: 0;
+  height: auto;
 }
 
 .page-banner {

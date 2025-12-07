@@ -102,6 +102,14 @@ const store = createStore({
             } catch (error) {
                 console.error('Error fetching user stats:', error);
             }
+        },
+        async fetchUserProfile({ commit }) {
+            try {
+                const response = await api.get('/users/profile');
+                commit('SET_USER', response.data);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
         }
     },
     getters: {

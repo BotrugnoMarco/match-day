@@ -130,6 +130,7 @@ const fileInput = ref(null);
 
 onMounted(() => {
   store.dispatch("fetchUserStats");
+  store.dispatch("fetchUserProfile");
   fetchHistory();
 });
 

@@ -73,6 +73,16 @@ exports.login = async (req, res) => {
             { expiresIn: '24h' }
         );
 
+        // Get skills
+        const [skills] = await db.query('SELECT sport_type, rating FROM user_skills WHERE user_id = ?', [user.id]);
+
+        // Ensure default skills if missing (fallback)
+        const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
+        const completeSkills = sports.map(sport => {
+            const found = skills.find(s => s.sport_type === sport);
+            return found ? found : { sport_type: sport, rating: 6.0 };
+        });
+
         res.json({
             message: 'Login successful',
             token,
@@ -81,7 +91,7 @@ exports.login = async (req, res) => {
                 username: user.username,
                 role: user.role,
                 avatar_url: user.avatar_url,
-                skill_rating: user.skill_rating
+                skills: completeSkills
             }
         });
     } catch (error) {

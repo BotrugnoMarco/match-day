@@ -241,12 +241,12 @@
         </div>
       </div>
     </ion-content>
-    <ion-content v-else class="ion-padding">
+    <div v-else class="ion-padding">
       <div class="ion-text-center ion-padding-top">
         <ion-spinner></ion-spinner>
         <p>Loading match details...</p>
       </div>
-    </ion-content>
+    </div>
   </ion-page>
 </template>
 

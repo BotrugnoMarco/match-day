@@ -123,9 +123,10 @@
                 fill="outline"
                 size="small"
                 v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                :disabled="myVotes.includes(p.user_id)"
                 @click="openVoteModal(p)"
               >
-                Vote
+                {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
               </ion-button>
             </ion-item>
           </ion-list>
@@ -149,9 +150,10 @@
                 fill="outline"
                 size="small"
                 v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                :disabled="myVotes.includes(p.user_id)"
                 @click="openVoteModal(p)"
               >
-                Vote
+                {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
               </ion-button>
             </ion-item>
           </ion-list>
@@ -168,6 +170,16 @@
               <h2>{{ p.username }}</h2>
               <p>{{ p.status }}</p>
             </ion-label>
+            <ion-button
+              slot="end"
+              fill="outline"
+              size="small"
+              v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+              :disabled="myVotes.includes(p.user_id)"
+              @click="openVoteModal(p)"
+            >
+              {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+            </ion-button>
           </ion-item>
         </ion-list>
       </ion-card>
@@ -261,6 +273,7 @@ const route = useRoute();
 const store = useStore();
 const match = ref(null);
 const votes = ref([]);
+const myVotes = ref([]);
 const currentUser = computed(() => store.getters.currentUser);
 
 const isWaitlisted = computed(() => {
@@ -356,6 +369,9 @@ const fetchMatch = async () => {
     if (match.value.status === "finished") {
       fetchVotes();
     }
+    if (match.value.status === "voting") {
+      fetchMyVotes();
+    }
   } catch (error) {
     console.error("Error fetching match:", error);
     alert("Error fetching match details");
@@ -368,6 +384,15 @@ const fetchVotes = async () => {
     votes.value = response.data;
   } catch (error) {
     console.error("Error fetching votes:", error);
+  }
+};
+
+const fetchMyVotes = async () => {
+  try {
+    const response = await api.get(`/votes/match/${route.params.id}/mine`);
+    myVotes.value = response.data.map((v) => v.target_id);
+  } catch (error) {
+    console.error("Error fetching my votes:", error);
   }
 };
 

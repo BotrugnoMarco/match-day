@@ -41,12 +41,7 @@ exports.submitVote = async (req, res) => {
         );
 
         if (existingVote.length > 0) {
-            // Update vote
-            await db.query(
-                'UPDATE votes SET rating = ?, tags = ? WHERE id = ?',
-                [rating, tags, existingVote[0].id]
-            );
-            return res.json({ message: 'Vote updated' });
+            return res.status(400).json({ error: 'You have already voted for this player' });
         }
 
         // Insert vote
@@ -78,5 +73,21 @@ exports.getMatchVotes = async (req, res) => {
     } catch (error) {
         console.error('Get votes error:', error);
         res.status(500).json({ error: 'Server error fetching votes' });
+    }
+};
+
+// Get votes cast by the current user for a match
+exports.getMyVotes = async (req, res) => {
+    const matchId = req.params.matchId;
+    const userId = req.user.id;
+    try {
+        const [votes] = await db.query(
+            'SELECT target_id FROM votes WHERE match_id = ? AND voter_id = ?',
+            [matchId, userId]
+        );
+        res.json(votes);
+    } catch (error) {
+        console.error('Get my votes error:', error);
+        res.status(500).json({ error: 'Server error fetching my votes' });
     }
 };

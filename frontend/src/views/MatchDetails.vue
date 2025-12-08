@@ -6,6 +6,11 @@
           <ion-back-button default-href="/matches"></ion-back-button>
         </ion-buttons>
         <ion-title>Match Details</ion-title>
+        <ion-buttons slot="end">
+          <ion-button @click="openInviteModal">
+            <ion-icon slot="icon-only" :icon="personAddOutline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
@@ -357,6 +362,7 @@
         <p>Loading match details...</p>
       </div>
     </div>
+    <InviteFriendModal :is-open="isInviteModalOpen" :match-id="match?.id" @close="isInviteModalOpen = false" />
   </ion-page>
 </template>
 
@@ -408,6 +414,7 @@ import {
   beer,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
+import InviteFriendModal from "../components/InviteFriendModal.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -415,6 +422,7 @@ const store = useStore();
 const match = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
+const isInviteModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
 
 const isWaitlisted = computed(() => {
@@ -558,6 +566,10 @@ const results = computed(() => {
 
 const goToProfile = (userId) => {
   router.push(`/profile/${userId}`);
+};
+
+const openInviteModal = () => {
+  isInviteModalOpen.value = true;
 };
 
 const fetchMatch = async () => {

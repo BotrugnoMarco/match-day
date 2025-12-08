@@ -60,6 +60,7 @@ import {
   warningOutline,
   checkmarkCircleOutline,
   checkmarkDoneOutline,
+  personAddOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -77,6 +78,8 @@ const getIcon = (type) => {
       return warningOutline;
     case "success":
       return checkmarkCircleOutline;
+    case "invite":
+      return personAddOutline;
     default:
       return informationCircleOutline;
   }

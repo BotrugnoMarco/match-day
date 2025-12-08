@@ -432,3 +432,42 @@ exports.updatePostMatchStatus = async (req, res) => {
         res.status(500).json({ error: 'Server error updating status' });
     }
 };
+
+// Invite a user to a match
+exports.inviteUser = async (req, res) => {
+    const matchId = req.params.id;
+    const { userId } = req.body; // The ID of the user to invite
+    const inviterId = req.user.id;
+
+    try {
+        // Check if match exists
+        const [matches] = await db.query('SELECT * FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+        const match = matches[0];
+
+        // Check if user exists
+        const [users] = await db.query('SELECT username FROM users WHERE id = ?', [userId]);
+        if (users.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        const invitedUser = users[0];
+
+        // Get inviter username
+        const [inviters] = await db.query('SELECT username FROM users WHERE id = ?', [inviterId]);
+        const inviterName = inviters[0].username;
+
+        // Create notification
+        const message = `${inviterName} invited you to a match on ${new Date(match.date_time).toLocaleDateString()}`;
+        await db.query(
+            'INSERT INTO notifications (user_id, message, type, related_match_id) VALUES (?, ?, ?, ?)',
+            [userId, message, 'invite', matchId]
+        );
+
+        res.json({ message: `Invitation sent to ${invitedUser.username}` });
+    } catch (error) {
+        console.error('Invite user error:', error);
+        res.status(500).json({ error: 'Server error sending invitation' });
+    }
+};

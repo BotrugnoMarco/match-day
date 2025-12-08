@@ -400,3 +400,35 @@ exports.generateTeams = async (req, res) => {
         res.status(500).json({ error: 'Server error generating teams' });
     }
 };
+
+// Update post-match availability
+exports.updatePostMatchStatus = async (req, res) => {
+    const matchId = req.params.id;
+    const userId = req.user.id;
+    const { post_match } = req.body;
+
+    try {
+        // Check if user is a participant
+        const [participant] = await db.query(
+            'SELECT id FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+
+        if (participant.length === 0) {
+            return res.status(403).json({ error: 'You are not a participant of this match' });
+        }
+
+        await db.query(
+            'UPDATE participants SET post_match = ? WHERE id = ?',
+            [post_match, participant[0].id]
+        );
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Post-match status updated' });
+    } catch (error) {
+        console.error('Update post-match status error:', error);
+        res.status(500).json({ error: 'Server error updating status' });
+    }
+};

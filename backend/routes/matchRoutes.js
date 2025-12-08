@@ -13,6 +13,7 @@ router.post('/', authMiddleware, matchController.createMatch);
 router.post('/:id/join', authMiddleware, matchController.joinMatch);
 router.post('/:id/leave', authMiddleware, matchController.leaveMatch);
 router.put('/:id/status', authMiddleware, matchController.updateMatchStatus);
+router.put('/:id/post-match', authMiddleware, matchController.updatePostMatchStatus);
 router.post('/:id/generate-teams', authMiddleware, matchController.generateTeams);
 
 module.exports = router;

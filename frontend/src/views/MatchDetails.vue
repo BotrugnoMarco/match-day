@@ -107,6 +107,21 @@
               </div>
             </div>
           </div>
+          <div class="divider"></div>
+          <div class="info-row">
+            <div class="info-item">
+              <ion-icon :icon="beerOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Post Match</div>
+                <div class="value">{{ postMatchCount }} staying</div>
+              </div>
+            </div>
+            <div class="info-item" v-if="isParticipant && match.status !== 'finished'" style="justify-content: flex-end">
+              <ion-button size="small" :fill="myPostMatchStatus ? 'solid' : 'outline'" @click="togglePostMatch">
+                {{ myPostMatchStatus ? "I'm In!" : "Join" }}
+              </ion-button>
+            </div>
+          </div>
         </div>
 
         <!-- Actions -->
@@ -189,7 +204,16 @@
                   <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
-                  <h2>{{ p.username }}</h2>
+                  <h2 style="display: flex; align-items: center">
+                    {{ p.username }}
+                    <ion-icon
+                      :icon="beer"
+                      color="warning"
+                      v-if="p.post_match"
+                      style="margin-left: 8px; font-size: 0.9em"
+                      title="Staying for post-match"
+                    ></ion-icon>
+                  </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
                     <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
@@ -219,7 +243,16 @@
                   <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
-                  <h2>{{ p.username }}</h2>
+                  <h2 style="display: flex; align-items: center">
+                    {{ p.username }}
+                    <ion-icon
+                      :icon="beer"
+                      color="warning"
+                      v-if="p.post_match"
+                      style="margin-left: 8px; font-size: 0.9em"
+                      title="Staying for post-match"
+                    ></ion-icon>
+                  </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
                     <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
@@ -247,7 +280,16 @@
                 <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
               </ion-avatar>
               <ion-label>
-                <h2>{{ p.username }}</h2>
+                <h2 style="display: flex; align-items: center">
+                  {{ p.username }}
+                  <ion-icon
+                    :icon="beer"
+                    color="warning"
+                    v-if="p.post_match"
+                    style="margin-left: 8px; font-size: 0.9em"
+                    title="Staying for post-match"
+                  ></ion-icon>
+                </h2>
                 <p>
                   <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
                   <span
@@ -362,6 +404,8 @@ import {
   umbrella,
   water,
   personOutline,
+  beerOutline,
+  beer,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 
@@ -461,6 +505,16 @@ const isParticipant = computed(() => {
 const isCreator = computed(() => {
   if (!match.value || !currentUser.value) return false;
   return match.value.creator_id === currentUser.value.id;
+});
+
+const postMatchCount = computed(() => {
+  return activeParticipants.value.filter((p) => p.post_match).length;
+});
+
+const myPostMatchStatus = computed(() => {
+  if (!currentUser.value) return false;
+  const me = activeParticipants.value.find((p) => p.user_id === currentUser.value.id);
+  return me ? !!me.post_match : false;
 });
 
 const results = computed(() => {
@@ -622,6 +676,17 @@ const generateTeams = async () => {
   } catch (error) {
     console.error("Error generating teams:", error);
     alert("Failed to generate teams: " + (error.response?.data?.error || error.message));
+  }
+};
+
+const togglePostMatch = async () => {
+  try {
+    const newStatus = !myPostMatchStatus.value;
+    await api.put(`/matches/${route.params.id}/post-match`, { post_match: newStatus });
+    await fetchMatch();
+  } catch (error) {
+    console.error("Error updating post-match status:", error);
+    alert("Failed to update status");
   }
 };
 

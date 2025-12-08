@@ -17,32 +17,39 @@
     <ion-content class="profile-content">
       <!-- Profile Header with Gradient -->
       <div class="profile-banner">
-        <div class="avatar-wrapper" @click="triggerFileInput">
-          <ion-avatar class="main-avatar">
-            <img :src="user?.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-          </ion-avatar>
-          <div class="edit-badge" v-if="isOwnProfile">
-            <ion-icon :icon="camera" color="light"></ion-icon>
+        <div class="profile-header-row">
+          <div class="avatar-wrapper" @click="triggerFileInput">
+            <ion-avatar class="main-avatar">
+              <img :src="user?.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+            </ion-avatar>
+            <div class="edit-badge" v-if="isOwnProfile">
+              <ion-icon :icon="camera" color="light"></ion-icon>
+            </div>
           </div>
-        </div>
-        <h2 class="username">{{ user?.username }}</h2>
-        <ion-badge color="light" class="role-badge">{{ user?.role?.toUpperCase() }}</ion-badge>
 
-        <div class="status-section ion-margin-top">
-          <ion-item lines="none" class="status-selector" v-if="isOwnProfile">
-            <ion-select v-model="userStatus" interface="popover" class="custom-select">
-              <ion-select-option value="available">Available</ion-select-option>
-              <ion-select-option value="injured">Injured</ion-select-option>
-              <ion-select-option value="unavailable">Unavailable</ion-select-option>
-            </ion-select>
-          </ion-item>
-          <ion-badge v-else :color="getStatusColor(user?.status)" class="status-badge">
-            {{ user?.status?.toUpperCase() || "AVAILABLE" }}
-          </ion-badge>
+          <div class="profile-info">
+            <h2 class="username">{{ user?.username }}</h2>
+            <div class="badges-row">
+              <ion-badge color="light" class="role-badge">{{ user?.role?.toUpperCase() }}</ion-badge>
+
+              <div class="status-section">
+                <ion-item lines="none" class="status-selector" v-if="isOwnProfile">
+                  <ion-select v-model="userStatus" interface="popover" class="custom-select">
+                    <ion-select-option value="available">Available</ion-select-option>
+                    <ion-select-option value="injured">Injured</ion-select-option>
+                    <ion-select-option value="unavailable">Unavailable</ion-select-option>
+                  </ion-select>
+                </ion-item>
+                <ion-badge v-else :color="getStatusColor(user?.status)" class="status-badge">
+                  {{ user?.status?.toUpperCase() || "AVAILABLE" }}
+                </ion-badge>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Friend Actions -->
-        <div class="friend-actions ion-margin-top" v-if="!isOwnProfile">
+        <div class="friend-actions" v-if="!isOwnProfile">
           <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="sendFriendRequest">
             <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
             Add Friend
@@ -67,7 +74,7 @@
         </div>
 
         <!-- My Friends Button -->
-        <div class="friend-actions ion-margin-top" v-if="isOwnProfile">
+        <div class="friend-actions" v-if="isOwnProfile">
           <ion-button size="small" fill="outline" color="light" @click="router.push('/friends')">
             <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
             Friends
@@ -431,10 +438,10 @@ const getSkillColor = (rating) => {
 
 .profile-banner {
   background: var(--ion-color-primary);
-  padding: 20px 20px 30px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   color: white;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
@@ -442,53 +449,82 @@ const getSkillColor = (rating) => {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+.profile-header-row {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.profile-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+}
+
+.badges-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+
 .status-section {
   display: flex;
-  justify-content: center;
   align-items: center;
-  width: 100%;
 }
+
 .status-selector {
   --background: transparent;
   width: auto;
+  --min-height: 0;
 }
+
 .custom-select {
   --padding-start: 10px;
   --padding-end: 10px;
+  --padding-top: 5px;
+  --padding-bottom: 5px;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 20px;
   color: white;
+  font-size: 0.8rem;
 }
 
 .avatar-wrapper {
   position: relative;
-  margin-bottom: 15px;
+  margin-bottom: 0;
 }
 
 .main-avatar {
-  width: 100px;
-  height: 100px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
+  width: 70px;
+  height: 70px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
 .edit-badge {
   position: absolute;
-  bottom: 0;
-  right: 0;
+  bottom: -2px;
+  right: -2px;
   background: var(--ion-color-secondary);
   border-radius: 50%;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid white;
 }
 
+.edit-badge ion-icon {
+  font-size: 14px;
+}
+
 .username {
   margin: 0;
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .role-badge {
@@ -497,7 +533,7 @@ const getSkillColor = (rating) => {
 }
 
 .stats-container {
-  margin-top: -40px;
+  margin-top: -20px;
   margin-bottom: 20px;
 }
 

@@ -52,6 +52,16 @@
               <div>
                 <div class="label">Price</div>
                 <div class="value">€{{ match.price_total }}</div>
+                <div
+                  class="sub-value"
+                  v-if="activeParticipants.length > 0"
+                  style="font-size: 0.75rem; color: var(--ion-color-medium); font-weight: 600"
+                >
+                  €{{ (match.price_total / activeParticipants.length).toFixed(2) }} / person
+                </div>
+                <div class="sub-value" v-else style="font-size: 0.75rem; color: var(--ion-color-medium); font-weight: 600">
+                  €{{ (match.price_total / (match.max_players || 10)).toFixed(2) }} / person (est.)
+                </div>
               </div>
             </div>
           </div>

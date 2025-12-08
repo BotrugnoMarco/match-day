@@ -1,4 +1,5 @@
 -- 1. ELIMINA TUTTE LE TABELLE (in ordine inverso per rispettare le Foreign Keys)
+DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS votes;
 DROP TABLE IF EXISTS participants;
@@ -54,6 +55,7 @@ CREATE TABLE IF NOT EXISTS participants (
     team ENUM('A', 'B'),
     status ENUM('confirmed', 'declined', 'maybe', 'waitlist') DEFAULT 'maybe',
     has_paid BOOLEAN DEFAULT FALSE,
+    post_match BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE(match_id, user_id)
@@ -85,4 +87,15 @@ CREATE TABLE IF NOT EXISTS notifications (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (related_match_id) REFERENCES matches(id) ON DELETE
     SET NULL
+);
+-- Amicizie
+CREATE TABLE IF NOT EXISTS friendships (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    requester_id INT NOT NULL,
+    addressee_id INT NOT NULL,
+    status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (addressee_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_friendship (requester_id, addressee_id)
 );

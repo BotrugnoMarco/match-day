@@ -9,6 +9,7 @@ const matchRoutes = require('./routes/matchRoutes');
 const voteRoutes = require('./routes/voteRoutes');
 const userRoutes = require('./routes/userRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
+const friendRoutes = require('./routes/friendRoutes');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -38,6 +39,7 @@ app.use('/api/matches', matchRoutes);
 app.use('/api/votes', voteRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
+app.use('/api/friends', friendRoutes);
 
 // Test Database Connection
 app.get('/test-db', async (req, res) => {

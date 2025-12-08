@@ -41,7 +41,66 @@
           </ion-badge>
         </div>
 
+        <!-- Friend Actions -->
+        <div class="friend-actions ion-margin-top" v-if="!isOwnProfile">
+          <ion-button v-if="friendshipStatus === 'none'" size="small" @click="sendFriendRequest">
+            <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
+            Add Friend
+          </ion-button>
+          <ion-button v-if="friendshipStatus === 'sent'" size="small" color="medium" disabled>
+            <ion-icon :icon="timeOutline" slot="start"></ion-icon>
+            Request Sent
+          </ion-button>
+          <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
+            <ion-button size="small" color="success" @click="acceptFriendRequest">
+              <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
+              Accept
+            </ion-button>
+            <ion-button size="small" color="danger" @click="rejectFriendRequest">
+              <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+              Reject
+            </ion-button>
+          </div>
+          <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
+            <ion-icon :icon="checkmarkCircleOutline"></ion-icon> Friends
+          </ion-badge>
+        </div>
+
+        <!-- My Friends Button -->
+        <div class="friend-actions ion-margin-top" v-if="isOwnProfile">
+          <ion-button size="small" fill="outline" @click="showFriends = !showFriends">
+            <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
+            My Friends ({{ friendsList.length }})
+          </ion-button>
+        </div>
+
         <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept="image/*" />
+      </div>
+
+      <!-- Friends List Section (Collapsible) -->
+      <div class="section-container ion-padding-horizontal" v-if="isOwnProfile && showFriends">
+        <div class="section-title">
+          <ion-icon :icon="peopleOutline" color="primary"></ion-icon>
+          <h3>Friends</h3>
+        </div>
+        <ion-card class="friends-card">
+          <ion-list lines="none" v-if="friendsList.length > 0">
+            <ion-item v-for="friend in friendsList" :key="friend.id" button @click="router.push(`/profile/${friend.id}`)">
+              <ion-avatar slot="start">
+                <img :src="friend.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              </ion-avatar>
+              <ion-label>
+                <h2>{{ friend.username }}</h2>
+                <p>
+                  <span :class="'status-text ' + friend.status">{{ friend.status }}</span>
+                </p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <div v-else class="ion-padding ion-text-center">
+            <p>No friends yet.</p>
+          </div>
+        </ion-card>
       </div>
 
       <!-- Main Stats Grid -->
@@ -177,8 +236,23 @@ import {
   IonProgressBar,
   IonSelect,
   IonSelectOption,
+  toastController,
 } from "@ionic/vue";
-import { camera, star, logOutOutline, football, trophy, ribbon, timeOutline, tennisballOutline, baseballOutline } from "ionicons/icons";
+import {
+  camera,
+  star,
+  logOutOutline,
+  football,
+  trophy,
+  ribbon,
+  timeOutline,
+  tennisballOutline,
+  baseballOutline,
+  personAddOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  peopleOutline,
+} from "ionicons/icons";
 
 const store = useStore();
 const router = useRouter();
@@ -194,6 +268,10 @@ const isOwnProfile = computed(() => {
 });
 
 const user = computed(() => (isOwnProfile.value ? currentUser.value : viewedUser.value));
+const friendshipStatus = ref("none"); // none, sent, received, accepted
+const friendshipId = ref(null);
+const friendsList = ref([]);
+const showFriends = ref(false);
 
 const userStatus = computed({
   get: () => user.value?.status || "available",
@@ -228,12 +306,76 @@ const loadData = async () => {
     store.dispatch("fetchUserStats");
     store.dispatch("fetchUserProfile");
     fetchMyHistory();
+    fetchFriends();
   } else {
     const userId = route.params.id;
     store.dispatch("fetchUserProfileById", userId);
     store.dispatch("fetchUserStatsById", userId);
     store.dispatch("fetchUserHistoryById", userId);
+    fetchFriendshipStatus(userId);
   }
+};
+
+const fetchFriendshipStatus = async (userId) => {
+  try {
+    const response = await api.get(`/friends/status/${userId}`);
+    friendshipStatus.value = response.data.status;
+    friendshipId.value = response.data.id;
+  } catch (error) {
+    console.error("Error fetching friendship status:", error);
+  }
+};
+
+const fetchFriends = async () => {
+  try {
+    const response = await api.get("/friends");
+    friendsList.value = response.data;
+  } catch (error) {
+    console.error("Error fetching friends:", error);
+  }
+};
+
+const sendFriendRequest = async () => {
+  try {
+    await api.post("/friends/request", { addressee_id: user.value.id });
+    friendshipStatus.value = "sent";
+    presentToast("Friend request sent!");
+  } catch (error) {
+    console.error("Error sending friend request:", error);
+    presentToast("Failed to send request", "danger");
+  }
+};
+
+const acceptFriendRequest = async () => {
+  try {
+    await api.put(`/friends/accept/${friendshipId.value}`);
+    friendshipStatus.value = "accepted";
+    presentToast("Friend request accepted!");
+  } catch (error) {
+    console.error("Error accepting friend request:", error);
+    presentToast("Failed to accept request", "danger");
+  }
+};
+
+const rejectFriendRequest = async () => {
+  try {
+    await api.put(`/friends/reject/${friendshipId.value}`);
+    friendshipStatus.value = "none";
+    presentToast("Friend request rejected");
+  } catch (error) {
+    console.error("Error rejecting friend request:", error);
+    presentToast("Failed to reject request", "danger");
+  }
+};
+
+const presentToast = async (message, color = "success") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
 };
 
 onMounted(() => {

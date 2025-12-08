@@ -307,9 +307,10 @@ exports.getUserMatches = async (req, res) => {
     const userId = req.user.id;
     try {
         const [matches] = await db.query(
-            `SELECT m.*, p.status as participation_status 
+            `SELECT m.*, p.status as participation_status, u.username as creator_username, u.avatar_url as creator_avatar 
              FROM matches m 
              JOIN participants p ON m.id = p.match_id 
+             JOIN users u ON m.creator_id = u.id
              WHERE p.user_id = ? 
              ORDER BY m.date_time DESC`,
             [userId]

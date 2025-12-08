@@ -49,12 +49,24 @@ exports.markAllAsRead = async (req, res) => {
 };
 
 // Helper function to create a notification (internal use)
-exports.createNotification = async (userId, message, type = 'info', relatedMatchId = null) => {
+exports.createNotification = async (userId, message, type = 'info', relatedMatchId = null, io = null) => {
     try {
-        await db.query(
+        const [result] = await db.query(
             'INSERT INTO notifications (user_id, message, type, related_match_id) VALUES (?, ?, ?, ?)',
             [userId, message, type, relatedMatchId]
         );
+
+        if (io) {
+            io.to(`user_${userId}`).emit('notification', {
+                id: result.insertId,
+                user_id: userId,
+                message,
+                type,
+                related_match_id: relatedMatchId,
+                is_read: 0,
+                created_at: new Date()
+            });
+        }
     } catch (error) {
         console.error('Create notification error:', error);
     }

@@ -46,6 +46,9 @@ const store = createStore({
         SET_NOTIFICATIONS(state, notifications) {
             state.notifications = notifications;
         },
+        ADD_NOTIFICATION(state, notification) {
+            state.notifications.unshift(notification);
+        },
         SET_USER_STATS(state, stats) {
             state.userStats = stats;
         },

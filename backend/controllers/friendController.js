@@ -30,7 +30,8 @@ exports.sendRequest = async (req, res) => {
                 'UPDATE friendships SET status = ?, requester_id = ?, addressee_id = ? WHERE id = ?',
                 ['pending', requester_id, addressee_id, existing[0].id]
             );
-            await notificationController.createNotification(addressee_id, 'You have a new friend request!', 'info', null);
+            const io = req.app.get('io');
+            await notificationController.createNotification(addressee_id, 'You have a new friend request!', 'info', null, io);
             return res.json({ message: 'Friend request sent' });
         }
 
@@ -39,7 +40,8 @@ exports.sendRequest = async (req, res) => {
             [requester_id, addressee_id, 'pending']
         );
 
-        await notificationController.createNotification(addressee_id, 'You have a new friend request!', 'info', null);
+        const io = req.app.get('io');
+        await notificationController.createNotification(addressee_id, 'You have a new friend request!', 'info', null, io);
 
         res.status(201).json({ message: 'Friend request sent' });
     } catch (error) {

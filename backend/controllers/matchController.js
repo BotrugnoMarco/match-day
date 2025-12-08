@@ -460,10 +460,8 @@ exports.inviteUser = async (req, res) => {
 
         // Create notification
         const message = `${inviterName} invited you to a match on ${new Date(match.date_time).toLocaleDateString()}`;
-        await db.query(
-            'INSERT INTO notifications (user_id, message, type, related_match_id) VALUES (?, ?, ?, ?)',
-            [userId, message, 'invite', matchId]
-        );
+        const io = req.app.get('io');
+        await notificationController.createNotification(userId, message, 'invite', matchId, io);
 
         res.json({ message: `Invitation sent to ${invitedUser.username}` });
     } catch (error) {

@@ -20,8 +20,24 @@
                 <ion-input v-model="username" type="text" required></ion-input>
               </ion-item>
               <ion-item lines="full" class="ion-margin-bottom">
+                <ion-label position="floating">Email</ion-label>
+                <ion-input v-model="email" type="email"></ion-input>
+              </ion-item>
+              <ion-item lines="full" class="ion-margin-bottom">
                 <ion-label position="floating">Password</ion-label>
                 <ion-input v-model="password" type="password" required></ion-input>
+              </ion-item>
+              <ion-item lines="full" class="ion-margin-bottom">
+                <ion-label position="stacked">Date of Birth</ion-label>
+                <ion-input v-model="birthDate" type="date"></ion-input>
+              </ion-item>
+              <ion-item lines="full" class="ion-margin-bottom">
+                <ion-label position="stacked">Gender</ion-label>
+                <ion-select v-model="gender" placeholder="Select Gender">
+                  <ion-select-option value="M">Male</ion-select-option>
+                  <ion-select-option value="F">Female</ion-select-option>
+                  <ion-select-option value="Other">Other</ion-select-option>
+                </ion-select>
               </ion-item>
 
               <div class="ion-padding-top">
@@ -58,11 +74,16 @@ import {
   IonCard,
   IonCardContent,
   IonIcon,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
 import { personAdd } from "ionicons/icons";
 
 const username = ref("");
 const password = ref("");
+const email = ref("");
+const birthDate = ref("");
+const gender = ref("");
 const router = useRouter();
 
 const handleRegister = async () => {
@@ -70,6 +91,9 @@ const handleRegister = async () => {
     await api.post("/auth/register", {
       username: username.value,
       password: password.value,
+      email: email.value,
+      birth_date: birthDate.value,
+      gender: gender.value,
     });
     alert("Registration successful! Please login.");
     router.push("/login");

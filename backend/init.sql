@@ -10,8 +10,11 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     avatar_url VARCHAR(255),
+    birth_date DATE,
+    gender ENUM('M', 'F', 'Other'),
     skill_rating DECIMAL(3, 1) DEFAULT 6.0,
     -- Deprecato ma mantenuto per compatibilità
     role VARCHAR(20) DEFAULT 'player' -- 'admin' or 'player'

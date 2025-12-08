@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, email, birth_date, gender } = req.body;
 
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required' });
@@ -11,9 +11,9 @@ exports.register = async (req, res) => {
 
     try {
         // Check if user already exists
-        const [existingUser] = await db.query('SELECT * FROM users WHERE username = ?', [username]);
+        const [existingUser] = await db.query('SELECT * FROM users WHERE username = ? OR (email IS NOT NULL AND email = ?)', [username, email || '']);
         if (existingUser.length > 0) {
-            return res.status(400).json({ error: 'Username already exists' });
+            return res.status(400).json({ error: 'Username or email already exists' });
         }
 
         // Hash password
@@ -22,8 +22,8 @@ exports.register = async (req, res) => {
 
         // Insert user
         const [result] = await db.query(
-            'INSERT INTO users (username, password_hash) VALUES (?, ?)',
-            [username, passwordHash]
+            'INSERT INTO users (username, password_hash, email, birth_date, gender) VALUES (?, ?, ?, ?, ?)',
+            [username, passwordHash, email || null, birth_date || null, gender || null]
         );
 
         const userId = result.insertId;

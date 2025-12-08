@@ -218,14 +218,18 @@
                       style="margin-left: 8px; font-size: 0.9em"
                       title="Staying for post-match"
                     ></ion-icon>
-                    <ion-icon
-                      :icon="cashOutline"
-                      :color="p.has_paid ? 'success' : 'medium'"
-                      style="margin-left: 8px; font-size: 1.1em"
-                      :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                    <div
+                      style="display: inline-flex; align-items: center; z-index: 10; position: relative"
                       @click.stop="isCreator ? togglePayment(p) : null"
-                      title="Payment Status"
-                    ></ion-icon>
+                    >
+                      <ion-icon
+                        :icon="cashOutline"
+                        :color="p.has_paid ? 'success' : 'medium'"
+                        style="margin-left: 8px; font-size: 1.1em"
+                        :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                        title="Payment Status"
+                      ></ion-icon>
+                    </div>
                   </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
@@ -265,14 +269,18 @@
                       style="margin-left: 8px; font-size: 0.9em"
                       title="Staying for post-match"
                     ></ion-icon>
-                    <ion-icon
-                      :icon="cashOutline"
-                      :color="p.has_paid ? 'success' : 'medium'"
-                      style="margin-left: 8px; font-size: 1.1em"
-                      :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                    <div
+                      style="display: inline-flex; align-items: center; z-index: 10; position: relative"
                       @click.stop="isCreator ? togglePayment(p) : null"
-                      title="Payment Status"
-                    ></ion-icon>
+                    >
+                      <ion-icon
+                        :icon="cashOutline"
+                        :color="p.has_paid ? 'success' : 'medium'"
+                        style="margin-left: 8px; font-size: 1.1em"
+                        :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                        title="Payment Status"
+                      ></ion-icon>
+                    </div>
                   </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
@@ -310,14 +318,18 @@
                     style="margin-left: 8px; font-size: 0.9em"
                     title="Staying for post-match"
                   ></ion-icon>
-                  <ion-icon
-                    :icon="cashOutline"
-                    :color="p.has_paid ? 'success' : 'medium'"
-                    style="margin-left: 8px; font-size: 1.1em"
-                    :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                  <div
+                    style="display: inline-flex; align-items: center; z-index: 10; position: relative"
                     @click.stop="isCreator ? togglePayment(p) : null"
-                    title="Payment Status"
-                  ></ion-icon>
+                  >
+                    <ion-icon
+                      :icon="cashOutline"
+                      :color="p.has_paid ? 'success' : 'medium'"
+                      style="margin-left: 8px; font-size: 1.1em"
+                      :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                      title="Payment Status"
+                    ></ion-icon>
+                  </div>
                 </h2>
                 <p>
                   <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
@@ -541,7 +553,7 @@ const isParticipant = computed(() => {
 
 const isCreator = computed(() => {
   if (!match.value || !currentUser.value) return false;
-  return match.value.creator_id === currentUser.value.id;
+  return match.value.creator_id == currentUser.value.id;
 });
 
 const postMatchCount = computed(() => {
@@ -732,6 +744,7 @@ const togglePostMatch = async () => {
 };
 
 const togglePayment = async (participant) => {
+  console.log("Toggling payment for:", participant.user_id);
   if (!isCreator.value) return;
   try {
     await api.put(`/matches/${match.value.id}/payment`, { userId: participant.user_id });

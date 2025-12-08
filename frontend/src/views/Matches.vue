@@ -211,6 +211,7 @@ const createMatch = () => {
 
 .matches-container {
   margin-top: -20px;
+  padding-bottom: 80px;
 }
 
 .match-card {

@@ -11,6 +11,26 @@
 
     <ion-content class="page-content">
       <div class="ion-padding">
+        <!-- Search Section -->
+        <div class="section-container">
+          <ion-searchbar v-model="searchQuery" placeholder="Search users..." @ionInput="handleSearch"></ion-searchbar>
+
+          <div v-if="searchResults.length > 0" class="search-results">
+            <ion-list lines="none">
+              <ion-item v-for="user in searchResults" :key="user.id" button @click="goToProfile(user.id)">
+                <ion-avatar slot="start">
+                  <img :src="user.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                </ion-avatar>
+                <ion-label>
+                  <h2>{{ user.username }}</h2>
+                  <p>{{ user.status }}</p>
+                </ion-label>
+                <ion-icon :icon="chevronForwardOutline" slot="end" color="medium"></ion-icon>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
+
         <!-- Pending Requests Section -->
         <div v-if="pendingRequests.length > 0" class="section-container">
           <div class="section-title">
@@ -96,12 +116,30 @@ import {
   IonCard,
   toastController,
   alertController,
+  IonSearchbar,
 } from "@ionic/vue";
 import { peopleOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, chevronForwardOutline, trashOutline } from "ionicons/icons";
 
 const router = useRouter();
 const friendsList = ref([]);
 const pendingRequests = ref([]);
+const searchQuery = ref("");
+const searchResults = ref([]);
+
+const handleSearch = async (event) => {
+  const query = event.target.value;
+  if (!query || query.length < 2) {
+    searchResults.value = [];
+    return;
+  }
+
+  try {
+    const response = await api.get(`/users/search?q=${query}`);
+    searchResults.value = response.data;
+  } catch (error) {
+    console.error("Error searching users:", error);
+  }
+};
 
 const fetchFriends = async () => {
   try {
@@ -252,5 +290,13 @@ onMounted(() => {
   font-size: 3rem;
   margin-bottom: 10px;
   opacity: 0.5;
+}
+
+.search-results {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin-top: 10px;
+  overflow: hidden;
 }
 </style>

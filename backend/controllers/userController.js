@@ -362,3 +362,26 @@ exports.updateStatus = async (req, res) => {
         res.status(500).json({ error: 'Server error updating status' });
     }
 };
+
+exports.searchUsers = async (req, res) => {
+    const query = req.query.q;
+    const userId = req.user.id;
+
+    if (!query) {
+        return res.json([]);
+    }
+
+    try {
+        const [users] = await db.query(
+            `SELECT id, username, avatar_url, status 
+             FROM users 
+             WHERE username LIKE ? AND id != ?
+             LIMIT 10`,
+            [`%${query}%`, userId]
+        );
+        res.json(users);
+    } catch (error) {
+        console.error('Search users error:', error);
+        res.status(500).json({ error: 'Server error searching users' });
+    }
+};

@@ -140,7 +140,7 @@
                 <h2>{{ p.username }}</h2>
                 <p>
                   Waiting...
-                  <span v-if="p.status" :class="'status-text ' + p.status">• {{ p.status }}</span>
+                  <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
                 </p>
               </ion-label>
             </ion-item>
@@ -167,7 +167,7 @@
                   <h2>{{ p.username }}</h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
-                    <span v-if="p.status" :class="'status-text ' + p.status">• {{ p.status }}</span>
+                    <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
                   </p>
                 </ion-label>
                 <ion-button
@@ -197,7 +197,7 @@
                   <h2>{{ p.username }}</h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
-                    <span v-if="p.status" :class="'status-text ' + p.status">• {{ p.status }}</span>
+                    <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
                   </p>
                 </ion-label>
                 <ion-button
@@ -224,9 +224,11 @@
               <ion-label>
                 <h2>{{ p.username }}</h2>
                 <p>
-                  {{ p.status }}
-                  <span v-if="p.status && ['available', 'injured', 'unavailable'].includes(p.status)" :class="'status-text ' + p.status"
-                    >• {{ p.status }}</span
+                  <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
+                  <span
+                    v-if="p.user_status && ['available', 'injured', 'unavailable'].includes(p.user_status)"
+                    :class="'status-text ' + p.user_status"
+                    >• {{ p.user_status }}</span
                   >
                 </p>
               </ion-label>

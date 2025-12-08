@@ -45,7 +45,8 @@ exports.getAllMatches = async (req, res) => {
             SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar 
             FROM matches m 
             JOIN users u ON m.creator_id = u.id 
-            ORDER BY m.date_time DESC
+            WHERE m.status != 'finished'
+            ORDER BY m.date_time ASC
         `);
         res.json(matches);
     } catch (error) {

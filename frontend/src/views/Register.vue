@@ -21,7 +21,7 @@
               </ion-item>
               <ion-item lines="full" class="ion-margin-bottom">
                 <ion-label position="floating">Email</ion-label>
-                <ion-input v-model="email" type="email"></ion-input>
+                <ion-input v-model="email" type="email" required></ion-input>
               </ion-item>
               <ion-item lines="full" class="ion-margin-bottom">
                 <ion-label position="floating">Password</ion-label>
@@ -29,7 +29,7 @@
               </ion-item>
               <ion-item lines="full" class="ion-margin-bottom">
                 <ion-label position="stacked">Date of Birth</ion-label>
-                <ion-input v-model="birthDate" type="date"></ion-input>
+                <ion-input v-model="birthDate" type="date" :max="maxDate" required></ion-input>
               </ion-item>
               <ion-item lines="full" class="ion-margin-bottom">
                 <ion-label position="stacked">Gender</ion-label>
@@ -56,7 +56,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "../services/api";
 import {
@@ -86,7 +86,21 @@ const birthDate = ref("");
 const gender = ref("");
 const router = useRouter();
 
+const maxDate = computed(() => {
+  return new Date().toISOString().split("T")[0];
+});
+
 const handleRegister = async () => {
+  if (!username.value || !password.value || !email.value || !birthDate.value || !gender.value) {
+    alert("All fields are required.");
+    return;
+  }
+
+  if (new Date(birthDate.value) > new Date()) {
+    alert("Birth date cannot be in the future.");
+    return;
+  }
+
   try {
     await api.post("/auth/register", {
       username: username.value,

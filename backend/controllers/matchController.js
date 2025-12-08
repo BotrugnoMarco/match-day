@@ -3,7 +3,7 @@ const notificationController = require('./notificationController');
 
 // Create a new match
 exports.createMatch = async (req, res) => {
-    const { date_time, location, sport_type, price_total, max_players } = req.body;
+    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers } = req.body;
     const creator_id = req.user.id;
 
     if (!date_time || !sport_type) {
@@ -12,8 +12,8 @@ exports.createMatch = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, creator_id) VALUES (?, ?, ?, ?, ?, ?)',
-            [date_time, location, sport_type, price_total, max_players || 10, creator_id]
+            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, is_covered, has_showers, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+            [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, creator_id]
         );
 
         // Emit socket event
@@ -25,6 +25,8 @@ exports.createMatch = async (req, res) => {
             sport_type,
             price_total,
             max_players: max_players || 10,
+            is_covered: is_covered || false,
+            has_showers: has_showers || false,
             status: 'open',
             creator_id
         });

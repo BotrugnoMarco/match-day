@@ -40,6 +40,8 @@ CREATE TABLE IF NOT EXISTS matches (
     -- Nuova colonna vincitore
     price_total DECIMAL(10, 2),
     max_players INT DEFAULT 10,
+    is_covered BOOLEAN DEFAULT FALSE,
+    has_showers BOOLEAN DEFAULT FALSE,
     creator_id INT,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE
     SET NULL

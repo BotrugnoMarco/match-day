@@ -67,6 +67,18 @@
             </ion-item>
           </div>
 
+          <!-- Field Options -->
+          <div class="form-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="umbrellaOutline" slot="start" class="form-icon"></ion-icon>
+              <ion-toggle v-model="isCovered">Covered Field</ion-toggle>
+            </ion-item>
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="waterOutline" slot="start" class="form-icon"></ion-icon>
+              <ion-toggle v-model="hasShowers">Showers Available</ion-toggle>
+            </ion-item>
+          </div>
+
           <div class="ion-padding-top ion-margin-top">
             <ion-button expand="block" type="submit" class="create-btn" size="large"> Create Match </ion-button>
           </div>

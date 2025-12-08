@@ -464,7 +464,7 @@ const getSkillColor = (rating) => {
 
 .badges-row {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 10px;
   margin-top: 5px;
   flex-wrap: wrap;

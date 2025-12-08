@@ -106,66 +106,65 @@ const store = createStore({
             } catch (error) {
                 console.error('Error marking all notifications read:', error);
             }
-        async fetchUserProfile({ commit }) {
-                try {
-                    const response = await api.get('/users/profile');
-                    commit('SET_USER', response.data);
-                } catch (error) {
-                    console.error('Error fetching user profile:', error);
-                }
-            },
-        async fetchUserProfileById({ commit }, id) {
-                try {
-                    const response = await api.get(`/users/${id}/profile`);
-                    commit('SET_VIEWED_USER', response.data);
-                } catch (error) {
-                    console.error('Error fetching user profile by id:', error);
-                }
-                userStats: state => state.userStats,
-                    unreadNotificationsCount: state => state.notifications.filter(n => !n.is_read).length,
-                        viewedUser: state => state.viewedUser,
-                            viewedUserStats: state => state.viewedUserStats,
-                                viewedUserHistory: state => state.viewedUserHistory
-                try {
-                    const response = await api.get(`/users/${id}/stats`);
-                    commit('SET_VIEWED_USER_STATS', response.data);
-                } catch (error) {
-                    console.error('Error fetching user stats by id:', error);
-                }
-            },
-        async fetchUserHistoryById({ commit }, id) {
-                try {
-                    const response = await api.get(`/users/${id}/history`);
-                    commit('SET_VIEWED_USER_HISTORY', response.data);
-                } catch (error) {
-                    console.error('Error fetching user history by id:', error);
-                }
-            },
-            clearViewedUser({ commit }) {
-                commit('SET_VIEWED_USER', null);
-                commit('SET_VIEWED_USER_STATS', null);
-                commit('SET_VIEWED_USER_HISTORY', []);
+        },
+        async fetchUserStats({ commit }) {
+            try {
+                const response = await api.get('/users/stats');
+                commit('SET_USER_STATS', response.data);
+            } catch (error) {
+                console.error('Error fetching user stats:', error);
             }
+        },
+        async fetchUserProfile({ commit }) {
+            try {
+                const response = await api.get('/users/profile');
+                commit('SET_USER', response.data);
+            } catch (error) {
+                console.error('Error fetching user profile:', error);
+            }
+        },
+        async fetchUserProfileById({ commit }, id) {
+            try {
+                const response = await api.get(`/users/${id}/profile`);
+                commit('SET_VIEWED_USER', response.data);
+            } catch (error) {
+                console.error('Error fetching user profile by id:', error);
+            }
+        },
+        async fetchUserStatsById({ commit }, id) {
+            try {
+                const response = await api.get(`/users/${id}/stats`);
+                commit('SET_VIEWED_USER_STATS', response.data);
+            } catch (error) {
+                console.error('Error fetching user stats by id:', error);
+            }
+        },
+        async fetchUserHistoryById({ commit }, id) {
+            try {
+                const response = await api.get(`/users/${id}/history`);
+                commit('SET_VIEWED_USER_HISTORY', response.data);
+            } catch (error) {
+                console.error('Error fetching user history by id:', error);
+            }
+        },
+        clearViewedUser({ commit }) {
+            commit('SET_VIEWED_USER', null);
+            commit('SET_VIEWED_USER_STATS', null);
+            commit('SET_VIEWED_USER_HISTORY', []);
         }
     },
-    async fetchUserProfile({ commit }) {
-        try {
-            const response = await api.get('/users/profile');
-            commit('SET_USER', response.data);
-        } catch (error) {
-            console.error('Error fetching user profile:', error);
-        }
-    }
-},
     getters: {
-    isAuthenticated: state => !!state.token,
-    currentUser: state => state.user,
-    allMatches: state => state.matches,
-    myMatches: state => state.myMatches,
-    notifications: state => state.notifications,
-    userStats: state => state.userStats,
-    unreadNotificationsCount: state => state.notifications.filter(n => !n.is_read).length
-}
+        isAuthenticated: state => !!state.token,
+        currentUser: state => state.user,
+        allMatches: state => state.matches,
+        myMatches: state => state.myMatches,
+        notifications: state => state.notifications,
+        userStats: state => state.userStats,
+        unreadNotificationsCount: state => state.notifications.filter(n => !n.is_read).length,
+        viewedUser: state => state.viewedUser,
+        viewedUserStats: state => state.viewedUserStats,
+        viewedUserHistory: state => state.viewedUserHistory
+    }
 });
 
 export default store;

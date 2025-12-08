@@ -218,7 +218,7 @@
 
           <div class="custom-card participants-list" v-if="results.length > 0">
             <ion-list lines="none">
-              <ion-item v-for="(r, index) in results" :key="r.target_id">
+              <ion-item v-for="(r, index) in results" :key="r.target_id" button @click="goToProfile(r.target_id)">
                 <div slot="start" class="rank-number">{{ index + 1 }}</div>
                 <ion-label>
                   <h2>{{ r.target_name }}</h2>

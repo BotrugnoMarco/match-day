@@ -195,7 +195,7 @@
         <!-- Participants List -->
         <div class="section-header">
           <h3>Participants</h3>
-          <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }}</ion-badge>
+          <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
         </div>
 
         <div v-if="hasTeams">

@@ -175,6 +175,8 @@ import {
   IonRow,
   IonCol,
   IonProgressBar,
+  IonSelect,
+  IonSelectOption,
 } from "@ionic/vue";
 import { camera, star, logOutOutline, football, trophy, ribbon, timeOutline, tennisballOutline, baseballOutline } from "ionicons/icons";
 
@@ -192,6 +194,29 @@ const isOwnProfile = computed(() => {
 });
 
 const user = computed(() => (isOwnProfile.value ? currentUser.value : viewedUser.value));
+
+const userStatus = computed({
+  get: () => user.value?.status || "available",
+  set: (val) => {
+    if (isOwnProfile.value) {
+      store.dispatch("updateUserStatus", val);
+    }
+  },
+});
+
+const getStatusColor = (status) => {
+  switch (status) {
+    case "available":
+      return "success";
+    case "injured":
+      return "danger";
+    case "unavailable":
+      return "medium";
+    default:
+      return "success";
+  }
+};
+
 const stats = computed(() => (isOwnProfile.value ? store.getters.userStats : viewedUserStats.value));
 const history = computed(() => (isOwnProfile.value ? myHistory.value : viewedUserHistory.value));
 

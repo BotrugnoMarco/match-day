@@ -218,6 +218,14 @@
                       style="margin-left: 8px; font-size: 0.9em"
                       title="Staying for post-match"
                     ></ion-icon>
+                    <ion-icon
+                      :icon="cashOutline"
+                      :color="p.has_paid ? 'success' : 'medium'"
+                      style="margin-left: 8px; font-size: 1.1em"
+                      :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                      @click.stop="isCreator ? togglePayment(p) : null"
+                      title="Payment Status"
+                    ></ion-icon>
                   </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
@@ -257,6 +265,14 @@
                       style="margin-left: 8px; font-size: 0.9em"
                       title="Staying for post-match"
                     ></ion-icon>
+                    <ion-icon
+                      :icon="cashOutline"
+                      :color="p.has_paid ? 'success' : 'medium'"
+                      style="margin-left: 8px; font-size: 1.1em"
+                      :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                      @click.stop="isCreator ? togglePayment(p) : null"
+                      title="Payment Status"
+                    ></ion-icon>
                   </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
@@ -293,6 +309,14 @@
                     v-if="p.post_match"
                     style="margin-left: 8px; font-size: 0.9em"
                     title="Staying for post-match"
+                  ></ion-icon>
+                  <ion-icon
+                    :icon="cashOutline"
+                    :color="p.has_paid ? 'success' : 'medium'"
+                    style="margin-left: 8px; font-size: 1.1em"
+                    :style="{ cursor: isCreator ? 'pointer' : 'default' }"
+                    @click.stop="isCreator ? togglePayment(p) : null"
+                    title="Payment Status"
                   ></ion-icon>
                 </h2>
                 <p>
@@ -704,6 +728,16 @@ const togglePostMatch = async () => {
   } catch (error) {
     console.error("Error updating post-match status:", error);
     alert("Failed to update status");
+  }
+};
+
+const togglePayment = async (participant) => {
+  if (!isCreator.value) return;
+  try {
+    await api.put(`/matches/${match.value.id}/payment`, { userId: participant.user_id });
+  } catch (error) {
+    console.error("Error toggling payment:", error);
+    alert("Failed to update payment status");
   }
 };
 

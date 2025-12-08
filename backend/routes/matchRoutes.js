@@ -15,6 +15,7 @@ router.post('/:id/leave', authMiddleware, matchController.leaveMatch);
 router.put('/:id/status', authMiddleware, matchController.updateMatchStatus);
 router.put('/:id/post-match', authMiddleware, matchController.updatePostMatchStatus);
 router.post('/:id/invite', authMiddleware, matchController.inviteUser);
+router.put('/:id/payment', authMiddleware, matchController.togglePaymentStatus);
 router.post('/:id/generate-teams', authMiddleware, matchController.generateTeams);
 
 module.exports = router;

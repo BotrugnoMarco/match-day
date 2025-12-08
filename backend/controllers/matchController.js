@@ -471,3 +471,46 @@ exports.inviteUser = async (req, res) => {
         res.status(500).json({ error: 'Server error sending invitation' });
     }
 };
+
+// Toggle payment status
+exports.togglePaymentStatus = async (req, res) => {
+    const matchId = req.params.id;
+    const { userId } = req.body; // The participant ID to toggle
+    const requesterId = req.user.id;
+
+    try {
+        // Check if requester is the creator
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+        if (matches[0].creator_id !== requesterId) {
+            return res.status(403).json({ error: 'Only the match creator can update payment status' });
+        }
+
+        // Get current status
+        const [participant] = await db.query(
+            'SELECT id, has_paid FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+
+        if (participant.length === 0) {
+            return res.status(404).json({ error: 'Participant not found' });
+        }
+
+        const newStatus = !participant[0].has_paid;
+
+        await db.query(
+            'UPDATE participants SET has_paid = ? WHERE id = ?',
+            [newStatus, participant[0].id]
+        );
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Payment status updated', has_paid: newStatus });
+    } catch (error) {
+        console.error('Toggle payment status error:', error);
+        res.status(500).json({ error: 'Server error updating payment status' });
+    }
+};

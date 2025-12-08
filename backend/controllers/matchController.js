@@ -41,7 +41,12 @@ exports.createMatch = async (req, res) => {
 // Get all matches
 exports.getAllMatches = async (req, res) => {
     try {
-        const [matches] = await db.query('SELECT * FROM matches ORDER BY date_time DESC');
+        const [matches] = await db.query(`
+            SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar 
+            FROM matches m 
+            JOIN users u ON m.creator_id = u.id 
+            ORDER BY m.date_time DESC
+        `);
         res.json(matches);
     } catch (error) {
         console.error('Get matches error:', error);
@@ -53,7 +58,12 @@ exports.getAllMatches = async (req, res) => {
 exports.getMatchById = async (req, res) => {
     const matchId = req.params.id;
     try {
-        const [matches] = await db.query('SELECT * FROM matches WHERE id = ?', [matchId]);
+        const [matches] = await db.query(`
+            SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar 
+            FROM matches m 
+            JOIN users u ON m.creator_id = u.id 
+            WHERE m.id = ?
+        `, [matchId]);
         if (matches.length === 0) {
             return res.status(404).json({ error: 'Match not found' });
         }

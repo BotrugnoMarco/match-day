@@ -40,6 +40,15 @@
                 </div>
                 <div class="match-info">
                   <h3 class="sport-name">{{ match.sport_type.toUpperCase() }}</h3>
+                  <div
+                    class="organizer"
+                    style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px; font-size: 0.85rem; color: var(--ion-color-medium)"
+                  >
+                    <ion-avatar style="width: 18px; height: 18px">
+                      <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                    </ion-avatar>
+                    <span>{{ match.creator_username }}</span>
+                  </div>
                   <p class="location">
                     <ion-icon :icon="locationOutline" style="vertical-align: text-bottom; font-size: 0.9em"></ion-icon>
                     {{ match.location }}
@@ -94,6 +103,7 @@ import {
   IonSegmentButton,
   IonBadge,
   IonLabel,
+  IonAvatar,
 } from "@ionic/vue";
 import {
   add,

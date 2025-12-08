@@ -55,6 +55,21 @@
               </div>
             </div>
           </div>
+          <div class="divider"></div>
+          <div class="info-row">
+            <div class="info-item" @click="goToProfile(match.creator_id)">
+              <ion-icon :icon="personOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Organizer</div>
+                <div class="value" style="display: flex; align-items: center; gap: 8px">
+                  <ion-avatar style="width: 24px; height: 24px">
+                    <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  </ion-avatar>
+                  {{ match.creator_username || "Unknown" }}
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="divider" v-if="averageAge"></div>
           <div class="info-row" v-if="averageAge">
             <div class="info-item">
@@ -336,6 +351,7 @@ import {
   baseballOutline,
   umbrella,
   water,
+  personOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 

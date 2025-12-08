@@ -43,11 +43,11 @@
 
         <!-- Friend Actions -->
         <div class="friend-actions ion-margin-top" v-if="!isOwnProfile">
-          <ion-button v-if="friendshipStatus === 'none'" size="small" @click="sendFriendRequest">
+          <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="sendFriendRequest">
             <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
             Add Friend
           </ion-button>
-          <ion-button v-if="friendshipStatus === 'sent'" size="small" color="medium" disabled>
+          <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
             <ion-icon :icon="timeOutline" slot="start"></ion-icon>
             Request Sent
           </ion-button>
@@ -68,7 +68,7 @@
 
         <!-- My Friends Button -->
         <div class="friend-actions ion-margin-top" v-if="isOwnProfile">
-          <ion-button size="small" fill="outline" @click="showFriends = !showFriends">
+          <ion-button size="small" fill="outline" color="light" @click="showFriends = !showFriends">
             <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
             My Friends ({{ friendsList.length }})
           </ion-button>

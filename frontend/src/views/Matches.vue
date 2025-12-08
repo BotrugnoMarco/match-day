@@ -66,7 +66,6 @@
           <ion-icon :icon="add"></ion-icon>
         </ion-fab-button>
       </ion-fab>
-      <div style="height: 100px"></div>
     </ion-content>
   </ion-page>
 </template>
@@ -194,10 +193,10 @@ const createMatch = () => {
   background: var(--ion-color-primary);
   padding: 10px 20px;
   height: auto;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border-bottom-left-radius: 1.875rem;
+  border-bottom-right-radius: 1.875rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
 }
 
 .segment-wrapper {
@@ -211,15 +210,15 @@ const createMatch = () => {
 }
 
 .matches-container {
-  margin-top: -20px;
-  padding-bottom: 80px;
+  margin-top: -1.25rem;
+  padding-bottom: 6rem;
 }
 
 .match-card {
   background: white;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-bottom: 15px;
+  border-radius: 0.9375rem;
+  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.05);
+  margin-bottom: 0.9375rem;
   cursor: pointer;
   transition: transform 0.2s;
 }
@@ -232,13 +231,13 @@ const createMatch = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: 0.9375rem;
 }
 
 .match-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 0.9375rem;
 }
 
 .match-date {
@@ -246,9 +245,9 @@ const createMatch = () => {
   flex-direction: column;
   align-items: center;
   background: #f0f2f5;
-  padding: 8px 12px;
-  border-radius: 10px;
-  min-width: 55px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.625rem;
+  min-width: 3.4375rem;
 }
 
 .match-date .day {

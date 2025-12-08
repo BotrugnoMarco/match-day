@@ -53,6 +53,10 @@ import api from "../services/api";
 const props = defineProps({
   isOpen: Boolean,
   matchId: Number,
+  participants: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(["close"]);
@@ -70,9 +74,21 @@ const fetchFriends = async () => {
   }
 };
 
+const isParticipant = (friendId) => {
+  return props.participants.some((p) => p.user_id === friendId);
+};
+
 const filteredFriends = computed(() => {
-  if (!searchQuery.value) return friends.value;
-  return friends.value.filter((friend) => friend.username.toLowerCase().includes(searchQuery.value.toLowerCase()));
+  let filtered = friends.value;
+
+  // Filter out existing participants
+  filtered = filtered.filter((friend) => !isParticipant(friend.id));
+
+  if (searchQuery.value) {
+    filtered = filtered.filter((friend) => friend.username.toLowerCase().includes(searchQuery.value.toLowerCase()));
+  }
+
+  return filtered;
 });
 
 const invite = async (friend) => {

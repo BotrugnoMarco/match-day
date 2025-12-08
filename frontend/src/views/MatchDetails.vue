@@ -362,7 +362,12 @@
         <p>Loading match details...</p>
       </div>
     </div>
-    <InviteFriendModal :is-open="isInviteModalOpen" :match-id="match?.id" @close="isInviteModalOpen = false" />
+    <InviteFriendModal
+      :is-open="isInviteModalOpen"
+      :match-id="match?.id"
+      :participants="match?.participants || []"
+      @close="isInviteModalOpen = false"
+    />
   </ion-page>
 </template>
 

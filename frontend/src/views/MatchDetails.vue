@@ -252,7 +252,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import api from "../services/api";
 import socket from "../services/socket";
@@ -295,6 +295,7 @@ import {
 import VoteModal from "../components/VoteModal.vue";
 
 const route = useRoute();
+const router = useRouter();
 const store = useStore();
 const match = ref(null);
 const votes = ref([]);

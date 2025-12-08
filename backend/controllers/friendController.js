@@ -172,3 +172,25 @@ exports.getFriendshipStatus = async (req, res) => {
         res.status(500).json({ error: 'Server error fetching status' });
     }
 };
+
+// Remove a friend
+exports.removeFriend = async (req, res) => {
+    const userId = req.user.id;
+    const friendId = req.params.friendId;
+
+    try {
+        const [result] = await db.query(
+            'DELETE FROM friendships WHERE (requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?)',
+            [userId, friendId, friendId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Friendship not found' });
+        }
+
+        res.json({ message: 'Friend removed successfully' });
+    } catch (error) {
+        console.error('Remove friend error:', error);
+        res.status(500).json({ error: 'Server error removing friend' });
+    }
+};

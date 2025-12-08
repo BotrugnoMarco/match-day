@@ -57,6 +57,9 @@
                     <span :class="'status-text ' + friend.status">{{ friend.status }}</span>
                   </p>
                 </ion-label>
+                <ion-button slot="end" fill="clear" color="danger" @click.stop="confirmRemoveFriend(friend)">
+                  <ion-icon :icon="trashOutline" slot="icon-only"></ion-icon>
+                </ion-button>
                 <ion-icon :icon="chevronForwardOutline" slot="end" color="medium"></ion-icon>
               </ion-item>
             </ion-card>
@@ -92,8 +95,9 @@ import {
   IonIcon,
   IonCard,
   toastController,
+  alertController,
 } from "@ionic/vue";
-import { peopleOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, chevronForwardOutline } from "ionicons/icons";
+import { peopleOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, chevronForwardOutline, trashOutline } from "ionicons/icons";
 
 const router = useRouter();
 const friendsList = ref([]);
@@ -114,6 +118,38 @@ const fetchPendingRequests = async () => {
     pendingRequests.value = response.data;
   } catch (error) {
     console.error("Error fetching pending requests:", error);
+  }
+};
+
+const confirmRemoveFriend = async (friend) => {
+  const alert = await alertController.create({
+    header: "Remove Friend",
+    message: `Are you sure you want to remove ${friend.username} from your friends?`,
+    buttons: [
+      {
+        text: "Cancel",
+        role: "cancel",
+      },
+      {
+        text: "Remove",
+        role: "destructive",
+        handler: () => {
+          removeFriend(friend.id);
+        },
+      },
+    ],
+  });
+  await alert.present();
+};
+
+const removeFriend = async (friendId) => {
+  try {
+    await api.delete(`/friends/${friendId}`);
+    friendsList.value = friendsList.value.filter((f) => f.id !== friendId);
+    presentToast("Friend removed successfully");
+  } catch (error) {
+    console.error("Error removing friend:", error);
+    presentToast("Failed to remove friend", "danger");
   }
 };
 

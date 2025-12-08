@@ -218,24 +218,16 @@
                       style="margin-left: 8px; font-size: 0.9em"
                       title="Staying for post-match"
                     ></ion-icon>
-                    <div
-                      style="display: inline-flex; align-items: center; z-index: 10; position: relative"
-                      @click.stop="isCreator ? togglePayment(p) : null"
-                    >
-                      <ion-icon
-                        :icon="cashOutline"
-                        :color="p.has_paid ? 'success' : 'medium'"
-                        style="margin-left: 8px; font-size: 1.1em"
-                        :style="{ cursor: isCreator ? 'pointer' : 'default' }"
-                        title="Payment Status"
-                      ></ion-icon>
-                    </div>
                   </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
                     <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
                   </p>
                 </ion-label>
+                <ion-button slot="end" fill="clear" v-if="isCreator" @click.stop="togglePayment(p)">
+                  <ion-icon slot="icon-only" :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'"></ion-icon>
+                </ion-button>
+                <ion-icon slot="end" v-else :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" style="margin-inline-end: 10px"></ion-icon>
                 <ion-button
                   slot="end"
                   fill="outline"
@@ -269,24 +261,16 @@
                       style="margin-left: 8px; font-size: 0.9em"
                       title="Staying for post-match"
                     ></ion-icon>
-                    <div
-                      style="display: inline-flex; align-items: center; z-index: 10; position: relative"
-                      @click.stop="isCreator ? togglePayment(p) : null"
-                    >
-                      <ion-icon
-                        :icon="cashOutline"
-                        :color="p.has_paid ? 'success' : 'medium'"
-                        style="margin-left: 8px; font-size: 1.1em"
-                        :style="{ cursor: isCreator ? 'pointer' : 'default' }"
-                        title="Payment Status"
-                      ></ion-icon>
-                    </div>
                   </h2>
                   <p>
                     Skill: {{ p.skill_rating || "N/A" }}
                     <span v-if="p.user_status" :class="'status-text ' + p.user_status">• {{ p.user_status }}</span>
                   </p>
                 </ion-label>
+                <ion-button slot="end" fill="clear" v-if="isCreator" @click.stop="togglePayment(p)">
+                  <ion-icon slot="icon-only" :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'"></ion-icon>
+                </ion-button>
+                <ion-icon slot="end" v-else :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" style="margin-inline-end: 10px"></ion-icon>
                 <ion-button
                   slot="end"
                   fill="outline"
@@ -318,18 +302,6 @@
                     style="margin-left: 8px; font-size: 0.9em"
                     title="Staying for post-match"
                   ></ion-icon>
-                  <div
-                    style="display: inline-flex; align-items: center; z-index: 10; position: relative"
-                    @click.stop="isCreator ? togglePayment(p) : null"
-                  >
-                    <ion-icon
-                      :icon="cashOutline"
-                      :color="p.has_paid ? 'success' : 'medium'"
-                      style="margin-left: 8px; font-size: 1.1em"
-                      :style="{ cursor: isCreator ? 'pointer' : 'default' }"
-                      title="Payment Status"
-                    ></ion-icon>
-                  </div>
                 </h2>
                 <p>
                   <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
@@ -340,6 +312,10 @@
                   >
                 </p>
               </ion-label>
+              <ion-button slot="end" fill="clear" v-if="isCreator" @click.stop="togglePayment(p)">
+                <ion-icon slot="icon-only" :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'"></ion-icon>
+              </ion-button>
+              <ion-icon slot="end" v-else :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" style="margin-inline-end: 10px"></ion-icon>
               <ion-button
                 slot="end"
                 fill="outline"

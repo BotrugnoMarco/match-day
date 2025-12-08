@@ -27,7 +27,13 @@ const store = createStore({
         LOGOUT(state) {
             state.user = null;
             state.token = null;
+            state.matches = [];
+            state.myMatches = [];
             state.notifications = [];
+            state.userStats = null;
+            state.viewedUser = null;
+            state.viewedUserStats = null;
+            state.viewedUserHistory = [];
             localStorage.removeItem('user');
             localStorage.removeItem('token');
         },

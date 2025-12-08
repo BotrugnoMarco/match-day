@@ -55,6 +55,16 @@
               </div>
             </div>
           </div>
+          <div class="divider" v-if="averageAge"></div>
+          <div class="info-row" v-if="averageAge">
+            <div class="info-item">
+              <ion-icon :icon="peopleOutline" class="info-icon"></ion-icon>
+              <div>
+                <div class="label">Avg Age</div>
+                <div class="value">{{ averageAge }} years</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         <!-- Actions -->
@@ -349,6 +359,22 @@ const teamBParticipants = computed(() => {
 const isFull = computed(() => {
   const confirmedCount = match.value?.participants?.filter((p) => p.status === "confirmed").length || 0;
   return confirmedCount >= (match.value?.max_players || 10);
+});
+
+const averageAge = computed(() => {
+  if (!activeParticipants.value || activeParticipants.value.length === 0) return null;
+
+  const participantsWithAge = activeParticipants.value.filter((p) => p.birth_date);
+  if (participantsWithAge.length === 0) return null;
+
+  const totalAge = participantsWithAge.reduce((sum, p) => {
+    const birthDate = new Date(p.birth_date);
+    const ageDifMs = Date.now() - birthDate.getTime();
+    const ageDate = new Date(ageDifMs);
+    return sum + Math.abs(ageDate.getUTCFullYear() - 1970);
+  }, 0);
+
+  return (totalAge / participantsWithAge.length).toFixed(1);
 });
 
 const getStatusColor = (status) => {

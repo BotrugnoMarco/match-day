@@ -40,7 +40,7 @@
                 </ion-select>
               </ion-item>
 
-              <div class="ion-padding-top">
+              <div class="">
                 <ion-button expand="block" type="submit" size="large">Register</ion-button>
               </div>
             </form>

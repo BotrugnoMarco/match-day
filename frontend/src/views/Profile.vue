@@ -68,70 +68,13 @@
 
         <!-- My Friends Button -->
         <div class="friend-actions ion-margin-top" v-if="isOwnProfile">
-          <ion-button size="small" fill="outline" color="light" @click="showFriends = !showFriends">
+          <ion-button size="small" fill="outline" color="light" @click="router.push('/friends')">
             <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-            My Friends ({{ friendsList.length }})
-          </ion-button>
-          <ion-button size="small" fill="outline" color="warning" @click="showRequests = !showRequests" v-if="pendingRequests.length > 0">
-            <ion-icon :icon="timeOutline" slot="start"></ion-icon>
-            Requests ({{ pendingRequests.length }})
+            Friends
           </ion-button>
         </div>
 
         <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept="image/*" />
-      </div>
-
-      <!-- Pending Requests Section -->
-      <div class="section-container ion-padding-horizontal" v-if="isOwnProfile && showRequests && pendingRequests.length > 0">
-        <div class="section-title">
-          <ion-icon :icon="timeOutline" color="warning"></ion-icon>
-          <h3>Pending Requests</h3>
-        </div>
-        <ion-card class="friends-card">
-          <ion-list lines="none">
-            <ion-item v-for="req in pendingRequests" :key="req.id">
-              <ion-avatar slot="start" @click="router.push(`/profile/${req.requester_id}`)">
-                <img :src="req.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-              </ion-avatar>
-              <ion-label>
-                <h2>{{ req.username }}</h2>
-                <p>Wants to be your friend</p>
-              </ion-label>
-              <ion-button slot="end" size="small" color="success" @click="acceptFriendRequest(req.id)">
-                <ion-icon :icon="checkmarkCircleOutline"></ion-icon>
-              </ion-button>
-              <ion-button slot="end" size="small" color="danger" @click="rejectFriendRequest(req.id)">
-                <ion-icon :icon="closeCircleOutline"></ion-icon>
-              </ion-button>
-            </ion-item>
-          </ion-list>
-        </ion-card>
-      </div>
-
-      <!-- Friends List Section (Collapsible) -->
-      <div class="section-container ion-padding-horizontal" v-if="isOwnProfile && showFriends">
-        <div class="section-title">
-          <ion-icon :icon="peopleOutline" color="primary"></ion-icon>
-          <h3>Friends</h3>
-        </div>
-        <ion-card class="friends-card">
-          <ion-list lines="none" v-if="friendsList.length > 0">
-            <ion-item v-for="friend in friendsList" :key="friend.id" button @click="router.push(`/profile/${friend.id}`)">
-              <ion-avatar slot="start">
-                <img :src="friend.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-              </ion-avatar>
-              <ion-label>
-                <h2>{{ friend.username }}</h2>
-                <p>
-                  <span :class="'status-text ' + friend.status">{{ friend.status }}</span>
-                </p>
-              </ion-label>
-            </ion-item>
-          </ion-list>
-          <div v-else class="ion-padding ion-text-center">
-            <p>No friends yet.</p>
-          </div>
-        </ion-card>
       </div>
 
       <!-- Main Stats Grid -->
@@ -301,10 +244,6 @@ const isOwnProfile = computed(() => {
 const user = computed(() => (isOwnProfile.value ? currentUser.value : viewedUser.value));
 const friendshipStatus = ref("none"); // none, sent, received, accepted
 const friendshipId = ref(null);
-const friendsList = ref([]);
-const pendingRequests = ref([]);
-const showFriends = ref(false);
-const showRequests = ref(false);
 
 const userStatus = computed({
   get: () => user.value?.status || "available",
@@ -339,8 +278,6 @@ const loadData = async () => {
     store.dispatch("fetchUserStats");
     store.dispatch("fetchUserProfile");
     fetchMyHistory();
-    fetchFriends();
-    fetchPendingRequests();
   } else {
     const userId = route.params.id;
     store.dispatch("fetchUserProfileById", userId);
@@ -360,24 +297,6 @@ const fetchFriendshipStatus = async (userId) => {
   }
 };
 
-const fetchFriends = async () => {
-  try {
-    const response = await api.get("/friends");
-    friendsList.value = response.data;
-  } catch (error) {
-    console.error("Error fetching friends:", error);
-  }
-};
-
-const fetchPendingRequests = async () => {
-  try {
-    const response = await api.get("/friends/pending");
-    pendingRequests.value = response.data;
-  } catch (error) {
-    console.error("Error fetching pending requests:", error);
-  }
-};
-
 const sendFriendRequest = async () => {
   try {
     await api.post("/friends/request", { addressee_id: user.value.id });
@@ -389,18 +308,10 @@ const sendFriendRequest = async () => {
   }
 };
 
-const acceptFriendRequest = async (id = null) => {
+const acceptFriendRequest = async () => {
   try {
-    const reqId = id || friendshipId.value;
-    await api.put(`/friends/accept/${reqId}`);
-    if (id) {
-      // Accepting from list
-      pendingRequests.value = pendingRequests.value.filter((r) => r.id !== id);
-      fetchFriends();
-    } else {
-      // Accepting from profile view
-      friendshipStatus.value = "accepted";
-    }
+    await api.put(`/friends/accept/${friendshipId.value}`);
+    friendshipStatus.value = "accepted";
     presentToast("Friend request accepted!");
   } catch (error) {
     console.error("Error accepting friend request:", error);
@@ -408,17 +319,10 @@ const acceptFriendRequest = async (id = null) => {
   }
 };
 
-const rejectFriendRequest = async (id = null) => {
+const rejectFriendRequest = async () => {
   try {
-    const reqId = id || friendshipId.value;
-    await api.put(`/friends/reject/${reqId}`);
-    if (id) {
-      // Rejecting from list
-      pendingRequests.value = pendingRequests.value.filter((r) => r.id !== id);
-    } else {
-      // Rejecting from profile view
-      friendshipStatus.value = "none";
-    }
+    await api.put(`/friends/reject/${friendshipId.value}`);
+    friendshipStatus.value = "none";
     presentToast("Friend request rejected");
   } catch (error) {
     console.error("Error rejecting friend request:", error);
@@ -527,7 +431,7 @@ const getSkillColor = (rating) => {
 
 .profile-banner {
   background: var(--ion-color-primary);
-  padding: 30px 20px 50px;
+  padding: 20px 20px 30px;
   display: flex;
   flex-direction: column;
   align-items: center;

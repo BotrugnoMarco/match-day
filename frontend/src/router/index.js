@@ -6,6 +6,7 @@ import Matches from '../views/Matches.vue';
 import CreateMatch from '../views/CreateMatch.vue';
 import MatchDetails from '../views/MatchDetails.vue';
 import Profile from '../views/Profile.vue';
+import Friends from '../views/Friends.vue';
 import Notifications from '../views/Notifications.vue';
 
 const routes = [
@@ -50,6 +51,12 @@ const routes = [
         path: '/profile/:id?',
         name: 'Profile',
         component: Profile,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/friends',
+        name: 'Friends',
+        component: Friends,
         meta: { requiresAuth: true }
     },
     {

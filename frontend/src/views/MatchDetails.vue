@@ -720,6 +720,7 @@ const openVoteModal = async (participant) => {
   modal.onDidDismiss().then((data) => {
     if (data.role === "confirm") {
       console.log("Vote submitted");
+      fetchMyVotes();
     }
   });
 

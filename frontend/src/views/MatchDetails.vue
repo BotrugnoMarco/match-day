@@ -68,14 +68,14 @@
           <div class="divider" v-if="match.is_covered || match.has_showers"></div>
           <div class="info-row" v-if="match.is_covered || match.has_showers">
             <div class="info-item" v-if="match.is_covered">
-              <ion-icon :icon="umbrellaOutline" class="info-icon"></ion-icon>
+              <ion-icon :icon="umbrella" class="info-icon"></ion-icon>
               <div>
                 <div class="label">Field</div>
                 <div class="value">Covered</div>
               </div>
             </div>
             <div class="info-item" v-if="match.has_showers">
-              <ion-icon :icon="waterOutline" class="info-icon"></ion-icon>
+              <ion-icon :icon="water" class="info-icon"></ion-icon>
               <div>
                 <div class="label">Showers</div>
                 <div class="value">Available</div>
@@ -332,8 +332,8 @@ import {
   basketball,
   tennisball,
   baseballOutline,
-  umbrellaOutline,
-  waterOutline,
+  umbrella,
+  water,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 

@@ -46,8 +46,8 @@
                   </p>
                   <p class="time">{{ new Date(match.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }}</p>
                   <div class="features-row" v-if="match.is_covered || match.has_showers">
-                    <ion-icon v-if="match.is_covered" :icon="umbrellaOutline" class="feature-icon" title="Covered Field"></ion-icon>
-                    <ion-icon v-if="match.has_showers" :icon="waterOutline" class="feature-icon" title="Showers Available"></ion-icon>
+                    <ion-icon v-if="match.is_covered" :icon="umbrella" class="feature-icon" title="Covered Field"></ion-icon>
+                    <ion-icon v-if="match.has_showers" :icon="water" class="feature-icon" title="Showers Available"></ion-icon>
                   </div>
                 </div>
               </div>
@@ -105,8 +105,8 @@ import {
   basketball,
   tennisball,
   baseballOutline,
-  umbrellaOutline,
-  waterOutline,
+  umbrella,
+  water,
 } from "ionicons/icons";
 
 const store = useStore();

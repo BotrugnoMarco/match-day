@@ -70,11 +70,11 @@
           <!-- Field Options -->
           <div class="form-group">
             <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="umbrellaOutline" slot="start" class="form-icon"></ion-icon>
+              <ion-icon :icon="umbrella" slot="start" class="form-icon"></ion-icon>
               <ion-toggle v-model="isCovered">Covered Field</ion-toggle>
             </ion-item>
             <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="waterOutline" slot="start" class="form-icon"></ion-icon>
+              <ion-icon :icon="water" slot="start" class="form-icon"></ion-icon>
               <ion-toggle v-model="hasShowers">Showers Available</ion-toggle>
             </ion-item>
           </div>
@@ -108,6 +108,7 @@ import {
   IonDatetimeButton,
   IonModal,
   IonIcon,
+  IonToggle,
 } from "@ionic/vue";
 import {
   addCircleOutline,
@@ -119,6 +120,8 @@ import {
   peopleOutline,
   cashOutline,
   baseballOutline,
+  umbrella,
+  water,
 } from "ionicons/icons";
 
 const router = useRouter();
@@ -127,6 +130,8 @@ const location = ref("");
 const sportType = ref("soccer");
 const priceTotal = ref("");
 const maxPlayers = ref(10);
+const isCovered = ref(false);
+const hasShowers = ref(false);
 
 const sports = [
   { value: "soccer", label: "Soccer", icon: football },
@@ -151,18 +156,22 @@ const updateMaxPlayers = () => {
 };
 
 const createMatch = async () => {
+  if (!location.value || !priceTotal.value) {
+    alert("Please fill in all fields");
+    return;
+  }
+
   try {
-    const formattedDate = dateTime.value.replace("T", " ").slice(0, 19);
-
-    await api.post("/matches", {
-      date_time: formattedDate,
-      location: location.value,
+    const response = await api.post("/matches", {
       sport_type: sportType.value,
-      price_total: priceTotal.value,
+      date_time: dateTime.value,
+      location: location.value,
       max_players: maxPlayers.value,
+      price_total: priceTotal.value,
+      is_covered: isCovered.value,
+      has_showers: hasShowers.value,
     });
-
-    router.push("/matches");
+    router.push(`/matches/${response.data.matchId}`);
   } catch (error) {
     console.error("Error creating match:", error);
     alert("Failed to create match: " + (error.response?.data?.error || error.message));

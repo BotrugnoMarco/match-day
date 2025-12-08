@@ -105,7 +105,7 @@
 
         <div class="custom-card participants-list" v-if="waitlistParticipants.length > 0">
           <ion-list lines="none">
-            <ion-item v-for="p in waitlistParticipants" :key="p.id">
+            <ion-item v-for="p in waitlistParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
               <ion-avatar slot="start">
                 <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
               </ion-avatar>
@@ -129,7 +129,7 @@
           </div>
           <div class="custom-card participants-list">
             <ion-list lines="none">
-              <ion-item v-for="p in teamAParticipants" :key="p.id">
+              <ion-item v-for="p in teamAParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
                 <ion-avatar slot="start">
                   <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>
@@ -143,7 +143,7 @@
                   size="small"
                   v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
                   :disabled="myVotes.includes(p.user_id)"
-                  @click="openVoteModal(p)"
+                  @click.stop="openVoteModal(p)"
                 >
                   {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
                 </ion-button>
@@ -156,7 +156,7 @@
           </div>
           <div class="custom-card participants-list">
             <ion-list lines="none">
-              <ion-item v-for="p in teamBParticipants" :key="p.id">
+              <ion-item v-for="p in teamBParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
                 <ion-avatar slot="start">
                   <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>
@@ -170,7 +170,7 @@
                   size="small"
                   v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
                   :disabled="myVotes.includes(p.user_id)"
-                  @click="openVoteModal(p)"
+                  @click.stop="openVoteModal(p)"
                 >
                   {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
                 </ion-button>
@@ -181,7 +181,7 @@
 
         <div class="custom-card participants-list" v-else>
           <ion-list lines="none">
-            <ion-item v-for="p in activeParticipants" :key="p.id">
+            <ion-item v-for="p in activeParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
               <ion-avatar slot="start">
                 <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
               </ion-avatar>
@@ -195,7 +195,7 @@
                 size="small"
                 v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
                 :disabled="myVotes.includes(p.user_id)"
-                @click="openVoteModal(p)"
+                @click.stop="openVoteModal(p)"
               >
                 {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
               </ion-button>
@@ -413,6 +413,10 @@ const results = computed(() => {
     }))
     .sort((a, b) => b.averageRating - a.averageRating);
 });
+
+const goToProfile = (userId) => {
+  router.push(`/profile/${userId}`);
+};
 
 const fetchMatch = async () => {
   try {

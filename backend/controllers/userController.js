@@ -184,3 +184,164 @@ exports.getMatchHistory = async (req, res) => {
         res.status(500).json({ error: 'Server error fetching match history' });
     }
 };
+
+exports.getUserProfileById = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const [users] = await db.query('SELECT id, username, avatar_url, role FROM users WHERE id = ?', [userId]);
+        if (users.length === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        const [skills] = await db.query('SELECT sport_type, rating FROM user_skills WHERE user_id = ?', [userId]);
+
+        const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
+        const completeSkills = sports.map(sport => {
+            const found = skills.find(s => s.sport_type === sport);
+            return found ? found : { sport_type: sport, rating: 6.0 };
+        });
+
+        const user = users[0];
+        user.skills = completeSkills;
+
+        res.json(user);
+    } catch (error) {
+        console.error('Get profile by id error:', error);
+        res.status(500).json({ error: 'Server error fetching profile' });
+    }
+};
+
+exports.getUserStatsById = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        // Matches Played
+        const [matchesResult] = await db.query(
+            `SELECT COUNT(*) as count FROM participants 
+             WHERE user_id = ? AND status = 'confirmed'`,
+            [userId]
+        );
+        const matchesPlayed = matchesResult[0].count;
+
+        // Matches Won
+        const [winsResult] = await db.query(
+            `SELECT COUNT(*) as count 
+             FROM matches m
+             JOIN participants p ON m.id = p.match_id
+             WHERE p.user_id = ? 
+               AND p.status = 'confirmed'
+               AND m.status = 'finished'
+               AND m.winner = p.team`,
+            [userId]
+        );
+        const matchesWon = winsResult[0].count;
+
+        // MVP Count (based on tags containing 'MVP')
+        const [mvpResult] = await db.query(
+            `SELECT COUNT(*) as count FROM votes 
+             WHERE target_id = ? AND tags LIKE '%MVP%'`,
+            [userId]
+        );
+        const mvpCount = mvpResult[0].count;
+
+        // Get all tags
+        const [tagsResult] = await db.query(
+            `SELECT tags FROM votes WHERE target_id = ? AND tags IS NOT NULL AND tags != ''`,
+            [userId]
+        );
+
+        const tagCounts = {};
+        tagsResult.forEach(row => {
+            if (row.tags) {
+                const tags = row.tags.split(',').map(t => t.trim()).filter(t => t);
+                tags.forEach(tag => {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                });
+            }
+        });
+
+        // Convert to array for frontend
+        const tagsList = Object.entries(tagCounts)
+            .map(([tag, count]) => ({ tag, count }))
+            .sort((a, b) => b.count - a.count);
+
+        // Recent Ratings
+        const [recentRatings] = await db.query(
+            `SELECT v.rating, m.date_time, m.sport_type 
+             FROM votes v 
+             JOIN matches m ON v.match_id = m.id 
+             WHERE v.target_id = ? 
+             ORDER BY m.date_time DESC 
+             LIMIT 5`,
+            [userId]
+        );
+
+        res.json({
+            matchesPlayed,
+            matchesWon,
+            mvpCount,
+            tags: tagsList,
+            recentRatings
+        });
+    } catch (error) {
+        console.error('Get user stats by id error:', error);
+        res.status(500).json({ error: 'Server error fetching user stats' });
+    }
+};
+
+exports.getUserHistoryById = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        const [history] = await db.query(
+            `SELECT 
+                m.id, 
+                m.date_time, 
+                m.location, 
+                m.sport_type,
+                m.winner,
+                p.team as user_team,
+                AVG(v.rating) as avg_rating,
+                COUNT(v.id) as vote_count,
+                GROUP_CONCAT(v.tags) as tags
+             FROM matches m
+             JOIN participants p ON m.id = p.match_id
+             LEFT JOIN votes v ON m.id = v.match_id AND v.target_id = ?
+             WHERE p.user_id = ? 
+               AND p.status = 'confirmed'
+               AND m.status = 'finished'
+             GROUP BY m.id
+             ORDER BY m.date_time DESC`,
+            [userId, userId]
+        );
+
+        // Clean up tags (remove nulls and duplicates if needed)
+        const cleanedHistory = history.map(match => {
+            let tagList = [];
+            if (match.tags) {
+                tagList = match.tags.split(',').filter(t => t && t.trim() !== '');
+            }
+
+            let result = 'draw';
+            if (match.winner && match.user_team) {
+                if (match.winner === 'Draw') {
+                    result = 'draw';
+                } else if (match.winner === match.user_team) {
+                    result = 'win';
+                } else {
+                    result = 'loss';
+                }
+            }
+
+            return {
+                ...match,
+                avg_rating: match.avg_rating ? parseFloat(match.avg_rating).toFixed(1) : null,
+                tags: [...new Set(tagList)], // Unique tags
+                result
+            };
+        });
+
+        res.json(cleanedHistory);
+    } catch (error) {
+        console.error('Get match history by id error:', error);
+        res.status(500).json({ error: 'Server error fetching match history' });
+    }
+};

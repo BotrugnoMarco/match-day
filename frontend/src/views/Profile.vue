@@ -7,7 +7,7 @@
         </ion-buttons>
         <ion-title>Profile</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="logout">
+          <ion-button @click="logout" v-if="isOwnProfile">
             <ion-icon :icon="logOutOutline"></ion-icon>
           </ion-button>
         </ion-buttons>
@@ -21,7 +21,7 @@
           <ion-avatar class="main-avatar">
             <img :src="user?.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
           </ion-avatar>
-          <div class="edit-badge">
+          <div class="edit-badge" v-if="isOwnProfile">
             <ion-icon :icon="camera" color="light"></ion-icon>
           </div>
         </div>
@@ -136,9 +136,9 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted } from "vue";
+import { computed, ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import api from "../services/api";
 import {
   IonPage,
@@ -166,32 +166,65 @@ import { camera, star, logOutOutline, football, trophy, ribbon, timeOutline, ten
 
 const store = useStore();
 const router = useRouter();
-const user = computed(() => store.getters.currentUser);
-const stats = computed(() => store.getters.userStats);
-const history = ref([]);
+const route = useRoute();
+
+const currentUser = computed(() => store.getters.currentUser);
+const viewedUser = computed(() => store.getters.viewedUser);
+const viewedUserStats = computed(() => store.getters.viewedUserStats);
+const viewedUserHistory = computed(() => store.getters.viewedUserHistory);
+
+const isOwnProfile = computed(() => {
+  return !route.params.id || (currentUser.value && parseInt(route.params.id) === currentUser.value.id);
+});
+
+const user = computed(() => (isOwnProfile.value ? currentUser.value : viewedUser.value));
+const stats = computed(() => (isOwnProfile.value ? store.getters.userStats : viewedUserStats.value));
+const history = computed(() => (isOwnProfile.value ? myHistory.value : viewedUserHistory.value));
+
+const myHistory = ref([]);
 const fileInput = ref(null);
 
+const loadData = async () => {
+  if (isOwnProfile.value) {
+    store.dispatch("fetchUserStats");
+    store.dispatch("fetchUserProfile");
+    fetchMyHistory();
+  } else {
+    const userId = route.params.id;
+    store.dispatch("fetchUserProfileById", userId);
+    store.dispatch("fetchUserStatsById", userId);
+    store.dispatch("fetchUserHistoryById", userId);
+  }
+};
+
 onMounted(() => {
-  store.dispatch("fetchUserStats");
-  store.dispatch("fetchUserProfile");
-  fetchHistory();
+  loadData();
 });
+
+watch(
+  () => route.params.id,
+  () => {
+    loadData();
+  }
+);
 
 const goToMatch = (matchId) => {
   router.push(`/matches/${matchId}`);
 };
 
-const fetchHistory = async () => {
+const fetchMyHistory = async () => {
   try {
     const response = await api.get("/users/history");
-    history.value = response.data;
+    myHistory.value = response.data;
   } catch (error) {
     console.error("Error fetching history:", error);
   }
 };
 
 const triggerFileInput = () => {
-  fileInput.value.click();
+  if (isOwnProfile.value) {
+    fileInput.value.click();
+  }
 };
 
 const handleFileChange = async (event) => {
@@ -208,7 +241,7 @@ const handleFileChange = async (event) => {
       },
     });
 
-    const updatedUser = { ...user.value, avatar_url: response.data.avatarUrl };
+    const updatedUser = { ...currentUser.value, avatar_url: response.data.avatarUrl };
     store.commit("SET_USER", updatedUser);
     alert("Avatar updated successfully!");
   } catch (error) {

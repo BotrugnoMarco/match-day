@@ -10,6 +10,7 @@ router.get('/history', authMiddleware, userController.getMatchHistory);
 router.get('/:id/profile', authMiddleware, userController.getUserProfileById);
 router.get('/:id/stats', authMiddleware, userController.getUserStatsById);
 router.get('/:id/history', authMiddleware, userController.getUserHistoryById);
+router.put('/status', authMiddleware, userController.updateStatus);
 router.post('/avatar', authMiddleware, upload.single('avatar'), userController.uploadAvatar);
 
 module.exports = router;

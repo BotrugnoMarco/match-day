@@ -111,7 +111,10 @@
               </ion-avatar>
               <ion-label>
                 <h2>{{ p.username }}</h2>
-                <p>Waiting...</p>
+                <p>
+                  Waiting...
+                  <span v-if="p.status" :class="'status-text ' + p.status">• {{ p.status }}</span>
+                </p>
               </ion-label>
             </ion-item>
           </ion-list>
@@ -135,7 +138,10 @@
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ p.username }}</h2>
-                  <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+                  <p>
+                    Skill: {{ p.skill_rating || "N/A" }}
+                    <span v-if="p.status" :class="'status-text ' + p.status">• {{ p.status }}</span>
+                  </p>
                 </ion-label>
                 <ion-button
                   slot="end"
@@ -162,7 +168,10 @@
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ p.username }}</h2>
-                  <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+                  <p>
+                    Skill: {{ p.skill_rating || "N/A" }}
+                    <span v-if="p.status" :class="'status-text ' + p.status">• {{ p.status }}</span>
+                  </p>
                 </ion-label>
                 <ion-button
                   slot="end"
@@ -187,7 +196,12 @@
               </ion-avatar>
               <ion-label>
                 <h2>{{ p.username }}</h2>
-                <p>{{ p.status }}</p>
+                <p>
+                  {{ p.status }}
+                  <span v-if="p.status && ['available', 'injured', 'unavailable'].includes(p.status)" :class="'status-text ' + p.status"
+                    >• {{ p.status }}</span
+                  >
+                </p>
               </ion-label>
               <ion-button
                 slot="end"
@@ -578,6 +592,21 @@ onUnmounted(() => {
   /* min-height: 100vh; */
   height: 100%;
   overflow-y: auto;
+}
+
+.status-text {
+  font-size: 0.8em;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+.status-text.available {
+  color: var(--ion-color-success);
+}
+.status-text.injured {
+  color: var(--ion-color-danger);
+}
+.status-text.unavailable {
+  color: var(--ion-color-medium);
 }
 
 .details-container {

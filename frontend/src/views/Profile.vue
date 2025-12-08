@@ -27,6 +27,20 @@
         </div>
         <h2 class="username">{{ user?.username }}</h2>
         <ion-badge color="light" class="role-badge">{{ user?.role?.toUpperCase() }}</ion-badge>
+
+        <div class="status-section ion-margin-top">
+          <ion-item lines="none" class="status-selector" v-if="isOwnProfile">
+            <ion-select v-model="userStatus" interface="popover" class="custom-select">
+              <ion-select-option value="available">Available</ion-select-option>
+              <ion-select-option value="injured">Injured</ion-select-option>
+              <ion-select-option value="unavailable">Unavailable</ion-select-option>
+            </ion-select>
+          </ion-item>
+          <ion-badge v-else :color="getStatusColor(user?.status)" class="status-badge">
+            {{ user?.status?.toUpperCase() || "AVAILABLE" }}
+          </ion-badge>
+        </div>
+
         <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept="image/*" />
       </div>
 
@@ -297,6 +311,24 @@ const getSkillColor = (rating) => {
   border-bottom-right-radius: 30px;
   margin-bottom: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.status-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.status-selector {
+  --background: transparent;
+  width: auto;
+}
+.custom-select {
+  --padding-start: 10px;
+  --padding-end: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: white;
 }
 
 .avatar-wrapper {

@@ -26,7 +26,7 @@ exports.uploadAvatar = async (req, res) => {
 exports.getProfile = async (req, res) => {
     const userId = req.user.id;
     try {
-        const [users] = await db.query('SELECT id, username, avatar_url, role FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, avatar_url, role, status FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -188,7 +188,7 @@ exports.getMatchHistory = async (req, res) => {
 exports.getUserProfileById = async (req, res) => {
     const userId = req.params.id;
     try {
-        const [users] = await db.query('SELECT id, username, avatar_url, role FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, avatar_url, role, status FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -343,5 +343,22 @@ exports.getUserHistoryById = async (req, res) => {
     } catch (error) {
         console.error('Get match history by id error:', error);
         res.status(500).json({ error: 'Server error fetching match history' });
+    }
+};
+
+exports.updateStatus = async (req, res) => {
+    const userId = req.user.id;
+    const { status } = req.body;
+
+    if (!['available', 'injured', 'unavailable'].includes(status)) {
+        return res.status(400).json({ error: 'Invalid status' });
+    }
+
+    try {
+        await db.query('UPDATE users SET status = ? WHERE id = ?', [status, userId]);
+        res.json({ message: 'Status updated successfully', status });
+    } catch (error) {
+        console.error('Update status error:', error);
+        res.status(500).json({ error: 'Server error updating status' });
     }
 };

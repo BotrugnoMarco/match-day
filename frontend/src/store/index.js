@@ -51,6 +51,12 @@ const store = createStore({
         },
         SET_VIEWED_USER_HISTORY(state, history) {
             state.viewedUserHistory = history;
+        },
+        UPDATE_USER_STATUS(state, status) {
+            if (state.user) {
+                state.user.status = status;
+                localStorage.setItem('user', JSON.stringify(state.user));
+            }
         }
     },
     actions: {
@@ -145,6 +151,15 @@ const store = createStore({
                 commit('SET_VIEWED_USER_HISTORY', response.data);
             } catch (error) {
                 console.error('Error fetching user history by id:', error);
+            }
+        },
+        async updateUserStatus({ commit }, status) {
+            try {
+                await api.put('/users/status', { status });
+                commit('UPDATE_USER_STATUS', status);
+            } catch (error) {
+                console.error('Error updating user status:', error);
+                throw error;
             }
         },
         clearViewedUser({ commit }) {

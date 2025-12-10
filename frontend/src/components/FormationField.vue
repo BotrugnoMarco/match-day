@@ -17,7 +17,7 @@
         :key="player.user_id"
         class="player-token"
         :class="{ 'is-dragging': draggedPlayerId === player.user_id, 'team-a': player.team === 'A', 'team-b': player.team === 'B' }"
-        :style="{ left: (player.x_pos || getDefaultX(player)) + '%', top: (player.y_pos || getDefaultY(player)) + '%' }"
+        :style="{ left: player.x_pos + '%', top: player.y_pos + '%' }"
         @mousedown="startDrag($event, player)"
         @touchstart.prevent="startDrag($event, player)"
       >
@@ -69,7 +69,34 @@ watch(
   (newPlayers) => {
     // Only update if we are not dragging or if it's a fresh load
     if (!draggedPlayerId.value) {
-      localPlayers.value = JSON.parse(JSON.stringify(newPlayers));
+      const players = JSON.parse(JSON.stringify(newPlayers));
+
+      // Group by team to calculate indices for distribution
+      const teamAIndices = [];
+      const teamBIndices = [];
+
+      players.forEach((p, index) => {
+        if (p.team === "A") teamAIndices.push(index);
+        else if (p.team === "B") teamBIndices.push(index);
+      });
+
+      teamAIndices.forEach((pIndex, i) => {
+        const p = players[pIndex];
+        if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 25;
+        if (p.y_pos === null || p.y_pos === undefined) {
+          p.y_pos = teamAIndices.length > 1 ? 15 + 70 * (i / (teamAIndices.length - 1)) : 50;
+        }
+      });
+
+      teamBIndices.forEach((pIndex, i) => {
+        const p = players[pIndex];
+        if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 75;
+        if (p.y_pos === null || p.y_pos === undefined) {
+          p.y_pos = teamBIndices.length > 1 ? 15 + 70 * (i / (teamBIndices.length - 1)) : 50;
+        }
+      });
+
+      localPlayers.value = players;
     }
   },
   { immediate: true, deep: true }
@@ -77,18 +104,6 @@ watch(
 
 const getInitials = (name) => {
   return name ? name.substring(0, 2).toUpperCase() : "??";
-};
-
-const getDefaultX = (player) => {
-  // Default positions based on team
-  if (player.team === "A") return 25;
-  if (player.team === "B") return 75;
-  return 50;
-};
-
-const getDefaultY = (player) => {
-  // Spread them out vertically based on index or random
-  return 50;
 };
 
 // Drag and Drop Logic
@@ -139,8 +154,8 @@ const startDrag = (event, player) => {
 const savePositions = () => {
   const updates = localPlayers.value.map((p) => ({
     userId: p.user_id,
-    x: p.x_pos || getDefaultX(p),
-    y: p.y_pos || getDefaultY(p),
+    x: p.x_pos,
+    y: p.y_pos,
   }));
   emit("save", updates);
   hasChanges.value = false;

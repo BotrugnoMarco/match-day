@@ -1,12 +1,31 @@
 <template>
   <div class="formation-container">
-    <div class="field" ref="fieldRef">
+    <div class="field" ref="fieldRef" :class="sportType">
       <!-- Field Markings -->
       <div class="field-markings">
-        <div class="half-line"></div>
-        <div class="center-circle"></div>
-        <div class="penalty-area top"></div>
-        <div class="penalty-area bottom"></div>
+        <!-- Soccer -->
+        <template v-if="sportType === 'soccer'">
+          <div class="half-line"></div>
+          <div class="center-circle"></div>
+          <div class="penalty-area top"></div>
+          <div class="penalty-area bottom"></div>
+        </template>
+
+        <!-- Volleyball -->
+        <template v-if="sportType === 'volleyball'">
+          <div class="half-line"></div>
+          <div class="attack-line top"></div>
+          <div class="attack-line bottom"></div>
+        </template>
+
+        <!-- Padel / Tennis -->
+        <template v-if="sportType === 'padel' || sportType === 'tennis'">
+          <div class="net-line"></div>
+          <div class="service-line top"></div>
+          <div class="service-line bottom"></div>
+          <div class="center-service-line top"></div>
+          <div class="center-service-line bottom"></div>
+        </template>
       </div>
 
       <!-- Players -->
@@ -53,6 +72,10 @@ const props = defineProps({
   isEditable: {
     type: Boolean,
     default: false,
+  },
+  sportType: {
+    type: String,
+    default: "soccer",
   },
 });
 
@@ -197,8 +220,28 @@ const resetPositions = () => {
   position: relative;
   border-radius: 8px;
   overflow: hidden;
-  border: 2px solid #388e3c;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.field.soccer {
+  background-color: #4caf50;
+  border-color: #388e3c;
+}
+
+.field.volleyball {
+  background-color: #ffb74d; /* Wood-ish */
+  border-color: #f57c00;
+}
+
+.field.padel {
+  background-color: #2980b9; /* Blue court */
+  border-color: #1a5276;
+}
+
+.field.tennis {
+  background-color: #d35400; /* Clay */
+  border-color: #a04000;
 }
 
 .field-markings {
@@ -210,6 +253,7 @@ const resetPositions = () => {
   pointer-events: none;
 }
 
+/* Soccer Markings */
 .half-line {
   position: absolute;
   top: 50%;
@@ -247,6 +291,74 @@ const resetPositions = () => {
 .penalty-area.bottom {
   bottom: 0;
   border-bottom: none;
+}
+
+/* Volleyball Markings */
+.attack-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.attack-line.top {
+  top: 33%;
+}
+
+.attack-line.bottom {
+  bottom: 33%;
+}
+
+/* Padel / Tennis Markings */
+.net-line {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 4px; /* Thicker net */
+  background: rgba(255, 255, 255, 0.8);
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.service-line {
+  position: absolute;
+  left: 15%; /* Singles lines for tennis, or glass walls for padel */
+  right: 15%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.field.padel .service-line {
+  left: 0;
+  right: 0;
+}
+
+.service-line.top {
+  top: 30%;
+}
+
+.service-line.bottom {
+  bottom: 30%;
+}
+
+.center-service-line {
+  position: absolute;
+  left: 50%;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  transform: translateX(-50%);
+}
+
+.center-service-line.top {
+  top: 30%;
+  bottom: 50%;
+}
+
+.center-service-line.bottom {
+  top: 50%;
+  bottom: 30%;
 }
 
 .player-token {

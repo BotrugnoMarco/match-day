@@ -356,7 +356,12 @@
             <div class="section-title">
               <h3>Formation</h3>
             </div>
-            <FormationField :players="[...teamAParticipants, ...teamBParticipants]" :is-editable="isCreator" @save="saveFormation" />
+            <FormationField
+              :players="[...teamAParticipants, ...teamBParticipants]"
+              :is-editable="isCreator"
+              :sport-type="match.sport_type"
+              @save="saveFormation"
+            />
           </div>
         </div>
 

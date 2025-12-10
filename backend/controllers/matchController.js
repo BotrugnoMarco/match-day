@@ -648,3 +648,51 @@ exports.rejectJoinRequest = async (req, res) => {
         res.status(500).json({ error: 'Server error rejecting request' });
     }
 };
+
+// Delete a match
+exports.deleteMatch = async (req, res) => {
+    const matchId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        // Check if match exists and user is creator
+        const [matches] = await db.query('SELECT * FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+
+        if (matches[0].creator_id !== userId) {
+            return res.status(403).json({ error: 'Only the creator can delete the match' });
+        }
+
+        // Get participants to notify
+        const [participants] = await db.query('SELECT user_id FROM participants WHERE match_id = ? AND user_id != ?', [matchId, userId]);
+
+        // Delete match (cascade will delete participants, votes, etc. if configured, otherwise we might need to delete manually. 
+        // init.sql says ON DELETE CASCADE for participants, votes, notifications(related_match_id set null))
+        // Wait, notifications related_match_id is SET NULL. So notifications stay but link is gone.
+        // We want to send NEW notifications about deletion.
+
+        const io = req.app.get('io');
+
+        // Notify participants
+        for (const p of participants) {
+            await notificationController.createNotification(
+                p.user_id,
+                `Match #${matchId} (${matches[0].sport_type} on ${new Date(matches[0].date_time).toLocaleDateString()}) has been cancelled by the organizer.`,
+                'warning',
+                null,
+                io
+            );
+        }
+
+        await db.query('DELETE FROM matches WHERE id = ?', [matchId]);
+
+        io.emit('match_deleted', { matchId });
+
+        res.json({ message: 'Match deleted successfully' });
+    } catch (error) {
+        console.error('Delete match error:', error);
+        res.status(500).json({ error: 'Server error deleting match' });
+    }
+};

@@ -160,6 +160,10 @@
               <ion-icon :icon="starOutline" slot="start"></ion-icon>
               Start Voting
             </ion-button>
+            <ion-button expand="block" color="danger" @click="deleteMatch" class="action-btn ion-margin-top">
+              <ion-icon :icon="trashOutline" slot="start"></ion-icon>
+              Delete Match
+            </ion-button>
           </div>
           <div v-if="isCreator && match.status === 'voting'">
             <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="action-btn ion-margin-top">
@@ -457,6 +461,7 @@ import {
   beer,
   checkmarkOutline,
   closeOutline,
+  trashOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -713,6 +718,33 @@ const leaveMatch = async () => {
     console.error("Error leaving match:", error);
     alert("Failed to leave match: " + (error.response?.data?.error || error.message));
   }
+};
+
+const deleteMatch = async () => {
+  const alert = await alertController.create({
+    header: "Delete Match",
+    message: "Are you sure you want to delete this match? This action cannot be undone and all participants will be notified.",
+    buttons: [
+      {
+        text: "Cancel",
+        role: "cancel",
+      },
+      {
+        text: "Delete",
+        role: "destructive",
+        handler: async () => {
+          try {
+            await api.delete(`/matches/${route.params.id}`);
+            router.push("/matches");
+          } catch (error) {
+            console.error("Error deleting match:", error);
+            // show alert
+          }
+        },
+      },
+    ],
+  });
+  await alert.present();
 };
 
 const changeStatus = async (newStatus) => {

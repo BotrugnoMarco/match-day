@@ -2,8 +2,7 @@
 
 ## Eventi e Match
 
-- **Possibilità di eliminare un evento creato:** L'admin/creatore può cancellare una partita. Tutti i partecipanti ricevono una notifica e l'evento viene rimosso dal sistema.
-- **Annullamento partita:** L'admin può annullare una partita per cause maggiori (maltempo, campo chiuso, ecc.). Tutti i partecipanti vengono avvisati e la quota può essere rimborsata.
+- **Annullamento partita:** L'admin può annullare una partita per cause maggiori (maltempo, campo chiuso, ecc.). Tutti i partecipanti vengono avvisati.
 - **Modifica partita con notifica:** Quando l'admin modifica data, luogo o dettagli della partita, tutti i partecipanti ricevono una notifica (push/email) con le nuove informazioni.
 - **Logica dello "Strike":** Se un partecipante si ritira entro 18 ore dalla creazione dell'evento, riceve uno "strike" (penalità). Gli strike possono limitare la partecipazione futura o essere visibili nel profilo.
 - **Ricerca match per posizione:** Permette di filtrare e trovare partite aperte in base alla posizione geografica dell'utente o del campo. Utile per chi cerca eventi vicino a sé.

@@ -230,26 +230,12 @@
 
         <!-- Participants / Teams -->
         <div class="list-section">
-          <div class="section-title-row">
-            <div class="section-title">
-              <h3>Participants</h3>
-              <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
-            </div>
-            <ion-segment v-model="viewMode" class="view-segment" v-if="hasTeams">
-              <ion-segment-button value="list">
-                <ion-icon :icon="listOutline"></ion-icon>
-              </ion-segment-button>
-              <ion-segment-button value="field">
-                <ion-icon :icon="footballOutline"></ion-icon>
-              </ion-segment-button>
-            </ion-segment>
+          <div class="section-title">
+            <h3>Participants</h3>
+            <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
           </div>
 
-          <div v-if="viewMode === 'field' && hasTeams" class="field-container">
-            <FormationField :players="[...teamAParticipants, ...teamBParticipants]" :is-editable="isCreator" @save="saveFormation" />
-          </div>
-
-          <div v-else-if="hasTeams" class="teams-container">
+          <div v-if="hasTeams" class="teams-container">
             <!-- Team A -->
             <div class="team-block">
               <div class="team-header-label team-a">TEAM A</div>
@@ -353,6 +339,13 @@
               </ion-item>
             </ion-list>
           </div>
+
+          <div v-if="hasTeams" class="field-container ion-margin-top">
+            <div class="section-title">
+              <h3>Formation</h3>
+            </div>
+            <FormationField :players="[...teamAParticipants, ...teamBParticipants]" :is-editable="isCreator" @save="saveFormation" />
+          </div>
         </div>
 
         <!-- Results Section -->
@@ -433,8 +426,6 @@ import {
   alertController,
   IonIcon,
   IonSpinner,
-  IonSegment,
-  IonSegmentButton,
 } from "@ionic/vue";
 import {
   locationOutline,
@@ -448,8 +439,6 @@ import {
   closeCircleOutline,
   calendarOutline,
   football,
-  footballOutline,
-  listOutline,
   basketball,
   tennisball,
   baseballOutline,
@@ -475,7 +464,6 @@ const match = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
 const isInviteModalOpen = ref(false);
-const viewMode = ref("list");
 const currentUser = computed(() => store.getters.currentUser);
 
 const formatDate = (dateString) => {

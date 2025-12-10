@@ -52,8 +52,20 @@
 
               <ion-item lines="none" class="custom-item">
                 <ion-label position="stacked">Location</ion-label>
-                <ion-input v-model="location" placeholder="Where are we playing?"></ion-input>
+                <ion-input v-model="location" placeholder="Where are we playing?" :debounce="1000"></ion-input>
               </ion-item>
+
+              <div class="map-preview-container" v-if="location">
+                <iframe
+                  width="100%"
+                  height="150"
+                  style="border: 0; border-radius: var(--radius-md)"
+                  loading="lazy"
+                  allowfullscreen
+                  :src="`https://maps.google.com/maps?q=${encodeURIComponent(location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`"
+                >
+                </iframe>
+              </div>
             </div>
           </div>
 
@@ -169,6 +181,7 @@ import {
   water,
   lockClosedOutline,
   keyOutline,
+  mapOutline,
 } from "ionicons/icons";
 
 const router = useRouter();
@@ -449,6 +462,10 @@ const createMatch = async () => {
   color: var(--ion-color-medium);
   font-size: 0.85rem !important;
   margin-bottom: var(--space-2);
+}
+
+.map-preview-container {
+  padding: 0 var(--space-4) var(--space-4);
 }
 
 .toggle-item ion-label {

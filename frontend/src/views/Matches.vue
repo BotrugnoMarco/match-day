@@ -40,7 +40,13 @@
                 <div class="sport-icon-wrapper" :class="match.sport_type">
                   <ion-icon :icon="getSportIcon(match.sport_type)"></ion-icon>
                 </div>
-                <span class="sport-name">{{ match.sport_type }}</span>
+                <div class="sport-details">
+                  <span class="sport-name">{{ match.sport_type }}</span>
+                  <div class="privacy-indicator">
+                    <ion-icon :icon="match.is_private ? lockClosedOutline : globeOutline" class="privacy-icon"></ion-icon>
+                    <span class="privacy-text">{{ match.is_private ? "Private" : "Public" }}</span>
+                  </div>
+                </div>
               </div>
               <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ match.status }}</ion-badge>
             </div>
@@ -132,6 +138,8 @@ import {
   umbrella,
   water,
   chevronForwardOutline,
+  lockClosedOutline,
+  globeOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -339,6 +347,24 @@ const createMatch = () => {
   text-transform: capitalize;
   font-size: 1rem;
   color: var(--ion-color-dark);
+  line-height: 1.2;
+}
+
+.sport-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-indicator {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+}
+
+.privacy-icon {
+  font-size: 0.8rem;
 }
 
 .status-badge {

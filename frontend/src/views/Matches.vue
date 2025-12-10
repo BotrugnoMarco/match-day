@@ -246,7 +246,7 @@ const createMatch = () => {
 
 <style scoped>
 .page-content {
-  --background: #ffffff;
+  /* --background: #ffffff; */
   overflow-y: auto;
 }
 

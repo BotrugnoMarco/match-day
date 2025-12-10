@@ -507,7 +507,7 @@ const getSkillColor = (rating) => {
 
 <style scoped>
 .profile-content {
-  --background: #ffffff;
+  /* --background: #ffffff; */
   overflow-y: auto;
 }
 

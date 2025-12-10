@@ -3,7 +3,6 @@
 ## Eventi e Match
 
 - **Possibilità di eliminare un evento creato:** L'admin/creatore può cancellare una partita. Tutti i partecipanti ricevono una notifica e l'evento viene rimosso dal sistema.
-- **Eventi privati:** Un match può essere pubblico (chiunque può partecipare) o privato (accesso solo tramite codice). Chi non ha il codice può inviare una richiesta di partecipazione che deve essere approvata dall'admin. Questo garantisce privacy e controllo sugli invitati.
 - **Annullamento partita:** L'admin può annullare una partita per cause maggiori (maltempo, campo chiuso, ecc.). Tutti i partecipanti vengono avvisati e la quota può essere rimborsata.
 - **Modifica partita con notifica:** Quando l'admin modifica data, luogo o dettagli della partita, tutti i partecipanti ricevono una notifica (push/email) con le nuove informazioni.
 - **Logica dello "Strike":** Se un partecipante si ritira entro 18 ore dalla creazione dell'evento, riceve uno "strike" (penalità). Gli strike possono limitare la partecipazione futura o essere visibili nel profilo.

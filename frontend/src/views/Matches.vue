@@ -104,6 +104,7 @@ import {
   IonBadge,
   IonLabel,
   IonAvatar,
+  onIonViewWillEnter,
 } from "@ionic/vue";
 import {
   add,
@@ -165,10 +166,16 @@ const getStatusColor = (status) => {
   }
 };
 
-onMounted(() => {
-  store.dispatch("fetchMatches");
+onIonViewWillEnter(() => {
+  if (filter.value === "mine") {
+    store.dispatch("fetchMyMatches");
+  } else {
+    store.dispatch("fetchMatches");
+  }
   store.dispatch("fetchNotifications");
+});
 
+onMounted(() => {
   socket.on("match_created", () => {
     store.dispatch("fetchMatches");
   });

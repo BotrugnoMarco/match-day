@@ -13,7 +13,7 @@
 
         <!-- Volleyball -->
         <template v-if="sportType === 'volleyball'">
-          <div class="half-line"></div>
+          <div class="net-line"></div>
           <div class="attack-line top"></div>
           <div class="attack-line bottom"></div>
         </template>
@@ -230,16 +230,19 @@ const resetPositions = () => {
 }
 
 .field.volleyball {
-  background-color: #ffb74d; /* Wood-ish */
-  border-color: #f57c00;
+  aspect-ratio: 0.5;
+  background-color: #ffcc80; /* Orange Court */
+  border-color: #e65100;
 }
 
 .field.padel {
+  aspect-ratio: 0.5;
   background-color: #2980b9; /* Blue court */
   border-color: #1a5276;
 }
 
 .field.tennis {
+  aspect-ratio: 0.5;
   background-color: #d35400; /* Clay */
   border-color: #a04000;
 }
@@ -299,15 +302,15 @@ const resetPositions = () => {
   left: 0;
   right: 0;
   height: 2px;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.8);
 }
 
 .attack-line.top {
-  top: 33%;
+  top: 33.33%;
 }
 
 .attack-line.bottom {
-  bottom: 33%;
+  bottom: 33.33%;
 }
 
 /* Padel / Tennis Markings */

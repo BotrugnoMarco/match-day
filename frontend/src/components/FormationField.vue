@@ -289,14 +289,14 @@ const resetPositions = () => {
 
 .jersey-number {
   position: absolute;
-  top: -5px;
-  right: -5px;
+  top: -8px;
+  right: -8px;
   background: #222428;
   color: white;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;

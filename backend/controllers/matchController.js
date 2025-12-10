@@ -3,7 +3,7 @@ const notificationController = require('./notificationController');
 
 // Create a new match
 exports.createMatch = async (req, res) => {
-    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers } = req.body;
+    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code } = req.body;
     const creator_id = req.user.id;
 
     if (!date_time || !sport_type) {
@@ -12,8 +12,8 @@ exports.createMatch = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, is_covered, has_showers, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, creator_id]
+            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, creator_id]
         );
 
         // Emit socket event
@@ -27,6 +27,7 @@ exports.createMatch = async (req, res) => {
             max_players: max_players || 10,
             is_covered: is_covered || false,
             has_showers: has_showers || false,
+            is_private: is_private || false,
             status: 'open',
             creator_id
         });
@@ -92,19 +93,44 @@ exports.getMatchById = async (req, res) => {
 exports.joinMatch = async (req, res) => {
     const matchId = req.params.id;
     const userId = req.user.id; // From authMiddleware
-    const { team, status } = req.body; // Optional: team preference, status (maybe/confirmed)
+    const { team, status, access_code } = req.body; // Optional: team preference, status (maybe/confirmed), access_code
 
     try {
         // Check if match exists and is open
-        const [matches] = await db.query('SELECT status, max_players FROM matches WHERE id = ?', [matchId]);
+        const [matches] = await db.query('SELECT status, max_players, is_private, access_code, creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) {
             return res.status(404).json({ error: 'Match not found' });
         }
-        if (matches[0].status !== 'open') {
+        const match = matches[0];
+
+        if (match.status !== 'open') {
             return res.status(400).json({ error: 'Match is not open for registration' });
         }
 
-        const maxPlayers = matches[0].max_players || 10;
+        let newStatus = status || 'confirmed';
+
+        // Private match logic
+        if (match.is_private && userId !== match.creator_id) {
+            // Check if friend
+            const [friendship] = await db.query(
+                'SELECT * FROM friendships WHERE ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?)) AND status = "accepted"',
+                [userId, match.creator_id, match.creator_id, userId]
+            );
+            const isFriend = friendship.length > 0;
+
+            // Check access code
+            const isCodeCorrect = access_code && access_code === match.access_code;
+
+            if (!isFriend && !isCodeCorrect) {
+                if (access_code && !isCodeCorrect) {
+                    return res.status(403).json({ error: 'Invalid access code' });
+                }
+                // Requesting to join
+                newStatus = 'pending_approval';
+            }
+        }
+
+        const maxPlayers = match.max_players || 10;
 
         // Check if user is already a participant
         const [existing] = await db.query(
@@ -112,9 +138,7 @@ exports.joinMatch = async (req, res) => {
             [matchId, userId]
         );
 
-        let newStatus = status || 'confirmed';
-
-        // Check for waitlist if confirming
+        // Check for waitlist if confirming (and not pending approval)
         if (newStatus === 'confirmed') {
             const [counts] = await db.query(
                 "SELECT COUNT(*) as count FROM participants WHERE match_id = ? AND status = 'confirmed'",
@@ -130,6 +154,11 @@ exports.joinMatch = async (req, res) => {
         }
 
         if (existing.length > 0) {
+            // Don't downgrade status if already confirmed
+            if (existing[0].status === 'confirmed' && newStatus === 'pending_approval') {
+                newStatus = 'confirmed';
+            }
+
             // Update existing participation
             await db.query(
                 'UPDATE participants SET status = ?, team = ? WHERE id = ?',
@@ -139,7 +168,7 @@ exports.joinMatch = async (req, res) => {
             const io = req.app.get('io');
             io.emit('match_updated', { matchId });
 
-            return res.json({ message: newStatus === 'waitlist' ? 'Added to waitlist' : 'Participation updated', status: newStatus });
+            return res.json({ message: newStatus === 'waitlist' ? 'Added to waitlist' : (newStatus === 'pending_approval' ? 'Request sent' : 'Participation updated'), status: newStatus });
         }
 
         // Insert new participant
@@ -151,7 +180,7 @@ exports.joinMatch = async (req, res) => {
         const io = req.app.get('io');
         io.emit('match_updated', { matchId });
 
-        res.status(201).json({ message: newStatus === 'waitlist' ? 'Added to waitlist' : 'Joined match successfully', status: newStatus });
+        res.status(201).json({ message: newStatus === 'waitlist' ? 'Added to waitlist' : (newStatus === 'pending_approval' ? 'Request sent' : 'Joined match successfully'), status: newStatus });
     } catch (error) {
         console.error('Join match error:', error);
         res.status(500).json({ error: 'Server error joining match' });
@@ -512,5 +541,71 @@ exports.togglePaymentStatus = async (req, res) => {
     } catch (error) {
         console.error('Toggle payment status error:', error);
         res.status(500).json({ error: 'Server error updating payment status' });
+    }
+};
+
+// Approve join request
+exports.approveJoinRequest = async (req, res) => {
+    const matchId = req.params.id;
+    const { userId } = req.body; // User to approve
+    const adminId = req.user.id;
+
+    try {
+        // Check if match exists and user is creator
+        const [matches] = await db.query('SELECT creator_id, max_players FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
+        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can approve requests' });
+
+        const maxPlayers = matches[0].max_players;
+
+        // Check participant status
+        const [participant] = await db.query('SELECT * FROM participants WHERE match_id = ? AND user_id = ?', [matchId, userId]);
+        if (participant.length === 0) return res.status(404).json({ error: 'Request not found' });
+        if (participant[0].status !== 'pending_approval') return res.status(400).json({ error: 'User is not pending approval' });
+
+        // Check capacity
+        const [counts] = await db.query("SELECT COUNT(*) as count FROM participants WHERE match_id = ? AND status = 'confirmed'", [matchId]);
+        let newStatus = 'confirmed';
+        if (counts[0].count >= maxPlayers) {
+            newStatus = 'waitlist';
+        }
+
+        await db.query('UPDATE participants SET status = ? WHERE id = ?', [newStatus, participant[0].id]);
+
+        // Notify user
+        const io = req.app.get('io');
+        await notificationController.createNotification(userId, `Your request to join match #${matchId} has been approved!`, 'success', matchId, io);
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Request approved', status: newStatus });
+    } catch (error) {
+        console.error('Approve request error:', error);
+        res.status(500).json({ error: 'Server error approving request' });
+    }
+};
+
+// Reject join request
+exports.rejectJoinRequest = async (req, res) => {
+    const matchId = req.params.id;
+    const { userId } = req.body;
+    const adminId = req.user.id;
+
+    try {
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
+        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can reject requests' });
+
+        // Delete participation
+        await db.query('DELETE FROM participants WHERE match_id = ? AND user_id = ? AND status = "pending_approval"', [matchId, userId]);
+
+        // Notify user
+        const io = req.app.get('io');
+        await notificationController.createNotification(userId, `Your request to join match #${matchId} has been declined.`, 'error', matchId, io);
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Request rejected' });
+    } catch (error) {
+        console.error('Reject request error:', error);
+        res.status(500).json({ error: 'Server error rejecting request' });
     }
 };

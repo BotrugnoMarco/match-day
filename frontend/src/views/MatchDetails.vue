@@ -169,6 +169,32 @@
           </div>
         </div>
 
+        <!-- Pending Requests (Creator Only) -->
+        <div v-if="isCreator && pendingParticipants.length > 0" class="section-header">
+          <h3>Pending Requests</h3>
+          <ion-badge color="tertiary">{{ pendingParticipants.length }}</ion-badge>
+        </div>
+
+        <div class="custom-card participants-list" v-if="isCreator && pendingParticipants.length > 0">
+          <ion-list lines="none">
+            <ion-item v-for="p in pendingParticipants" :key="p.id">
+              <ion-avatar slot="start">
+                <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              </ion-avatar>
+              <ion-label>
+                <h2>{{ p.username }}</h2>
+                <p>Wants to join</p>
+              </ion-label>
+              <ion-button slot="end" color="success" size="small" @click="approveRequest(p.user_id)">
+                <ion-icon :icon="checkmarkOutline" slot="icon-only"></ion-icon>
+              </ion-button>
+              <ion-button slot="end" color="danger" size="small" @click="rejectRequest(p.user_id)">
+                <ion-icon :icon="closeOutline" slot="icon-only"></ion-icon>
+              </ion-button>
+            </ion-item>
+          </ion-list>
+        </div>
+
         <!-- Waitlist -->
         <div v-if="waitlistParticipants.length > 0" class="section-header">
           <h3>Waitlist</h3>
@@ -429,6 +455,8 @@ import {
   personOutline,
   beerOutline,
   beer,
+  checkmarkOutline,
+  closeOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -456,8 +484,12 @@ const waitlistParticipants = computed(() => {
   return match.value?.participants?.filter((p) => p.status === "waitlist") || [];
 });
 
+const pendingParticipants = computed(() => {
+  return match.value?.participants?.filter((p) => p.status === "pending_approval") || [];
+});
+
 const activeParticipants = computed(() => {
-  return match.value?.participants?.filter((p) => p.status !== "waitlist") || [];
+  return match.value?.participants?.filter((p) => p.status !== "waitlist" && p.status !== "pending_approval") || [];
 });
 
 const hasTeams = computed(() => {
@@ -626,9 +658,42 @@ const fetchMyVotes = async () => {
 
 const joinMatch = async () => {
   try {
-    const response = await api.post(`/matches/${route.params.id}/join`, { status: "confirmed" });
+    let accessCode = null;
+    if (match.value.is_private && !isCreator.value) {
+      const alert = await alertController.create({
+        header: "Private Match",
+        message: "Enter access code to join immediately. If you are friends with the organizer, you can leave it blank to join directly.",
+        inputs: [
+          {
+            name: "code",
+            type: "text",
+            placeholder: "Access Code",
+          },
+        ],
+        buttons: [
+          {
+            text: "Cancel",
+            role: "cancel",
+          },
+          {
+            text: "Join",
+            handler: (data) => {
+              return data;
+            },
+          },
+        ],
+      });
+      await alert.present();
+      const { role, data } = await alert.onDidDismiss();
+      if (role === "cancel") return;
+      accessCode = data.values.code;
+    }
+
+    const response = await api.post(`/matches/${route.params.id}/join`, { status: "confirmed", access_code: accessCode });
     if (response.data.status === "waitlist") {
       alert("Match is full. You have been added to the waitlist.");
+    } else if (response.data.status === "pending_approval") {
+      alert("Request sent to the organizer.");
     }
     await fetchMatch(); // Refresh data
   } catch (error) {
@@ -727,6 +792,26 @@ const togglePayment = async (participant) => {
   } catch (error) {
     console.error("Error toggling payment:", error);
     alert("Failed to update payment status");
+  }
+};
+
+const approveRequest = async (userId) => {
+  try {
+    await api.post(`/matches/${route.params.id}/approve`, { userId });
+    await fetchMatch();
+  } catch (error) {
+    console.error("Error approving request:", error);
+    alert("Failed to approve request");
+  }
+};
+
+const rejectRequest = async (userId) => {
+  try {
+    await api.post(`/matches/${route.params.id}/reject`, { userId });
+    await fetchMatch();
+  } catch (error) {
+    console.error("Error rejecting request:", error);
+    alert("Failed to reject request");
   }
 };
 

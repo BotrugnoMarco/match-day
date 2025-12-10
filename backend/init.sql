@@ -43,6 +43,8 @@ CREATE TABLE IF NOT EXISTS matches (
     max_players INT DEFAULT 10,
     is_covered BOOLEAN DEFAULT FALSE,
     has_showers BOOLEAN DEFAULT FALSE,
+    is_private BOOLEAN DEFAULT FALSE,
+    access_code VARCHAR(50),
     creator_id INT,
     FOREIGN KEY (creator_id) REFERENCES users(id) ON DELETE
     SET NULL
@@ -53,7 +55,13 @@ CREATE TABLE IF NOT EXISTS participants (
     match_id INT,
     user_id INT,
     team ENUM('A', 'B'),
-    status ENUM('confirmed', 'declined', 'maybe', 'waitlist') DEFAULT 'maybe',
+    status ENUM(
+        'confirmed',
+        'declined',
+        'maybe',
+        'waitlist',
+        'pending_approval'
+    ) DEFAULT 'maybe',
     has_paid BOOLEAN DEFAULT FALSE,
     post_match BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,

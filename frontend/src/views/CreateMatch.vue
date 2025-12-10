@@ -79,6 +79,18 @@
             </ion-item>
           </div>
 
+          <!-- Private Match Options -->
+          <div class="form-group">
+            <ion-item lines="none" class="custom-item">
+              <ion-icon :icon="lockClosedOutline" slot="start" class="form-icon"></ion-icon>
+              <ion-toggle v-model="isPrivate">Private Match</ion-toggle>
+            </ion-item>
+            <ion-item v-if="isPrivate" lines="none" class="custom-item animate-item">
+              <ion-icon :icon="keyOutline" slot="start" class="form-icon"></ion-icon>
+              <ion-input v-model="accessCode" label="Access Code" label-placement="floating" placeholder="Secret code"></ion-input>
+            </ion-item>
+          </div>
+
           <div class="ion-padding-top ion-margin-top">
             <ion-button expand="block" type="submit" class="create-btn" size="large"> Create Match </ion-button>
           </div>
@@ -122,6 +134,8 @@ import {
   baseballOutline,
   umbrella,
   water,
+  lockClosedOutline,
+  keyOutline,
 } from "ionicons/icons";
 
 const router = useRouter();
@@ -132,6 +146,8 @@ const priceTotal = ref("");
 const maxPlayers = ref(10);
 const isCovered = ref(false);
 const hasShowers = ref(false);
+const isPrivate = ref(false);
+const accessCode = ref("");
 
 const sports = [
   { value: "soccer", label: "Soccer", icon: football },
@@ -170,6 +186,8 @@ const createMatch = async () => {
       price_total: priceTotal.value,
       is_covered: isCovered.value,
       has_showers: hasShowers.value,
+      is_private: isPrivate.value,
+      access_code: accessCode.value,
     });
     router.push(`/matches/${response.data.matchId}`);
   } catch (error) {

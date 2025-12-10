@@ -189,7 +189,29 @@ const createMatch = async () => {
   const isoString = dateTime.value;
   const datePart = isoString.split("T")[0];
   const timePart = isoString.split("T")[1].substring(0, 5); // HH:mm
-  const formattedDate = `${datePart} ${timePart}:00`;
+  // We append 'Z' to force the backend to treat this as UTC time,
+  // so when it's retrieved it comes back as the same UTC time,
+  // and the frontend converts it to local time which will be correct
+  // IF the user selected the time in their local time.
+
+  // WAIT. If I send "2025-12-10 10:00:00" to MySQL.
+  // And I set timezone: '+00:00' in db config.
+  // MySQL stores "2025-12-10 10:00:00".
+  // When reading, it returns "2025-12-10T10:00:00.000Z".
+  // Frontend new Date("...Z") -> 11:00 Local.
+
+  // So if I want the user to see 10:00 Local.
+  // I need the frontend to receive something that converts to 10:00 Local.
+  // That is "09:00Z".
+
+  // So I should store "09:00" in the DB?
+  // If I store "09:00" in DB.
+  // Read as "09:00Z".
+  // Display as "10:00 Local". Correct.
+
+  // So I need to convert the input time to UTC before sending.
+  const d = new Date(dateTime.value);
+  const formattedDate = d.toISOString().slice(0, 19).replace("T", " ");
 
   try {
     const response = await api.post("/matches", {

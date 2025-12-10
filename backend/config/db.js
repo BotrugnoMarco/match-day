@@ -22,7 +22,8 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME || 'match_day',
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    queueLimit: 0,
+    timezone: '+00:00' // Treat data as UTC to avoid automatic conversions
 });
 
 module.exports = pool;

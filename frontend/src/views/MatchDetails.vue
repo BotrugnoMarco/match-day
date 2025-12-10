@@ -230,12 +230,26 @@
 
         <!-- Participants / Teams -->
         <div class="list-section">
-          <div class="section-title">
-            <h3>Participants</h3>
-            <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
+          <div class="section-title-row">
+            <div class="section-title">
+              <h3>Participants</h3>
+              <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
+            </div>
+            <ion-segment v-model="viewMode" class="view-segment" v-if="hasTeams">
+              <ion-segment-button value="list">
+                <ion-icon :icon="listOutline"></ion-icon>
+              </ion-segment-button>
+              <ion-segment-button value="field">
+                <ion-icon :icon="footballOutline"></ion-icon>
+              </ion-segment-button>
+            </ion-segment>
           </div>
 
-          <div v-if="hasTeams" class="teams-container">
+          <div v-if="viewMode === 'field' && hasTeams" class="field-container">
+            <FormationField :players="[...teamAParticipants, ...teamBParticipants]" :is-editable="isCreator" @save="saveFormation" />
+          </div>
+
+          <div v-else-if="hasTeams" class="teams-container">
             <!-- Team A -->
             <div class="team-block">
               <div class="team-header-label team-a">TEAM A</div>
@@ -419,6 +433,8 @@ import {
   alertController,
   IonIcon,
   IonSpinner,
+  IonSegment,
+  IonSegmentButton,
 } from "@ionic/vue";
 import {
   locationOutline,
@@ -432,6 +448,8 @@ import {
   closeCircleOutline,
   calendarOutline,
   football,
+  footballOutline,
+  listOutline,
   basketball,
   tennisball,
   baseballOutline,
@@ -448,6 +466,7 @@ import {
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
+import FormationField from "../components/FormationField.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -456,6 +475,7 @@ const match = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
 const isInviteModalOpen = ref(false);
+const viewMode = ref("list");
 const currentUser = computed(() => store.getters.currentUser);
 
 const formatDate = (dateString) => {
@@ -835,6 +855,16 @@ const movePlayer = async (userId, team) => {
   }
 };
 
+const saveFormation = async (positions) => {
+  try {
+    await api.put(`/matches/${match.value.id}/positions`, { positions });
+    // Socket will update
+  } catch (error) {
+    console.error("Error saving formation:", error);
+    alert("Failed to save formation");
+  }
+};
+
 const approveRequest = async (userId) => {
   try {
     await api.post(`/matches/${route.params.id}/approve`, { userId });
@@ -1123,12 +1153,25 @@ onUnmounted(() => {
   margin-bottom: 24px;
 }
 
+.section-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+
 .section-title {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 12px;
-  padding: 0 4px;
+  gap: 12px;
+  margin-bottom: 0;
+  padding: 0;
+}
+
+.view-segment {
+  width: 100px;
+  min-height: 32px;
 }
 
 .section-title h3 {

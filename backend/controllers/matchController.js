@@ -773,3 +773,33 @@ exports.updateMatch = async (req, res) => {
         res.status(500).json({ error: 'Server error updating match' });
     }
 };
+
+// Update player positions (formation)
+exports.updatePlayerPositions = async (req, res) => {
+    const matchId = req.params.id;
+    const { positions } = req.body; // Array of { userId, x, y }
+    const adminId = req.user.id;
+
+    try {
+        // Check if match exists and user is creator
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
+        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can update formation' });
+
+        // Update positions
+        for (const pos of positions) {
+            await db.query(
+                'UPDATE participants SET x_pos = ?, y_pos = ? WHERE match_id = ? AND user_id = ?',
+                [pos.x, pos.y, matchId, pos.userId]
+            );
+        }
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Formation updated successfully' });
+    } catch (error) {
+        console.error('Update formation error:', error);
+        res.status(500).json({ error: 'Server error updating formation' });
+    }
+};

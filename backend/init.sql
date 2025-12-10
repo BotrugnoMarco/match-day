@@ -64,6 +64,8 @@ CREATE TABLE IF NOT EXISTS participants (
     ) DEFAULT 'maybe',
     has_paid BOOLEAN DEFAULT FALSE,
     post_match BOOLEAN DEFAULT FALSE,
+    x_pos DECIMAL(5, 2) DEFAULT NULL,
+    y_pos DECIMAL(5, 2) DEFAULT NULL,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE(match_id, user_id)

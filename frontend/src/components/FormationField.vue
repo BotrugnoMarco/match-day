@@ -25,7 +25,7 @@
           <ion-avatar class="token-avatar">
             <img :src="player.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
           </ion-avatar>
-          <span class="player-name">{{ getInitials(player.username) }}</span>
+          <span class="player-name">{{ getPlayerLabel(player.username) }}</span>
         </div>
       </div>
     </div>
@@ -106,8 +106,10 @@ watch(
   { immediate: true, deep: true }
 );
 
-const getInitials = (name) => {
-  return name ? name.substring(0, 2).toUpperCase() : "??";
+const getPlayerLabel = (name) => {
+  if (!name) return "??";
+  // Return full name but truncated if too long
+  return name.length > 10 ? name.substring(0, 9) + "." : name;
 };
 
 // Drag and Drop Logic

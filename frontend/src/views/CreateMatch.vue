@@ -178,19 +178,18 @@ const createMatch = async () => {
   }
 
   // Format date to local MySQL format (YYYY-MM-DD HH:mm:ss) to avoid timezone shifts
-  const d = new Date(dateTime.value);
-  const formattedDate =
-    d.getFullYear() +
-    "-" +
-    String(d.getMonth() + 1).padStart(2, "0") +
-    "-" +
-    String(d.getDate()).padStart(2, "0") +
-    " " +
-    String(d.getHours()).padStart(2, "0") +
-    ":" +
-    String(d.getMinutes()).padStart(2, "0") +
-    ":" +
-    String(d.getSeconds()).padStart(2, "0");
+  // We need to adjust for the timezone offset manually because new Date(isoString) creates a date object in local time,
+  // but getHours() returns local hours. However, the issue might be that the ISO string from ion-datetime
+  // is already in a specific offset or UTC.
+  // Let's try a simpler approach: just send the ISO string but let the backend handle it, OR
+  // force the string to be what the user sees.
+
+  // The ion-datetime value is an ISO string (e.g., 2023-10-27T10:00:00+02:00).
+  // We want to extract "2023-10-27 10:00:00" exactly as written.
+  const isoString = dateTime.value;
+  const datePart = isoString.split("T")[0];
+  const timePart = isoString.split("T")[1].substring(0, 5); // HH:mm
+  const formattedDate = `${datePart} ${timePart}:00`;
 
   try {
     const response = await api.post("/matches", {

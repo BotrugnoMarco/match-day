@@ -283,7 +283,7 @@ const createMatch = () => {
 
 .matches-container {
   margin-top: -1.25rem;
-  padding-bottom: 6rem;
+  padding-bottom: 2rem;
 }
 
 .match-card {

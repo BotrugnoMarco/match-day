@@ -7,12 +7,45 @@
         </ion-buttons>
         <ion-title>Profile</ion-title>
         <ion-buttons slot="end">
+          <ion-button @click="openEditModal" v-if="isOwnProfile">
+            <ion-icon :icon="createOutline"></ion-icon>
+          </ion-button>
           <ion-button @click="logout" v-if="isOwnProfile">
             <ion-icon :icon="logOutOutline"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
+
+    <ion-modal :is-open="isEditModalOpen" @didDismiss="closeEditModal">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>Edit Profile</ion-title>
+          <ion-buttons slot="end">
+            <ion-button @click="closeEditModal">Close</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+        <ion-item>
+          <ion-label position="stacked">Status</ion-label>
+          <ion-select v-model="editForm.status" interface="popover">
+            <ion-select-option value="available">Available</ion-select-option>
+            <ion-select-option value="injured">Injured</ion-select-option>
+            <ion-select-option value="unavailable">Unavailable</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Preferred Jersey Number</ion-label>
+          <ion-input type="number" v-model="editForm.preferred_number" placeholder="e.g. 10"></ion-input>
+        </ion-item>
+
+        <div class="ion-padding-top">
+          <ion-button expand="block" @click="saveProfile">Save Changes</ion-button>
+        </div>
+      </ion-content>
+    </ion-modal>
 
     <ion-content class="profile-content">
       <!-- Profile Header with Gradient -->
@@ -33,28 +66,17 @@
               <ion-badge color="light" class="role-badge">{{ user?.role?.toUpperCase() }}</ion-badge>
 
               <div class="status-section">
-                <ion-item lines="none" class="status-selector" v-if="isOwnProfile">
-                  <ion-select v-model="userStatus" interface="popover" class="custom-select">
-                    <ion-select-option value="available">Available</ion-select-option>
-                    <ion-select-option value="injured">Injured</ion-select-option>
-                    <ion-select-option value="unavailable">Unavailable</ion-select-option>
-                  </ion-select>
-                </ion-item>
-                <ion-badge v-else :color="getStatusColor(user?.status)" class="status-badge">
+                <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
                   {{ user?.status?.toUpperCase() || "AVAILABLE" }}
                 </ion-badge>
               </div>
             </div>
 
             <!-- Preferred Number -->
-            <div class="preferred-number-section" v-if="isOwnProfile || user?.preferred_number">
-              <ion-item lines="none" class="number-selector" v-if="isOwnProfile">
-                <ion-label position="stacked" color="light">Jersey #</ion-label>
-                <ion-input type="number" v-model="preferredNumber" placeholder="00" class="custom-input"></ion-input>
-              </ion-item>
-              <div v-else class="number-display">
+            <div class="preferred-number-section" v-if="user?.preferred_number">
+              <div class="number-display">
                 <span class="number-label">Jersey #</span>
-                <span class="number-value">{{ user?.preferred_number || "-" }}</span>
+                <span class="number-value">{{ user?.preferred_number }}</span>
               </div>
             </div>
           </div>
@@ -229,11 +251,14 @@ import {
   IonProgressBar,
   IonSelect,
   IonSelectOption,
+  IonModal,
+  IonInput,
   toastController,
 } from "@ionic/vue";
 import {
   camera,
   star,
+  createOutline,
   logOutOutline,
   football,
   trophy,
@@ -264,31 +289,52 @@ const user = computed(() => (isOwnProfile.value ? currentUser.value : viewedUser
 const friendshipStatus = ref("none"); // none, sent, received, accepted
 const friendshipId = ref(null);
 
-const userStatus = computed({
-  get: () => user.value?.status || "available",
-  set: (val) => {
-    if (isOwnProfile.value) {
-      store.dispatch("updateUserStatus", val);
-    }
-  },
+const isEditModalOpen = ref(false);
+const editForm = ref({
+  status: "available",
+  preferred_number: null,
 });
 
-const preferredNumber = computed({
-  get: () => user.value?.preferred_number,
-  set: async (val) => {
-    if (isOwnProfile.value) {
-      try {
-        await api.put("/users/profile", { preferred_number: val });
-        // Update local store
-        const updatedUser = { ...currentUser.value, preferred_number: val };
-        store.commit("SET_USER", updatedUser);
-      } catch (error) {
-        console.error("Error updating preferred number:", error);
-        presentToast("Failed to update jersey number", "danger");
-      }
+const openEditModal = () => {
+  editForm.value = {
+    status: user.value?.status || "available",
+    preferred_number: user.value?.preferred_number,
+  };
+  isEditModalOpen.value = true;
+};
+
+const closeEditModal = () => {
+  isEditModalOpen.value = false;
+};
+
+const saveProfile = async () => {
+  try {
+    // Update status
+    if (editForm.value.status !== user.value.status) {
+      await store.dispatch("updateUserStatus", editForm.value.status);
     }
-  },
-});
+
+    // Update number
+    let newNumber = editForm.value.preferred_number;
+    if (newNumber === "" || newNumber === null || newNumber === undefined) {
+      newNumber = null;
+    } else {
+      newNumber = parseInt(newNumber);
+    }
+
+    if (newNumber !== user.value.preferred_number) {
+      await api.put("/users/profile", { preferred_number: newNumber });
+      const updatedUser = { ...currentUser.value, preferred_number: newNumber };
+      store.commit("SET_USER", updatedUser);
+    }
+
+    presentToast("Profile updated successfully");
+    closeEditModal();
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    presentToast("Failed to update profile", "danger");
+  }
+};
 
 const getStatusColor = (status) => {
   switch (status) {

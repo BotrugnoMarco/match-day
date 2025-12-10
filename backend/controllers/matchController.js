@@ -16,10 +16,10 @@ exports.createMatch = async (req, res) => {
             [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, creator_id]
         );
 
-        // Automatically add creator as participant
+        // Automatically add creator as participant and admin
         await db.query(
-            'INSERT INTO participants (match_id, user_id, status) VALUES (?, ?, ?)',
-            [result.insertId, creator_id, 'confirmed']
+            'INSERT INTO participants (match_id, user_id, status, is_admin) VALUES (?, ?, ?, ?)',
+            [result.insertId, creator_id, 'confirmed', true]
         );
 
         // Emit socket event
@@ -274,16 +274,20 @@ exports.updateMatchStatus = async (req, res) => {
     }
 
     try {
-        // Check if user is creator
+        // Check if user is creator or admin
         const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) {
             return res.status(404).json({ error: 'Match not found' });
         }
 
-        // Allow if user is creator OR if creator_id is null (legacy matches) allow anyone or maybe restrict to admin? 
-        // For now, let's enforce creator check only if creator_id exists.
-        if (matches[0].creator_id && matches[0].creator_id !== userId) {
-            return res.status(403).json({ error: 'Only the match creator can update status' });
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === userId);
+
+        if (!isAdmin) {
+            return res.status(403).json({ error: 'Only match admins can update status' });
         }
 
         if (winner) {
@@ -397,14 +401,20 @@ exports.generateTeams = async (req, res) => {
     const userId = req.user.id;
 
     try {
-        // Check if user is creator
-        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        // Check if user is creator or admin
+        const [matches] = await db.query('SELECT creator_id, sport_type FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) {
             return res.status(404).json({ error: 'Match not found' });
         }
 
-        if (matches[0].creator_id && matches[0].creator_id !== userId) {
-            return res.status(403).json({ error: 'Only the match creator can generate teams' });
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === userId);
+
+        if (!isAdmin) {
+            return res.status(403).json({ error: 'Only match admins can generate teams' });
         }
 
         // Get confirmed participants with skill rating
@@ -478,10 +488,17 @@ exports.movePlayer = async (req, res) => {
     const adminId = req.user.id;
 
     try {
-        // Check if match exists and user is creator
+        // Check if match exists and user is creator or admin
         const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
-        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can move players' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, adminId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === adminId);
+
+        if (!isAdmin) return res.status(403).json({ error: 'Only admins can move players' });
 
         if (!['A', 'B'].includes(team)) {
             return res.status(400).json({ error: 'Invalid team. Must be A or B' });
@@ -576,13 +593,20 @@ exports.togglePaymentStatus = async (req, res) => {
     const requesterId = req.user.id;
 
     try {
-        // Check if requester is the creator
+        // Check if requester is the creator or admin
         const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) {
             return res.status(404).json({ error: 'Match not found' });
         }
-        if (matches[0].creator_id !== requesterId) {
-            return res.status(403).json({ error: 'Only the match creator can update payment status' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, requesterId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === requesterId);
+
+        if (!isAdmin) {
+            return res.status(403).json({ error: 'Only match admins can update payment status' });
         }
 
         // Get current status
@@ -619,10 +643,17 @@ exports.approveJoinRequest = async (req, res) => {
     const adminId = req.user.id;
 
     try {
-        // Check if match exists and user is creator
+        // Check if match exists and user is creator or admin
         const [matches] = await db.query('SELECT creator_id, max_players FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
-        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can approve requests' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, adminId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === adminId);
+
+        if (!isAdmin) return res.status(403).json({ error: 'Only admins can approve requests' });
 
         const maxPlayers = matches[0].max_players;
 
@@ -661,7 +692,14 @@ exports.rejectJoinRequest = async (req, res) => {
     try {
         const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
-        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can reject requests' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, adminId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === adminId);
+
+        if (!isAdmin) return res.status(403).json({ error: 'Only admins can reject requests' });
 
         // Delete participation
         await db.query('DELETE FROM participants WHERE match_id = ? AND user_id = ? AND status = "pending_approval"', [matchId, userId]);
@@ -733,14 +771,20 @@ exports.updateMatch = async (req, res) => {
     const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code } = req.body;
 
     try {
-        // Check if match exists and user is creator
+        // Check if match exists and user is creator or admin
         const [matches] = await db.query('SELECT * FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) {
             return res.status(404).json({ error: 'Match not found' });
         }
 
-        if (matches[0].creator_id !== userId) {
-            return res.status(403).json({ error: 'Only the creator can edit the match' });
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === userId);
+
+        if (!isAdmin) {
+            return res.status(403).json({ error: 'Only match admins can edit the match' });
         }
 
         // Update match
@@ -781,10 +825,17 @@ exports.updatePlayerPositions = async (req, res) => {
     const adminId = req.user.id;
 
     try {
-        // Check if match exists and user is creator
+        // Check if match exists and user is creator or admin
         const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
-        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can update formation' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, adminId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === adminId);
+
+        if (!isAdmin) return res.status(403).json({ error: 'Only admins can update formation' });
 
         // Update positions
         for (const pos of positions) {
@@ -807,14 +858,21 @@ exports.updatePlayerPositions = async (req, res) => {
 exports.setCaptain = async (req, res) => {
     const matchId = req.params.id;
     const { userId, team } = req.body; // userId of the new captain, team 'A' or 'B'
-    const creatorId = req.user.id;
+    const requesterId = req.user.id;
 
     try {
-        // Check if user is creator
+        // Check if user is creator or admin
         const [match] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (match.length === 0) return res.status(404).json({ error: 'Match not found' });
-        if (match[0].creator_id !== creatorId) {
-            return res.status(403).json({ error: 'Only the creator can set captains' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, requesterId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (match[0].creator_id === requesterId);
+
+        if (!isAdmin) {
+            return res.status(403).json({ error: 'Only match admins can set captains' });
         }
 
         // Reset captain for this team in this match
@@ -829,5 +887,56 @@ exports.setCaptain = async (req, res) => {
     } catch (error) {
         console.error('Set captain error:', error);
         res.status(500).json({ error: 'Server error setting captain' });
+    }
+};
+
+exports.toggleMatchAdmin = async (req, res) => {
+    const matchId = req.params.id;
+    const { targetUserId } = req.body;
+    const requesterId = req.user.id;
+
+    try {
+        // Check if requester is admin
+        const [match] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (match.length === 0) return res.status(404).json({ error: 'Match not found' });
+
+        const [requester] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, requesterId]
+        );
+
+        const isRequesterAdmin = (requester.length > 0 && requester[0].is_admin) || (match[0].creator_id === requesterId);
+
+        if (!isRequesterAdmin) {
+            return res.status(403).json({ error: 'Only admins can manage admin roles' });
+        }
+
+        // Check if target user is a participant
+        const [target] = await db.query(
+            'SELECT id, is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, targetUserId]
+        );
+
+        if (target.length === 0) {
+            return res.status(404).json({ error: 'User is not a participant' });
+        }
+
+        // Prevent removing admin status from the creator
+        if (targetUserId === match[0].creator_id) {
+            return res.status(403).json({ error: 'Cannot remove admin status from the match creator' });
+        }
+
+        const newAdminStatus = !target[0].is_admin;
+
+        await db.query(
+            'UPDATE participants SET is_admin = ? WHERE id = ?',
+            [newAdminStatus, target[0].id]
+        );
+
+        res.json({ message: 'Admin status updated', is_admin: newAdminStatus });
+
+    } catch (error) {
+        console.error('Toggle admin error:', error);
+        res.status(500).json({ error: 'Server error toggling admin status' });
     }
 };

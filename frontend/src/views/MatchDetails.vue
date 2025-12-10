@@ -152,7 +152,7 @@
           </div>
 
           <!-- Admin Controls -->
-          <div v-if="isCreator && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
+          <div v-if="isAdmin && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
             <ion-button expand="block" color="secondary" fill="solid" @click="generateTeams" class="admin-btn">
               <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
               Teams
@@ -165,12 +165,12 @@
               <ion-icon :icon="createOutline" slot="start"></ion-icon>
               Edit
             </ion-button>
-            <ion-button expand="block" color="danger" fill="clear" @click="deleteMatch" class="admin-btn full-width">
+            <ion-button v-if="isCreator" expand="block" color="danger" fill="clear" @click="deleteMatch" class="admin-btn full-width">
               <ion-icon :icon="trashOutline" slot="start"></ion-icon>
               Delete Match
             </ion-button>
           </div>
-          <div v-if="isCreator && match.status === 'voting'">
+          <div v-if="isAdmin && match.status === 'voting'">
             <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="main-action-btn">
               <ion-icon :icon="flagOutline" slot="start"></ion-icon>
               Finish Match
@@ -179,7 +179,7 @@
         </div>
 
         <!-- Pending Requests -->
-        <div v-if="isCreator && pendingParticipants.length > 0" class="list-section">
+        <div v-if="isAdmin && pendingParticipants.length > 0" class="list-section">
           <div class="section-title">
             <h3>Pending Requests</h3>
             <ion-badge color="tertiary">{{ pendingParticipants.length }}</ion-badge>
@@ -251,20 +251,27 @@
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon
+                        :icon="shieldCheckmarkOutline"
+                        :color="p.is_admin ? 'secondary' : 'medium'"
+                        class="status-icon"
+                        v-if="isAdmin || p.is_admin"
+                        @click.stop="isAdmin && p.user_id !== match.creator_id ? toggleAdmin(p) : null"
+                      ></ion-icon>
+                      <ion-icon
                         :icon="p.is_captain ? ribbon : ribbonOutline"
                         :color="p.is_captain ? 'warning' : 'medium'"
                         class="status-icon"
-                        @click.stop="isCreator ? toggleCaptain(p) : null"
+                        @click.stop="isAdmin ? toggleCaptain(p) : null"
                       ></ion-icon>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon
                         :icon="cashOutline"
                         :color="p.has_paid ? 'success' : 'medium'"
                         class="status-icon"
-                        @click.stop="isCreator ? togglePayment(p) : null"
+                        @click.stop="isAdmin ? togglePayment(p) : null"
                       ></ion-icon>
                       <ion-icon
-                        v-if="isCreator"
+                        v-if="isAdmin"
                         :icon="swapHorizontalOutline"
                         color="primary"
                         class="status-icon"
@@ -291,20 +298,27 @@
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon
+                        :icon="shieldCheckmarkOutline"
+                        :color="p.is_admin ? 'secondary' : 'medium'"
+                        class="status-icon"
+                        v-if="isAdmin || p.is_admin"
+                        @click.stop="isAdmin && p.user_id !== match.creator_id ? toggleAdmin(p) : null"
+                      ></ion-icon>
+                      <ion-icon
                         :icon="p.is_captain ? ribbon : ribbonOutline"
                         :color="p.is_captain ? 'warning' : 'medium'"
                         class="status-icon"
-                        @click.stop="isCreator ? toggleCaptain(p) : null"
+                        @click.stop="isAdmin ? toggleCaptain(p) : null"
                       ></ion-icon>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon
                         :icon="cashOutline"
                         :color="p.has_paid ? 'success' : 'medium'"
                         class="status-icon"
-                        @click.stop="isCreator ? togglePayment(p) : null"
+                        @click.stop="isAdmin ? togglePayment(p) : null"
                       ></ion-icon>
                       <ion-icon
-                        v-if="isCreator"
+                        v-if="isAdmin"
                         :icon="swapHorizontalOutline"
                         color="primary"
                         class="status-icon"
@@ -331,12 +345,19 @@
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
+                  <ion-icon
+                    :icon="shieldCheckmarkOutline"
+                    :color="p.is_admin ? 'secondary' : 'medium'"
+                    class="status-icon"
+                    v-if="isAdmin || p.is_admin"
+                    @click.stop="isAdmin && p.user_id !== match.creator_id ? toggleAdmin(p) : null"
+                  ></ion-icon>
                   <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                   <ion-icon
                     :icon="cashOutline"
                     :color="p.has_paid ? 'success' : 'medium'"
                     class="status-icon"
-                    @click.stop="isCreator ? togglePayment(p) : null"
+                    @click.stop="isAdmin ? togglePayment(p) : null"
                   ></ion-icon>
                   <ion-button
                     v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
@@ -358,7 +379,7 @@
             </div>
             <FormationField
               :players="[...teamAParticipants, ...teamBParticipants]"
-              :is-editable="isCreator"
+              :is-editable="isAdmin"
               :sport-type="match.sport_type"
               @save="saveFormation"
             />
@@ -471,6 +492,7 @@ import {
   swapHorizontalOutline,
   ribbonOutline,
   ribbon,
+  shieldCheckmarkOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -587,6 +609,13 @@ const isParticipant = computed(() => {
 const isCreator = computed(() => {
   if (!match.value || !currentUser.value) return false;
   return match.value.creator_id == currentUser.value.id;
+});
+
+const isAdmin = computed(() => {
+  if (!match.value || !currentUser.value) return false;
+  if (match.value.creator_id == currentUser.value.id) return true;
+  const me = match.value.participants?.find((p) => p.user_id === currentUser.value.id);
+  return me && me.is_admin;
 });
 
 const postMatchCount = computed(() => {
@@ -910,6 +939,18 @@ const openVoteModal = async (participant) => {
   });
 
   await modal.present();
+};
+
+const toggleAdmin = async (participant) => {
+  try {
+    const response = await api.put(`/matches/${match.value.id}/admin`, {
+      targetUserId: participant.user_id,
+    });
+    fetchMatch();
+  } catch (error) {
+    console.error("Error toggling admin:", error);
+    alert("Failed to update admin status: " + (error.response?.data?.error || error.message));
+  }
 };
 
 const toggleCaptain = async (player) => {

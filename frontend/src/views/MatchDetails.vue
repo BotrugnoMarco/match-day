@@ -961,7 +961,7 @@ onUnmounted(() => {
   gap: 20px;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   margin-bottom: 20px;
 }
 
@@ -974,7 +974,7 @@ onUnmounted(() => {
   justify-content: center;
   font-size: 2.5rem;
   color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .sport-icon-large.soccer {
@@ -1008,7 +1008,7 @@ onUnmounted(() => {
 
 .status-badge {
   padding: 6px 12px;
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   font-size: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
@@ -1021,9 +1021,9 @@ onUnmounted(() => {
 
 .info-card {
   background: white;
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   margin-bottom: 20px;
 }
 
@@ -1048,7 +1048,7 @@ onUnmounted(() => {
   color: var(--ion-color-primary);
   background: rgba(var(--ion-color-primary-rgb), 0.08);
   padding: 10px;
-  border-radius: 12px;
+  border-radius: var(--rounded-sm);
 }
 
 .info-text {
@@ -1107,7 +1107,7 @@ onUnmounted(() => {
   gap: 6px;
   background: #f8f9fa;
   padding: 6px 12px;
-  border-radius: 15px;
+  border-radius: var(--rounded-md);
   font-size: 0.8rem;
   color: var(--ion-color-medium);
   font-weight: 500;
@@ -1115,9 +1115,9 @@ onUnmounted(() => {
 
 .post-match-card {
   background: white;
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   padding: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   margin-bottom: 20px;
   display: flex;
   align-items: center;
@@ -1135,7 +1135,7 @@ onUnmounted(() => {
   color: var(--ion-color-warning);
   background: rgba(var(--ion-color-warning-rgb), 0.1);
   padding: 10px;
-  border-radius: 12px;
+  border-radius: var(--rounded-sm);
 }
 
 .pm-info h3 {
@@ -1156,7 +1156,7 @@ onUnmounted(() => {
 
 .main-action-btn {
   margin-bottom: 12px;
-  --border-radius: 16px;
+  --border-radius: var(--rounded-md);
   font-weight: 600;
 }
 
@@ -1168,7 +1168,7 @@ onUnmounted(() => {
 
 .admin-btn {
   margin: 0;
-  --border-radius: 12px;
+  --border-radius: var(--rounded-sm);
 }
 
 .admin-btn.full-width {
@@ -1209,8 +1209,8 @@ onUnmounted(() => {
 
 .participants-card {
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-md);
   overflow: hidden;
 }
 
@@ -1266,7 +1266,7 @@ onUnmounted(() => {
 
 .winner-card {
   background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   padding: 20px;
   text-align: center;
   color: white;
@@ -1342,7 +1342,7 @@ onUnmounted(() => {
   font-size: 0.65rem;
   font-weight: 600;
   padding: 2px 6px;
-  border-radius: 8px;
+  border-radius: var(--rounded-sm);
   height: auto;
 }
 </style>

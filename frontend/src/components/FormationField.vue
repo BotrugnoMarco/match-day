@@ -218,7 +218,7 @@ const resetPositions = () => {
   aspect-ratio: 0.65; /* Vertical field */
   background-color: #4caf50;
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--rounded-sm);
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.3);
   box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
@@ -437,7 +437,7 @@ const resetPositions = () => {
   justify-content: center;
   border: 2px solid white;
   z-index: 3;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-sm);
 }
 
 .player-name {

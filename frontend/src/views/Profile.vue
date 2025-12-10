@@ -521,7 +521,7 @@ const getSkillColor = (rating) => {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .profile-header-row {
@@ -562,7 +562,7 @@ const getSkillColor = (rating) => {
   --padding-top: 5px;
   --padding-bottom: 5px;
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   color: white;
   font-size: 0.8rem;
 }
@@ -614,10 +614,10 @@ const getSkillColor = (rating) => {
 
 .stat-box {
   background: white;
-  border-radius: 15px;
+  border-radius: var(--rounded-md);
   padding: 15px 5px;
   text-align: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-value {
@@ -662,8 +662,8 @@ const getSkillColor = (rating) => {
 
 .skills-card {
   margin: 0;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .skill-header {
@@ -697,11 +697,11 @@ const getSkillColor = (rating) => {
 .badge-chip {
   background: white;
   padding: 8px 12px;
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   display: flex;
   align-items: center;
   gap: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   border: 1px solid #f0f2f5;
 }
 
@@ -722,8 +722,8 @@ const getSkillColor = (rating) => {
 
 .match-card {
   margin: 0 0 15px 0;
-  border-radius: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .match-card-content {
@@ -745,7 +745,7 @@ const getSkillColor = (rating) => {
   align-items: center;
   background: #f0f2f5;
   padding: 8px 12px;
-  border-radius: 10px;
+  border-radius: var(--rounded-sm);
   min-width: 50px;
 }
 
@@ -798,7 +798,7 @@ const getSkillColor = (rating) => {
 
 .number-selector {
   --background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  border-radius: var(--rounded-sm);
   width: 100px;
   --padding-start: 10px;
   --inner-padding-end: 10px;
@@ -814,7 +814,7 @@ const getSkillColor = (rating) => {
 .number-display {
   background: rgba(255, 255, 255, 0.2);
   padding: 8px 15px;
-  border-radius: 10px;
+  border-radius: var(--rounded-sm);
   display: flex;
   flex-direction: column;
   align-items: center;

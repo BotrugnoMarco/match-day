@@ -277,7 +277,7 @@ const createMatch = async () => {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   text-align: center;
   color: white;
 }
@@ -318,13 +318,13 @@ const createMatch = async () => {
 
 .sport-card {
   background: white;
-  border-radius: 15px;
+  border-radius: var(--rounded-md);
   padding: 15px 5px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   border: 2px solid transparent;
   transition: all 0.2s ease;
   cursor: pointer;
@@ -354,7 +354,7 @@ const createMatch = async () => {
   border-color: var(--ion-color-primary);
   background: white;
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(var(--ion-color-primary-rgb), 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .sport-card.active.soccer {
@@ -406,9 +406,9 @@ const createMatch = async () => {
 
 .form-card {
   background: white;
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .form-header {
@@ -464,9 +464,9 @@ const createMatch = async () => {
 }
 
 .create-btn {
-  --border-radius: 16px;
+  --border-radius: var(--rounded-md);
   font-weight: 700;
-  --box-shadow: 0 8px 20px rgba(var(--ion-color-primary-rgb), 0.3);
+  --box-shadow: var(--shadow-lg);
   height: 56px;
 }
 </style>

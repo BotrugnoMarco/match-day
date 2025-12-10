@@ -7,6 +7,7 @@ const optionalAuthMiddleware = require('../middleware/optionalAuthMiddleware');
 // Public routes (or protected if you prefer)
 router.get('/', matchController.getAllMatches);
 router.get('/mine', authMiddleware, matchController.getUserMatches);
+router.get('/friends', authMiddleware, matchController.getFriendsMatches);
 router.get('/:id', optionalAuthMiddleware, matchController.getMatchById);
 
 // Protected routes

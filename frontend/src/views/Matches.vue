@@ -25,6 +25,9 @@
             <ion-segment-button value="mine">
               <ion-label>My Matches</ion-label>
             </ion-segment-button>
+            <ion-segment-button value="friends">
+              <ion-label>Friends</ion-label>
+            </ion-segment-button>
           </ion-segment>
         </div>
       </div>
@@ -126,7 +129,9 @@ const filter = ref("all");
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 
 const displayedMatches = computed(() => {
-  return filter.value === "mine" ? store.getters.myMatches : store.getters.allMatches;
+  if (filter.value === "mine") return store.getters.myMatches;
+  if (filter.value === "friends") return store.getters.friendsMatches;
+  return store.getters.allMatches;
 });
 
 const getSportIcon = (type) => {
@@ -146,6 +151,8 @@ const getSportIcon = (type) => {
 const segmentChanged = (ev) => {
   if (ev.detail.value === "mine") {
     store.dispatch("fetchMyMatches");
+  } else if (ev.detail.value === "friends") {
+    store.dispatch("fetchFriendsMatches");
   } else {
     store.dispatch("fetchMatches");
   }
@@ -169,6 +176,8 @@ const getStatusColor = (status) => {
 onIonViewWillEnter(() => {
   if (filter.value === "mine") {
     store.dispatch("fetchMyMatches");
+  } else if (filter.value === "friends") {
+    store.dispatch("fetchFriendsMatches");
   } else {
     store.dispatch("fetchMatches");
   }

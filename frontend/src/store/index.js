@@ -8,6 +8,7 @@ const store = createStore({
             token: localStorage.getItem('token') || null,
             matches: [],
             myMatches: [],
+            friendsMatches: [],
             notifications: [],
             userStats: null,
             viewedUser: null,
@@ -29,6 +30,7 @@ const store = createStore({
             state.token = null;
             state.matches = [];
             state.myMatches = [];
+            state.friendsMatches = [];
             state.notifications = [];
             state.userStats = null;
             state.viewedUser = null;
@@ -42,6 +44,9 @@ const store = createStore({
         },
         SET_MY_MATCHES(state, matches) {
             state.myMatches = matches;
+        },
+        SET_FRIENDS_MATCHES(state, matches) {
+            state.friendsMatches = matches;
         },
         SET_NOTIFICATIONS(state, notifications) {
             state.notifications = notifications;
@@ -96,6 +101,14 @@ const store = createStore({
                 commit('SET_MY_MATCHES', response.data);
             } catch (error) {
                 console.error('Error fetching my matches:', error);
+            }
+        },
+        async fetchFriendsMatches({ commit }) {
+            try {
+                const response = await api.get('/matches/friends');
+                commit('SET_FRIENDS_MATCHES', response.data);
+            } catch (error) {
+                console.error('Error fetching friends matches:', error);
             }
         },
         async fetchNotifications({ commit }) {
@@ -182,6 +195,7 @@ const store = createStore({
         currentUser: state => state.user,
         allMatches: state => state.matches,
         myMatches: state => state.myMatches,
+        friendsMatches: state => state.friendsMatches,
         notifications: state => state.notifications,
         userStats: state => state.userStats,
         unreadNotificationsCount: state => state.notifications.filter(n => !n.is_read).length,

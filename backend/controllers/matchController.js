@@ -16,6 +16,12 @@ exports.createMatch = async (req, res) => {
             [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, creator_id]
         );
 
+        // Automatically add creator as participant
+        await db.query(
+            'INSERT INTO participants (match_id, user_id, status) VALUES (?, ?, ?)',
+            [result.insertId, creator_id, 'confirmed']
+        );
+
         // Emit socket event
         const io = req.app.get('io');
         io.emit('match_created', {

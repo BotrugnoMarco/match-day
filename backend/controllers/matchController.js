@@ -471,6 +471,35 @@ exports.generateTeams = async (req, res) => {
     }
 };
 
+// Move player to a specific team
+exports.movePlayer = async (req, res) => {
+    const matchId = req.params.id;
+    const { userId, team } = req.body; // team should be 'A' or 'B'
+    const adminId = req.user.id;
+
+    try {
+        // Check if match exists and user is creator
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
+        if (matches[0].creator_id !== adminId) return res.status(403).json({ error: 'Only creator can move players' });
+
+        if (!['A', 'B'].includes(team)) {
+            return res.status(400).json({ error: 'Invalid team. Must be A or B' });
+        }
+
+        // Update participant team
+        await db.query('UPDATE participants SET team = ? WHERE match_id = ? AND user_id = ?', [team, matchId, userId]);
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Player moved successfully' });
+    } catch (error) {
+        console.error('Move player error:', error);
+        res.status(500).json({ error: 'Server error moving player' });
+    }
+};
+
 // Update post-match availability
 exports.updatePostMatchStatus = async (req, res) => {
     const matchId = req.params.id;

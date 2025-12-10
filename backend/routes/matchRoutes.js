@@ -19,6 +19,7 @@ router.put('/:id/post-match', authMiddleware, matchController.updatePostMatchSta
 router.post('/:id/invite', authMiddleware, matchController.inviteUser);
 router.put('/:id/payment', authMiddleware, matchController.togglePaymentStatus);
 router.post('/:id/generate-teams', authMiddleware, matchController.generateTeams);
+router.put('/:id/move-player', authMiddleware, matchController.movePlayer);
 router.post('/:id/approve', authMiddleware, matchController.approveJoinRequest);
 router.post('/:id/reject', authMiddleware, matchController.rejectJoinRequest);
 router.put('/:id', authMiddleware, matchController.updateMatch);

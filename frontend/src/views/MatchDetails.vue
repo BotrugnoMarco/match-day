@@ -257,6 +257,13 @@
                         class="status-icon"
                         @click.stop="isCreator ? togglePayment(p) : null"
                       ></ion-icon>
+                      <ion-icon
+                        v-if="isCreator"
+                        :icon="swapHorizontalOutline"
+                        color="primary"
+                        class="status-icon"
+                        @click.stop="movePlayer(p.user_id, 'B')"
+                      ></ion-icon>
                     </div>
                   </ion-item>
                 </ion-list>
@@ -283,6 +290,13 @@
                         :color="p.has_paid ? 'success' : 'medium'"
                         class="status-icon"
                         @click.stop="isCreator ? togglePayment(p) : null"
+                      ></ion-icon>
+                      <ion-icon
+                        v-if="isCreator"
+                        :icon="swapHorizontalOutline"
+                        color="primary"
+                        class="status-icon"
+                        @click.stop="movePlayer(p.user_id, 'A')"
                       ></ion-icon>
                     </div>
                   </ion-item>
@@ -430,6 +444,7 @@ import {
   closeOutline,
   trashOutline,
   createOutline,
+  swapHorizontalOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -807,6 +822,16 @@ const togglePayment = async (participant) => {
   } catch (error) {
     console.error("Error toggling payment:", error);
     alert("Failed to update payment status");
+  }
+};
+
+const movePlayer = async (userId, team) => {
+  try {
+    await api.put(`/matches/${match.value.id}/move-player`, { userId, team });
+    // Socket will update the list, but we can also fetch manually if needed
+  } catch (error) {
+    console.error("Error moving player:", error);
+    alert("Failed to move player");
   }
 };
 

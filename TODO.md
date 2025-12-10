@@ -9,7 +9,6 @@
 
 ## Squadre e Team
 
-- **Gestione team:** I team possono essere generati in modo automatico (algoritmo bilanciato) oppure l'admin può modificarli manualmente, spostando i giocatori tra le squadre secondo necessità.
 - **Formazioni grafiche:** Visualizza la formazione delle squadre su un campo da gioco stilizzato, usando "token" per rappresentare i giocatori e permettendo all'admin di spostarli.
 - **Gestione panchina:** Permette di assegnare giocatori come riserve/panchina, che possono subentrare in caso di assenza o sostituzione.
 

@@ -250,6 +250,12 @@
                       <p>Skill: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
+                      <ion-icon
+                        :icon="p.is_captain ? ribbon : ribbonOutline"
+                        :color="p.is_captain ? 'warning' : 'medium'"
+                        class="status-icon"
+                        @click.stop="isCreator ? toggleCaptain(p) : null"
+                      ></ion-icon>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon
                         :icon="cashOutline"
@@ -284,6 +290,12 @@
                       <p>Skill: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
+                      <ion-icon
+                        :icon="p.is_captain ? ribbon : ribbonOutline"
+                        :color="p.is_captain ? 'warning' : 'medium'"
+                        class="status-icon"
+                        @click.stop="isCreator ? toggleCaptain(p) : null"
+                      ></ion-icon>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon
                         :icon="cashOutline"
@@ -452,6 +464,8 @@ import {
   trashOutline,
   createOutline,
   swapHorizontalOutline,
+  ribbonOutline,
+  ribbon,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -891,6 +905,25 @@ const openVoteModal = async (participant) => {
   });
 
   await modal.present();
+};
+
+const toggleCaptain = async (player) => {
+  try {
+    // If already captain, unset (userId = null)
+    // If not captain, set (userId = player.user_id)
+    const newCaptainId = player.is_captain ? null : player.user_id;
+
+    await api.put(`/matches/${match.value.id}/captain`, {
+      userId: newCaptainId,
+      team: player.team,
+    });
+
+    // Optimistic update or wait for socket
+    fetchMatch();
+  } catch (error) {
+    console.error("Error toggling captain:", error);
+    presentToast("Failed to update captain", "danger");
+  }
 };
 
 onMounted(() => {

@@ -803,3 +803,31 @@ exports.updatePlayerPositions = async (req, res) => {
         res.status(500).json({ error: 'Server error updating formation' });
     }
 };
+
+exports.setCaptain = async (req, res) => {
+    const matchId = req.params.id;
+    const { userId, team } = req.body; // userId of the new captain, team 'A' or 'B'
+    const creatorId = req.user.id;
+
+    try {
+        // Check if user is creator
+        const [match] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (match.length === 0) return res.status(404).json({ error: 'Match not found' });
+        if (match[0].creator_id !== creatorId) {
+            return res.status(403).json({ error: 'Only the creator can set captains' });
+        }
+
+        // Reset captain for this team in this match
+        await db.query('UPDATE participants SET is_captain = FALSE WHERE match_id = ? AND team = ?', [matchId, team]);
+
+        // Set new captain if userId is provided (if null, just clears captain)
+        if (userId) {
+            await db.query('UPDATE participants SET is_captain = TRUE WHERE match_id = ? AND user_id = ?', [matchId, userId]);
+        }
+
+        res.json({ message: 'Captain updated' });
+    } catch (error) {
+        console.error('Set captain error:', error);
+        res.status(500).json({ error: 'Server error setting captain' });
+    }
+};

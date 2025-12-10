@@ -23,6 +23,7 @@
           <ion-avatar class="token-avatar">
             <img :src="player.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
           </ion-avatar>
+          <div class="captain-band" v-if="player.is_captain">C</div>
           <div class="jersey-number" v-if="player.preferred_number">{{ player.preferred_number }}</div>
           <span class="player-name">{{ getPlayerLabel(player.username) }}</span>
         </div>
@@ -303,6 +304,25 @@ const resetPositions = () => {
   justify-content: center;
   border: 1px solid white;
   z-index: 2;
+}
+
+.captain-band {
+  position: absolute;
+  top: -8px;
+  left: -8px;
+  background: #ffc409; /* Warning Yellow */
+  color: black;
+  font-size: 10px;
+  font-weight: 900;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+  z-index: 3;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .player-name {

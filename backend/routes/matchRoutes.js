@@ -23,6 +23,7 @@ router.put('/:id/move-player', authMiddleware, matchController.movePlayer);
 router.post('/:id/approve', authMiddleware, matchController.approveJoinRequest);
 router.post('/:id/reject', authMiddleware, matchController.rejectJoinRequest);
 router.put('/:id/positions', authMiddleware, matchController.updatePlayerPositions);
+router.put('/:id/captain', authMiddleware, matchController.setCaptain);
 router.put('/:id', authMiddleware, matchController.updateMatch);
 router.delete('/:id', authMiddleware, matchController.deleteMatch);
 

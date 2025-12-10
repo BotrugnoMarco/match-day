@@ -26,7 +26,7 @@ exports.uploadAvatar = async (req, res) => {
 exports.getProfile = async (req, res) => {
     const userId = req.user.id;
     try {
-        const [users] = await db.query('SELECT id, username, avatar_url, role, status FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, avatar_url, role, status, preferred_number FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -46,6 +46,19 @@ exports.getProfile = async (req, res) => {
     } catch (error) {
         console.error('Get profile error:', error);
         res.status(500).json({ error: 'Server error fetching profile' });
+    }
+};
+
+exports.updateProfile = async (req, res) => {
+    const userId = req.user.id;
+    const { preferred_number } = req.body;
+
+    try {
+        await db.query('UPDATE users SET preferred_number = ? WHERE id = ?', [preferred_number, userId]);
+        res.json({ message: 'Profile updated successfully', preferred_number });
+    } catch (error) {
+        console.error('Update profile error:', error);
+        res.status(500).json({ error: 'Server error updating profile' });
     }
 };
 

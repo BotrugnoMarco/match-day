@@ -45,6 +45,19 @@
                 </ion-badge>
               </div>
             </div>
+            
+            <!-- Preferred Number -->
+            <div class="preferred-number-section" v-if="isOwnProfile || user?.preferred_number">
+               <ion-item lines="none" class="number-selector" v-if="isOwnProfile">
+                  <ion-label position="stacked" color="light">Jersey #</ion-label>
+                  <ion-input type="number" v-model="preferredNumber" placeholder="00" class="custom-input"></ion-input>
+               </ion-item>
+               <div v-else class="number-display">
+                  <span class="number-label">Jersey #</span>
+                  <span class="number-value">{{ user?.preferred_number || '-' }}</span>
+               </div>
+            </div>
+
           </div>
         </div>
 
@@ -257,6 +270,23 @@ const userStatus = computed({
   set: (val) => {
     if (isOwnProfile.value) {
       store.dispatch("updateUserStatus", val);
+    }
+  },
+});
+
+const preferredNumber = computed({
+  get: () => user.value?.preferred_number,
+  set: async (val) => {
+    if (isOwnProfile.value) {
+       try {
+         await api.put('/users/profile', { preferred_number: val });
+         // Update local store
+         const updatedUser = { ...currentUser.value, preferred_number: val };
+         store.commit("SET_USER", updatedUser);
+       } catch (error) {
+         console.error("Error updating preferred number:", error);
+         presentToast("Failed to update jersey number", "danger");
+       }
     }
   },
 });
@@ -714,6 +744,49 @@ const getSkillColor = (rating) => {
   border-radius: 6px;
   text-transform: uppercase;
 }
+
+.preferred-number-section {
+  margin-top: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+.number-selector {
+  --background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  width: 100px;
+  --padding-start: 10px;
+  --inner-padding-end: 10px;
+}
+
+.custom-input {
+  --color: white;
+  --placeholder-color: rgba(255, 255, 255, 0.6);
+  font-weight: bold;
+  text-align: center;
+}
+
+.number-display {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 15px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.number-label {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.8);
+  text-transform: uppercase;
+}
+
+.number-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+</style>
 
 .result-badge.win {
   background: rgba(var(--ion-color-success-rgb), 0.1);

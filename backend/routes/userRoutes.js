@@ -5,6 +5,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
 
 router.get('/profile', authMiddleware, userController.getProfile);
+router.put('/profile', authMiddleware, userController.updateProfile);
 router.get('/stats', authMiddleware, userController.getUserStats);
 router.get('/history', authMiddleware, userController.getMatchHistory);
 router.get('/search', authMiddleware, userController.searchUsers);

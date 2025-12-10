@@ -236,7 +236,7 @@ onMounted(() => {
 
 <style scoped>
 .page-content {
-  --background: #f4f5f8;
+  --background: #ffffff;
 }
 
 .section-container {

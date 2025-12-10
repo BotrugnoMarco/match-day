@@ -268,7 +268,7 @@ const createMatch = async () => {
 
 <style scoped>
 .page-content {
-  --background: #f4f5f8;
+  --background: #ffffff;
 }
 
 .page-banner {

@@ -948,7 +948,7 @@ onUnmounted(() => {
 
 <style scoped>
 .page-content {
-  --background: #f4f5f8;
+  --background: #ffffff;
   height: 100%;
   overflow-y: auto;
 }

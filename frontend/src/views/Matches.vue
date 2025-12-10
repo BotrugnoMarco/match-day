@@ -35,38 +35,47 @@
       <div class="matches-container ion-padding-horizontal">
         <div v-if="displayedMatches.length > 0">
           <div v-for="match in displayedMatches" :key="match.id" @click="viewMatch(match.id)" class="match-card">
-            <div class="match-card-content">
-              <div class="match-left">
-                <div class="match-date">
-                  <span class="day">{{ new Date(match.date_time).getDate() }}</span>
-                  <span class="month">{{ new Date(match.date_time).toLocaleString("default", { month: "short" }) }}</span>
+            <div class="match-card-header">
+              <div class="sport-info">
+                <div class="sport-icon-wrapper" :class="match.sport_type">
+                  <ion-icon :icon="getSportIcon(match.sport_type)"></ion-icon>
                 </div>
-                <div class="match-info">
-                  <h3 class="sport-name">{{ match.sport_type.toUpperCase() }}</h3>
-                  <div
-                    class="organizer"
-                    style="display: flex; align-items: center; gap: 5px; margin-bottom: 5px; font-size: 0.85rem; color: var(--ion-color-medium)"
-                  >
-                    <ion-avatar style="width: 18px; height: 18px">
-                      <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
-                    </ion-avatar>
-                    <span>{{ match.creator_username }}</span>
-                  </div>
-                  <p class="location">
-                    <ion-icon :icon="locationOutline" style="vertical-align: text-bottom; font-size: 0.9em"></ion-icon>
-                    {{ match.location }}
-                  </p>
-                  <p class="time">{{ new Date(match.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }}</p>
-                  <div class="features-row" v-if="match.is_covered || match.has_showers">
-                    <ion-icon v-if="match.is_covered" :icon="umbrella" class="feature-icon" title="Covered Field"></ion-icon>
-                    <ion-icon v-if="match.has_showers" :icon="water" class="feature-icon" title="Showers Available"></ion-icon>
-                  </div>
-                </div>
+                <span class="sport-name">{{ match.sport_type }}</span>
               </div>
-              <div class="match-right">
-                <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ match.status }}</ion-badge>
-                <ion-icon :icon="getSportIcon(match.sport_type)" class="sport-icon-small"></ion-icon>
+              <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ match.status }}</ion-badge>
+            </div>
+
+            <div class="match-card-body">
+              <div class="match-datetime">
+                <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
+                <span class="date">{{ formatDate(match.date_time) }}</span>
+                <span class="separator">•</span>
+                <span class="time">{{ formatTime(match.date_time) }}</span>
               </div>
+              <div class="match-location">
+                <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
+                <span>{{ match.location }}</span>
+              </div>
+              <div class="match-features" v-if="match.is_covered || match.has_showers">
+                <ion-chip v-if="match.is_covered" outline color="medium" class="feature-chip">
+                  <ion-icon :icon="umbrella"></ion-icon>
+                  <ion-label>Covered</ion-label>
+                </ion-chip>
+                <ion-chip v-if="match.has_showers" outline color="medium" class="feature-chip">
+                  <ion-icon :icon="water"></ion-icon>
+                  <ion-label>Showers</ion-label>
+                </ion-chip>
+              </div>
+            </div>
+
+            <div class="match-card-footer">
+              <div class="organizer-info">
+                <ion-avatar class="organizer-avatar">
+                  <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                </ion-avatar>
+                <span class="organizer-name">Hosted by {{ match.creator_username }}</span>
+              </div>
+              <ion-icon :icon="chevronForwardOutline" class="arrow-icon"></ion-icon>
             </div>
           </div>
         </div>
@@ -107,6 +116,7 @@ import {
   IonBadge,
   IonLabel,
   IonAvatar,
+  IonChip,
   onIonViewWillEnter,
 } from "@ionic/vue";
 import {
@@ -121,6 +131,7 @@ import {
   baseballOutline,
   umbrella,
   water,
+  chevronForwardOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -146,6 +157,16 @@ const getSportIcon = (type) => {
     default:
       return calendarOutline;
   }
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+};
+
+const formatTime = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
 
 const segmentChanged = (ev) => {
@@ -259,92 +280,148 @@ const createMatch = () => {
 
 .match-card {
   background: white;
-  border-radius: 0.9375rem;
-  box-shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.05);
-  margin-bottom: 0.9375rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 16px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .match-card:active {
   transform: scale(0.98);
 }
 
-.match-card-content {
+.match-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.9375rem;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.match-left {
+.sport-info {
   display: flex;
   align-items: center;
-  gap: 0.9375rem;
+  gap: 10px;
 }
 
-.match-date {
+.sport-icon-wrapper {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  background: #f0f2f5;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.625rem;
-  min-width: 3.4375rem;
-}
-
-.match-date .day {
+  justify-content: center;
+  color: white;
   font-size: 1.2rem;
-  font-weight: 800;
-  color: var(--ion-color-dark);
 }
 
-.match-date .month {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--ion-color-medium);
-  font-weight: 600;
+.sport-icon-wrapper.soccer {
+  background-color: #2dd36f;
+}
+.sport-icon-wrapper.basketball {
+  background-color: #ffc409;
+}
+.sport-icon-wrapper.tennis {
+  background-color: #eb445a;
+}
+.sport-icon-wrapper.padel {
+  background-color: #3dc2ff;
+}
+.sport-icon-wrapper.volleyball {
+  background-color: #5260ff;
 }
 
-.match-info .sport-name {
-  margin: 0;
-  font-size: 1.1rem;
+.sport-name {
   font-weight: 700;
+  text-transform: capitalize;
+  font-size: 1rem;
   color: var(--ion-color-dark);
-}
-
-.match-info .location {
-  margin: 3px 0 0;
-  font-size: 0.85rem;
-  color: var(--ion-color-medium);
-}
-
-.match-info .time {
-  margin: 2px 0 0;
-  font-size: 0.8rem;
-  color: var(--ion-color-primary);
-  font-weight: 500;
-}
-
-.match-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
 }
 
 .status-badge {
-  padding: 5px 10px;
-  border-radius: 15px;
+  padding: 6px 12px;
+  border-radius: 20px;
   font-weight: 600;
   text-transform: uppercase;
   font-size: 0.7rem;
+  letter-spacing: 0.5px;
 }
 
-.sport-icon-small {
-  font-size: 1.2rem;
+.match-card-body {
+  padding: 16px;
+}
+
+.match-datetime {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  color: var(--ion-color-dark);
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.match-location {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   color: var(--ion-color-medium);
-  opacity: 0.5;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.info-icon {
+  color: var(--ion-color-primary);
+  font-size: 1.1rem;
+}
+
+.separator {
+  color: var(--ion-color-medium);
+}
+
+.match-features {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.feature-chip {
+  margin: 0;
+  height: 24px;
+  font-size: 0.75rem;
+}
+
+.match-card-footer {
+  background: #f9f9f9;
+  padding: 10px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.organizer-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.organizer-avatar {
+  width: 24px;
+  height: 24px;
+}
+
+.organizer-name {
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+  font-weight: 500;
+}
+
+.arrow-icon {
+  color: var(--ion-color-medium);
+  font-size: 1.2rem;
 }
 
 .empty-state {

@@ -2,11 +2,12 @@ const express = require('express');
 const router = express.Router();
 const matchController = require('../controllers/matchController');
 const authMiddleware = require('../middleware/authMiddleware');
+const optionalAuthMiddleware = require('../middleware/optionalAuthMiddleware');
 
 // Public routes (or protected if you prefer)
 router.get('/', matchController.getAllMatches);
 router.get('/mine', authMiddleware, matchController.getUserMatches);
-router.get('/:id', matchController.getMatchById);
+router.get('/:id', optionalAuthMiddleware, matchController.getMatchById);
 
 // Protected routes
 router.post('/', authMiddleware, matchController.createMatch);

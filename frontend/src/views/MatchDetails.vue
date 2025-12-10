@@ -659,10 +659,11 @@ const fetchMyVotes = async () => {
 const joinMatch = async () => {
   try {
     let accessCode = null;
-    if (match.value.is_private && !isCreator.value) {
+    // Only ask for code if private, not creator, AND NOT FRIEND
+    if (match.value.is_private && !isCreator.value && !match.value.is_friend) {
       const alert = await alertController.create({
         header: "Private Match",
-        message: "Enter access code to join immediately. If you are friends with the organizer, you can leave it blank to join directly.",
+        message: "Enter access code to join immediately, or leave blank to send a request.",
         inputs: [
           {
             name: "code",

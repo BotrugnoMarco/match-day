@@ -70,16 +70,29 @@ exports.getMatchById = async (req, res) => {
             return res.status(404).json({ error: 'Match not found' });
         }
 
+        const match = matches[0];
+
+        // Check friendship if user is logged in
+        if (req.user) {
+            const userId = req.user.id;
+            if (userId !== match.creator_id) {
+                const [friendship] = await db.query(
+                    'SELECT * FROM friendships WHERE ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?)) AND status = "accepted"',
+                    [userId, match.creator_id, match.creator_id, userId]
+                );
+                match.is_friend = friendship.length > 0;
+            }
+        }
+
         const [participants] = await db.query(
             `SELECT p.*, u.username, u.avatar_url, u.status as user_status, u.birth_date, COALESCE(us.rating, 6.0) as skill_rating 
        FROM participants p 
        JOIN users u ON p.user_id = u.id 
        LEFT JOIN user_skills us ON u.id = us.user_id AND us.sport_type = ?
        WHERE p.match_id = ?`,
-            [matches[0].sport_type, matchId]
+            [match.sport_type, matchId]
         );
 
-        const match = matches[0];
         match.participants = participants;
 
         res.json(match);
@@ -121,16 +134,16 @@ exports.joinMatch = async (req, res) => {
             // Check access code
             const isCodeCorrect = access_code && access_code === match.access_code;
 
+            // If code is provided, it MUST be correct
+            if (access_code && !isCodeCorrect) {
+                return res.status(403).json({ error: 'Invalid access code' });
+            }
+
             if (!isFriend && !isCodeCorrect) {
-                if (access_code && !isCodeCorrect) {
-                    return res.status(403).json({ error: 'Invalid access code' });
-                }
                 // Requesting to join
                 newStatus = 'pending_approval';
             }
-        }
-
-        const maxPlayers = match.max_players || 10;
+        } const maxPlayers = match.max_players || 10;
 
         // Check if user is already a participant
         const [existing] = await db.query(

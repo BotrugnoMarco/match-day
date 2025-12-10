@@ -161,6 +161,10 @@
               <ion-icon :icon="starOutline" slot="start"></ion-icon>
               Voting
             </ion-button>
+            <ion-button expand="block" color="tertiary" fill="solid" @click="editMatch" class="admin-btn">
+              <ion-icon :icon="createOutline" slot="start"></ion-icon>
+              Edit
+            </ion-button>
             <ion-button expand="block" color="danger" fill="clear" @click="deleteMatch" class="admin-btn full-width">
               <ion-icon :icon="trashOutline" slot="start"></ion-icon>
               Delete Match
@@ -425,6 +429,7 @@ import {
   checkmarkOutline,
   closeOutline,
   trashOutline,
+  createOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -691,6 +696,10 @@ const leaveMatch = async () => {
     console.error("Error leaving match:", error);
     alert("Failed to leave match: " + (error.response?.data?.error || error.message));
   }
+};
+
+const editMatch = () => {
+  router.push(`/matches/${match.value.id}/edit`);
 };
 
 const deleteMatch = async () => {

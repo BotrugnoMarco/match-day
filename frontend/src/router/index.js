@@ -4,6 +4,7 @@ import Login from '../views/Login.vue';
 import Register from '../views/Register.vue';
 import Matches from '../views/Matches.vue';
 import CreateMatch from '../views/CreateMatch.vue';
+import EditMatch from '../views/EditMatch.vue';
 import MatchDetails from '../views/MatchDetails.vue';
 import Profile from '../views/Profile.vue';
 import Friends from '../views/Friends.vue';
@@ -39,6 +40,12 @@ const routes = [
         path: '/matches/create',
         name: 'CreateMatch',
         component: CreateMatch,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/matches/:id/edit',
+        name: 'EditMatch',
+        component: EditMatch,
         meta: { requiresAuth: true }
     },
     {

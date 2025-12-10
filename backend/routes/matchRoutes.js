@@ -21,6 +21,7 @@ router.put('/:id/payment', authMiddleware, matchController.togglePaymentStatus);
 router.post('/:id/generate-teams', authMiddleware, matchController.generateTeams);
 router.post('/:id/approve', authMiddleware, matchController.approveJoinRequest);
 router.post('/:id/reject', authMiddleware, matchController.rejectJoinRequest);
+router.put('/:id', authMiddleware, matchController.updateMatch);
 router.delete('/:id', authMiddleware, matchController.deleteMatch);
 
 module.exports = router;

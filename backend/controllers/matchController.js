@@ -696,3 +696,51 @@ exports.deleteMatch = async (req, res) => {
         res.status(500).json({ error: 'Server error deleting match' });
     }
 };
+
+// Update match details
+exports.updateMatch = async (req, res) => {
+    const matchId = req.params.id;
+    const userId = req.user.id;
+    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code } = req.body;
+
+    try {
+        // Check if match exists and user is creator
+        const [matches] = await db.query('SELECT * FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) {
+            return res.status(404).json({ error: 'Match not found' });
+        }
+
+        if (matches[0].creator_id !== userId) {
+            return res.status(403).json({ error: 'Only the creator can edit the match' });
+        }
+
+        // Update match
+        await db.query(
+            'UPDATE matches SET date_time = ?, location = ?, sport_type = ?, price_total = ?, max_players = ?, is_covered = ?, has_showers = ?, is_private = ?, access_code = ? WHERE id = ?',
+            [date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, matchId]
+        );
+
+        // Get participants to notify
+        const [participants] = await db.query('SELECT user_id FROM participants WHERE match_id = ? AND user_id != ?', [matchId, userId]);
+
+        const io = req.app.get('io');
+        
+        // Notify participants
+        for (const p of participants) {
+            await notificationController.createNotification(
+                p.user_id,
+                `Match #${matchId} details have been updated by the organizer.`,
+                'info',
+                matchId,
+                io
+            );
+        }
+
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Match updated successfully' });
+    } catch (error) {
+        console.error('Update match error:', error);
+        res.status(500).json({ error: 'Server error updating match' });
+    }
+};

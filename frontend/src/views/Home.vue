@@ -63,7 +63,7 @@ const user = computed(() => store.getters.currentUser);
 
 <style scoped>
 .home-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
   overflow-y: auto;
 }
 
@@ -74,9 +74,9 @@ const user = computed(() => store.getters.currentUser);
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px;
-  box-shadow: 0 10px 30px rgba(var(--ion-color-primary-rgb), 0.3);
+  border-bottom-left-radius: var(--rounded-xl);
+  border-bottom-right-radius: var(--rounded-xl);
+  box-shadow: var(--shadow-lg);
   position: relative;
   padding-bottom: 40px;
   color: white;
@@ -86,8 +86,8 @@ const user = computed(() => store.getters.currentUser);
 .logo-wrapper {
   background: white;
   padding: 10px;
-  border-radius: 25px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-md);
   margin-bottom: 20px;
   width: 120px;
   height: 120px;
@@ -100,7 +100,7 @@ const user = computed(() => store.getters.currentUser);
   width: 100%;
   height: 100%;
   object-fit: cover;
-  border-radius: 18px;
+  border-radius: var(--rounded-md);
 }
 
 .app-title {
@@ -152,7 +152,7 @@ const user = computed(() => store.getters.currentUser);
   padding: 6px 12px;
   font-size: 0.8rem;
   font-weight: 700;
-  border-radius: 12px;
+  border-radius: var(--rounded-sm);
 }
 
 .buttons-wrapper {
@@ -165,14 +165,14 @@ const user = computed(() => store.getters.currentUser);
 }
 
 .action-btn {
-  --border-radius: 15px;
+  --border-radius: var(--rounded-md);
   font-weight: 700;
   height: 55px;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --box-shadow: var(--shadow-sm);
 }
 
 .primary-btn {
-  --box-shadow: 0 8px 20px rgba(var(--ion-color-primary-rgb), 0.4);
+  --box-shadow: var(--shadow-md);
 }
 
 .secondary-btn {

@@ -104,7 +104,7 @@ const handleNotificationClick = (notification) => {
 
 <style scoped>
 .page-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
   overflow-y: auto;
 }
 
@@ -112,10 +112,10 @@ const handleNotificationClick = (notification) => {
   background: var(--ion-color-primary);
   padding: 20px 20px;
   height: auto;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: var(--rounded-xl);
+  border-bottom-right-radius: var(--rounded-xl);
   margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   text-align: center;
   color: white;
 }
@@ -137,13 +137,13 @@ const handleNotificationClick = (notification) => {
 
 .notification-card {
   background: white;
-  border-radius: 15px;
+  border-radius: var(--rounded-md);
   padding: 15px;
   display: flex;
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
   position: relative;
   transition: transform 0.2s;
   cursor: pointer;

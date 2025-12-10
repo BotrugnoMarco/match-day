@@ -236,7 +236,7 @@ onMounted(() => {
 
 <style scoped>
 .page-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
 }
 
 .section-container {
@@ -260,8 +260,8 @@ onMounted(() => {
 
 .custom-card {
   background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
   margin: 0 0 10px 0;
 }
 
@@ -294,8 +294,8 @@ onMounted(() => {
 
 .search-results {
   background: white;
-  border-radius: 15px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
   margin-top: 10px;
   overflow: hidden;
 }

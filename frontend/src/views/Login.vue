@@ -68,7 +68,7 @@ const handleLogin = async () => {
 
 <style scoped>
 .auth-content {
-  --background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  --background: var(--ion-background-color);
 }
 
 .auth-wrapper {
@@ -82,24 +82,24 @@ const handleLogin = async () => {
 .auth-header {
   text-align: center;
   margin-bottom: 40px;
-  color: white;
+  color: var(--ion-color-dark);
 }
 
 .icon-container {
   width: 80px;
   height: 80px;
-  background: rgba(255, 255, 255, 0.2);
+  background: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
-  backdrop-filter: blur(10px);
+  box-shadow: var(--shadow-md);
 }
 
 .app-logo {
   font-size: 40px;
-  color: white;
+  color: var(--ion-color-primary);
 }
 
 .auth-header h1 {
@@ -112,13 +112,14 @@ const handleLogin = async () => {
   margin: 0;
   opacity: 0.8;
   font-size: 16px;
+  color: var(--ion-color-medium);
 }
 
 .auth-form-container {
   background: white;
   padding: 30px;
-  border-radius: 25px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-lg);
 }
 
 .input-group {
@@ -130,9 +131,9 @@ const handleLogin = async () => {
 
 .custom-input {
   --background: #f5f7fa;
-  --border-radius: 15px;
+  --border-radius: var(--rounded-md);
   --padding-start: 15px;
-  border-radius: 15px;
+  border-radius: var(--rounded-md);
 }
 
 .input-icon {
@@ -146,29 +147,30 @@ const handleLogin = async () => {
 }
 
 .forgot-password a {
-  color: #2a5298;
+  color: var(--ion-color-primary);
   text-decoration: none;
   font-size: 14px;
   font-weight: 600;
 }
 
 .auth-btn {
-  --background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
-  --box-shadow: 0 4px 15px rgba(42, 82, 152, 0.4);
+  --background: var(--ion-color-primary);
+  --box-shadow: var(--shadow-md);
   font-weight: 700;
   letter-spacing: 1px;
   height: 50px;
   margin-bottom: 20px;
+  --border-radius: var(--rounded-md);
 }
 
 .auth-footer {
   text-align: center;
   font-size: 14px;
-  color: #718096;
+  color: var(--ion-color-medium);
 }
 
 .auth-footer span {
-  color: #2a5298;
+  color: var(--ion-color-primary);
   font-weight: 700;
   cursor: pointer;
 }

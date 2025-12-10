@@ -265,15 +265,15 @@ const createMatch = () => {
   background: var(--ion-color-primary);
   padding: 10px 20px;
   height: auto;
-  border-bottom-left-radius: 1.875rem;
-  border-bottom-right-radius: 1.875rem;
+  border-bottom-left-radius: var(--rounded-xl);
+  border-bottom-right-radius: var(--rounded-xl);
   margin-bottom: 1.25rem;
-  box-shadow: 0 0.25rem 0.625rem rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .segment-wrapper {
   background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
+  border-radius: var(--rounded-md);
   padding: 5px;
 }
 
@@ -287,9 +287,9 @@ const createMatch = () => {
 }
 
 .match-card {
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-sm);
   margin-bottom: 16px;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;

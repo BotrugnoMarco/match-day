@@ -268,14 +268,14 @@ const createMatch = async () => {
 
 <style scoped>
 .page-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
 }
 
 .page-banner {
   background: var(--ion-color-primary);
   padding: 20px 20px 50px;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
+  border-bottom-left-radius: var(--rounded-xl);
+  border-bottom-right-radius: var(--rounded-xl);
   margin-bottom: 20px;
   box-shadow: var(--shadow-md);
   text-align: center;

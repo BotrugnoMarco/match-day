@@ -41,6 +41,8 @@ onMounted(() => {
           handler: () => {
             if (notification.related_match_id) {
               router.push(`/matches/${notification.related_match_id}`);
+            } else if (notification.message && notification.message.toLowerCase().includes("friend request")) {
+              router.push("/friends");
             } else {
               router.push("/notifications");
             }

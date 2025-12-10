@@ -3,7 +3,6 @@
 ## Eventi e Match
 
 - **Annullamento partita:** L'admin può annullare una partita per cause maggiori (maltempo, campo chiuso, ecc.). Tutti i partecipanti vengono avvisati.
-- **Modifica partita con notifica:** Quando l'admin modifica data, luogo o dettagli della partita, tutti i partecipanti ricevono una notifica (push/email) con le nuove informazioni.
 - **Logica dello "Strike":** Se un partecipante si ritira entro 18 ore dalla creazione dell'evento, riceve uno "strike" (penalità). Gli strike possono limitare la partecipazione futura o essere visibili nel profilo.
 - **Ricerca match per posizione:** Permette di filtrare e trovare partite aperte in base alla posizione geografica dell'utente o del campo. Utile per chi cerca eventi vicino a sé.
 - **Recensione luogo:** Dopo la partita, i partecipanti possono lasciare una recensione sul campo/struttura, visibile agli altri utenti per aiutare nella scelta.
@@ -17,7 +16,6 @@
 ## Comunicazione e Notifiche
 
 - **Invio email per informazioni sugli eventi:** Inviare automaticamente email ai partecipanti con dettagli, aggiornamenti, modifiche o annullamenti della partita. Migliora la comunicazione e riduce il rischio di dimenticanze.
-- **Modifica partita con notifica:** Quando l'admin modifica data, luogo o dettagli della partita, tutti i partecipanti ricevono una notifica (push/email) con le nuove informazioni.
 
 ## Ruoli e Statistiche
 

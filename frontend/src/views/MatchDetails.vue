@@ -61,6 +61,22 @@
             </div>
           </div>
 
+          <div class="map-container" v-if="match.location">
+            <iframe
+              width="100%"
+              height="200"
+              style="border: 0; border-radius: var(--radius-md)"
+              loading="lazy"
+              allowfullscreen
+              :src="`https://maps.google.com/maps?q=${encodeURIComponent(match.location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`"
+            >
+            </iframe>
+            <ion-button fill="clear" size="small" expand="block" @click="openMaps(match.location)">
+              Open in Maps
+              <ion-icon slot="end" :icon="mapOutline"></ion-icon>
+            </ion-button>
+          </div>
+
           <div class="divider"></div>
 
           <div class="info-row">
@@ -493,6 +509,7 @@ import {
   ribbonOutline,
   ribbon,
   shieldCheckmarkOutline,
+  mapOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -669,6 +686,11 @@ const results = computed(() => {
 
 const goToProfile = (userId) => {
   router.push(`/profile/${userId}`);
+};
+
+const openMaps = (location) => {
+  const query = encodeURIComponent(location);
+  window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, "_blank");
 };
 
 const openInviteModal = () => {
@@ -1385,5 +1407,12 @@ onUnmounted(() => {
   padding: 2px var(--space-2);
   border-radius: var(--rounded-sm);
   height: auto;
+}
+
+.map-container {
+  margin: var(--space-4) 0;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
 }
 </style>

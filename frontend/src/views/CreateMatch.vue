@@ -22,77 +22,110 @@
             v-for="sport in sports"
             :key="sport.value"
             class="sport-card"
-            :class="{ active: sportType === sport.value }"
+            :class="{ active: sportType === sport.value, [sport.value]: sportType === sport.value }"
             @click="selectSport(sport.value)"
           >
-            <ion-icon :icon="sport.icon"></ion-icon>
+            <div class="sport-icon-wrapper" :class="{ [sport.value]: true }">
+              <ion-icon :icon="sport.icon"></ion-icon>
+            </div>
             <span>{{ sport.label }}</span>
           </div>
         </div>
 
         <form @submit.prevent="createMatch" class="match-form">
           <!-- Date & Time -->
-          <div class="form-group">
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="calendarOutline" slot="start" class="form-icon"></ion-icon>
-              <ion-label>Date & Time</ion-label>
-              <ion-datetime-button datetime="datetime"></ion-datetime-button>
-            </ion-item>
-            <ion-modal :keep-contents-mounted="true">
-              <ion-datetime id="datetime" v-model="dateTime" presentation="date-time"></ion-datetime>
-            </ion-modal>
+          <div class="form-card">
+            <div class="form-header">
+              <ion-icon :icon="calendarOutline" class="header-icon"></ion-icon>
+              <span>When & Where</span>
+            </div>
+            <div class="form-content">
+              <ion-item lines="none" class="custom-item">
+                <ion-label position="stacked">Date & Time</ion-label>
+                <ion-datetime-button datetime="datetime"></ion-datetime-button>
+              </ion-item>
+              <ion-modal :keep-contents-mounted="true">
+                <ion-datetime id="datetime" v-model="dateTime" presentation="date-time"></ion-datetime>
+              </ion-modal>
+
+              <div class="divider"></div>
+
+              <ion-item lines="none" class="custom-item">
+                <ion-label position="stacked">Location</ion-label>
+                <ion-input v-model="location" placeholder="Where are we playing?"></ion-input>
+              </ion-item>
+            </div>
           </div>
 
-          <!-- Location -->
-          <div class="form-group">
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="locationOutline" slot="start" class="form-icon"></ion-icon>
-              <ion-input v-model="location" label="Location" label-placement="floating" placeholder="Where are we playing?"></ion-input>
-            </ion-item>
-          </div>
+          <!-- Details -->
+          <div class="form-card">
+            <div class="form-header">
+              <ion-icon :icon="peopleOutline" class="header-icon"></ion-icon>
+              <span>Match Details</span>
+            </div>
+            <div class="form-content">
+              <ion-item lines="none" class="custom-item">
+                <ion-label position="stacked">Max Players</ion-label>
+                <ion-input type="number" v-model="maxPlayers" placeholder="10"></ion-input>
+              </ion-item>
 
-          <!-- Max Players -->
-          <div class="form-group">
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="peopleOutline" slot="start" class="form-icon"></ion-icon>
-              <ion-input type="number" v-model="maxPlayers" label="Max Players" label-placement="floating"></ion-input>
-            </ion-item>
-          </div>
+              <div class="divider"></div>
 
-          <!-- Price -->
-          <div class="form-group">
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="cashOutline" slot="start" class="form-icon"></ion-icon>
-              <ion-input type="number" v-model="priceTotal" label="Total Price (€)" label-placement="floating" placeholder="0.00"></ion-input>
-            </ion-item>
+              <ion-item lines="none" class="custom-item">
+                <ion-label position="stacked">Total Price (€)</ion-label>
+                <ion-input type="number" v-model="priceTotal" placeholder="0.00"></ion-input>
+              </ion-item>
+            </div>
           </div>
 
           <!-- Field Options -->
-          <div class="form-group">
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="umbrella" slot="start" class="form-icon"></ion-icon>
-              <ion-toggle v-model="isCovered">Covered Field</ion-toggle>
-            </ion-item>
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="water" slot="start" class="form-icon"></ion-icon>
-              <ion-toggle v-model="hasShowers">Showers Available</ion-toggle>
-            </ion-item>
+          <div class="form-card">
+            <div class="form-header">
+              <ion-icon :icon="umbrella" class="header-icon"></ion-icon>
+              <span>Facilities</span>
+            </div>
+            <div class="form-content">
+              <ion-item lines="none" class="custom-item toggle-item">
+                <ion-label>Covered Field</ion-label>
+                <ion-toggle v-model="isCovered" slot="end"></ion-toggle>
+              </ion-item>
+
+              <div class="divider"></div>
+
+              <ion-item lines="none" class="custom-item toggle-item">
+                <ion-label>Showers Available</ion-label>
+                <ion-toggle v-model="hasShowers" slot="end"></ion-toggle>
+              </ion-item>
+            </div>
           </div>
 
           <!-- Private Match Options -->
-          <div class="form-group">
-            <ion-item lines="none" class="custom-item">
-              <ion-icon :icon="lockClosedOutline" slot="start" class="form-icon"></ion-icon>
-              <ion-toggle v-model="isPrivate">Private Match</ion-toggle>
-            </ion-item>
-            <ion-item v-if="isPrivate" lines="none" class="custom-item animate-item">
-              <ion-icon :icon="keyOutline" slot="start" class="form-icon"></ion-icon>
-              <ion-input v-model="accessCode" label="Access Code" label-placement="floating" placeholder="Secret code"></ion-input>
-            </ion-item>
+          <div class="form-card">
+            <div class="form-header">
+              <ion-icon :icon="lockClosedOutline" class="header-icon"></ion-icon>
+              <span>Privacy</span>
+            </div>
+            <div class="form-content">
+              <ion-item lines="none" class="custom-item toggle-item">
+                <ion-label>Private Match</ion-label>
+                <ion-toggle v-model="isPrivate" slot="end"></ion-toggle>
+              </ion-item>
+
+              <div v-if="isPrivate">
+                <div class="divider"></div>
+                <ion-item lines="none" class="custom-item animate-item">
+                  <ion-label position="stacked">Access Code</ion-label>
+                  <ion-input v-model="accessCode" placeholder="Secret code"></ion-input>
+                </ion-item>
+              </div>
+            </div>
           </div>
 
-          <div class="ion-padding-top ion-margin-top">
-            <ion-button expand="block" type="submit" class="create-btn" size="large"> Create Match </ion-button>
+          <div class="ion-padding-top ion-margin-top ion-margin-bottom">
+            <ion-button expand="block" type="submit" class="create-btn" size="large">
+              <ion-icon :icon="addCircleOutline" slot="start"></ion-icon>
+              Create Match
+            </ion-button>
           </div>
         </form>
       </div>
@@ -265,6 +298,7 @@ const createMatch = async () => {
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  padding-bottom: 40px;
 }
 
 .section-title {
@@ -296,10 +330,18 @@ const createMatch = async () => {
   cursor: pointer;
 }
 
-.sport-card ion-icon {
-  font-size: 24px;
+.sport-icon-wrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin-bottom: 8px;
+  background: #f0f2f5;
   color: var(--ion-color-medium);
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
 }
 
 .sport-card span {
@@ -310,25 +352,89 @@ const createMatch = async () => {
 
 .sport-card.active {
   border-color: var(--ion-color-primary);
-  background: rgba(var(--ion-color-primary-rgb), 0.05);
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(var(--ion-color-primary-rgb), 0.15);
 }
 
-.sport-card.active ion-icon,
+.sport-card.active.soccer {
+  border-color: #2dd36f;
+}
+.sport-card.active.basketball {
+  border-color: #ffc409;
+}
+.sport-card.active.tennis {
+  border-color: #eb445a;
+}
+.sport-card.active.padel {
+  border-color: #3dc2ff;
+}
+.sport-card.active.volleyball {
+  border-color: #5260ff;
+}
+
+.sport-card.active .sport-icon-wrapper.soccer {
+  background: #2dd36f;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.basketball {
+  background: #ffc409;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.tennis {
+  background: #eb445a;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.padel {
+  background: #3dc2ff;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.volleyball {
+  background: #5260ff;
+  color: white;
+}
+
 .sport-card.active span {
-  color: var(--ion-color-primary);
+  color: var(--ion-color-dark);
 }
 
 .match-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
-.form-group {
+.form-card {
   background: white;
-  border-radius: 15px;
+  border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.form-header {
+  background: #f8f9fa;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.header-icon {
+  color: var(--ion-color-primary);
+  font-size: 1.2rem;
+}
+
+.form-header span {
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-content {
+  padding: 8px 0;
 }
 
 .custom-item {
@@ -338,15 +444,29 @@ const createMatch = async () => {
   --min-height: 60px;
 }
 
-.form-icon {
-  color: var(--ion-color-primary);
-  margin-right: 10px;
+.custom-item ion-label {
+  font-weight: 600;
+  color: var(--ion-color-medium);
+  font-size: 0.85rem !important;
+  margin-bottom: 8px;
+}
+
+.toggle-item ion-label {
+  font-size: 1rem !important;
+  color: var(--ion-color-dark);
+  margin-bottom: 0;
+}
+
+.divider {
+  height: 1px;
+  background: #f0f2f5;
+  margin: 0 16px;
 }
 
 .create-btn {
-  --border-radius: 15px;
+  --border-radius: 16px;
   font-weight: 700;
-  margin-top: 10px;
-  --box-shadow: 0 4px 12px rgba(var(--ion-color-primary-rgb), 0.4);
+  --box-shadow: 0 8px 20px rgba(var(--ion-color-primary-rgb), 0.3);
+  height: 56px;
 }
 </style>

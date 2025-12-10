@@ -63,40 +63,44 @@ const draggedPlayerId = ref(null);
 const localPlayers = ref([]);
 const hasChanges = ref(false);
 
+const initializePlayers = (sourcePlayers) => {
+  const players = JSON.parse(JSON.stringify(sourcePlayers));
+
+  // Group by team to calculate indices for distribution
+  const teamAIndices = [];
+  const teamBIndices = [];
+
+  players.forEach((p, index) => {
+    if (p.team === "A") teamAIndices.push(index);
+    else if (p.team === "B") teamBIndices.push(index);
+  });
+
+  teamAIndices.forEach((pIndex, i) => {
+    const p = players[pIndex];
+    if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 25;
+    if (p.y_pos === null || p.y_pos === undefined) {
+      p.y_pos = teamAIndices.length > 1 ? 15 + 70 * (i / (teamAIndices.length - 1)) : 50;
+    }
+  });
+
+  teamBIndices.forEach((pIndex, i) => {
+    const p = players[pIndex];
+    if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 75;
+    if (p.y_pos === null || p.y_pos === undefined) {
+      p.y_pos = teamBIndices.length > 1 ? 15 + 70 * (i / (teamBIndices.length - 1)) : 50;
+    }
+  });
+
+  return players;
+};
+
 // Initialize local players with props data
 watch(
   () => props.players,
   (newPlayers) => {
     // Only update if we are not dragging or if it's a fresh load
     if (!draggedPlayerId.value) {
-      const players = JSON.parse(JSON.stringify(newPlayers));
-
-      // Group by team to calculate indices for distribution
-      const teamAIndices = [];
-      const teamBIndices = [];
-
-      players.forEach((p, index) => {
-        if (p.team === "A") teamAIndices.push(index);
-        else if (p.team === "B") teamBIndices.push(index);
-      });
-
-      teamAIndices.forEach((pIndex, i) => {
-        const p = players[pIndex];
-        if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 25;
-        if (p.y_pos === null || p.y_pos === undefined) {
-          p.y_pos = teamAIndices.length > 1 ? 15 + 70 * (i / (teamAIndices.length - 1)) : 50;
-        }
-      });
-
-      teamBIndices.forEach((pIndex, i) => {
-        const p = players[pIndex];
-        if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 75;
-        if (p.y_pos === null || p.y_pos === undefined) {
-          p.y_pos = teamBIndices.length > 1 ? 15 + 70 * (i / (teamBIndices.length - 1)) : 50;
-        }
-      });
-
-      localPlayers.value = players;
+      localPlayers.value = initializePlayers(newPlayers);
     }
   },
   { immediate: true, deep: true }
@@ -162,7 +166,7 @@ const savePositions = () => {
 };
 
 const resetPositions = () => {
-  localPlayers.value = JSON.parse(JSON.stringify(props.players));
+  localPlayers.value = initializePlayers(props.players);
   hasChanges.value = false;
 };
 </script>

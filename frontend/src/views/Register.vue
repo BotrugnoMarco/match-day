@@ -111,12 +111,12 @@ const handleRegister = async () => {
   flex-direction: column;
   justify-content: center;
   min-height: 100%;
-  padding: 30px;
+  padding: var(--space-8);
 }
 
 .auth-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: var(--space-8);
   color: var(--ion-color-dark);
 }
 
@@ -128,7 +128,7 @@ const handleRegister = async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto var(--space-5);
   box-shadow: var(--shadow-md);
 }
 
@@ -140,7 +140,7 @@ const handleRegister = async () => {
 .auth-header h1 {
   font-size: 28px;
   font-weight: 700;
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-3);
 }
 
 .auth-header p {
@@ -152,7 +152,7 @@ const handleRegister = async () => {
 
 .auth-form-container {
   background: white;
-  padding: 30px;
+  padding: var(--space-8);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-lg);
 }
@@ -160,20 +160,20 @@ const handleRegister = async () => {
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 25px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
 }
 
 .custom-input {
   --background: #f5f7fa;
   --border-radius: var(--rounded-md);
-  --padding-start: 15px;
+  --padding-start: var(--space-4);
   border-radius: var(--rounded-md);
 }
 
 .input-icon {
   color: #a0aec0;
-  margin-right: 10px;
+  margin-right: var(--space-3);
 }
 
 .auth-btn {
@@ -182,7 +182,7 @@ const handleRegister = async () => {
   font-weight: 700;
   letter-spacing: 1px;
   height: 50px;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   --border-radius: var(--rounded-md);
 }
 

@@ -240,15 +240,15 @@ onMounted(() => {
 }
 
 .section-container {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-  padding-left: 5px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  padding-left: var(--space-1);
 }
 
 .section-title h3 {
@@ -262,7 +262,7 @@ onMounted(() => {
   background: white;
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
-  margin: 0 0 10px 0;
+  margin: 0 0 var(--space-3) 0;
 }
 
 .status-text {
@@ -282,13 +282,13 @@ onMounted(() => {
 
 .empty-state {
   text-align: center;
-  padding: 40px 20px;
+  padding: var(--space-10) var(--space-5);
   color: var(--ion-color-medium);
 }
 
 .empty-icon {
   font-size: 3rem;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
   opacity: 0.5;
 }
 
@@ -296,7 +296,7 @@ onMounted(() => {
   background: white;
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
-  margin-top: 10px;
+  margin-top: var(--space-3);
   overflow: hidden;
 }
 </style>

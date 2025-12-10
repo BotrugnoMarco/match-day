@@ -110,11 +110,11 @@ const handleNotificationClick = (notification) => {
 
 .page-banner {
   background: var(--ion-color-primary);
-  padding: 20px 20px;
+  padding: var(--space-5) var(--space-5);
   height: auto;
   border-bottom-left-radius: var(--rounded-xl);
   border-bottom-right-radius: var(--rounded-xl);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   box-shadow: var(--shadow-md);
   text-align: center;
   color: white;
@@ -138,11 +138,11 @@ const handleNotificationClick = (notification) => {
 .notification-card {
   background: white;
   border-radius: var(--rounded-md);
-  padding: 15px;
+  padding: var(--space-4);
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
   box-shadow: var(--shadow-sm);
   position: relative;
   transition: transform 0.2s;
@@ -210,17 +210,17 @@ const handleNotificationClick = (notification) => {
   background: var(--ion-color-danger);
   border-radius: 50%;
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: var(--space-4);
+  right: var(--space-4);
 }
 
 .empty-state {
-  margin-top: 50px;
+  margin-top: var(--space-12);
   color: var(--ion-color-medium);
 }
 
 .empty-icon {
   font-size: 60px;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
 }
 </style>

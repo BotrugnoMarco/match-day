@@ -78,17 +78,17 @@ const user = computed(() => store.getters.currentUser);
   border-bottom-right-radius: var(--rounded-xl);
   box-shadow: var(--shadow-lg);
   position: relative;
-  padding-bottom: 40px;
+  padding-bottom: var(--space-10);
   color: white;
   text-align: center;
 }
 
 .logo-wrapper {
   background: white;
-  padding: 10px;
+  padding: var(--space-3);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   width: 120px;
   height: 120px;
   display: flex;
@@ -113,13 +113,13 @@ const user = computed(() => store.getters.currentUser);
 .app-tagline {
   font-size: 1.1rem;
   opacity: 0.9;
-  margin-top: 10px;
+  margin-top: var(--space-3);
   font-weight: 500;
   max-width: 80%;
 }
 
 .actions-container {
-  padding: 40px 30px;
+  padding: var(--space-10) var(--space-8);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -135,7 +135,7 @@ const user = computed(() => store.getters.currentUser);
   font-size: 1.8rem;
   font-weight: 800;
   color: var(--ion-color-dark);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
 }
 
 .welcome-text p {
@@ -145,11 +145,11 @@ const user = computed(() => store.getters.currentUser);
 }
 
 .user-info-pills {
-  margin-top: 15px;
+  margin-top: var(--space-4);
 }
 
 .info-pill {
-  padding: 6px 12px;
+  padding: var(--space-2) var(--space-3);
   font-size: 0.8rem;
   font-weight: 700;
   border-radius: var(--rounded-sm);
@@ -160,8 +160,8 @@ const user = computed(() => store.getters.currentUser);
   max-width: 320px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .action-btn {

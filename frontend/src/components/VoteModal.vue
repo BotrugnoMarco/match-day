@@ -1,48 +1,51 @@
 <template>
-  <ion-header>
-    <ion-toolbar>
-      <ion-title>Vote for {{ targetName }}</ion-title>
-      <ion-buttons slot="end">
-        <ion-button @click="cancel">Cancel</ion-button>
-      </ion-buttons>
-    </ion-toolbar>
-  </ion-header>
-  <ion-content class="ion-padding">
-    <form @submit.prevent="submitVote">
-      <ion-item lines="none" class="rating-item">
-        <ion-label position="stacked">Rating</ion-label>
-        <div class="rating-display">
-          <span class="rating-value">{{ rating }}</span>
-          <span class="rating-max">/ 10</span>
-        </div>
-        <ion-range v-model="rating" min="1" max="10" pin="true" ticks="true" snaps="true" color="primary"></ion-range>
-      </ion-item>
+  <ion-page>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Vote for {{ targetName }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button @click="cancel">Cancel</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
+      <form @submit.prevent="submitVote">
+        <ion-item lines="none" class="rating-item">
+          <ion-label position="stacked">Rating</ion-label>
+          <div class="rating-display">
+            <span class="rating-value">{{ rating }}</span>
+            <span class="rating-max">/ 10</span>
+          </div>
+          <ion-range v-model="rating" min="1" max="10" pin="true" ticks="true" snaps="true" color="primary"></ion-range>
+        </ion-item>
 
-      <div class="tags-section">
-        <ion-label class="tags-label">Select a Tag (Optional)</ion-label>
-        <div class="tags-container">
-          <ion-chip
-            v-for="tag in availableTags"
-            :key="tag"
-            :color="selectedTag === tag ? 'primary' : 'medium'"
-            :outline="selectedTag !== tag"
-            @click="toggleTag(tag)"
-          >
-            <ion-label>{{ tag }}</ion-label>
-          </ion-chip>
+        <div class="tags-section">
+          <ion-label class="tags-label">Select a Tag (Optional)</ion-label>
+          <div class="tags-container">
+            <ion-chip
+              v-for="tag in availableTags"
+              :key="tag"
+              :color="selectedTag === tag ? 'primary' : 'medium'"
+              :outline="selectedTag !== tag"
+              @click="toggleTag(tag)"
+            >
+              <ion-label>{{ tag }}</ion-label>
+            </ion-chip>
+          </div>
         </div>
-      </div>
 
-      <div class="ion-padding-top">
-        <ion-button expand="block" type="submit" size="large">Submit Vote</ion-button>
-      </div>
-    </form>
-  </ion-content>
+        <div class="ion-padding-top">
+          <ion-button expand="block" type="submit" size="large">Submit Vote</ion-button>
+        </div>
+      </form>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import {
+  IonPage,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -99,12 +102,12 @@ const submitVote = async () => {
 <style scoped>
 .rating-item {
   --background: transparent;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .rating-display {
   text-align: center;
-  margin: 20px 0;
+  margin: var(--space-5) 0;
 }
 
 .rating-value {
@@ -120,14 +123,14 @@ const submitVote = async () => {
 }
 
 .tags-section {
-  margin-top: 20px;
-  padding: 0 10px;
+  margin-top: var(--space-5);
+  padding: 0 var(--space-2);
 }
 
 .tags-label {
   font-size: 0.9rem;
   color: var(--ion-color-medium);
-  margin-bottom: 10px;
+  margin-bottom: var(--space-2);
   display: block;
   font-weight: 600;
 }
@@ -135,7 +138,7 @@ const submitVote = async () => {
 .tags-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 ion-chip {

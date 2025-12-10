@@ -132,7 +132,7 @@ watch(
 <style scoped>
 .empty-state {
   text-align: center;
-  padding: 20px;
+  padding: var(--space-5);
   color: var(--ion-color-medium);
 }
 </style>

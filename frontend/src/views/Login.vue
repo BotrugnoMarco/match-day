@@ -105,7 +105,7 @@ const handleLogin = async () => {
 .auth-header h1 {
   font-size: 28px;
   font-weight: 700;
-  margin: 0 0 10px;
+  margin: 0 0 var(--space-3);
 }
 
 .auth-header p {
@@ -117,7 +117,7 @@ const handleLogin = async () => {
 
 .auth-form-container {
   background: white;
-  padding: 30px;
+  padding: var(--space-8);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-lg);
 }
@@ -125,25 +125,25 @@ const handleLogin = async () => {
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
 }
 
 .custom-input {
   --background: #f5f7fa;
   --border-radius: var(--rounded-md);
-  --padding-start: 15px;
+  --padding-start: var(--space-4);
   border-radius: var(--rounded-md);
 }
 
 .input-icon {
   color: #a0aec0;
-  margin-right: 10px;
+  margin-right: var(--space-3);
 }
 
 .forgot-password {
   text-align: right;
-  margin-bottom: 25px;
+  margin-bottom: var(--space-6);
 }
 
 .forgot-password a {
@@ -159,7 +159,7 @@ const handleLogin = async () => {
   font-weight: 700;
   letter-spacing: 1px;
   height: 50px;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   --border-radius: var(--rounded-md);
 }
 

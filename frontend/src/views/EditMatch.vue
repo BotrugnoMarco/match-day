@@ -409,22 +409,22 @@ const updateMatch = async () => {
 .match-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: var(--space-5);
 }
 
 .form-card {
   background: white;
-  border-radius: 20px;
+  border-radius: var(--rounded-lg);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .form-header {
   background: #f8f9fa;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   border-bottom: 1px solid #f0f0f0;
 }
 
@@ -442,13 +442,13 @@ const updateMatch = async () => {
 }
 
 .form-content {
-  padding: 8px 0;
+  padding: var(--space-2) 0;
 }
 
 .custom-item {
   --background: transparent;
-  --padding-start: 16px;
-  --inner-padding-end: 16px;
+  --padding-start: var(--space-4);
+  --inner-padding-end: var(--space-4);
   --min-height: 60px;
 }
 
@@ -456,7 +456,7 @@ const updateMatch = async () => {
   font-weight: 600;
   color: var(--ion-color-medium);
   font-size: 0.85rem !important;
-  margin-bottom: 8px;
+  margin-bottom: var(--space-2);
 }
 
 .toggle-item ion-label {
@@ -468,13 +468,13 @@ const updateMatch = async () => {
 .divider {
   height: 1px;
   background: #f0f2f5;
-  margin: 0 16px;
+  margin: 0 var(--space-4);
 }
 
 .create-btn {
-  --border-radius: 16px;
+  --border-radius: var(--rounded-md);
   font-weight: 700;
-  --box-shadow: 0 8px 20px rgba(var(--ion-color-primary-rgb), 0.3);
+  --box-shadow: var(--shadow-lg);
   height: 56px;
 }
 </style>

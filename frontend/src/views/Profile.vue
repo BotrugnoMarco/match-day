@@ -603,19 +603,19 @@ const getSkillColor = (rating) => {
 }
 
 .role-badge {
-  margin-top: 5px;
+  margin-top: var(--space-1);
   opacity: 0.9;
 }
 
 .stats-container {
   margin-top: -20px;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .stat-box {
   background: white;
   border-radius: var(--rounded-md);
-  padding: 15px 5px;
+  padding: var(--space-4) var(--space-1);
   text-align: center;
   box-shadow: var(--shadow-md);
 }
@@ -631,7 +631,7 @@ const getSkillColor = (rating) => {
   color: var(--ion-color-medium);
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  margin-top: 5px;
+  margin-top: var(--space-1);
 }
 
 .text-primary {
@@ -642,15 +642,15 @@ const getSkillColor = (rating) => {
 }
 
 .section-container {
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  padding-left: 5px;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-1);
 }
 
 .section-title h3 {
@@ -669,7 +669,7 @@ const getSkillColor = (rating) => {
 .skill-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5px;
+  margin-bottom: var(--space-1);
 }
 
 .skill-header h3 {
@@ -691,16 +691,16 @@ const getSkillColor = (rating) => {
 .badges-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .badge-chip {
   background: white;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--rounded-lg);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   box-shadow: var(--shadow-sm);
   border: 1px solid #f0f2f5;
 }
@@ -716,12 +716,12 @@ const getSkillColor = (rating) => {
   color: white;
   font-size: 0.75rem;
   font-weight: 700;
-  padding: 2px 6px;
+  padding: 2px var(--space-2);
   border-radius: 10px;
 }
 
 .match-card {
-  margin: 0 0 15px 0;
+  margin: 0 0 var(--space-4) 0;
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
 }
@@ -730,13 +730,13 @@ const getSkillColor = (rating) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px;
+  padding: var(--space-4);
 }
 
 .match-left {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: var(--space-4);
 }
 
 .match-date {
@@ -744,7 +744,7 @@ const getSkillColor = (rating) => {
   flex-direction: column;
   align-items: center;
   background: #f0f2f5;
-  padding: 8px 12px;
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--rounded-sm);
   min-width: 50px;
 }
@@ -779,19 +779,19 @@ const getSkillColor = (rating) => {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 5px;
+  gap: var(--space-1);
 }
 
 .result-badge {
   font-size: 0.75rem;
   font-weight: 800;
-  padding: 4px 8px;
+  padding: var(--space-1) var(--space-2);
   border-radius: 6px;
   text-transform: uppercase;
 }
 
 .preferred-number-section {
-  margin-top: 10px;
+  margin-top: var(--space-3);
   display: flex;
   justify-content: center;
 }
@@ -813,7 +813,7 @@ const getSkillColor = (rating) => {
 
 .number-display {
   background: rgba(255, 255, 255, 0.2);
-  padding: 8px 15px;
+  padding: var(--space-2) var(--space-4);
   border-radius: var(--rounded-sm);
   display: flex;
   flex-direction: column;
@@ -856,6 +856,6 @@ const getSkillColor = (rating) => {
 .empty-state {
   text-align: center;
   color: var(--ion-color-medium);
-  padding: 20px;
+  padding: var(--space-5);
 }
 </style>

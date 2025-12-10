@@ -446,13 +446,13 @@ const resetPositions = () => {
   background: rgba(0, 0, 0, 0.7);
   color: white;
   font-size: 10px;
-  padding: 2px 4px;
+  padding: 2px var(--space-1);
   border-radius: 4px;
   white-space: nowrap;
 }
 
 .controls {
   display: flex;
-  gap: 10px;
+  gap: var(--space-2);
 }
 </style>

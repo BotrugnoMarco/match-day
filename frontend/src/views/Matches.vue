@@ -252,8 +252,8 @@ const createMatch = () => {
 
 .features-row {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
 }
 
 .feature-icon {
@@ -263,18 +263,18 @@ const createMatch = () => {
 
 .page-banner {
   background: var(--ion-color-primary);
-  padding: 10px 20px;
+  padding: var(--space-3) var(--space-5);
   height: auto;
   border-bottom-left-radius: var(--rounded-xl);
   border-bottom-right-radius: var(--rounded-xl);
-  margin-bottom: 1.25rem;
+  margin-bottom: var(--space-5);
   box-shadow: var(--shadow-md);
 }
 
 .segment-wrapper {
   background: rgba(255, 255, 255, 0.2);
   border-radius: var(--rounded-md);
-  padding: 5px;
+  padding: var(--space-1);
 }
 
 .custom-segment {
@@ -283,14 +283,14 @@ const createMatch = () => {
 
 .matches-container {
   margin-top: -1.25rem;
-  padding-bottom: 2rem;
+  padding-bottom: var(--space-8);
 }
 
 .match-card {
   background: #ffffff;
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-sm);
-  margin-bottom: 16px;
+  margin-bottom: var(--space-4);
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
   overflow: hidden;
@@ -305,14 +305,14 @@ const createMatch = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 16px;
+  padding: var(--space-3) var(--space-4);
   border-bottom: 1px solid #f0f0f0;
 }
 
 .sport-info {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .sport-icon-wrapper {
@@ -358,7 +358,7 @@ const createMatch = () => {
 .privacy-indicator {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   font-size: 0.75rem;
   color: var(--ion-color-medium);
 }
@@ -368,7 +368,7 @@ const createMatch = () => {
 }
 
 .status-badge {
-  padding: 6px 12px;
+  padding: var(--space-2) var(--space-3);
   border-radius: 20px;
   font-weight: 600;
   text-transform: uppercase;
@@ -377,14 +377,14 @@ const createMatch = () => {
 }
 
 .match-card-body {
-  padding: 16px;
+  padding: var(--space-4);
 }
 
 .match-datetime {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
   color: var(--ion-color-dark);
   font-size: 1rem;
   font-weight: 600;
@@ -393,10 +393,10 @@ const createMatch = () => {
 .match-location {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
   color: var(--ion-color-medium);
   font-size: 0.9rem;
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
 }
 
 .info-icon {
@@ -410,8 +410,8 @@ const createMatch = () => {
 
 .match-features {
   display: flex;
-  gap: 8px;
-  margin-top: 8px;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
 }
 
 .feature-chip {
@@ -422,7 +422,7 @@ const createMatch = () => {
 
 .match-card-footer {
   background: #f9f9f9;
-  padding: 10px 16px;
+  padding: var(--space-3) var(--space-4);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -431,7 +431,7 @@ const createMatch = () => {
 .organizer-info {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--space-2);
 }
 
 .organizer-avatar {
@@ -451,13 +451,13 @@ const createMatch = () => {
 }
 
 .empty-state {
-  margin-top: 50px;
+  margin-top: var(--space-12);
   color: var(--ion-color-medium);
 }
 
 .empty-icon {
   font-size: 60px;
-  margin-bottom: 10px;
+  margin-bottom: var(--space-3);
 }
 
 .notification-button {
@@ -466,10 +466,10 @@ const createMatch = () => {
 
 .notification-badge {
   position: absolute;
-  top: 5px;
-  right: 5px;
+  top: var(--space-1);
+  right: var(--space-1);
   font-size: 0.6rem;
-  padding: 2px 4px;
+  padding: 2px var(--space-1);
   border-radius: 50%;
   z-index: 10;
 }

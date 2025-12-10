@@ -1097,16 +1097,16 @@ onUnmounted(() => {
 
 .features-row {
   display: flex;
-  gap: 12px;
+  gap: var(--space-3);
   flex-wrap: wrap;
 }
 
 .feature-item {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-2);
   background: #f8f9fa;
-  padding: 6px 12px;
+  padding: var(--space-2) var(--space-3);
   border-radius: var(--rounded-md);
   font-size: 0.8rem;
   color: var(--ion-color-medium);
@@ -1116,9 +1116,9 @@ onUnmounted(() => {
 .post-match-card {
   background: white;
   border-radius: var(--rounded-lg);
-  padding: 16px;
+  padding: var(--space-4);
   box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1127,14 +1127,14 @@ onUnmounted(() => {
 .pm-content {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .pm-icon {
   font-size: 1.5rem;
   color: var(--ion-color-warning);
   background: rgba(var(--ion-color-warning-rgb), 0.1);
-  padding: 10px;
+  padding: var(--space-3);
   border-radius: var(--rounded-sm);
 }
 
@@ -1151,11 +1151,11 @@ onUnmounted(() => {
 }
 
 .actions-section {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .main-action-btn {
-  margin-bottom: 12px;
+  margin-bottom: var(--space-3);
   --border-radius: var(--rounded-md);
   font-weight: 600;
 }
@@ -1163,7 +1163,7 @@ onUnmounted(() => {
 .admin-controls-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: var(--space-3);
 }
 
 .admin-btn {
@@ -1176,21 +1176,21 @@ onUnmounted(() => {
 }
 
 .list-section {
-  margin-bottom: 24px;
+  margin-bottom: var(--space-6);
 }
 
 .section-title-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12px;
-  padding: 0 4px;
+  margin-bottom: var(--space-3);
+  padding: 0 var(--space-1);
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: var(--space-3);
   margin-bottom: 0;
   padding: 0;
 }
@@ -1217,14 +1217,14 @@ onUnmounted(() => {
 .teams-container {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: var(--space-4);
 }
 
 .team-header-label {
   font-size: 0.8rem;
   font-weight: 800;
-  margin-bottom: 8px;
-  padding-left: 8px;
+  margin-bottom: var(--space-2);
+  padding-left: var(--space-2);
   text-transform: uppercase;
 }
 
@@ -1238,7 +1238,7 @@ onUnmounted(() => {
 .item-actions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: var(--space-3);
 }
 
 .status-icon {
@@ -1261,16 +1261,16 @@ onUnmounted(() => {
 }
 
 .results-section {
-  margin-top: 30px;
+  margin-top: var(--space-8);
 }
 
 .winner-card {
   background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
   border-radius: var(--rounded-lg);
-  padding: 20px;
+  padding: var(--space-5);
   text-align: center;
   color: white;
-  margin-bottom: 20px;
+  margin-bottom: var(--space-5);
   box-shadow: 0 4px 15px rgba(255, 170, 0, 0.3);
 }
 
@@ -1304,7 +1304,7 @@ onUnmounted(() => {
   height: 6px;
   background-color: #f0f2f5;
   border-radius: 3px;
-  margin: 6px 0;
+  margin: var(--space-2) 0;
   overflow: hidden;
   width: 100px;
 }
@@ -1334,14 +1334,14 @@ onUnmounted(() => {
 .badges-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  margin-top: 4px;
+  gap: var(--space-1);
+  margin-top: var(--space-1);
 }
 
 .result-badge-chip {
   font-size: 0.65rem;
   font-weight: 600;
-  padding: 2px 6px;
+  padding: 2px var(--space-2);
   border-radius: var(--rounded-sm);
   height: auto;
 }

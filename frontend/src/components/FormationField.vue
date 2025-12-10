@@ -5,10 +5,8 @@
       <div class="field-markings">
         <div class="half-line"></div>
         <div class="center-circle"></div>
-        <div class="penalty-area left"></div>
-        <div class="penalty-area right"></div>
-        <div class="goal-area left"></div>
-        <div class="goal-area right"></div>
+        <div class="penalty-area top"></div>
+        <div class="penalty-area bottom"></div>
       </div>
 
       <!-- Players -->
@@ -77,17 +75,25 @@ const initializePlayers = (sourcePlayers) => {
 
   teamAIndices.forEach((pIndex, i) => {
     const p = players[pIndex];
-    if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 25;
+    // Team A (Bottom)
+    if (p.x_pos === null || p.x_pos === undefined) {
+      // Distribute horizontally
+      p.x_pos = teamAIndices.length > 1 ? 15 + 70 * (i / (teamAIndices.length - 1)) : 50;
+    }
     if (p.y_pos === null || p.y_pos === undefined) {
-      p.y_pos = teamAIndices.length > 1 ? 15 + 70 * (i / (teamAIndices.length - 1)) : 50;
+      p.y_pos = 80; // Bottom area
     }
   });
 
   teamBIndices.forEach((pIndex, i) => {
     const p = players[pIndex];
-    if (p.x_pos === null || p.x_pos === undefined) p.x_pos = 75;
+    // Team B (Top)
+    if (p.x_pos === null || p.x_pos === undefined) {
+      // Distribute horizontally
+      p.x_pos = teamBIndices.length > 1 ? 15 + 70 * (i / (teamBIndices.length - 1)) : 50;
+    }
     if (p.y_pos === null || p.y_pos === undefined) {
-      p.y_pos = teamBIndices.length > 1 ? 15 + 70 * (i / (teamBIndices.length - 1)) : 50;
+      p.y_pos = 20; // Top area
     }
   });
 
@@ -184,7 +190,7 @@ const resetPositions = () => {
 
 .field {
   width: 100%;
-  aspect-ratio: 1.6; /* Standard soccer field ratio */
+  aspect-ratio: 0.65; /* Vertical field */
   background-color: #4caf50;
   position: relative;
   border-radius: 8px;
@@ -204,20 +210,20 @@ const resetPositions = () => {
 
 .half-line {
   position: absolute;
-  left: 50%;
-  top: 0;
-  bottom: 0;
-  width: 2px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
   background: rgba(255, 255, 255, 0.6);
-  transform: translateX(-50%);
+  transform: translateY(-50%);
 }
 
 .center-circle {
   position: absolute;
   left: 50%;
   top: 50%;
-  width: 20%;
-  padding-bottom: 20%; /* Aspect ratio hack */
+  width: 30%;
+  padding-bottom: 30%; /* Aspect ratio hack */
   border: 2px solid rgba(255, 255, 255, 0.6);
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -225,20 +231,20 @@ const resetPositions = () => {
 
 .penalty-area {
   position: absolute;
-  top: 20%;
-  bottom: 20%;
-  width: 15%;
+  left: 20%;
+  right: 20%;
+  height: 15%;
   border: 2px solid rgba(255, 255, 255, 0.6);
 }
 
-.penalty-area.left {
-  left: 0;
-  border-left: none;
+.penalty-area.top {
+  top: 0;
+  border-top: none;
 }
 
-.penalty-area.right {
-  right: 0;
-  border-right: none;
+.penalty-area.bottom {
+  bottom: 0;
+  border-bottom: none;
 }
 
 .player-token {

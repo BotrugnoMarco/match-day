@@ -13,7 +13,7 @@
 
       <!-- Players -->
       <div
-        v-for="player in players"
+        v-for="player in localPlayers"
         :key="player.user_id"
         class="player-token"
         :class="{ 'is-dragging': draggedPlayerId === player.user_id, 'team-a': player.team === 'A', 'team-b': player.team === 'B' }"

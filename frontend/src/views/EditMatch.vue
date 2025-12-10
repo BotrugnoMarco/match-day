@@ -47,7 +47,7 @@
               <ion-modal :keep-contents-mounted="true">
                 <ion-datetime id="datetime" v-model="dateTime" presentation="date-time"></ion-datetime>
               </ion-modal>
-              
+
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item">
@@ -89,7 +89,7 @@
                 <ion-label>Covered Field</ion-label>
                 <ion-toggle v-model="isCovered" slot="end"></ion-toggle>
               </ion-item>
-              
+
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item toggle-item">
@@ -110,7 +110,7 @@
                 <ion-label>Private Match</ion-label>
                 <ion-toggle v-model="isPrivate" slot="end"></ion-toggle>
               </ion-item>
-              
+
               <div v-if="isPrivate">
                 <div class="divider"></div>
                 <ion-item lines="none" class="custom-item animate-item">
@@ -158,7 +158,7 @@ import {
   IonIcon,
   IonToggle,
   IonSpinner,
-  alertController
+  alertController,
 } from "@ionic/vue";
 import {
   saveOutline,
@@ -205,7 +205,7 @@ const fetchMatch = async () => {
   try {
     const response = await api.get(`/matches/${route.params.id}`);
     match.value = response.data;
-    
+
     // Populate fields
     // Convert UTC date from DB to local ISO string for ion-datetime
     // DB sends "2025-12-10T10:00:00.000Z"
@@ -213,10 +213,10 @@ const fetchMatch = async () => {
     // toISOString() converts it back to UTC "2025-12-10T10:00:00.000Z"
     // ion-datetime expects ISO string. If we give it UTC, it might display in UTC or Local depending on config.
     // Usually ion-datetime works with local time if no offset is specified or if it matches system.
-    
+
     // Let's try simply passing the ISO string of the date object.
     dateTime.value = new Date(match.value.date_time).toISOString();
-    
+
     location.value = match.value.location;
     sportType.value = match.value.sport_type;
     priceTotal.value = match.value.price_total;
@@ -225,7 +225,6 @@ const fetchMatch = async () => {
     hasShowers.value = !!match.value.has_showers;
     isPrivate.value = !!match.value.is_private;
     accessCode.value = match.value.access_code || "";
-
   } catch (error) {
     console.error("Error fetching match:", error);
     alert("Error fetching match details");
@@ -258,15 +257,15 @@ const updateMatch = async () => {
       is_private: isPrivate.value,
       access_code: accessCode.value,
     });
-    
+
     const alert = await alertController.create({
-      header: 'Success',
-      message: 'Match updated successfully. Participants will be notified.',
-      buttons: ['OK']
+      header: "Success",
+      message: "Match updated successfully. Participants will be notified.",
+      buttons: ["OK"],
     });
     await alert.present();
     await alert.onDidDismiss();
-    
+
     router.push(`/matches/${route.params.id}`);
   } catch (error) {
     console.error("Error updating match:", error);
@@ -366,17 +365,42 @@ const updateMatch = async () => {
   box-shadow: 0 6px 16px rgba(var(--ion-color-primary-rgb), 0.15);
 }
 
-.sport-card.active.soccer { border-color: #2dd36f; }
-.sport-card.active.basketball { border-color: #ffc409; }
-.sport-card.active.tennis { border-color: #eb445a; }
-.sport-card.active.padel { border-color: #3dc2ff; }
-.sport-card.active.volleyball { border-color: #5260ff; }
+.sport-card.active.soccer {
+  border-color: #2dd36f;
+}
+.sport-card.active.basketball {
+  border-color: #ffc409;
+}
+.sport-card.active.tennis {
+  border-color: #eb445a;
+}
+.sport-card.active.padel {
+  border-color: #3dc2ff;
+}
+.sport-card.active.volleyball {
+  border-color: #5260ff;
+}
 
-.sport-card.active .sport-icon-wrapper.soccer { background: #2dd36f; color: white; }
-.sport-card.active .sport-icon-wrapper.basketball { background: #ffc409; color: white; }
-.sport-card.active .sport-icon-wrapper.tennis { background: #eb445a; color: white; }
-.sport-card.active .sport-icon-wrapper.padel { background: #3dc2ff; color: white; }
-.sport-card.active .sport-icon-wrapper.volleyball { background: #5260ff; color: white; }
+.sport-card.active .sport-icon-wrapper.soccer {
+  background: #2dd36f;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.basketball {
+  background: #ffc409;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.tennis {
+  background: #eb445a;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.padel {
+  background: #3dc2ff;
+  color: white;
+}
+.sport-card.active .sport-icon-wrapper.volleyball {
+  background: #5260ff;
+  color: white;
+}
 
 .sport-card.active span {
   color: var(--ion-color-dark);

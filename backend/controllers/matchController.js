@@ -724,7 +724,7 @@ exports.updateMatch = async (req, res) => {
         const [participants] = await db.query('SELECT user_id FROM participants WHERE match_id = ? AND user_id != ?', [matchId, userId]);
 
         const io = req.app.get('io');
-        
+
         // Notify participants
         for (const p of participants) {
             await notificationController.createNotification(

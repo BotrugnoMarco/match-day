@@ -177,10 +177,25 @@ const createMatch = async () => {
     return;
   }
 
+  // Format date to local MySQL format (YYYY-MM-DD HH:mm:ss) to avoid timezone shifts
+  const d = new Date(dateTime.value);
+  const formattedDate =
+    d.getFullYear() +
+    "-" +
+    String(d.getMonth() + 1).padStart(2, "0") +
+    "-" +
+    String(d.getDate()).padStart(2, "0") +
+    " " +
+    String(d.getHours()).padStart(2, "0") +
+    ":" +
+    String(d.getMinutes()).padStart(2, "0") +
+    ":" +
+    String(d.getSeconds()).padStart(2, "0");
+
   try {
     const response = await api.post("/matches", {
       sport_type: sportType.value,
-      date_time: dateTime.value,
+      date_time: formattedDate,
       location: location.value,
       max_players: maxPlayers.value,
       price_total: priceTotal.value,

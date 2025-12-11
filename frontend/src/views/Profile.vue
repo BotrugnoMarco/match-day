@@ -8,11 +8,17 @@
         </ion-buttons>
         <ion-title>Profile</ion-title>
         <ion-buttons slot="end">
+          <ion-button @click="goToNotifications">
+            <ion-icon :icon="notificationsOutline"></ion-icon>
+            <ion-badge
+              color="danger"
+              v-if="unreadCount > 0"
+              style="position: absolute; top: 0; right: 0; font-size: 0.6rem; --padding-start: 4px; --padding-end: 4px"
+              >{{ unreadCount }}</ion-badge
+            >
+          </ion-button>
           <ion-button @click="openEditModal" v-if="isOwnProfile">
             <ion-icon :icon="createOutline"></ion-icon>
-          </ion-button>
-          <ion-button @click="logout" v-if="isOwnProfile">
-            <ion-icon :icon="logOutOutline"></ion-icon>
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
@@ -255,6 +261,7 @@ import {
   IonModal,
   IonInput,
   IonMenuButton,
+  IonBadge,
   toastController,
 } from "@ionic/vue";
 import {
@@ -272,6 +279,7 @@ import {
   checkmarkCircleOutline,
   closeCircleOutline,
   peopleOutline,
+  notificationsOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -282,6 +290,11 @@ const currentUser = computed(() => store.getters.currentUser);
 const viewedUser = computed(() => store.getters.viewedUser);
 const viewedUserStats = computed(() => store.getters.viewedUserStats);
 const viewedUserHistory = computed(() => store.getters.viewedUserHistory);
+const unreadCount = computed(() => store.getters.unreadNotificationsCount);
+
+const goToNotifications = () => {
+  router.push("/notifications");
+};
 
 const isOwnProfile = computed(() => {
   return !route.params.id || (currentUser.value && parseInt(route.params.id) === currentUser.value.id);

@@ -6,6 +6,17 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Friends</ion-title>
+        <ion-buttons slot="end">
+          <ion-button @click="goToNotifications">
+            <ion-icon :icon="notificationsOutline"></ion-icon>
+            <ion-badge
+              color="danger"
+              v-if="unreadCount > 0"
+              style="position: absolute; top: 0; right: 0; font-size: 0.6rem; --padding-start: 4px; --padding-end: 4px"
+              >{{ unreadCount }}</ion-badge
+            >
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
@@ -96,8 +107,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 import api from "../services/api";
 import {
   IonPage,
@@ -115,17 +127,33 @@ import {
   IonButton,
   IonIcon,
   IonCard,
+  IonBadge,
   toastController,
   alertController,
   IonSearchbar,
 } from "@ionic/vue";
-import { peopleOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, chevronForwardOutline, trashOutline } from "ionicons/icons";
+import {
+  peopleOutline,
+  timeOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  chevronForwardOutline,
+  trashOutline,
+  notificationsOutline,
+} from "ionicons/icons";
 
+const store = useStore();
 const router = useRouter();
 const friendsList = ref([]);
 const pendingRequests = ref([]);
 const searchQuery = ref("");
 const searchResults = ref([]);
+
+const unreadCount = computed(() => store.getters.unreadNotificationsCount);
+
+const goToNotifications = () => {
+  router.push("/notifications");
+};
 
 const handleSearch = async (event) => {
   const query = event.target.value;

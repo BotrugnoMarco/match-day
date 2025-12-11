@@ -11,9 +11,6 @@
             <ion-icon :icon="notificationsOutline"></ion-icon>
             <ion-badge color="danger" v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</ion-badge>
           </ion-button>
-          <ion-button @click="goToProfile">
-            <ion-icon :icon="personCircleOutline"></ion-icon>
-          </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>

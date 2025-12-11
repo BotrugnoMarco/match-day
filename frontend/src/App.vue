@@ -99,12 +99,6 @@ const appPages = [
     iosIcon: personCircleOutline,
     mdIcon: personCircleSharp,
   },
-  {
-    title: "Notifications",
-    url: "/notifications",
-    iosIcon: notificationsOutline,
-    mdIcon: notificationsSharp,
-  },
 ];
 
 const logout = async () => {

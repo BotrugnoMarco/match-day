@@ -5,6 +5,17 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
+        <ion-buttons slot="end" v-if="isAuthenticated">
+          <ion-button @click="goToNotifications">
+            <ion-icon :icon="notificationsOutline"></ion-icon>
+            <ion-badge
+              color="danger"
+              v-if="unreadCount > 0"
+              style="position: absolute; top: 0; right: 0; font-size: 0.6rem; --padding-start: 4px; --padding-end: 4px"
+              >{{ unreadCount }}</ion-badge
+            >
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="home-content" :fullscreen="true">
@@ -58,14 +69,21 @@
 <script setup>
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { useRouter } from "vue-router";
 import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton } from "@ionic/vue";
-import { logInOutline, personAddOutline, calendarOutline, personCircleOutline } from "ionicons/icons";
+import { logInOutline, personAddOutline, calendarOutline, personCircleOutline, notificationsOutline } from "ionicons/icons";
 
 const store = useStore();
+const router = useRouter();
 const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
 
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
 const user = computed(() => store.getters.currentUser);
+const unreadCount = computed(() => store.getters.unreadNotificationsCount);
+
+const goToNotifications = () => {
+  router.push("/notifications");
+};
 </script>
 
 <style scoped>

@@ -5,21 +5,60 @@ const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
 
 export const getWeatherForLocation = async (locationName, date) => {
     try {
-        // 1. Geocoding: Get Lat/Lon from location name
-        const geoResponse = await axios.get(GEOCODING_API, {
-            params: {
-                name: locationName,
-                count: 1,
-                language: 'it',
-                format: 'json'
-            }
-        });
+        console.log('WeatherService: Searching for location:', locationName);
 
-        if (!geoResponse.data.results || geoResponse.data.results.length === 0) {
+        // 1. Geocoding: Get Lat/Lon from location name
+        let result = null;
+
+        // First try: Search for the full location string
+        try {
+            const geoResponse = await axios.get(GEOCODING_API, {
+                params: {
+                    name: locationName,
+                    count: 5,
+                    language: 'it',
+                    format: 'json'
+                }
+            });
+            if (geoResponse.data.results && geoResponse.data.results.length > 0) {
+                result = geoResponse.data.results[0];
+            }
+        } catch (e) {
+            console.warn('WeatherService: Error in primary geocoding search', e);
+        }
+
+        // Second try: If not found, try splitting by comma and searching for parts (e.g. City)
+        if (!result && locationName.includes(',')) {
+            console.log('WeatherService: Exact location not found, trying parts...');
+            const parts = locationName.split(',').map(p => p.trim());
+
+            // Try searching for each part, starting from the end (usually City/Country)
+            for (let i = parts.length - 1; i >= 0; i--) {
+                const part = parts[i];
+                if (part.length < 3) continue; // Skip short abbreviations like "IT" or numbers
+
+                console.log('WeatherService: Searching for part:', part);
+                try {
+                    const partResponse = await axios.get(GEOCODING_API, {
+                        params: { name: part, count: 1, language: 'it', format: 'json' }
+                    });
+                    if (partResponse.data.results && partResponse.data.results.length > 0) {
+                        result = partResponse.data.results[0];
+                        console.log('WeatherService: Found location via part:', result.name);
+                        break;
+                    }
+                } catch (e) {
+                    console.warn('WeatherService: Error searching for part:', part, e);
+                }
+            }
+        }
+
+        if (!result) {
+            console.warn('WeatherService: Location not found for:', locationName);
             throw new Error('Location not found');
         }
 
-        const { latitude, longitude, name, country } = geoResponse.data.results[0];
+        const { latitude, longitude, name, country } = result;
 
         // 2. Weather: Get forecast for specific date
         // Open-Meteo requires date in YYYY-MM-DD format

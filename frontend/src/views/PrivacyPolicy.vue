@@ -5,34 +5,37 @@
         <ion-buttons slot="start">
           <ion-back-button default-href="/register"></ion-back-button>
         </ion-buttons>
-        <ion-title>Privacy Policy</ion-title>
+        <ion-title>{{ t("privacy.title") }}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
-      <h1>Privacy Policy</h1>
-      <p><strong>Last updated: December 2025</strong></p>
-
-      <h3>1. Information We Collect</h3>
+      <h1>{{ t("privacy.title") }}</h1>
       <p>
-        We collect information you provide directly to us, such as when you create an account, update your profile, or communicate with us. This may
-        include your name, email address, and sports preferences.
+        <strong>{{ t("privacy.last_updated") }}</strong>
       </p>
 
-      <h3>2. How We Use Your Information</h3>
+      <h3>{{ t("privacy.section1_title") }}</h3>
       <p>
-        We use the information we collect to provide, maintain, and improve our services, such as to organize matches and facilitate communication
-        between players.
+        {{ t("privacy.section1_text") }}
       </p>
 
-      <h3>3. Data Storage</h3>
-      <p>Your data is stored securely. We do not share your personal data with third parties for marketing purposes.</p>
+      <h3>{{ t("privacy.section2_title") }}</h3>
+      <p>
+        {{ t("privacy.section2_text") }}
+      </p>
 
-      <h3>4. Your Rights</h3>
-      <p>You have the right to access, correct, or delete your personal data at any time.</p>
+      <h3>{{ t("privacy.section3_title") }}</h3>
+      <p>{{ t("privacy.section3_text") }}</p>
+
+      <h3>{{ t("privacy.section4_title") }}</h3>
+      <p>{{ t("privacy.section4_text") }}</p>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
+import { useI18n } from "vue-i18n";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButtons, IonBackButton } from "@ionic/vue";
+
+const { t } = useI18n();
 </script>

@@ -3,7 +3,7 @@
     <ion-menu content-id="main-content" type="overlay">
       <ion-header>
         <ion-toolbar color="primary">
-          <ion-title>Menu</ion-title>
+          <ion-title>{{ t("menu.menu_title") }}</ion-title>
         </ion-toolbar>
       </ion-header>
       <ion-content>
@@ -18,7 +18,7 @@
           <ion-menu-toggle auto-hide="false" v-if="currentUser && currentUser.role === 'admin'">
             <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false">
               <ion-icon slot="start" :ios="constructOutline" :md="constructSharp"></ion-icon>
-              <ion-label>Admin Support</ion-label>
+              <ion-label>{{ t("menu.admin_support") }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
 

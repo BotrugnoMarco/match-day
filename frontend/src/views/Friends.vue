@@ -73,7 +73,7 @@
         <div class="section-container">
           <div class="section-title">
             <ion-icon :icon="peopleOutline" color="primary"></ion-icon>
-            <h3>{{ t("friends.my_friends") }} ({{ friendsList.length }})</h3>
+            <h3>{{ t("friends.my_friends", { count: friendsList.length }) }}</h3>
           </div>
 
           <div v-if="friendsList.length > 0">

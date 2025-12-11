@@ -5,13 +5,13 @@
         <ion-buttons slot="start">
           <ion-back-button :default-href="`/matches/${route.params.id}`"></ion-back-button>
         </ion-buttons>
-        <ion-title>Edit Match</ion-title>
+        <ion-title>{{ t("create_match.edit_title") }}</ion-title>
       </ion-toolbar>
     </ion-header>
     <ion-content class="page-content">
       <div class="create-container ion-padding-horizontal ion-padding-top" v-if="match">
         <!-- Sport Selection (Read Only or Editable? Let's make it editable) -->
-        <div class="section-title">Sport</div>
+        <div class="section-title">{{ t("create_match.choose_sport") }}</div>
         <div class="sports-grid">
           <div
             v-for="sport in sports"
@@ -32,11 +32,11 @@
           <div class="form-card">
             <div class="form-header">
               <ion-icon :icon="calendarOutline" class="header-icon"></ion-icon>
-              <span>When & Where</span>
+              <span>{{ t("create_match.when_where") }}</span>
             </div>
             <div class="form-content">
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Date & Time</ion-label>
+                <ion-label position="stacked">{{ t("create_match.date_time") }}</ion-label>
                 <ion-datetime-button datetime="datetime"></ion-datetime-button>
               </ion-item>
               <ion-modal :keep-contents-mounted="true">
@@ -46,8 +46,8 @@
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Location</ion-label>
-                <ion-input v-model="location" placeholder="Where are we playing?"></ion-input>
+                <ion-label position="stacked">{{ t("create_match.location") }}</ion-label>
+                <ion-input v-model="location" :placeholder="t('create_match.location_placeholder')"></ion-input>
               </ion-item>
 
               <div class="map-preview-container">
@@ -60,18 +60,18 @@
           <div class="form-card">
             <div class="form-header">
               <ion-icon :icon="peopleOutline" class="header-icon"></ion-icon>
-              <span>Match Details</span>
+              <span>{{ t("create_match.match_details") }}</span>
             </div>
             <div class="form-content">
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Max Players</ion-label>
+                <ion-label position="stacked">{{ t("create_match.max_players") }}</ion-label>
                 <ion-input type="number" v-model="maxPlayers" placeholder="10"></ion-input>
               </ion-item>
 
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Duration (min)</ion-label>
+                <ion-label position="stacked">{{ t("create_match.duration") }}</ion-label>
                 <ion-select v-model="duration" interface="popover">
                   <ion-select-option :value="60">60 min</ion-select-option>
                   <ion-select-option :value="90">90 min</ion-select-option>
@@ -82,7 +82,7 @@
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Total Price (€)</ion-label>
+                <ion-label position="stacked">{{ t("create_match.total_price") }}</ion-label>
                 <ion-input type="number" v-model="priceTotal" placeholder="0.00"></ion-input>
               </ion-item>
             </div>
@@ -92,18 +92,18 @@
           <div class="form-card">
             <div class="form-header">
               <ion-icon :icon="umbrella" class="header-icon"></ion-icon>
-              <span>Facilities</span>
+              <span>{{ t("create_match.facilities") }}</span>
             </div>
             <div class="form-content">
               <ion-item lines="none" class="custom-item toggle-item">
-                <ion-label>Covered Field</ion-label>
+                <ion-label>{{ t("create_match.covered_field") }}</ion-label>
                 <ion-toggle v-model="isCovered" slot="end"></ion-toggle>
               </ion-item>
 
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item toggle-item">
-                <ion-label>Showers Available</ion-label>
+                <ion-label>{{ t("create_match.showers") }}</ion-label>
                 <ion-toggle v-model="hasShowers" slot="end"></ion-toggle>
               </ion-item>
             </div>
@@ -113,19 +113,19 @@
           <div class="form-card">
             <div class="form-header">
               <ion-icon :icon="lockClosedOutline" class="header-icon"></ion-icon>
-              <span>Privacy</span>
+              <span>{{ t("create_match.privacy") }}</span>
             </div>
             <div class="form-content">
               <ion-item lines="none" class="custom-item toggle-item">
-                <ion-label>Private Match</ion-label>
+                <ion-label>{{ t("create_match.private_match") }}</ion-label>
                 <ion-toggle v-model="isPrivate" slot="end"></ion-toggle>
               </ion-item>
 
               <div v-if="isPrivate">
                 <div class="divider"></div>
                 <ion-item lines="none" class="custom-item animate-item">
-                  <ion-label position="stacked">Access Code</ion-label>
-                  <ion-input v-model="accessCode" placeholder="Secret code"></ion-input>
+                  <ion-label position="stacked">{{ t("create_match.access_code") }}</ion-label>
+                  <ion-input v-model="accessCode" :placeholder="t('create_match.access_code_placeholder')"></ion-input>
                 </ion-item>
               </div>
             </div>
@@ -134,7 +134,7 @@
           <div class="ion-padding-top ion-margin-top ion-margin-bottom">
             <ion-button expand="block" type="submit" class="create-btn" size="large">
               <ion-icon :icon="saveOutline" slot="start"></ion-icon>
-              Save Changes
+              {{ t("common.save") }}
             </ion-button>
           </div>
         </form>
@@ -149,6 +149,7 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import LocationPicker from "../components/LocationPicker.vue";
 import axios from "axios";
@@ -193,6 +194,7 @@ import {
 
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 const match = ref(null);
 
 const dateTime = ref(new Date().toISOString());

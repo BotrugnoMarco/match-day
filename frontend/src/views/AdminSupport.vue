@@ -5,23 +5,23 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Admin Support</ion-title>
+        <ion-title>{{ t("admin_support.title") }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="page-content">
       <div class="ion-padding">
-        <h2>Ticket Management</h2>
+        <h2>{{ t("admin_support.ticket_management") }}</h2>
 
         <ion-segment v-model="filterStatus" mode="ios" class="custom-segment">
           <ion-segment-button value="all">
-            <ion-label>All</ion-label>
+            <ion-label>{{ t("admin_support.all") }}</ion-label>
           </ion-segment-button>
           <ion-segment-button value="open">
-            <ion-label>Open</ion-label>
+            <ion-label>{{ t("admin_support.open") }}</ion-label>
           </ion-segment-button>
           <ion-segment-button value="closed">
-            <ion-label>Closed</ion-label>
+            <ion-label>{{ t("admin_support.closed") }}</ion-label>
           </ion-segment-button>
         </ion-segment>
 
@@ -42,34 +42,34 @@
       <ion-modal :is-open="isModalOpen" @didDismiss="closeModal">
         <ion-header>
           <ion-toolbar>
-            <ion-title>Reply to Ticket</ion-title>
+            <ion-title>{{ t("admin_support.reply_title") }}</ion-title>
             <ion-buttons slot="end">
-              <ion-button @click="closeModal">Close</ion-button>
+              <ion-button @click="closeModal">{{ t("common.close") }}</ion-button>
             </ion-buttons>
           </ion-toolbar>
         </ion-header>
         <ion-content class="ion-padding" v-if="selectedTicket">
           <div class="ticket-detail">
             <h3>{{ selectedTicket.subject }}</h3>
-            <p class="meta">From: {{ selectedTicket.username }} ({{ selectedTicket.email }})</p>
+            <p class="meta">{{ t("admin_support.from") }}: {{ selectedTicket.username }} ({{ selectedTicket.email }})</p>
             <div class="message-box">
               {{ selectedTicket.message }}
             </div>
 
             <div v-if="selectedTicket.admin_response" class="response-box">
-              <strong>Previous Response:</strong>
+              <strong>{{ t("admin_support.previous_response") }}:</strong>
               <p>{{ selectedTicket.admin_response }}</p>
             </div>
           </div>
 
           <div class="reply-form">
             <ion-item lines="none" class="custom-item">
-              <ion-label position="stacked">Your Response</ion-label>
-              <ion-textarea v-model="replyMessage" rows="6" placeholder="Type your reply..."></ion-textarea>
+              <ion-label position="stacked">{{ t("admin_support.your_response") }}</ion-label>
+              <ion-textarea v-model="replyMessage" rows="6" :placeholder="t('admin_support.reply_placeholder')"></ion-textarea>
             </ion-item>
 
             <ion-button expand="block" @click="sendReply" :disabled="isSubmitting">
-              <span v-if="!isSubmitting">Send Reply & Close</span>
+              <span v-if="!isSubmitting">{{ t("admin_support.send_reply") }}</span>
               <ion-spinner v-else name="crescent"></ion-spinner>
             </ion-button>
           </div>
@@ -81,6 +81,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import {
   IonPage,
@@ -102,6 +103,7 @@ import {
   toastController,
 } from "@ionic/vue";
 
+const { t } = useI18n();
 const tickets = ref([]);
 const filterStatus = ref("all");
 const isModalOpen = ref(false);

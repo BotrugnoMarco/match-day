@@ -36,12 +36,12 @@
       <ion-content class="ion-padding">
         <ion-item>
           <ion-label position="stacked">{{ t("profile.username") }}</ion-label>
-          <ion-input v-model="editForm.username" placeholder="Username"></ion-input>
+          <ion-input v-model="editForm.username" :placeholder="t('profile.username')"></ion-input>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">{{ t("profile.email") }}</ion-label>
-          <ion-input v-model="editForm.email" type="email" placeholder="Email"></ion-input>
+          <ion-input v-model="editForm.email" type="email" :placeholder="t('profile.email')"></ion-input>
         </ion-item>
 
         <ion-item>
@@ -55,24 +55,24 @@
         <ion-item>
           <ion-label position="stacked">{{ t("profile.gender") }}</ion-label>
           <ion-select v-model="editForm.gender" interface="popover">
-            <ion-select-option value="M">Male</ion-select-option>
-            <ion-select-option value="F">Female</ion-select-option>
-            <ion-select-option value="Other">Other</ion-select-option>
+            <ion-select-option value="M">{{ t("profile.male") }}</ion-select-option>
+            <ion-select-option value="F">{{ t("profile.female") }}</ion-select-option>
+            <ion-select-option value="Other">{{ t("profile.other") }}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">{{ t("profile.status") }}</ion-label>
           <ion-select v-model="editForm.status" interface="popover">
-            <ion-select-option value="available">Available</ion-select-option>
-            <ion-select-option value="injured">Injured</ion-select-option>
-            <ion-select-option value="unavailable">Unavailable</ion-select-option>
+            <ion-select-option value="available">{{ t("profile.available") }}</ion-select-option>
+            <ion-select-option value="injured">{{ t("profile.injured") }}</ion-select-option>
+            <ion-select-option value="unavailable">{{ t("profile.unavailable") }}</ion-select-option>
           </ion-select>
         </ion-item>
 
         <ion-item>
           <ion-label position="stacked">{{ t("profile.jersey_number") }}</ion-label>
-          <ion-input type="number" v-model="editForm.preferred_number" placeholder="e.g. 10"></ion-input>
+          <ion-input type="number" v-model="editForm.preferred_number" :placeholder="t('profile.jersey_placeholder')"></ion-input>
         </ion-item>
 
         <div class="ion-padding-top">
@@ -115,7 +115,7 @@
             <!-- Preferred Number -->
             <div class="preferred-number-section" v-if="user?.preferred_number">
               <div class="number-display">
-                <span class="number-label">Jersey #</span>
+                <span class="number-label">{{ t("profile.jersey_label") }}</span>
                 <span class="number-value">{{ user?.preferred_number }}</span>
               </div>
             </div>
@@ -126,24 +126,24 @@
         <div class="friend-actions" v-if="!isOwnProfile">
           <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="sendFriendRequest">
             <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
-            Add Friend
+            {{ t("profile.add_friend") }}
           </ion-button>
           <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
             <ion-icon :icon="timeOutline" slot="start"></ion-icon>
-            Request Sent
+            {{ t("profile.request_sent") }}
           </ion-button>
           <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
             <ion-button size="small" color="success" @click="acceptFriendRequest">
               <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
-              Accept
+              {{ t("profile.accept") }}
             </ion-button>
             <ion-button size="small" color="danger" @click="rejectFriendRequest">
               <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-              Reject
+              {{ t("profile.reject") }}
             </ion-button>
           </div>
           <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
-            <ion-icon :icon="checkmarkCircleOutline"></ion-icon> Friends
+            <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
           </ion-badge>
         </div>
 
@@ -151,7 +151,7 @@
         <div class="friend-actions" v-if="isOwnProfile">
           <ion-button size="small" fill="outline" color="light" @click="router.push('/friends')">
             <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-            Friends
+            {{ t("profile.friends_btn") }}
           </ion-button>
         </div>
 
@@ -165,19 +165,19 @@
             <ion-col size="4">
               <div class="stat-box">
                 <div class="stat-value">{{ stats.matchesPlayed }}</div>
-                <div class="stat-label">Matches</div>
+                <div class="stat-label">{{ t("profile.matches") }}</div>
               </div>
             </ion-col>
             <ion-col size="4">
               <div class="stat-box">
                 <div class="stat-value text-primary">{{ stats.matchesWon }}</div>
-                <div class="stat-label">Won</div>
+                <div class="stat-label">{{ t("profile.won") }}</div>
               </div>
             </ion-col>
             <ion-col size="4">
               <div class="stat-box">
                 <div class="stat-value text-warning">{{ stats.mvpCount }}</div>
-                <div class="stat-label">MVP</div>
+                <div class="stat-label">{{ t("profile.mvp") }}</div>
               </div>
             </ion-col>
           </ion-row>
@@ -188,7 +188,7 @@
       <div class="section-container ion-padding-horizontal">
         <div class="section-title">
           <ion-icon :icon="trophy" color="warning"></ion-icon>
-          <h3>Skills</h3>
+          <h3>{{ t("profile.skills") }}</h3>
         </div>
         <ion-card class="skills-card">
           <ion-card-content>
@@ -212,7 +212,7 @@
       <div class="section-container ion-padding-horizontal" v-if="stats && stats.tags && stats.tags.length > 0">
         <div class="section-title">
           <ion-icon :icon="ribbon" color="secondary"></ion-icon>
-          <h3>Badges</h3>
+          <h3>{{ t("profile.badges") }}</h3>
         </div>
         <div class="badges-container">
           <div v-for="tagItem in stats.tags" :key="tagItem.tag" class="badge-chip">
@@ -226,7 +226,7 @@
       <div class="section-container ion-padding-horizontal">
         <div class="section-title">
           <ion-icon :icon="timeOutline" color="medium"></ion-icon>
-          <h3>History</h3>
+          <h3>{{ t("profile.history") }}</h3>
         </div>
 
         <div v-if="history.length > 0">
@@ -245,7 +245,7 @@
 
               <div class="match-right">
                 <div class="result-badge" :class="match.result">
-                  {{ match.result?.toUpperCase() || "PLAYED" }}
+                  {{ match.result?.toUpperCase() || t("profile.played") }}
                 </div>
                 <div class="rating-mini" v-if="match.avg_rating">
                   <ion-icon :icon="star" color="warning"></ion-icon>
@@ -256,7 +256,7 @@
           </ion-card>
         </div>
         <div v-else class="empty-state">
-          <p>No matches played yet.</p>
+          <p>{{ t("profile.no_matches") }}</p>
         </div>
       </div>
     </ion-content>

@@ -5,27 +5,27 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Support</ion-title>
+        <ion-title>{{ t("support.title") }}</ion-title>
       </ion-toolbar>
     </ion-header>
 
     <ion-content class="page-content">
       <div class="page-banner">
-        <h2>Help Center</h2>
-        <p>How can we help you today?</p>
+        <h2>{{ t("support.help_center") }}</h2>
+        <p>{{ t("support.how_can_we_help") }}</p>
       </div>
 
       <div class="ion-padding-horizontal" style="margin-top: -30px">
         <div class="segment-wrapper">
           <ion-segment v-model="activeTab" mode="ios" class="custom-segment">
             <ion-segment-button value="contact">
-              <ion-label>Contact Us</ion-label>
+              <ion-label>{{ t("support.contact_us") }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="faq">
-              <ion-label>FAQ</ion-label>
+              <ion-label>{{ t("support.faq") }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="donate">
-              <ion-label>Support Us</ion-label>
+              <ion-label>{{ t("support.support_us") }}</ion-label>
             </ion-segment-button>
           </ion-segment>
         </div>
@@ -37,39 +37,39 @@
           <div class="form-card">
             <div class="form-header">
               <ion-icon :icon="mailOutline" class="header-icon"></ion-icon>
-              <span>Send us a message</span>
+              <span>{{ t("support.send_message") }}</span>
             </div>
 
             <form @submit.prevent="submitTicket">
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Category</ion-label>
+                <ion-label position="stacked">{{ t("support.category") }}</ion-label>
                 <ion-select v-model="form.category" interface="popover">
-                  <ion-select-option value="bug">Report a Bug</ion-select-option>
-                  <ion-select-option value="feature_request">Feature Request</ion-select-option>
-                  <ion-select-option value="account">Account Issue</ion-select-option>
-                  <ion-select-option value="other">Other</ion-select-option>
+                  <ion-select-option value="bug">{{ t("support.report_bug") }}</ion-select-option>
+                  <ion-select-option value="feature_request">{{ t("support.feature_request") }}</ion-select-option>
+                  <ion-select-option value="account">{{ t("support.account_issue") }}</ion-select-option>
+                  <ion-select-option value="other">{{ t("support.other") }}</ion-select-option>
                 </ion-select>
               </ion-item>
 
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Subject</ion-label>
-                <ion-input v-model="form.subject" placeholder="Brief summary"></ion-input>
+                <ion-label position="stacked">{{ t("support.subject") }}</ion-label>
+                <ion-input v-model="form.subject" :placeholder="t('support.subject_placeholder')"></ion-input>
               </ion-item>
 
               <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Message</ion-label>
-                <ion-textarea v-model="form.message" rows="6" placeholder="Describe your issue..."></ion-textarea>
+                <ion-label position="stacked">{{ t("support.message") }}</ion-label>
+                <ion-textarea v-model="form.message" rows="6" :placeholder="t('support.message_placeholder')"></ion-textarea>
               </ion-item>
 
               <ion-button expand="block" type="submit" class="submit-btn" :disabled="isSubmitting">
-                <span v-if="!isSubmitting">Submit Ticket</span>
+                <span v-if="!isSubmitting">{{ t("support.submit_ticket") }}</span>
                 <ion-spinner v-else name="crescent"></ion-spinner>
               </ion-button>
             </form>
           </div>
 
           <div class="history-section" v-if="tickets.length > 0">
-            <h3>Your Tickets</h3>
+            <h3>{{ t("support.your_tickets") }}</h3>
             <div v-for="ticket in tickets" :key="ticket.id" class="ticket-card">
               <div class="ticket-header">
                 <span class="ticket-category">{{ formatCategory(ticket.category) }}</span>
@@ -79,7 +79,7 @@
               <p>{{ ticket.message }}</p>
 
               <div v-if="ticket.admin_response" class="admin-response">
-                <strong>Admin Response:</strong>
+                <strong>{{ t("support.admin_response") }}:</strong>
                 <p>{{ ticket.admin_response }}</p>
               </div>
 
@@ -95,35 +95,33 @@
           <ion-accordion-group>
             <ion-accordion value="first">
               <ion-item slot="header" color="light">
-                <ion-label>How do I create a match?</ion-label>
+                <ion-label>{{ t("support.faq_create_match") }}</ion-label>
               </ion-item>
               <div class="ion-padding" slot="content">
-                Go to the "Create Match" section from the menu or home dashboard. Fill in the details like date, time, and location, then invite your
-                friends!
+                {{ t("support.faq_create_match_ans") }}
               </div>
             </ion-accordion>
             <ion-accordion value="second">
               <ion-item slot="header" color="light">
-                <ion-label>Can I change my jersey number?</ion-label>
+                <ion-label>{{ t("support.faq_jersey") }}</ion-label>
               </ion-item>
               <div class="ion-padding" slot="content">
-                Yes! Go to your Profile, click the edit icon (pencil), and update your preferred jersey number.
+                {{ t("support.faq_jersey_ans") }}
               </div>
             </ion-accordion>
             <ion-accordion value="third">
               <ion-item slot="header" color="light">
-                <ion-label>How does the voting system work?</ion-label>
+                <ion-label>{{ t("support.faq_voting") }}</ion-label>
               </ion-item>
               <div class="ion-padding" slot="content">
-                After a match is finished, you can vote for the MVP and rate other players. The voting window stays open for 24 hours after the match
-                ends.
+                {{ t("support.faq_voting_ans") }}
               </div>
             </ion-accordion>
             <ion-accordion value="fourth">
               <ion-item slot="header" color="light">
-                <ion-label>Is the app free?</ion-label>
+                <ion-label>{{ t("support.faq_free") }}</ion-label>
               </ion-item>
-              <div class="ion-padding" slot="content">Yes, MatchDay is completely free to use for organizing your amateur sports matches.</div>
+              <div class="ion-padding" slot="content">{{ t("support.faq_free_ans") }}</div>
             </ion-accordion>
           </ion-accordion-group>
         </div>
@@ -133,12 +131,12 @@
           <div class="donate-card">
             <div class="donate-header">
               <ion-icon :icon="cafeOutline" class="donate-icon"></ion-icon>
-              <h3>Support the Developer</h3>
+              <h3>{{ t("support.support_dev") }}</h3>
             </div>
-            <p>MatchDay is a passion project. If you find it useful and want to support its development, you can buy me a coffee!</p>
+            <p>{{ t("support.support_desc") }}</p>
             <ion-button expand="block" class="kofi-btn" href="https://ko-fi.com/dlayk_mark" target="_blank">
               <ion-icon slot="start" :icon="cafeOutline"></ion-icon>
-              Support on Ko-fi
+              {{ t("support.support_kofi") }}
             </ion-button>
           </div>
         </div>
@@ -149,6 +147,7 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import {
   IonPage,
@@ -176,6 +175,7 @@ import {
 } from "@ionic/vue";
 import { mailOutline, cafeOutline } from "ionicons/icons";
 
+const { t } = useI18n();
 const activeTab = ref("contact");
 const isSubmitting = ref(false);
 const tickets = ref([]);

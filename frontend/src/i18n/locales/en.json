@@ -206,8 +206,23 @@
     "failed": "Failed to create match",
     "fill_all_fields": "Please fill in all fields"
   },
+  "weather": {
+    "clear_sky": "Clear sky",
+    "mainly_clear": "Mainly clear",
+    "partly_cloudy": "Partly cloudy",
+    "overcast": "Overcast",
+    "fog": "Fog",
+    "drizzle": "Drizzle",
+    "rain": "Rain",
+    "snow": "Snow",
+    "showers": "Showers",
+    "thunderstorm": "Thunderstorm",
+    "unknown": "Unknown"
+  },
   "match_details": {
     "title": "Match Details",
+    "weather_forecast": "Weather Forecast",
+    "precip_prob": "precip. prob.",
     "open_maps": "Open in Maps",
     "price": "Price",
     "per_person": "/ person",

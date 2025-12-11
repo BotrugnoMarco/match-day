@@ -208,8 +208,23 @@
     "failed": "Impossibile creare la partita",
     "fill_all_fields": "Compila tutti i campi"
   },
+  "weather": {
+    "clear_sky": "Cielo sereno",
+    "mainly_clear": "Prevalentemente sereno",
+    "partly_cloudy": "Parzialmente nuvoloso",
+    "overcast": "Coperto",
+    "fog": "Nebbia",
+    "drizzle": "Pioggerellina",
+    "rain": "Pioggia",
+    "snow": "Neve",
+    "showers": "Rovesci",
+    "thunderstorm": "Temporale",
+    "unknown": "Sconosciuto"
+  },
   "match_details": {
     "title": "Dettagli Partita",
+    "weather_forecast": "Previsioni Meteo",
+    "precip_prob": "prob. precipitazioni",
     "open_maps": "Apri nelle Mappe",
     "price": "Prezzo",
     "per_person": "/ persona",

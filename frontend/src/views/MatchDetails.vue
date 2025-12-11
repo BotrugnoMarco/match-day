@@ -78,6 +78,34 @@
             </ion-button>
           </div>
 
+          <div class="divider" v-if="weather"></div>
+
+          <div class="info-row" v-if="weather">
+            <div class="info-block full-width">
+              <ion-icon :icon="getWeatherIconObj(getWeatherIcon(weather.weatherCode))" class="info-icon"></ion-icon>
+              <div class="info-text">
+                <span class="label">{{ t("match_details.weather_forecast") }}</span>
+                <div class="weather-value">
+                  <span class="weather-desc">{{ t(getWeatherDescription(weather.weatherCode)) }}</span>
+                  <span class="weather-temp">
+                    <ion-icon :icon="arrowUpOutline" size="small" style="vertical-align: middle; color: var(--ion-color-danger)"></ion-icon>
+                    {{ weather.maxTemp }}°
+                    <ion-icon
+                      :icon="arrowDownOutline"
+                      size="small"
+                      style="vertical-align: middle; color: var(--ion-color-primary); margin-left: 8px"
+                    ></ion-icon>
+                    {{ weather.minTemp }}°
+                  </span>
+                </div>
+                <div class="weather-sub" v-if="weather.precipProb > 0">
+                  <ion-icon :icon="umbrella" size="small" style="vertical-align: middle; margin-right: 4px"></ion-icon>
+                  {{ weather.precipProb }}% {{ t("match_details.precip_prob") }}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="divider"></div>
 
           <div class="info-row">
@@ -435,6 +463,7 @@ import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import socket from "../services/socket";
+import { getWeatherForLocation, getWeatherIcon, getWeatherDescription } from "../services/weather";
 import {
   IonPage,
   IonHeader,
@@ -487,6 +516,15 @@ import {
   shieldCheckmarkOutline,
   mapOutline,
   ellipsisVertical,
+  arrowUpOutline,
+  arrowDownOutline,
+  sunny,
+  partlySunny,
+  cloudy,
+  rainy,
+  snow,
+  thunderstorm,
+  helpCircle,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -497,10 +535,25 @@ const router = useRouter();
 const store = useStore();
 const { t, locale } = useI18n();
 const match = ref(null);
+const weather = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
 const isInviteModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
+
+const weatherIcons = {
+  sunny: sunny,
+  "partly-sunny": partlySunny,
+  cloudy: cloudy,
+  rainy: rainy,
+  snow: snow,
+  thunderstorm: thunderstorm,
+  "help-circle": helpCircle,
+};
+
+const getWeatherIconObj = (iconName) => {
+  return weatherIcons[iconName] || helpCircle;
+};
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -690,6 +743,10 @@ const fetchMatch = async () => {
     const response = await api.get(`/matches/${route.params.id}`);
     match.value = response.data;
 
+    if (match.value.location && match.value.date_time) {
+      fetchWeather();
+    }
+
     if (match.value.status === "finished") {
       fetchVotes();
     }
@@ -699,6 +756,17 @@ const fetchMatch = async () => {
   } catch (error) {
     console.error("Error fetching match:", error);
     presentToast(t("match_details.fetch_error"));
+  }
+};
+
+const fetchWeather = async () => {
+  try {
+    const data = await getWeatherForLocation(match.value.location, match.value.date_time);
+    if (data) {
+      weather.value = data;
+    }
+  } catch (error) {
+    console.error("Error fetching weather:", error);
   }
 };
 
@@ -1450,5 +1518,28 @@ onUnmounted(() => {
   border-radius: var(--radius-md);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
+}
+
+.weather-value {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.weather-desc {
+  font-weight: 600;
+  color: var(--ion-color-dark);
+}
+
+.weather-temp {
+  font-weight: 700;
+  color: var(--ion-color-medium-shade);
+}
+
+.weather-sub {
+  margin-top: 4px;
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
 }
 </style>

@@ -122,7 +122,18 @@
     "title": "Notifications",
     "alerts": "Alerts",
     "stay_updated": "Stay updated",
-    "no_notifications": "No notifications yet"
+    "no_notifications": "No notifications yet",
+    "friend_request_new": "You have a new friend request!",
+    "friend_request_accepted": "Your friend request was accepted!",
+    "waitlist_promoted": "A spot opened up! You have been promoted from waitlist to confirmed.",
+    "voting_started": "Voting has started for your match!",
+    "match_finished": "Match finished! Check out the results.",
+    "teams_generated": "Teams have been generated for your match!",
+    "match_invite": "{inviter} invited you to a match on {date}",
+    "join_approved": "Your request to join match #{matchId} has been approved!",
+    "join_declined": "Your request to join match #{matchId} has been declined.",
+    "match_cancelled": "Match #{matchId} ({sportType} on {date}) has been cancelled by the organizer.",
+    "match_updated": "Match #{matchId} details have been updated by the organizer."
   },
   "invite": {
     "title": "Invite Friends",

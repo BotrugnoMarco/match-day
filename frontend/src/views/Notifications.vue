@@ -32,7 +32,7 @@
               <ion-icon :icon="getIcon(notification.type)"></ion-icon>
             </div>
             <div class="content">
-              <div class="message" :class="{ unread: !notification.is_read }">{{ notification.message }}</div>
+              <div class="message" :class="{ unread: !notification.is_read }">{{ getNotificationMessage(notification.message) }}</div>
               <div class="time">{{ new Date(notification.created_at).toLocaleString() }}</div>
             </div>
             <div class="indicator" v-if="!notification.is_read"></div>
@@ -66,13 +66,29 @@ import {
 
 const store = useStore();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const notifications = computed(() => store.getters.notifications);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 
 onMounted(() => {
   store.dispatch("fetchNotifications");
 });
+
+const getNotificationMessage = (message) => {
+  try {
+    const parsed = JSON.parse(message);
+    if (parsed.key) {
+      const params = { ...parsed.params };
+      if (params.date) {
+        params.date = new Date(params.date).toLocaleDateString(locale.value);
+      }
+      return t(parsed.key, params);
+    }
+    return message;
+  } catch (e) {
+    return message;
+  }
+};
 
 const getIcon = (type) => {
   switch (type) {
@@ -98,8 +114,22 @@ const handleNotificationClick = (notification) => {
 
   if (notification.related_match_id) {
     router.push(`/matches/${notification.related_match_id}`);
-  } else if (notification.message && notification.message.toLowerCase().includes("friend request")) {
-    router.push("/friends");
+  } else {
+    let isFriendRequest = false;
+    try {
+      const parsed = JSON.parse(notification.message);
+      if (parsed.key && parsed.key.includes("friend_request")) {
+        isFriendRequest = true;
+      }
+    } catch (e) {
+      if (notification.message && notification.message.toLowerCase().includes("friend request")) {
+        isFriendRequest = true;
+      }
+    }
+
+    if (isFriendRequest) {
+      router.push("/friends");
+    }
   }
 };
 </script>

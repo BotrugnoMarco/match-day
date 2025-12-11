@@ -84,7 +84,7 @@ import socket from "./services/socket";
 
 const store = useStore();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const currentUser = computed(() => store.state.user);
 
 const appPages = computed(() => [
@@ -131,6 +131,22 @@ const logout = async () => {
   router.push("/login");
 };
 
+const getNotificationMessage = (message) => {
+  try {
+    const parsed = JSON.parse(message);
+    if (parsed.key) {
+      const params = { ...parsed.params };
+      if (params.date) {
+        params.date = new Date(params.date).toLocaleDateString(locale.value);
+      }
+      return t(parsed.key, params);
+    }
+    return message;
+  } catch (e) {
+    return message;
+  }
+};
+
 const joinUserRoom = (userId) => {
   if (userId) {
     socket.emit("join_user_room", userId);
@@ -146,7 +162,7 @@ onMounted(() => {
     store.commit("ADD_NOTIFICATION", notification);
 
     const toast = await toastController.create({
-      message: notification.message,
+      message: getNotificationMessage(notification.message),
       duration: 3000,
       position: "top",
       color: "primary",
@@ -157,10 +173,24 @@ onMounted(() => {
           handler: () => {
             if (notification.related_match_id) {
               router.push(`/matches/${notification.related_match_id}`);
-            } else if (notification.message && notification.message.toLowerCase().includes("friend request")) {
-              router.push("/friends");
             } else {
-              router.push("/notifications");
+              let isFriendRequest = false;
+              try {
+                const parsed = JSON.parse(notification.message);
+                if (parsed.key && parsed.key.includes("friend_request")) {
+                  isFriendRequest = true;
+                }
+              } catch (e) {
+                if (notification.message && notification.message.toLowerCase().includes("friend request")) {
+                  isFriendRequest = true;
+                }
+              }
+
+              if (isFriendRequest) {
+                router.push("/friends");
+              } else {
+                router.push("/notifications");
+              }
             }
           },
         },

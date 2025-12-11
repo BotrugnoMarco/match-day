@@ -31,7 +31,7 @@ exports.sendRequest = async (req, res) => {
                 ['pending', requester_id, addressee_id, existing[0].id]
             );
             const io = req.app.get('io');
-            await notificationController.createNotification(addressee_id, 'You have a new friend request!', 'info', null, io);
+            await notificationController.createNotification(addressee_id, JSON.stringify({ key: 'notifications.friend_request_new' }), 'info', null, io);
             return res.json({ message: 'Friend request sent' });
         }
 
@@ -41,7 +41,7 @@ exports.sendRequest = async (req, res) => {
         );
 
         const io = req.app.get('io');
-        await notificationController.createNotification(addressee_id, 'You have a new friend request!', 'info', null, io);
+        await notificationController.createNotification(addressee_id, JSON.stringify({ key: 'notifications.friend_request_new' }), 'info', null, io);
 
         res.status(201).json({ message: 'Friend request sent' });
     } catch (error) {
@@ -68,7 +68,7 @@ exports.acceptRequest = async (req, res) => {
 
         await db.query('UPDATE friendships SET status = ? WHERE id = ?', ['accepted', requestId]);
 
-        await notificationController.createNotification(request[0].requester_id, 'Your friend request was accepted!', 'success', null);
+        await notificationController.createNotification(request[0].requester_id, JSON.stringify({ key: 'notifications.friend_request_accepted' }), 'success', null);
 
         res.json({ message: 'Friend request accepted' });
     } catch (error) {

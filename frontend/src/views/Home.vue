@@ -104,7 +104,7 @@
               <ion-icon :icon="notificationsOutline"></ion-icon>
             </div>
             <div class="activity-content">
-              <p class="activity-text">{{ notif.message }}</p>
+              <p class="activity-text">{{ getNotificationMessage(notif.message) }}</p>
               <span class="activity-time">{{ new Date(notif.created_at).toLocaleDateString() }}</span>
             </div>
           </div>
@@ -200,6 +200,22 @@ const handleNotificationClick = (notification) => {
     router.push(`/matches/${notification.related_match_id}`);
   } else {
     router.push("/notifications");
+  }
+};
+
+const getNotificationMessage = (message) => {
+  try {
+    const parsed = JSON.parse(message);
+    if (parsed.key) {
+      const params = { ...parsed.params };
+      if (params.date) {
+        params.date = new Date(params.date).toLocaleDateString(locale.value);
+      }
+      return t(parsed.key, params);
+    }
+    return message;
+  } catch (e) {
+    return message;
   }
 };
 

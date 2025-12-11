@@ -178,7 +178,18 @@
     "title": "Notifiche",
     "alerts": "Avvisi",
     "stay_updated": "Rimani aggiornato",
-    "no_notifications": "Nessuna notifica"
+    "no_notifications": "Nessuna notifica",
+    "friend_request_new": "Hai una nuova richiesta di amicizia!",
+    "friend_request_accepted": "La tua richiesta di amicizia è stata accettata!",
+    "waitlist_promoted": "Si è liberato un posto! Sei stato promosso dalla lista d'attesa a confermato.",
+    "voting_started": "Le votazioni per la tua partita sono iniziate!",
+    "match_finished": "Partita terminata! Controlla i risultati.",
+    "teams_generated": "Le squadre per la tua partita sono state generate!",
+    "match_invite": "{inviter} ti ha invitato a una partita il {date}",
+    "join_approved": "La tua richiesta di partecipazione alla partita #{matchId} è stata approvata!",
+    "join_declined": "La tua richiesta di partecipazione alla partita #{matchId} è stata rifiutata.",
+    "match_cancelled": "La partita #{matchId} ({sportType} del {date}) è stata annullata dall'organizzatore.",
+    "match_updated": "I dettagli della partita #{matchId} sono stati aggiornati dall'organizzatore."
   },
   "invite": {
     "title": "Invita Amici",

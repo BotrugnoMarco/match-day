@@ -248,7 +248,7 @@ exports.leaveMatch = async (req, res) => {
             // Notify promoted user
             await notificationController.createNotification(
                 waitlist[0].user_id,
-                'A spot opened up! You have been promoted from waitlist to confirmed.',
+                JSON.stringify({ key: 'notifications.waitlist_promoted' }),
                 'success',
                 matchId
             );
@@ -308,8 +308,8 @@ exports.updateMatchStatus = async (req, res) => {
             );
 
             const message = status === 'voting'
-                ? 'Voting has started for your match!'
-                : 'Match finished! Check out the results.';
+                ? JSON.stringify({ key: 'notifications.voting_started' })
+                : JSON.stringify({ key: 'notifications.match_finished' });
 
             for (const p of participants) {
                 await notificationController.createNotification(p.user_id, message, 'info', matchId);
@@ -461,7 +461,7 @@ exports.generateTeams = async (req, res) => {
 
         // Notify participants
         for (const p of participants) {
-            await notificationController.createNotification(p.user_id, 'Teams have been generated for your match!', 'info', matchId);
+            await notificationController.createNotification(p.user_id, JSON.stringify({ key: 'notifications.teams_generated' }), 'info', matchId);
         }
 
         const io = req.app.get('io');
@@ -576,7 +576,13 @@ exports.inviteUser = async (req, res) => {
         const inviterName = inviters[0].username;
 
         // Create notification
-        const message = `${inviterName} invited you to a match on ${new Date(match.date_time).toLocaleDateString()}`;
+        const message = JSON.stringify({
+            key: 'notifications.match_invite',
+            params: {
+                inviter: inviterName,
+                date: new Date(match.date_time).toISOString()
+            }
+        });
         const io = req.app.get('io');
         await notificationController.createNotification(userId, message, 'invite', matchId, io);
 
@@ -674,7 +680,7 @@ exports.approveJoinRequest = async (req, res) => {
 
         // Notify user
         const io = req.app.get('io');
-        await notificationController.createNotification(userId, `Your request to join match #${matchId} has been approved!`, 'success', matchId, io);
+        await notificationController.createNotification(userId, JSON.stringify({ key: 'notifications.join_approved', params: { matchId } }), 'success', matchId, io);
         io.emit('match_updated', { matchId });
 
         res.json({ message: 'Request approved', status: newStatus });
@@ -707,7 +713,7 @@ exports.rejectJoinRequest = async (req, res) => {
 
         // Notify user
         const io = req.app.get('io');
-        await notificationController.createNotification(userId, `Your request to join match #${matchId} has been declined.`, 'error', matchId, io);
+        await notificationController.createNotification(userId, JSON.stringify({ key: 'notifications.join_declined', params: { matchId } }), 'error', matchId, io);
         io.emit('match_updated', { matchId });
 
         res.json({ message: 'Request rejected' });
@@ -747,7 +753,14 @@ exports.deleteMatch = async (req, res) => {
         for (const p of participants) {
             await notificationController.createNotification(
                 p.user_id,
-                `Match #${matchId} (${matches[0].sport_type} on ${new Date(matches[0].date_time).toLocaleDateString()}) has been cancelled by the organizer.`,
+                JSON.stringify({
+                    key: 'notifications.match_cancelled',
+                    params: {
+                        matchId,
+                        sportType: matches[0].sport_type,
+                        date: new Date(matches[0].date_time).toISOString()
+                    }
+                }),
                 'warning',
                 null,
                 io
@@ -803,7 +816,7 @@ exports.updateMatch = async (req, res) => {
         for (const p of participants) {
             await notificationController.createNotification(
                 p.user_id,
-                `Match #${matchId} details have been updated by the organizer.`,
+                JSON.stringify({ key: 'notifications.match_updated', params: { matchId } }),
                 'info',
                 matchId,
                 io

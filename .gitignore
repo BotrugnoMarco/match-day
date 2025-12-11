@@ -5,10 +5,6 @@ node_modules/
 dist/
 build/
 
-# Variabili d'ambiente (le ricreerai sul server)
-# .env
-# .env.local
-
 # Log e file di sistema
 npm-debug.log*
 .DS_Store
@@ -19,7 +15,9 @@ TODO.md
 DOMAIN_SETUP_OVH.md
 DOCUMENTATION.md
 DEPLOY.md
+FCM_SETUP.md
 nginx.conf
 
 backend/.env
 frontend/.env
+backend/config/serviceAccountKey.json

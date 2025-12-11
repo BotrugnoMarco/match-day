@@ -1,4 +1,29 @@
 const db = require('../config/db');
+const { admin, initialized: firebaseInitialized } = require('../config/firebase');
+
+// Register FCM Token
+exports.registerToken = async (req, res) => {
+    const userId = req.user.id;
+    const { token, device_type } = req.body;
+
+    if (!token) {
+        return res.status(400).json({ error: 'Token is required' });
+    }
+
+    try {
+        // Insert or Update (on duplicate key)
+        await db.query(
+            `INSERT INTO user_fcm_tokens (user_id, token, device_type) 
+             VALUES (?, ?, ?) 
+             ON DUPLICATE KEY UPDATE updated_at = CURRENT_TIMESTAMP`,
+            [userId, token, device_type || 'web']
+        );
+        res.json({ message: 'Token registered successfully' });
+    } catch (error) {
+        console.error('Register token error:', error);
+        res.status(500).json({ error: 'Server error registering token' });
+    }
+};
 
 // Get notifications for the current user
 exports.getNotifications = async (req, res) => {
@@ -56,6 +81,7 @@ exports.createNotification = async (userId, message, type = 'info', relatedMatch
             [userId, message, type, relatedMatchId]
         );
 
+        // 1. Send via Socket.io (In-App Realtime)
         if (io) {
             io.to(`user_${userId}`).emit('notification', {
                 id: result.insertId,
@@ -67,6 +93,49 @@ exports.createNotification = async (userId, message, type = 'info', relatedMatch
                 created_at: new Date()
             });
         }
+
+        // 2. Send via Firebase Cloud Messaging (Push Notification)
+        if (firebaseInitialized) {
+            const [tokens] = await db.query('SELECT token FROM user_fcm_tokens WHERE user_id = ?', [userId]);
+
+            if (tokens.length > 0) {
+                const fcmTokens = tokens.map(t => t.token);
+
+                const payload = {
+                    notification: {
+                        title: 'MatchDay',
+                        body: message,
+                    },
+                    data: {
+                        type: type,
+                        related_match_id: relatedMatchId ? relatedMatchId.toString() : '',
+                        url: relatedMatchId ? `/matches/${relatedMatchId}` : '/notifications'
+                    }
+                };
+
+                // Send to all user's devices
+                const response = await admin.messaging().sendEachForMulticast({
+                    tokens: fcmTokens,
+                    notification: payload.notification,
+                    data: payload.data
+                });
+
+                // Optional: Cleanup invalid tokens
+                if (response.failureCount > 0) {
+                    const failedTokens = [];
+                    response.responses.forEach((resp, idx) => {
+                        if (!resp.success) {
+                            failedTokens.push(fcmTokens[idx]);
+                        }
+                    });
+                    if (failedTokens.length > 0) {
+                        // Remove invalid tokens from DB
+                        await db.query('DELETE FROM user_fcm_tokens WHERE token IN (?)', [failedTokens]);
+                    }
+                }
+            }
+        }
+
     } catch (error) {
         console.error('Create notification error:', error);
     }

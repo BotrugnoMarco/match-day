@@ -95,11 +95,26 @@ import {
 } from "ionicons/icons";
 
 import socket from "./services/socket";
+import { requestNotificationPermission, initPushListeners } from "./services/firebase";
 
 const store = useStore();
 const router = useRouter();
 const { t, locale } = useI18n();
 const currentUser = computed(() => store.state.user);
+
+onMounted(() => {
+  if (currentUser.value) {
+    requestNotificationPermission();
+    initPushListeners();
+  }
+});
+
+watch(currentUser, (newUser) => {
+  if (newUser) {
+    requestNotificationPermission();
+    initPushListeners();
+  }
+});
 
 const appPages = computed(() => [
   {

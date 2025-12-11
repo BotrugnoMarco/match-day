@@ -1,4 +1,6 @@
 -- 1. ELIMINA TUTTE LE TABELLE (in ordine inverso per rispettare le Foreign Keys)
+DROP TABLE IF EXISTS user_fcm_tokens;
+DROP TABLE IF EXISTS support_tickets;
 DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS votes;
@@ -124,4 +126,15 @@ CREATE TABLE IF NOT EXISTS support_tickets (
     admin_response TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+-- FCM Tokens (Notifiche Push)
+CREATE TABLE IF NOT EXISTS user_fcm_tokens (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    device_type VARCHAR(50) DEFAULT 'web',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_token (user_id, token)
 );

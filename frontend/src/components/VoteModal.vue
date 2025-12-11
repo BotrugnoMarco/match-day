@@ -108,7 +108,7 @@ const submitVote = async () => {
     modalController.dismiss(true, "confirm");
   } catch (error) {
     console.error("Error submitting vote:", error);
-    presentToast(t("vote.failed"));
+    presentToast(t("vote.failed"), "danger");
   }
 };
 </script>

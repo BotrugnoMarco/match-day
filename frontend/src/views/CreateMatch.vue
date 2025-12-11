@@ -329,7 +329,7 @@ const createMatch = async () => {
     router.push(`/matches/${response.data.matchId}`);
   } catch (error) {
     console.error("Error creating match:", error);
-    presentToast(t("create_match.failed") + ": " + (error.response?.data?.error || error.message));
+    presentToast(t("create_match.failed") + ": " + (error.response?.data?.error || error.message), "danger");
   }
 };
 </script>

@@ -387,7 +387,7 @@ const saveProfile = async () => {
     closeEditModal();
   } catch (error) {
     console.error("Error updating profile:", error);
-    presentToast("Error updating profile: " + (error.response?.data?.error || error.message));
+    presentToast("Error updating profile: " + (error.response?.data?.error || error.message), "danger");
   }
 };
 

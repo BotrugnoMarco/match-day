@@ -337,7 +337,7 @@ const updateMatch = async () => {
     router.push(`/matches/${route.params.id}`);
   } catch (error) {
     console.error("Error updating match:", error);
-    presentToast("Failed to update match: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to update match: " + (error.response?.data?.error || error.message), "danger");
   }
 };
 </script>

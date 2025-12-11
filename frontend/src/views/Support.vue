@@ -135,9 +135,7 @@
               <ion-icon :icon="cafeOutline" class="donate-icon"></ion-icon>
               <h3>Support the Developer</h3>
             </div>
-            <p>
-              MatchDay is a passion project. If you find it useful and want to support its development, you can buy me a coffee!
-            </p>
+            <p>MatchDay is a passion project. If you find it useful and want to support its development, you can buy me a coffee!</p>
             <ion-button expand="block" class="kofi-btn" href="https://ko-fi.com/dlayk_mark" target="_blank">
               <ion-icon slot="start" :icon="cafeOutline"></ion-icon>
               Support on Ko-fi
@@ -417,7 +415,7 @@ const getStatusColor = (status) => {
 
 .donate-icon {
   font-size: 3rem;
-  color: #FF5E5B;
+  color: #ff5e5b;
   margin-bottom: 10px;
 }
 
@@ -434,7 +432,7 @@ const getStatusColor = (status) => {
 }
 
 .kofi-btn {
-  --background: #FF5E5B;
+  --background: #ff5e5b;
   --background-hover: #ff4f4c;
   --border-radius: 12px;
   font-weight: 700;

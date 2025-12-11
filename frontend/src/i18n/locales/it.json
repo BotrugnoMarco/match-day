@@ -361,6 +361,8 @@
   "results": {
     "won": "Vinta",
     "lost": "Persa",
-    "draw": "Pareggio"
+    "draw": "Pareggio",
+    "win": "Vinta",
+    "lose": "Persa"
   }
 }

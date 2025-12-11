@@ -347,6 +347,8 @@
   "results": {
     "won": "Won",
     "lost": "Lost",
-    "draw": "Draw"
+    "draw": "Draw",
+    "win": "Won",
+    "lose": "Lost"
   }
 }

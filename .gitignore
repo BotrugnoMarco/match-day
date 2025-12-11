@@ -16,6 +16,7 @@ DOMAIN_SETUP_OVH.md
 DOCUMENTATION.md
 DEPLOY.md
 FCM_SETUP.md
+GUIDA_PLAYSTORE.md
 nginx.conf
 
 backend/.env

@@ -76,6 +76,17 @@
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item">
+                <ion-label position="stacked">Duration (min)</ion-label>
+                <ion-select v-model="duration" interface="popover">
+                  <ion-select-option :value="60">60 min</ion-select-option>
+                  <ion-select-option :value="90">90 min</ion-select-option>
+                  <ion-select-option :value="120">120 min</ion-select-option>
+                </ion-select>
+              </ion-item>
+
+              <div class="divider"></div>
+
+              <ion-item lines="none" class="custom-item">
                 <ion-label position="stacked">Total Price (€)</ion-label>
                 <ion-input type="number" v-model="priceTotal" placeholder="0.00"></ion-input>
               </ion-item>
@@ -164,6 +175,8 @@ import {
   IonIcon,
   IonToggle,
   IonSpinner,
+  IonSelect,
+  IonSelectOption,
   alertController,
   toastController,
 } from "@ionic/vue";
@@ -192,6 +205,7 @@ const location = ref("");
 const sportType = ref("soccer");
 const priceTotal = ref("");
 const maxPlayers = ref(10);
+const duration = ref(60);
 const isCovered = ref(false);
 const hasShowers = ref(false);
 const isPrivate = ref(false);
@@ -287,6 +301,7 @@ const fetchMatch = async () => {
     hasShowers.value = !!match.value.has_showers;
     isPrivate.value = !!match.value.is_private;
     accessCode.value = match.value.access_code || "";
+    duration.value = match.value.duration || 60;
   } catch (error) {
     console.error("Error fetching match:", error);
     presentToast("Error fetching match details");
@@ -318,6 +333,7 @@ const updateMatch = async () => {
       has_showers: hasShowers.value,
       is_private: isPrivate.value,
       access_code: accessCode.value,
+      duration: duration.value,
     });
 
     presentToast("Match updated successfully. Participants will be notified.", "success");

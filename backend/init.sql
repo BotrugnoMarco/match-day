@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS matches (
     status ENUM('open', 'locked', 'finished', 'voting') DEFAULT 'open',
     winner ENUM('A', 'B', 'Draw'),
     -- Nuova colonna vincitore
+    duration INT DEFAULT 60,
     price_total DECIMAL(10, 2),
     max_players INT DEFAULT 10,
     is_covered BOOLEAN DEFAULT FALSE,

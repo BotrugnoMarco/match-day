@@ -3,7 +3,7 @@ const notificationController = require('./notificationController');
 
 // Create a new match
 exports.createMatch = async (req, res) => {
-    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code } = req.body;
+    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration } = req.body;
     const creator_id = req.user.id;
 
     if (!date_time || !sport_type) {
@@ -12,8 +12,8 @@ exports.createMatch = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, creator_id]
+            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, duration || 60, creator_id]
         );
 
         // Automatically add creator as participant and admin
@@ -34,6 +34,7 @@ exports.createMatch = async (req, res) => {
             is_covered: is_covered || false,
             has_showers: has_showers || false,
             is_private: is_private || false,
+            duration: duration || 60,
             status: 'open',
             creator_id
         });
@@ -768,7 +769,7 @@ exports.deleteMatch = async (req, res) => {
 exports.updateMatch = async (req, res) => {
     const matchId = req.params.id;
     const userId = req.user.id;
-    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code } = req.body;
+    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration } = req.body;
 
     try {
         // Check if match exists and user is creator or admin
@@ -789,8 +790,8 @@ exports.updateMatch = async (req, res) => {
 
         // Update match
         await db.query(
-            'UPDATE matches SET date_time = ?, location = ?, sport_type = ?, price_total = ?, max_players = ?, is_covered = ?, has_showers = ?, is_private = ?, access_code = ? WHERE id = ?',
-            [date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, matchId]
+            'UPDATE matches SET date_time = ?, location = ?, sport_type = ?, price_total = ?, max_players = ?, is_covered = ?, has_showers = ?, is_private = ?, access_code = ?, duration = ? WHERE id = ?',
+            [date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration || 60, matchId]
         );
 
         // Get participants to notify

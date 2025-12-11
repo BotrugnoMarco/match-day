@@ -45,6 +45,7 @@
               <div class="info-text">
                 <span class="label">Time</span>
                 <span class="value">{{ formatTime(match.date_time) }}</span>
+                <span class="sub-value" v-if="match.duration">({{ match.duration }} min)</span>
               </div>
             </div>
           </div>

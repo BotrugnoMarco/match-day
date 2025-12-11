@@ -553,7 +553,7 @@ const pendingParticipants = computed(() => {
 });
 
 const activeParticipants = computed(() => {
-  return match.value?.participants?.filter((p) => p.status !== "waitlist" && p.status !== "pending_approval") || [];
+  return match.value?.participants?.filter((p) => p.status !== "waitlist" && p.status !== "pending_approval" && p.status !== "declined") || [];
 });
 
 const hasTeams = computed(() => {

@@ -6,13 +6,13 @@ import api from "./api";
 
 // DEVI SOSTITUIRE QUESTO OGGETTO CON LA TUA CONFIGURAZIONE FIREBASE (La stessa del service worker)
 const firebaseConfig = {
-  apiKey: "AIzaSyDRswmlK92bWJjzhnaEzGL7jParA-eF024",
-  authDomain: "match-day-20e17.firebaseapp.com",
-  projectId: "match-day-20e17",
-  storageBucket: "match-day-20e17.firebasestorage.app",
-  messagingSenderId: "1679408604",
-  appId: "1:1679408604:web:5caf0f642b15c13744e319",
-  measurementId: "G-M62YTC9ZF3"
+    apiKey: "AIzaSyDRswmlK92bWJjzhnaEzGL7jParA-eF024",
+    authDomain: "match-day-20e17.firebaseapp.com",
+    projectId: "match-day-20e17",
+    storageBucket: "match-day-20e17.firebasestorage.app",
+    messagingSenderId: "1679408604",
+    appId: "1:1679408604:web:5caf0f642b15c13744e319",
+    measurementId: "G-M62YTC9ZF3"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -93,7 +93,17 @@ export const initPushListeners = () => {
         // --- WEB LISTENERS ---
         onMessage(messaging, (payload) => {
             console.log('Message received (Web Foreground): ', payload);
-            // Handle web foreground message
+            // Mostra una notifica visiva (Toast) quando l'app è aperta
+            const notificationTitle = payload.notification.title;
+            const notificationOptions = {
+                body: payload.notification.body,
+                icon: '/pwa-192x192.png'
+            };
+
+            // Se il browser supporta le notifiche e sono permesse, mostrala
+            if (Notification.permission === "granted") {
+                new Notification(notificationTitle, notificationOptions);
+            }
         });
     }
 };

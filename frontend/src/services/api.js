@@ -1,7 +1,9 @@
 import axios from 'axios';
 
+// Use relative path if served from the same domain/port (via Nginx)
+// Or construct the URL dynamically based on the window location but pointing to port 80 (implied)
 const api = axios.create({
-    baseURL: `http://${window.location.hostname}:3000/api`,
+    baseURL: `/api`, // This assumes the frontend is served from the same origin as the API proxy
     headers: {
         'Content-Type': 'application/json'
     }

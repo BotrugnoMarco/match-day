@@ -35,7 +35,9 @@ app.set('io', io);
 const PORT = process.env.PORT || 3000;
 
 // Security Middleware
-app.use(helmet()); // Set security headers
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" }
+})); // Set security headers with cross-origin allowed for images
 
 // Rate limiting
 const limiter = rateLimit({

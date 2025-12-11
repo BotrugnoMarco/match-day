@@ -54,6 +54,13 @@
                 <ion-label position="stacked">Location</ion-label>
                 <ion-input v-model="location" placeholder="Where are we playing?"></ion-input>
               </ion-item>
+
+              <div class="map-preview-container" v-if="locationCoords">
+                <LocationPicker :initial-lat="locationCoords.lat" :initial-lng="locationCoords.lng" @location-selected="onLocationSelected" />
+              </div>
+              <div class="map-preview-container" v-else>
+                <LocationPicker @location-selected="onLocationSelected" />
+              </div>
             </div>
           </div>
 
@@ -137,9 +144,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import api from "../services/api";
+import LocationPicker from "../components/LocationPicker.vue";
 import {
   IonPage,
   IonHeader,
@@ -190,6 +198,23 @@ const isCovered = ref(false);
 const hasShowers = ref(false);
 const isPrivate = ref(false);
 const accessCode = ref("");
+
+const locationCoords = computed(() => {
+  if (!location.value) return null;
+  const parts = location.value.split(",");
+  if (parts.length === 2) {
+    const lat = parseFloat(parts[0]);
+    const lng = parseFloat(parts[1]);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      return { lat, lng };
+    }
+  }
+  return null;
+});
+
+const onLocationSelected = (coords) => {
+  location.value = `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
+};
 
 const presentToast = async (message, color = "danger") => {
   const toast = await toastController.create({

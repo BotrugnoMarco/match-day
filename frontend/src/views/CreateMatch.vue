@@ -55,16 +55,8 @@
                 <ion-input v-model="location" placeholder="Where are we playing?" :debounce="1000"></ion-input>
               </ion-item>
 
-              <div class="map-preview-container" v-if="location">
-                <iframe
-                  width="100%"
-                  height="150"
-                  style="border: 0; border-radius: var(--radius-md)"
-                  loading="lazy"
-                  allowfullscreen
-                  :src="`https://maps.google.com/maps?q=${encodeURIComponent(location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`"
-                >
-                </iframe>
+              <div class="map-preview-container">
+                <LocationPicker @location-selected="onLocationSelected" />
               </div>
             </div>
           </div>
@@ -149,6 +141,7 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import api from "../services/api";
+import LocationPicker from "../components/LocationPicker.vue";
 import {
   IonPage,
   IonHeader,
@@ -195,6 +188,10 @@ const isCovered = ref(false);
 const hasShowers = ref(false);
 const isPrivate = ref(false);
 const accessCode = ref("");
+
+const onLocationSelected = (coords) => {
+  location.value = `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
+};
 
 const presentToast = async (message, color = "danger") => {
   const toast = await toastController.create({

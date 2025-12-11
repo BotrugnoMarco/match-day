@@ -264,11 +264,12 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch } from "vue";
+import { computed, ref, onMounted, onUnmounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
+import socket from "../services/socket";
 import {
   IonPage,
   IonHeader,
@@ -479,6 +480,17 @@ const presentToast = async (message, color = "success") => {
 
 onMounted(() => {
   loadData();
+
+  socket.on("friend:updated", (data) => {
+    // If we are viewing the profile of the user involved in the update
+    if (route.params.id && parseInt(route.params.id) == data.userId) {
+      fetchFriendshipStatus(data.userId);
+    }
+  });
+});
+
+onUnmounted(() => {
+  socket.off("friend:updated");
 });
 
 watch(

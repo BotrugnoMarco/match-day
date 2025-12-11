@@ -68,7 +68,16 @@ exports.acceptRequest = async (req, res) => {
 
         await db.query('UPDATE friendships SET status = ? WHERE id = ?', ['accepted', requestId]);
 
-        await notificationController.createNotification(request[0].requester_id, JSON.stringify({ key: 'notifications.friend_request_accepted' }), 'success', null);
+        const io = req.app.get('io');
+
+        // Notify the requester
+        await notificationController.createNotification(request[0].requester_id, JSON.stringify({ key: 'notifications.friend_request_accepted' }), 'success', null, io);
+
+        // Emit specific event to refresh UI for both users
+        if (io) {
+            io.to(`user_${request[0].requester_id}`).emit('friend:updated', { userId: userId, status: 'accepted' });
+            io.to(`user_${userId}`).emit('friend:updated', { userId: request[0].requester_id, status: 'accepted' });
+        }
 
         res.json({ message: 'Friend request accepted' });
     } catch (error) {

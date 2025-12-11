@@ -60,8 +60,11 @@ import {
   personCircleSharp,
   notificationsOutline,
   notificationsSharp,
+  helpCircleOutline,
+  helpCircleSharp,
   logOutOutline,
 } from "ionicons/icons";
+
 import socket from "./services/socket";
 
 const store = useStore();
@@ -98,6 +101,12 @@ const appPages = [
     url: "/profile",
     iosIcon: personCircleOutline,
     mdIcon: personCircleSharp,
+  },
+  {
+    title: "Support",
+    url: "/support",
+    iosIcon: helpCircleOutline,
+    mdIcon: helpCircleSharp,
   },
 ];
 

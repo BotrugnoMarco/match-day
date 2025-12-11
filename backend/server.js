@@ -10,6 +10,7 @@ const voteRoutes = require('./routes/voteRoutes');
 const userRoutes = require('./routes/userRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const friendRoutes = require('./routes/friendRoutes');
+const supportRoutes = require('./routes/supportRoutes');
 const http = require('http');
 const { Server } = require('socket.io');
 
@@ -40,6 +41,7 @@ app.use('/api/votes', voteRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/friends', friendRoutes);
+app.use('/api/support', supportRoutes);
 
 // Test Database Connection
 app.get('/test-db', async (req, res) => {

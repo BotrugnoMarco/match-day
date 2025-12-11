@@ -9,6 +9,7 @@ import MatchDetails from '../views/MatchDetails.vue';
 import Profile from '../views/Profile.vue';
 import Friends from '../views/Friends.vue';
 import Notifications from '../views/Notifications.vue';
+import Support from '../views/Support.vue';
 
 const routes = [
     {
@@ -55,7 +56,7 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
-        path: '/profile/:id?',
+        path: '/profile',
         name: 'Profile',
         component: Profile,
         meta: { requiresAuth: true }
@@ -71,8 +72,16 @@ const routes = [
         name: 'Notifications',
         component: Notifications,
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/support',
+        name: 'Support',
+        component: Support,
+        meta: { requiresAuth: true }
     }
-]; const router = createRouter({
+];
+
+const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes
 });

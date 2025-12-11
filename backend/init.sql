@@ -106,9 +106,21 @@ CREATE TABLE IF NOT EXISTS friendships (
     id INT AUTO_INCREMENT PRIMARY KEY,
     requester_id INT NOT NULL,
     addressee_id INT NOT NULL,
-    status ENUM('pending', 'accepted', 'rejected') DEFAULT 'pending',
+    status ENUM('pending', 'accepted') DEFAULT 'pending',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (requester_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (addressee_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_friendship (requester_id, addressee_id)
+    FOREIGN KEY (addressee_id) REFERENCES users(id) ON DELETE CASCADE
+);
+-- Support Tickets
+CREATE TABLE IF NOT EXISTS support_tickets (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    category ENUM('bug', 'feature_request', 'account', 'other') DEFAULT 'other',
+    status ENUM('open', 'in_progress', 'closed') DEFAULT 'open',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+UNIQUE KEY unique_friendship (requester_id, addressee_id)
 );

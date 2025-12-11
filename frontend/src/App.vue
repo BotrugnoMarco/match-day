@@ -7,32 +7,43 @@
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <ion-list>
-          <ion-menu-toggle auto-hide="false" v-for="p in appPages" :key="p.url">
-            <ion-item router-link-active="selected" :router-link="p.url" lines="none" detail="false" class="hydrated">
-              <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
-              <ion-label>{{ p.title }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+        <div class="menu-inner">
+          <ion-list>
+            <ion-menu-toggle auto-hide="false" v-for="p in appPages" :key="p.url">
+              <ion-item router-link-active="selected" :router-link="p.url" lines="none" detail="false" class="hydrated">
+                <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
+                <ion-label>{{ p.title }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+          </ion-list>
 
-          <ion-menu-toggle auto-hide="false" v-if="currentUser && currentUser.role === 'admin'">
-            <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false">
-              <ion-icon slot="start" :ios="constructOutline" :md="constructSharp"></ion-icon>
-              <ion-label>{{ t("menu.admin_support") }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+          <ion-list>
+            <ion-menu-toggle auto-hide="false">
+              <ion-item router-link-active="selected" router-link="/support" lines="none" detail="false">
+                <ion-icon slot="start" :ios="helpCircleOutline" :md="helpCircleSharp"></ion-icon>
+                <ion-label>{{ t("menu.support") }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
 
-          <ion-menu-toggle auto-hide="false" v-if="currentUser">
-            <ion-item button @click="logout" lines="none" detail="false">
-              <ion-icon slot="start" :icon="logOutOutline"></ion-icon>
-              <ion-label>{{ t("menu.logout") }}</ion-label>
-            </ion-item>
-          </ion-menu-toggle>
+            <ion-menu-toggle auto-hide="false" v-if="currentUser && currentUser.role === 'admin'">
+              <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false">
+                <ion-icon slot="start" :ios="constructOutline" :md="constructSharp"></ion-icon>
+                <ion-label>{{ t("menu.admin_support") }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
 
-          <ion-item lines="none">
-            <LanguageSwitcher />
-          </ion-item>
-        </ion-list>
+            <ion-menu-toggle auto-hide="false" v-if="currentUser">
+              <ion-item button @click="logout" lines="none" detail="false">
+                <ion-icon slot="start" :icon="logOutOutline"></ion-icon>
+                <ion-label>{{ t("menu.logout") }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+
+            <ion-item lines="none">
+              <LanguageSwitcher />
+            </ion-item>
+          </ion-list>
+        </div>
       </ion-content>
     </ion-menu>
     <ion-router-outlet id="main-content" />
@@ -117,12 +128,6 @@ const appPages = computed(() => [
     url: "/profile",
     iosIcon: personCircleOutline,
     mdIcon: personCircleSharp,
-  },
-  {
-    title: t("menu.support"),
-    url: "/support",
-    iosIcon: helpCircleOutline,
-    mdIcon: helpCircleSharp,
   },
 ]);
 
@@ -212,6 +217,13 @@ ion-menu ion-content {
   --background: var(--ion-item-background, var(--ion-background-color, #fff));
 }
 
+.menu-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+</style>
 ion-item.selected {
   --color: var(--ion-color-primary);
 }

@@ -151,7 +151,8 @@ const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 const displayedMatches = computed(() => {
   if (filter.value === "mine") return store.getters.myMatches;
   if (filter.value === "friends") return store.getters.friendsMatches;
-  return store.getters.allMatches;
+  // Show only open matches in the main list
+  return store.getters.allMatches.filter((m) => m.status === "open");
 });
 
 const getSportIcon = (type) => {

@@ -54,8 +54,8 @@ CURRENT_DIR=$(pwd)
 echo "   -> Cartella progetto rilevata: $CURRENT_DIR"
 
 # Aggiorna il percorso in nginx.conf prima di copiarlo
-# Sostituisce qualsiasi percorso in 'alias .../frontend/dist' con quello corrente
-sed -i "s|alias .*/frontend/dist;|alias $CURRENT_DIR/frontend/dist;|g" nginx.conf
+# Sostituisce qualsiasi percorso in 'root .../frontend/dist' con quello corrente
+sed -i "s|root .*/frontend/dist;|root $CURRENT_DIR/frontend/dist;|g" nginx.conf
 
 # Copia la configurazione (richiede sudo)
 if [ -f "/etc/nginx/sites-available/match-day" ]; then

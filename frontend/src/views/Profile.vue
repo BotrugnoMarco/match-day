@@ -50,6 +50,7 @@
 
         <div class="ion-padding-top">
           <ion-button expand="block" @click="saveProfile">Save Changes</ion-button>
+          <ion-button expand="block" color="secondary" fill="outline" class="ion-margin-top" @click="exportData"> Export My Data </ion-button>
           <ion-button expand="block" color="danger" fill="outline" class="ion-margin-top" @click="confirmDeleteAccount"> Delete Account </ion-button>
         </div>
       </ion-content>
@@ -527,6 +528,23 @@ const deleteAccount = async () => {
   } catch (error) {
     console.error("Error deleting account:", error);
     presentToast("Failed to delete account", "danger");
+  }
+};
+
+const exportData = async () => {
+  try {
+    const response = await api.get("/users/export", { responseType: "blob" });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute("download", `user_data_${currentUser.value.id}.json`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    presentToast("Data exported successfully", "success");
+  } catch (error) {
+    console.error("Error exporting data:", error);
+    presentToast("Failed to export data", "danger");
   }
 };
 

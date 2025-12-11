@@ -73,6 +73,47 @@ exports.deleteAccount = async (req, res) => {
     }
 };
 
+exports.exportData = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        // 1. User Profile
+        const [user] = await db.query('SELECT * FROM users WHERE id = ?', [userId]);
+
+        // 2. Skills
+        const [skills] = await db.query('SELECT * FROM user_skills WHERE user_id = ?', [userId]);
+
+        // 3. Matches Participated
+        const [matches] = await db.query(`
+            SELECT m.*, p.team, p.status as participation_status 
+            FROM matches m 
+            JOIN participants p ON m.id = p.match_id 
+            WHERE p.user_id = ?
+        `, [userId]);
+
+        // 4. Votes Received
+        const [votesReceived] = await db.query('SELECT * FROM votes WHERE target_id = ?', [userId]);
+
+        // 5. Votes Given
+        const [votesGiven] = await db.query('SELECT * FROM votes WHERE voter_id = ?', [userId]);
+
+        const exportData = {
+            profile: user[0],
+            skills: skills,
+            matches: matches,
+            votes_received: votesReceived,
+            votes_given: votesGiven,
+            exported_at: new Date()
+        };
+
+        res.setHeader('Content-Type', 'application/json');
+        res.setHeader('Content-Disposition', `attachment; filename=user_data_${userId}.json`);
+        res.json(exportData);
+    } catch (error) {
+        console.error('Export data error:', error);
+        res.status(500).json({ error: 'Server error exporting data' });
+    }
+};
+
 exports.getUserStats = async (req, res) => {
     const userId = req.user.id;
     try {

@@ -13,6 +13,19 @@ exports.register = async (req, res) => {
         return res.status(400).json({ error: 'You must accept the Terms of Service and Privacy Policy' });
     }
 
+    // Age check (minimum 13 years old)
+    const birthDate = new Date(birth_date);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    if (age < 13) {
+        return res.status(400).json({ error: 'You must be at least 13 years old to register.' });
+    }
+
     try {
         // Check if user already exists
         const [existingUser] = await db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, email]);

@@ -144,7 +144,7 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
@@ -248,12 +248,12 @@ const presentToast = async (message, color = "danger") => {
   await toast.present();
 };
 
-const sports = [
-  { value: "soccer", label: "Soccer", icon: football },
-  { value: "volleyball", label: "Volleyball", icon: baseballOutline },
-  { value: "padel", label: "Padel", icon: tennisball },
-  { value: "tennis", label: "Tennis", icon: tennisball },
-];
+const sports = computed(() => [
+  { value: "soccer", label: t("sports.soccer"), icon: football },
+  { value: "volleyball", label: t("sports.volleyball"), icon: baseballOutline },
+  { value: "padel", label: t("sports.padel"), icon: tennisball },
+  { value: "tennis", label: t("sports.tennis"), icon: tennisball },
+]);
 
 const selectSport = (type) => {
   sportType.value = type;

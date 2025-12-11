@@ -405,7 +405,7 @@
                 </ion-label>
                 <div slot="end" class="rating-score">
                   <span class="score">{{ r.averageRating.toFixed(1) }}</span>
-                  <span class="votes">{{ r.voteCount }} votes</span>
+                  <span class="votes">{{ t("match_details.votes_count", { count: r.voteCount }) }}</span>
                 </div>
               </ion-item>
             </ion-list>
@@ -416,7 +416,7 @@
     <div v-else class="ion-padding">
       <div class="ion-text-center ion-padding-top">
         <ion-spinner></ion-spinner>
-        <p>Loading match details...</p>
+        <p>{{ t("match_details.loading") }}</p>
       </div>
     </div>
     <InviteFriendModal
@@ -495,7 +495,7 @@ import FormationField from "../components/FormationField.vue";
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const match = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
@@ -504,7 +504,7 @@ const currentUser = computed(() => store.getters.currentUser);
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  return date.toLocaleDateString(locale.value, { weekday: "short", month: "short", day: "numeric" });
 };
 
 const formatTime = (dateString) => {
@@ -698,7 +698,7 @@ const fetchMatch = async () => {
     }
   } catch (error) {
     console.error("Error fetching match:", error);
-    presentToast("Error fetching match details");
+    presentToast(t("match_details.fetch_error"));
   }
 };
 
@@ -726,22 +726,22 @@ const joinMatch = async () => {
     // Only ask for code if private, not creator, AND NOT FRIEND
     if (match.value.is_private && !isCreator.value && !match.value.is_friend) {
       const alert = await alertController.create({
-        header: "Private Match",
-        message: "Enter access code to join immediately, or leave blank to send a request.",
+        header: t("match_details.private_match_alert_header"),
+        message: t("match_details.private_match_alert_message"),
         inputs: [
           {
             name: "code",
             type: "text",
-            placeholder: "Access Code",
+            placeholder: t("match_details.private_match_alert_placeholder"),
           },
         ],
         buttons: [
           {
-            text: "Cancel",
+            text: t("common.cancel"),
             role: "cancel",
           },
           {
-            text: "Join",
+            text: t("match_details.join"),
             handler: (data) => {
               return data;
             },
@@ -756,26 +756,26 @@ const joinMatch = async () => {
 
     const response = await api.post(`/matches/${route.params.id}/join`, { status: "confirmed", access_code: accessCode });
     if (response.data.status === "waitlist") {
-      presentToast("Match is full. You have been added to the waitlist.", "warning");
+      presentToast(t("match_details.full_waitlist"), "warning");
     } else if (response.data.status === "pending_approval") {
-      presentToast("Request sent to the organizer.", "success");
+      presentToast(t("match_details.request_sent"), "success");
     }
     await fetchMatch(); // Refresh data
   } catch (error) {
     console.error("Error joining match:", error);
-    presentToast("Failed to join match: " + (error.response?.data?.error || error.message));
+    presentToast(t("match_details.join_error") + ": " + (error.response?.data?.error || error.message));
   }
 };
 
 const leaveMatch = async () => {
   try {
-    if (!confirm("Are you sure you want to leave this match?")) return;
+    if (!confirm(t("match_details.leave_confirm"))) return;
 
     await api.post(`/matches/${route.params.id}/leave`);
     await fetchMatch();
   } catch (error) {
     console.error("Error leaving match:", error);
-    presentToast("Failed to leave match: " + (error.response?.data?.error || error.message));
+    presentToast(t("match_details.leave_error") + ": " + (error.response?.data?.error || error.message));
   }
 };
 
@@ -785,15 +785,15 @@ const editMatch = () => {
 
 const deleteMatch = async () => {
   const alert = await alertController.create({
-    header: "Delete Match",
-    message: "Are you sure you want to delete this match? This action cannot be undone and all participants will be notified.",
+    header: t("match_details.delete_confirm_header"),
+    message: t("match_details.delete_confirm_message"),
     buttons: [
       {
-        text: "Cancel",
+        text: t("common.cancel"),
         role: "cancel",
       },
       {
-        text: "Delete",
+        text: t("common.delete"),
         role: "destructive",
         handler: async () => {
           try {
@@ -815,24 +815,24 @@ const changeStatus = async (newStatus) => {
     let winner = null;
     if (newStatus === "finished") {
       const alert = await alertController.create({
-        header: "Select Winner",
+        header: t("match_details.select_winner"),
         buttons: [
           {
-            text: "Team A",
+            text: t("match_details.team_a"),
             role: "A",
             handler: () => {
               winner = "A";
             },
           },
           {
-            text: "Team B",
+            text: t("match_details.team_b"),
             role: "B",
             handler: () => {
               winner = "B";
             },
           },
           {
-            text: "Draw",
+            text: t("match_details.draw"),
             role: "Draw",
             handler: () => {
               winner = "Draw";
@@ -854,18 +854,18 @@ const changeStatus = async (newStatus) => {
     await fetchMatch();
   } catch (error) {
     console.error("Error updating status:", error);
-    presentToast("Failed to update status");
+    presentToast(t("match_details.status_error"));
   }
 };
 
 const generateTeams = async () => {
   try {
     const response = await api.post(`/matches/${route.params.id}/generate-teams`);
-    presentToast(`Teams generated! Team A: ${response.data.stats.teamA_count}, Team B: ${response.data.stats.teamB_count}`, "success");
+    presentToast(t("match_details.teams_generated", { countA: response.data.stats.teamA_count, countB: response.data.stats.teamB_count }), "success");
     await fetchMatch();
   } catch (error) {
     console.error("Error generating teams:", error);
-    presentToast("Failed to generate teams: " + (error.response?.data?.error || error.message));
+    presentToast(t("match_details.teams_generated_error") + ": " + (error.response?.data?.error || error.message));
   }
 };
 
@@ -876,7 +876,7 @@ const togglePostMatch = async () => {
     await fetchMatch();
   } catch (error) {
     console.error("Error updating post-match status:", error);
-    presentToast("Failed to update status");
+    presentToast(t("match_details.status_error"));
   }
 };
 
@@ -887,7 +887,7 @@ const togglePayment = async (participant) => {
     await api.put(`/matches/${match.value.id}/payment`, { userId: participant.user_id });
   } catch (error) {
     console.error("Error toggling payment:", error);
-    presentToast("Failed to update payment status");
+    presentToast(t("match_details.payment_error"));
   }
 };
 
@@ -897,7 +897,7 @@ const movePlayer = async (userId, team) => {
     // Socket will update the list, but we can also fetch manually if needed
   } catch (error) {
     console.error("Error moving player:", error);
-    presentToast("Failed to move player");
+    presentToast(t("match_details.move_error"));
   }
 };
 
@@ -906,21 +906,21 @@ const openPlayerActions = async (player) => {
 
   // Admin Toggle
   buttons.push({
-    text: player.is_admin ? "Remove Admin" : "Make Admin",
+    text: player.is_admin ? t("match_details.remove_admin") : t("match_details.make_admin"),
     icon: shieldCheckmarkOutline,
     handler: () => toggleAdmin(player),
   });
 
   // Captain Toggle
   buttons.push({
-    text: player.is_captain ? "Remove Captain" : "Make Captain",
+    text: player.is_captain ? t("match_details.remove_captain") : t("match_details.make_captain"),
     icon: player.is_captain ? ribbonOutline : ribbon,
     handler: () => toggleCaptain(player),
   });
 
   // Payment Toggle
   buttons.push({
-    text: player.has_paid ? "Mark Unpaid" : "Mark Paid",
+    text: player.has_paid ? t("match_details.mark_unpaid") : t("match_details.mark_paid"),
     icon: cashOutline,
     handler: () => togglePayment(player),
   });
@@ -929,7 +929,7 @@ const openPlayerActions = async (player) => {
   if (hasTeams.value) {
     const targetTeam = player.team === "A" || player.team === "Team A" ? "B" : "A";
     buttons.push({
-      text: `Move to Team ${targetTeam}`,
+      text: t("match_details.move_to_team", { team: targetTeam }),
       icon: swapHorizontalOutline,
       handler: () => movePlayer(player.user_id, targetTeam),
     });
@@ -937,13 +937,13 @@ const openPlayerActions = async (player) => {
 
   // Cancel
   buttons.push({
-    text: "Cancel",
+    text: t("common.cancel"),
     role: "cancel",
     icon: closeOutline,
   });
 
   const actionSheet = await actionSheetController.create({
-    header: `Manage ${player.username}`,
+    header: t("match_details.manage_player", { name: player.username }),
     buttons: buttons,
   });
   await actionSheet.present();
@@ -955,7 +955,7 @@ const saveFormation = async (positions) => {
     // Socket will update
   } catch (error) {
     console.error("Error saving formation:", error);
-    presentToast("Failed to save formation");
+    presentToast(t("match_details.formation_error"));
   }
 };
 
@@ -965,7 +965,7 @@ const approveRequest = async (userId) => {
     await fetchMatch();
   } catch (error) {
     console.error("Error approving request:", error);
-    presentToast("Failed to approve request");
+    presentToast(t("match_details.approve_error"));
   }
 };
 
@@ -975,7 +975,7 @@ const rejectRequest = async (userId) => {
     await fetchMatch();
   } catch (error) {
     console.error("Error rejecting request:", error);
-    presentToast("Failed to reject request");
+    presentToast(t("match_details.reject_error"));
   }
 };
 
@@ -1007,7 +1007,7 @@ const toggleAdmin = async (participant) => {
     fetchMatch();
   } catch (error) {
     console.error("Error toggling admin:", error);
-    presentToast("Failed to update admin status: " + (error.response?.data?.error || error.message));
+    presentToast(t("match_details.admin_error") + ": " + (error.response?.data?.error || error.message));
   }
 };
 
@@ -1026,7 +1026,7 @@ const toggleCaptain = async (player) => {
     fetchMatch();
   } catch (error) {
     console.error("Error toggling captain:", error);
-    presentToast("Failed to update captain", "danger");
+    presentToast(t("match_details.captain_error"), "danger");
   }
 };
 

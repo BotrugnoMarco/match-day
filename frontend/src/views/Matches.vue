@@ -147,7 +147,7 @@ import {
 
 const store = useStore();
 const router = useRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const filter = ref("all");
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 
@@ -174,7 +174,7 @@ const getSportIcon = (type) => {
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+  return date.toLocaleDateString(locale.value, { weekday: "short", month: "short", day: "numeric" });
 };
 
 const formatTime = (dateString) => {

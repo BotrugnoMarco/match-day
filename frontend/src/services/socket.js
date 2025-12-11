@@ -6,7 +6,8 @@ const URL = import.meta.env.PROD ? undefined : 'http://localhost:3000';
 
 const socket = io(URL, {
     autoConnect: true,
-    reconnection: true
+    reconnection: true,
+    transports: ['websocket', 'polling'] // Forza prima websocket, poi polling
 });
 
 export default socket;

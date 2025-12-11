@@ -152,6 +152,11 @@ const startDrag = (event, player) => {
   const moveHandler = (e) => {
     if (!draggedPlayerId.value) return;
 
+    // Prevent scrolling on touch devices
+    if (e.type.includes("touch")) {
+      e.preventDefault();
+    }
+
     const clientX = e.type.includes("touch") ? e.touches[0].clientX : e.clientX;
     const clientY = e.type.includes("touch") ? e.touches[0].clientY : e.clientY;
 

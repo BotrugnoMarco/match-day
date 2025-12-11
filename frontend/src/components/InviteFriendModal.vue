@@ -115,7 +115,6 @@ const invite = async (friend) => {
     await toast.present();
   }
 };
-};
 
 const close = () => {
   emit("close");

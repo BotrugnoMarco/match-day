@@ -54,52 +54,10 @@ sudo chown -R $USER:$USER /home/botadmin/botrugno-landing
 # Assicura che Nginx possa leggere i file
 sudo chmod -R 755 /home/botadmin/botrugno-landing
 
-# 4. Aggiorna Nginx
+# 4. Riavvio Nginx
 echo "------------------------------------------"
-echo "🌐 Aggiornamento Nginx..."
-
-# Percorso assoluto della cartella corrente
-CURRENT_DIR=$(pwd)
-echo "   -> Cartella progetto rilevata: $CURRENT_DIR"
-
-# Aggiorna il percorso in nginx.conf prima di copiarlo
-# Sostituisce qualsiasi percorso in 'root .../frontend/dist' con quello corrente
-sed -i "s|root .*/frontend/dist;|root $CURRENT_DIR/frontend/dist;|g" nginx.conf
-
-# Copia la configurazione (richiede sudo)
-echo "   -> Configurazione Nginx..."
-
-# Verifica se Nginx è installato
-if ! command -v nginx &> /dev/null; then
-    echo "❌ Nginx non è installato. Installalo con: sudo apt install nginx"
-    exit 1
-fi
-
-# Copia il file di configurazione
-sudo cp nginx.conf /etc/nginx/sites-available/match-day
-
-# Crea il symlink se non esiste
-if [ ! -f "/etc/nginx/sites-enabled/match-day" ]; then
-    echo "   -> Attivazione sito (creazione symlink)..."
-    sudo ln -s /etc/nginx/sites-available/match-day /etc/nginx/sites-enabled/
-    # Rimuovi il default se esiste per evitare conflitti
-    if [ -f "/etc/nginx/sites-enabled/default" ]; then
-        echo "   -> Rimozione sito default..."
-        sudo rm /etc/nginx/sites-enabled/default
-    fi
-fi
-
-echo "   -> Verifica configurazione..."
-sudo nginx -t
-
-echo "   -> Riavvio Nginx..."
+echo "🔄 Riavvio Nginx..."
 sudo systemctl restart nginx
-
-# Verifica Firewall (UFW)
-if command -v ufw &> /dev/null; then
-    echo "   -> Verifica Firewall..."
-    sudo ufw allow 'Nginx Full'
-fi
 
 echo "=========================================="
 echo "✅ Deploy completato con successo!"

@@ -14,3 +14,12 @@ npm-debug.log*
 .DS_Store
 .vscode/
 .history/
+
+TODO.md
+DOMAIN_SETUP_OVH.md
+DOCUMENTATION.md
+DEPLOY.md
+nginx.conf
+
+backend/.env
+frontend/.env

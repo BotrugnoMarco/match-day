@@ -2,6 +2,8 @@ require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
 const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -15,6 +17,10 @@ const http = require('http');
 const { Server } = require('socket.io');
 
 const app = express();
+
+// Trust proxy (necessario per Nginx e rate limiting corretto)
+app.set('trust proxy', 1);
+
 const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
@@ -27,6 +33,18 @@ const io = new Server(server, {
 app.set('io', io);
 
 const PORT = process.env.PORT || 3000;
+
+// Security Middleware
+app.use(helmet()); // Set security headers
+
+// Rate limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // Limit each IP to 100 requests per windowMs
+    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use(limiter);
 
 // Middleware
 app.use(cors());

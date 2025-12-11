@@ -267,7 +267,8 @@
     "captain_error": "Impossibile aggiornare il capitano",
     "fetch_error": "Errore nel recupero dei dettagli della partita",
     "full_waitlist": "La partita è piena. Sei stato aggiunto alla lista d'attesa.",
-    "request_sent": "Richiesta inviata all'organizzatore."
+    "request_sent": "Richiesta inviata all'organizzatore.",
+    "skill": "Abilità"
   },
   "notifications": {
     "title": "Notifiche",
@@ -302,6 +303,8 @@
     "submit_btn": "Invia Voto",
     "success": "Voto inviato con successo",
     "failed": "Impossibile inviare il voto",
+    "voted": "Votato",
+    "vote_action": "Vota",
     "tags": {
         "MVP": "MVP",
         "Fair Play": "Fair Play",

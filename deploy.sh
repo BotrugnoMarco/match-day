@@ -58,17 +58,38 @@ echo "   -> Cartella progetto rilevata: $CURRENT_DIR"
 sed -i "s|root .*/frontend/dist;|root $CURRENT_DIR/frontend/dist;|g" nginx.conf
 
 # Copia la configurazione (richiede sudo)
-if [ -f "/etc/nginx/sites-available/match-day" ]; then
-    echo "   -> Aggiornamento file di configurazione..."
-    sudo cp nginx.conf /etc/nginx/sites-available/match-day
-    
-    echo "   -> Verifica configurazione..."
-    sudo nginx -t
-    
-    echo "   -> Riavvio Nginx..."
-    sudo systemctl restart nginx
-else
-    echo "⚠️  File /etc/nginx/sites-available/match-day non trovato. Configurazione Nginx saltata."
+echo "   -> Configurazione Nginx..."
+
+# Verifica se Nginx è installato
+if ! command -v nginx &> /dev/null; then
+    echo "❌ Nginx non è installato. Installalo con: sudo apt install nginx"
+    exit 1
+fi
+
+# Copia il file di configurazione
+sudo cp nginx.conf /etc/nginx/sites-available/match-day
+
+# Crea il symlink se non esiste
+if [ ! -f "/etc/nginx/sites-enabled/match-day" ]; then
+    echo "   -> Attivazione sito (creazione symlink)..."
+    sudo ln -s /etc/nginx/sites-available/match-day /etc/nginx/sites-enabled/
+    # Rimuovi il default se esiste per evitare conflitti
+    if [ -f "/etc/nginx/sites-enabled/default" ]; then
+        echo "   -> Rimozione sito default..."
+        sudo rm /etc/nginx/sites-enabled/default
+    fi
+fi
+
+echo "   -> Verifica configurazione..."
+sudo nginx -t
+
+echo "   -> Riavvio Nginx..."
+sudo systemctl restart nginx
+
+# Verifica Firewall (UFW)
+if command -v ufw &> /dev/null; then
+    echo "   -> Verifica Firewall..."
+    sudo ufw allow 'Nginx Full'
 fi
 
 echo "=========================================="

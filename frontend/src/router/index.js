@@ -11,6 +11,8 @@ import Friends from '../views/Friends.vue';
 import Notifications from '../views/Notifications.vue';
 import Support from '../views/Support.vue';
 import AdminSupport from '../views/AdminSupport.vue';
+import PrivacyPolicy from '../views/PrivacyPolicy.vue';
+import Terms from '../views/Terms.vue';
 
 const routes = [
     {
@@ -85,6 +87,16 @@ const routes = [
         name: 'AdminSupport',
         component: AdminSupport,
         meta: { requiresAuth: true }
+    },
+    {
+        path: '/privacy',
+        name: 'PrivacyPolicy',
+        component: PrivacyPolicy
+    },
+    {
+        path: '/terms',
+        name: 'Terms',
+        component: Terms
     }
 ];
 

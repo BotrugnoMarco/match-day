@@ -3,10 +3,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
-    const { username, password, email, birth_date, gender } = req.body;
+    const { username, password, email, birth_date, gender, terms_accepted } = req.body;
 
     if (!username || !password || !email || !birth_date || !gender) {
         return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (!terms_accepted) {
+        return res.status(400).json({ error: 'You must accept the Terms of Service and Privacy Policy' });
     }
 
     try {
@@ -22,7 +26,7 @@ exports.register = async (req, res) => {
 
         // Insert user
         const [result] = await db.query(
-            'INSERT INTO users (username, password_hash, email, birth_date, gender) VALUES (?, ?, ?, ?, ?)',
+            'INSERT INTO users (username, password_hash, email, birth_date, gender, terms_accepted_at) VALUES (?, ?, ?, ?, ?, NOW())',
             [username, passwordHash, email, birth_date, gender]
         );
 

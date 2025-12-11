@@ -62,6 +62,17 @@ exports.updateProfile = async (req, res) => {
     }
 };
 
+exports.deleteAccount = async (req, res) => {
+    const userId = req.user.id;
+    try {
+        await db.query('DELETE FROM users WHERE id = ?', [userId]);
+        res.json({ message: 'Account deleted successfully' });
+    } catch (error) {
+        console.error('Delete account error:', error);
+        res.status(500).json({ error: 'Server error deleting account' });
+    }
+};
+
 exports.getUserStats = async (req, res) => {
     const userId = req.user.id;
     try {

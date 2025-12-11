@@ -50,6 +50,7 @@
 
         <div class="ion-padding-top">
           <ion-button expand="block" @click="saveProfile">Save Changes</ion-button>
+          <ion-button expand="block" color="danger" fill="outline" class="ion-margin-top" @click="confirmDeleteAccount"> Delete Account </ion-button>
         </div>
       </ion-content>
     </ion-modal>
@@ -492,6 +493,41 @@ const handleFileChange = async (event) => {
 const logout = () => {
   store.dispatch("logout");
   router.push("/home");
+};
+
+import { alertController } from "@ionic/vue";
+
+const confirmDeleteAccount = async () => {
+  const alert = await alertController.create({
+    header: "Delete Account",
+    message: "Are you sure you want to delete your account? This action cannot be undone.",
+    buttons: [
+      {
+        text: "Cancel",
+        role: "cancel",
+      },
+      {
+        text: "Delete",
+        role: "destructive",
+        handler: async () => {
+          await deleteAccount();
+        },
+      },
+    ],
+  });
+  await alert.present();
+};
+
+const deleteAccount = async () => {
+  try {
+    await api.delete("/users/profile");
+    store.dispatch("logout");
+    router.push("/login");
+    presentToast("Account deleted successfully", "success");
+  } catch (error) {
+    console.error("Error deleting account:", error);
+    presentToast("Failed to delete account", "danger");
+  }
 };
 
 const capitalize = (s) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : "");

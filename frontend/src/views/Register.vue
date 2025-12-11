@@ -41,9 +41,17 @@
                   <ion-select-option value="Other">Other</ion-select-option>
                 </ion-select>
               </ion-item>
+
+              <ion-item lines="none" class="terms-item">
+                <ion-checkbox v-model="termsAccepted" slot="start"></ion-checkbox>
+                <ion-label class="ion-text-wrap">
+                  I agree to the <span class="link" @click.stop="router.push('/terms')">Terms</span> and
+                  <span class="link" @click.stop="router.push('/privacy')">Privacy Policy</span>
+                </ion-label>
+              </ion-item>
             </div>
 
-            <ion-button expand="block" type="submit" class="auth-btn" shape="round"> REGISTER </ion-button>
+            <ion-button expand="block" type="submit" class="auth-btn" shape="round" :disabled="!termsAccepted"> REGISTER </ion-button>
           </form>
 
           <div class="auth-footer">
@@ -59,7 +67,7 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "../services/api";
-import { IonPage, IonContent, IonItem, IonInput, IonButton, IonIcon, IonSelect, IonSelectOption } from "@ionic/vue";
+import { IonPage, IonContent, IonItem, IonInput, IonButton, IonIcon, IonSelect, IonSelectOption, IonCheckbox, IonLabel } from "@ionic/vue";
 import { personAddOutline, personOutline, mailOutline, lockClosedOutline, calendarOutline, maleFemaleOutline } from "ionicons/icons";
 
 const username = ref("");
@@ -67,6 +75,7 @@ const password = ref("");
 const email = ref("");
 const birthDate = ref("");
 const gender = ref("");
+const termsAccepted = ref(false);
 const router = useRouter();
 
 const maxDate = computed(() => {
@@ -76,6 +85,11 @@ const maxDate = computed(() => {
 const handleRegister = async () => {
   if (!username.value || !password.value || !email.value || !birthDate.value || !gender.value) {
     alert("All fields are required.");
+    return;
+  }
+
+  if (!termsAccepted.value) {
+    alert("You must accept the Terms of Service and Privacy Policy.");
     return;
   }
 
@@ -91,6 +105,7 @@ const handleRegister = async () => {
       password: password.value,
       birth_date: birthDate.value,
       gender: gender.value,
+      terms_accepted: true,
     });
     alert("Registration successful! Please login.");
     router.push("/login");
@@ -169,6 +184,18 @@ const handleRegister = async () => {
   --border-radius: var(--rounded-md);
   --padding-start: var(--space-4);
   border-radius: var(--rounded-md);
+}
+
+.terms-item {
+  --background: transparent;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.link {
+  color: var(--ion-color-primary);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .input-icon {

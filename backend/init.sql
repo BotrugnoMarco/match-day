@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
     status ENUM('available', 'injured', 'unavailable') DEFAULT 'available',
     skill_rating DECIMAL(3, 1) DEFAULT 6.0,
     preferred_number INT DEFAULT NULL,
+    terms_accepted_at DATETIME DEFAULT NULL,
     -- Deprecato ma mantenuto per compatibilità
     role VARCHAR(20) DEFAULT 'player' -- 'admin' or 'player'
 );

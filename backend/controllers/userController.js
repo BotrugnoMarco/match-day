@@ -51,11 +51,40 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
-    const { preferred_number } = req.body;
+    const { username, email, birth_date, gender, status, preferred_number } = req.body;
 
     try {
-        await db.query('UPDATE users SET preferred_number = ? WHERE id = ?', [preferred_number, userId]);
-        res.json({ message: 'Profile updated successfully', preferred_number });
+        // Check if username or email already exists (if changed)
+        if (username || email) {
+            const [existing] = await db.query(
+                'SELECT id FROM users WHERE (username = ? OR email = ?) AND id != ?',
+                [username, email, userId]
+            );
+            if (existing.length > 0) {
+                return res.status(400).json({ error: 'Username or email already taken' });
+            }
+        }
+
+        // Build dynamic query
+        let fields = [];
+        let values = [];
+
+        if (username) { fields.push('username = ?'); values.push(username); }
+        if (email) { fields.push('email = ?'); values.push(email); }
+        if (birth_date) { fields.push('birth_date = ?'); values.push(birth_date); }
+        if (gender) { fields.push('gender = ?'); values.push(gender); }
+        if (status) { fields.push('status = ?'); values.push(status); }
+        if (preferred_number !== undefined) { fields.push('preferred_number = ?'); values.push(preferred_number); }
+
+        if (fields.length === 0) {
+            return res.json({ message: 'No changes to update' });
+        }
+
+        values.push(userId);
+
+        await db.query(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values);
+
+        res.json({ message: 'Profile updated successfully' });
     } catch (error) {
         console.error('Update profile error:', error);
         res.status(500).json({ error: 'Server error updating profile' });

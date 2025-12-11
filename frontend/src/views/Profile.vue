@@ -35,6 +35,33 @@
       </ion-header>
       <ion-content class="ion-padding">
         <ion-item>
+          <ion-label position="stacked">Username</ion-label>
+          <ion-input v-model="editForm.username" placeholder="Username"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <ion-input v-model="editForm.email" type="email" placeholder="Email"></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Birth Date</ion-label>
+          <ion-datetime-button datetime="birthdate"></ion-datetime-button>
+          <ion-modal :keep-contents-mounted="true">
+            <ion-datetime id="birthdate" v-model="editForm.birth_date" presentation="date" :prefer-wheel="true"></ion-datetime>
+          </ion-modal>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Gender</ion-label>
+          <ion-select v-model="editForm.gender" interface="popover">
+            <ion-select-option value="M">Male</ion-select-option>
+            <ion-select-option value="F">Female</ion-select-option>
+            <ion-select-option value="Other">Other</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
           <ion-label position="stacked">Status</ion-label>
           <ion-select v-model="editForm.status" interface="popover">
             <ion-select-option value="available">Available</ion-select-option>
@@ -263,6 +290,8 @@ import {
   IonModal,
   IonInput,
   IonMenuButton,
+  IonDatetime,
+  IonDatetimeButton,
   toastController,
 } from "@ionic/vue";
 import {
@@ -307,12 +336,20 @@ const friendshipId = ref(null);
 
 const isEditModalOpen = ref(false);
 const editForm = ref({
+  username: "",
+  email: "",
+  birth_date: "",
+  gender: "",
   status: "available",
   preferred_number: null,
 });
 
 const openEditModal = () => {
   editForm.value = {
+    username: user.value?.username || "",
+    email: user.value?.email || "",
+    birth_date: user.value?.birth_date ? new Date(user.value.birth_date).toISOString() : "",
+    gender: user.value?.gender || "",
     status: user.value?.status || "available",
     preferred_number: user.value?.preferred_number,
   };
@@ -325,30 +362,26 @@ const closeEditModal = () => {
 
 const saveProfile = async () => {
   try {
-    // Update status
-    if (editForm.value.status !== user.value.status) {
-      await store.dispatch("updateUserStatus", editForm.value.status);
-    }
+    const payload = {
+      username: editForm.value.username,
+      email: editForm.value.email,
+      birth_date: editForm.value.birth_date ? editForm.value.birth_date.split("T")[0] : null,
+      gender: editForm.value.gender,
+      status: editForm.value.status,
+      preferred_number: editForm.value.preferred_number ? parseInt(editForm.value.preferred_number) : null,
+    };
 
-    // Update number
-    let newNumber = editForm.value.preferred_number;
-    if (newNumber === "" || newNumber === null || newNumber === undefined) {
-      newNumber = null;
-    } else {
-      newNumber = parseInt(newNumber);
-    }
+    await api.put("/users/profile", payload);
 
-    if (newNumber !== user.value.preferred_number) {
-      await api.put("/users/profile", { preferred_number: newNumber });
-      const updatedUser = { ...currentUser.value, preferred_number: newNumber };
-      store.commit("SET_USER", updatedUser);
-    }
+    // Update local store
+    const updatedUser = { ...currentUser.value, ...payload };
+    store.commit("SET_USER", updatedUser);
 
-    presentToast("Profile updated successfully");
+    presentToast("Profile updated successfully", "success");
     closeEditModal();
   } catch (error) {
     console.error("Error updating profile:", error);
-    presentToast("Failed to update profile", "danger");
+    presentToast("Error updating profile: " + (error.response?.data?.error || error.message));
   }
 };
 

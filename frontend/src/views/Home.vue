@@ -1,5 +1,12 @@
 <template>
   <ion-page>
+    <ion-header class="ion-no-border">
+      <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
     <ion-content class="home-content" :fullscreen="true">
       <div class="home-banner">
         <div class="logo-wrapper">
@@ -51,7 +58,7 @@
 <script setup>
 import { computed } from "vue";
 import { useStore } from "vuex";
-import { IonPage, IonContent, IonButton, IonIcon, IonBadge } from "@ionic/vue";
+import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton } from "@ionic/vue";
 import { logInOutline, personAddOutline, calendarOutline, personCircleOutline } from "ionicons/icons";
 
 const store = useStore();

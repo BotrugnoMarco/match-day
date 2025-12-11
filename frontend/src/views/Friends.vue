@@ -3,7 +3,7 @@
     <ion-header class="ion-no-border">
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-back-button default-href="/profile"></ion-back-button>
+          <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>Friends</ion-title>
       </ion-toolbar>
@@ -107,6 +107,7 @@ import {
   IonContent,
   IonButtons,
   IonBackButton,
+  IonMenuButton,
   IonList,
   IonItem,
   IonLabel,

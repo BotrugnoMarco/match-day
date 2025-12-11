@@ -2,6 +2,9 @@
   <ion-page>
     <ion-header class="ion-no-border">
       <ion-toolbar color="primary">
+        <ion-buttons slot="start">
+          <ion-menu-button></ion-menu-button>
+        </ion-buttons>
         <ion-title>Matches</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="goToNotifications" class="notification-button">
@@ -123,6 +126,7 @@ import {
   IonLabel,
   IonAvatar,
   IonChip,
+  IonMenuButton,
   onIonViewWillEnter,
 } from "@ionic/vue";
 import {

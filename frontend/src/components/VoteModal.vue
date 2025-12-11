@@ -29,7 +29,7 @@
               :outline="selectedTag !== tag"
               @click="toggleTag(tag)"
             >
-              <ion-label>{{ tag }}</ion-label>
+              <ion-label>{{ t(`vote.tags.${tag}`) }}</ion-label>
             </ion-chip>
           </div>
         </div>

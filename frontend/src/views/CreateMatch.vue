@@ -109,81 +109,6 @@
             </div>
           </div>
 
-          <!-- Privacy -->
-          <div class="form-card">
-            <div class="form-header">
-              <ion-icon :icon="lockClosedOutline" class="header-icon"></ion-icon>
-              <span>{{ t("create_match.privacy") }}</span>
-            </div>
-            <div class="form-content">
-              <ion-item lines="none" class="custom-item toggle-item">
-                <ion-label>
-                  <h2>{{ t("create_match.private_match") }}</h2>
-                  <p>{{ t("create_match.private_match_desc") }}</p>
-                </ion-label>
-                <ion-toggle v-model="isPrivate" slot="end"></ion-toggle>
-              </ion-item>
-            </div>
-          </div>
-
-          <ion-button expand="block" type="submit" class="create-btn" :disabled="isCreating">
-            <span v-if="!isCreating">{{ t("create_match.create_btn") }}</span>
-            <span v-else>{{ t("create_match.creating") }}</span>
-          </ion-button>
-
-          <!-- Details -->
-          <div class="form-card">
-            <div class="form-header">
-              <ion-icon :icon="peopleOutline" class="header-icon"></ion-icon>
-              <span>Match Details</span>
-            </div>
-            <div class="form-content">
-              <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Max Players</ion-label>
-                <ion-input type="number" v-model="maxPlayers" placeholder="10"></ion-input>
-              </ion-item>
-
-              <div class="divider"></div>
-
-              <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">Duration (min)</ion-label>
-                <ion-select v-model="duration" interface="popover">
-                  <ion-select-option :value="60">60 min</ion-select-option>
-                  <ion-select-option :value="90">90 min</ion-select-option>
-                  <ion-select-option :value="120">120 min</ion-select-option>
-                </ion-select>
-              </ion-item>
-
-              <div class="divider"></div>
-
-              <ion-item lines="none" class="custom-item">
-                <ion-label position="stacked">{{ t("create_match.total_price") }}</ion-label>
-                <ion-input type="number" v-model="priceTotal" placeholder="0.00"></ion-input>
-              </ion-item>
-            </div>
-          </div>
-
-          <!-- Field Options -->
-          <div class="form-card">
-            <div class="form-header">
-              <ion-icon :icon="umbrella" class="header-icon"></ion-icon>
-              <span>{{ t("create_match.facilities") }}</span>
-            </div>
-            <div class="form-content">
-              <ion-item lines="none" class="custom-item toggle-item">
-                <ion-label>{{ t("create_match.covered_field") }}</ion-label>
-                <ion-toggle v-model="isCovered" slot="end"></ion-toggle>
-              </ion-item>
-
-              <div class="divider"></div>
-
-              <ion-item lines="none" class="custom-item toggle-item">
-                <ion-label>{{ t("create_match.showers_available") }}</ion-label>
-                <ion-toggle v-model="hasShowers" slot="end"></ion-toggle>
-              </ion-item>
-            </div>
-          </div>
-
           <!-- Private Match Options -->
           <div class="form-card">
             <div class="form-header">
@@ -199,8 +124,8 @@
               <div v-if="isPrivate">
                 <div class="divider"></div>
                 <ion-item lines="none" class="custom-item animate-item">
-                  <ion-label position="stacked">Access Code</ion-label>
-                  <ion-input v-model="accessCode" placeholder="Secret code"></ion-input>
+                  <ion-label position="stacked">{{ t("create_match.access_code") }}</ion-label>
+                  <ion-input v-model="accessCode" :placeholder="t('create_match.access_code_placeholder')"></ion-input>
                 </ion-item>
               </div>
             </div>

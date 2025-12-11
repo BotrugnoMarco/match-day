@@ -104,6 +104,8 @@
     "privacy": "Privacy",
     "private_match": "Partita Privata",
     "private_match_desc": "Solo gli amici invitati possono partecipare",
+    "access_code": "Codice di Accesso",
+    "access_code_placeholder": "Codice segreto",
     "create_btn": "Crea Partita",
     "creating": "Creazione...",
     "success": "Partita creata con successo",
@@ -116,7 +118,29 @@
     "price": "Prezzo",
     "per_person": "/ persona",
     "per_person_est": "/ persona (stima)",
-    "organizer": "Organizzatore"
+    "organizer": "Organizzatore",
+    "avg_age": "Età Media: {age}",
+    "post_match": "Terzo Tempo",
+    "people_staying": "persone rimangono",
+    "im_in": "Ci sono!",
+    "join": "Partecipa",
+    "join_waitlist": "Entra in Lista d'Attesa",
+    "join_match": "Partecipa alla Partita",
+    "leave_match": "Lascia Partita",
+    "leave_waitlist": "Lascia Lista d'Attesa",
+    "teams": "Squadre",
+    "voting": "Votazione",
+    "delete_match": "Elimina Partita",
+    "finish_match": "Termina Partita",
+    "pending_requests": "Richieste in Sospeso",
+    "wants_to_join": "Vuole partecipare",
+    "waitlist": "Lista d'Attesa",
+    "waiting": "In attesa...",
+    "participants": "Partecipanti",
+    "team_a": "SQUADRA A",
+    "team_b": "SQUADRA B",
+    "voted": "Votato",
+    "vote": "Vota"
   },
   "notifications": {
     "title": "Notifiche",
@@ -139,7 +163,19 @@
     "select_tag": "Seleziona un Tag (Opzionale)",
     "submit_btn": "Invia Voto",
     "success": "Voto inviato con successo",
-    "failed": "Impossibile inviare il voto"
+    "failed": "Impossibile inviare il voto",
+    "tags": {
+        "MVP": "MVP",
+        "Fair Play": "Fair Play",
+        "Top Scorer": "Capocannoniere",
+        "Best Defender": "Miglior Difensore",
+        "Playmaker": "Regista",
+        "Goalkeeper": "Portiere",
+        "Team Spirit": "Spirito di Squadra",
+        "Hustle": "Grinta",
+        "Clutch": "Decisivo",
+        "Leader": "Leader"
+    }
   },
   "formation": {
     "save": "Salva Formazione",
@@ -161,5 +197,19 @@
     "remove_error": "Impossibile rimuovere l'amico",
     "accept_error": "Impossibile accettare la richiesta",
     "reject_error": "Impossibile rifiutare la richiesta"
+  },
+  "sports": {
+    "soccer": "Calcio",
+    "basketball": "Basket",
+    "tennis": "Tennis",
+    "padel": "Padel",
+    "volleyball": "Pallavolo"
+  },
+  "status": {
+    "open": "Aperta",
+    "full": "Completa",
+    "finished": "Terminata",
+    "cancelled": "Annullata",
+    "voting": "Votazione"
   }
 }

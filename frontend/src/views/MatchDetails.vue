@@ -113,15 +113,15 @@
           <div class="features-row" v-if="match.is_covered || match.has_showers || averageAge">
             <div class="feature-item" v-if="match.is_covered">
               <ion-icon :icon="umbrella"></ion-icon>
-              <span>Covered</span>
+              <span>{{ t("create_match.covered_field") }}</span>
             </div>
             <div class="feature-item" v-if="match.has_showers">
               <ion-icon :icon="water"></ion-icon>
-              <span>Showers</span>
+              <span>{{ t("create_match.showers_available") }}</span>
             </div>
             <div class="feature-item" v-if="averageAge">
               <ion-icon :icon="peopleOutline"></ion-icon>
-              <span>Avg Age: {{ averageAge }}</span>
+              <span>{{ t("match_details.avg_age", { age: averageAge }) }}</span>
             </div>
           </div>
         </div>
@@ -133,8 +133,8 @@
               <ion-icon :icon="beerOutline"></ion-icon>
             </div>
             <div class="pm-info">
-              <h3>Post Match</h3>
-              <p>{{ postMatchCount }} people staying</p>
+              <h3>{{ t("match_details.post_match") }}</h3>
+              <p>{{ postMatchCount }} {{ t("match_details.people_staying") }}</p>
             </div>
           </div>
           <ion-button
@@ -145,7 +145,7 @@
             @click="togglePostMatch"
             shape="round"
           >
-            {{ myPostMatchStatus ? "I'm In!" : "Join" }}
+            {{ myPostMatchStatus ? t("match_details.im_in") : t("match_details.join") }}
           </ion-button>
         </div>
 
@@ -154,19 +154,19 @@
           <div v-if="match.status === 'open' && !isParticipant">
             <ion-button expand="block" @click="joinMatch" size="large" :color="isFull ? 'warning' : 'primary'" class="main-action-btn">
               <ion-icon :icon="isFull ? timeOutline : personAddOutline" slot="start"></ion-icon>
-              {{ isFull ? "Join Waitlist" : "Join Match" }}
+              {{ isFull ? t("match_details.join_waitlist") : t("match_details.join_match") }}
             </ion-button>
           </div>
           <div v-if="match.status === 'open' && isConfirmed">
             <ion-button expand="block" color="danger" fill="outline" @click="leaveMatch" class="main-action-btn">
               <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-              Leave Match
+              {{ t("match_details.leave_match") }}
             </ion-button>
           </div>
           <div v-if="match.status === 'open' && isWaitlisted">
             <ion-button expand="block" color="danger" fill="outline" @click="leaveMatch" class="main-action-btn">
               <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-              Leave Waitlist
+              {{ t("match_details.leave_waitlist") }}
             </ion-button>
           </div>
 
@@ -174,25 +174,25 @@
           <div v-if="isAdmin && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
             <ion-button expand="block" color="secondary" fill="solid" @click="generateTeams" class="admin-btn">
               <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-              Teams
+              {{ t("match_details.teams") }}
             </ion-button>
             <ion-button expand="block" color="warning" fill="solid" @click="changeStatus('voting')" class="admin-btn">
               <ion-icon :icon="starOutline" slot="start"></ion-icon>
-              Voting
+              {{ t("match_details.voting") }}
             </ion-button>
             <ion-button expand="block" color="tertiary" fill="solid" @click="editMatch" class="admin-btn">
               <ion-icon :icon="createOutline" slot="start"></ion-icon>
-              Edit
+              {{ t("common.edit") }}
             </ion-button>
             <ion-button v-if="isCreator" expand="block" color="danger" fill="clear" @click="deleteMatch" class="admin-btn full-width">
               <ion-icon :icon="trashOutline" slot="start"></ion-icon>
-              Delete Match
+              {{ t("match_details.delete_match") }}
             </ion-button>
           </div>
           <div v-if="isAdmin && match.status === 'voting'">
             <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="main-action-btn">
               <ion-icon :icon="flagOutline" slot="start"></ion-icon>
-              Finish Match
+              {{ t("match_details.finish_match") }}
             </ion-button>
           </div>
         </div>
@@ -200,7 +200,7 @@
         <!-- Pending Requests -->
         <div v-if="isAdmin && pendingParticipants.length > 0" class="list-section">
           <div class="section-title">
-            <h3>Pending Requests</h3>
+            <h3>{{ t("match_details.pending_requests") }}</h3>
             <ion-badge color="tertiary">{{ pendingParticipants.length }}</ion-badge>
           </div>
           <div class="participants-card">
@@ -211,7 +211,7 @@
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ p.username }}</h2>
-                  <p>Wants to join</p>
+                  <p>{{ t("match_details.wants_to_join") }}</p>
                 </ion-label>
                 <div class="action-buttons-small">
                   <ion-button color="success" fill="clear" @click="approveRequest(p.user_id)">
@@ -229,7 +229,7 @@
         <!-- Waitlist -->
         <div v-if="waitlistParticipants.length > 0" class="list-section">
           <div class="section-title">
-            <h3>Waitlist</h3>
+            <h3>{{ t("match_details.waitlist") }}</h3>
             <ion-badge color="warning">{{ waitlistParticipants.length }}</ion-badge>
           </div>
           <div class="participants-card">
@@ -240,7 +240,7 @@
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ p.username }}</h2>
-                  <p>Waiting...</p>
+                  <p>{{ t("match_details.waiting") }}</p>
                 </ion-label>
               </ion-item>
             </ion-list>
@@ -250,14 +250,14 @@
         <!-- Participants / Teams -->
         <div class="list-section">
           <div class="section-title">
-            <h3>Participants</h3>
+            <h3>{{ t("match_details.participants") }}</h3>
             <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
           </div>
 
           <div v-if="hasTeams" class="teams-container">
             <!-- Team A -->
             <div class="team-block">
-              <div class="team-header-label team-a">TEAM A</div>
+              <div class="team-header-label team-a">{{ t("match_details.team_a") }}</div>
               <div class="participants-card">
                 <ion-list lines="none">
                   <ion-item v-for="p in teamAParticipants" :key="p.id">
@@ -266,7 +266,7 @@
                     </ion-avatar>
                     <ion-label @click="goToProfile(p.user_id)">
                       <h2>{{ p.username }}</h2>
-                      <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+                      <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
@@ -280,7 +280,7 @@
                         :disabled="myVotes.includes(p.user_id)"
                         @click.stop="openVoteModal(p)"
                       >
-                        {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                        {{ myVotes.includes(p.user_id) ? t("vote.voted") : t("vote.vote_action") }}
                       </ion-button>
                       <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
                         <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
@@ -293,7 +293,7 @@
 
             <!-- Team B -->
             <div class="team-block">
-              <div class="team-header-label team-b">TEAM B</div>
+              <div class="team-header-label team-b">{{ t("match_details.team_b") }}</div>
               <div class="participants-card">
                 <ion-list lines="none">
                   <ion-item v-for="p in teamBParticipants" :key="p.id">
@@ -302,7 +302,7 @@
                     </ion-avatar>
                     <ion-label @click="goToProfile(p.user_id)">
                       <h2>{{ p.username }}</h2>
-                      <p>Skill: {{ p.skill_rating || "N/A" }}</p>
+                      <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
@@ -316,7 +316,7 @@
                         :disabled="myVotes.includes(p.user_id)"
                         @click.stop="openVoteModal(p)"
                       >
-                        {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                        {{ myVotes.includes(p.user_id) ? t("vote.voted") : t("vote.vote_action") }}
                       </ion-button>
                       <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
                         <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
@@ -352,7 +352,7 @@
                     :disabled="myVotes.includes(p.user_id)"
                     @click.stop="openVoteModal(p)"
                   >
-                    {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                    {{ myVotes.includes(p.user_id) ? t("vote.voted") : t("vote.vote_action") }}
                   </ion-button>
                   <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
                     <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
@@ -364,7 +364,7 @@
 
           <div v-if="hasTeams" class="field-container ion-margin-top">
             <div class="section-title">
-              <h3>Formation</h3>
+              <h3>{{ t("match_details.formation") }}</h3>
             </div>
             <FormationField
               :players="[...teamAParticipants, ...teamBParticipants]"
@@ -378,14 +378,14 @@
         <!-- Results Section -->
         <div v-if="match.status === 'finished'" class="results-section">
           <div class="section-title">
-            <h3>Match Results</h3>
+            <h3>{{ t("match_details.match_results") }}</h3>
             <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
           </div>
 
           <div class="winner-card">
-            <div class="winner-label">WINNER</div>
-            <h1 class="winner-team" v-if="match.winner !== 'Draw'">TEAM {{ match.winner }}</h1>
-            <h1 class="winner-team draw" v-else>DRAW</h1>
+            <div class="winner-label">{{ t("match_details.winner") }}</div>
+            <h1 class="winner-team" v-if="match.winner !== 'Draw'">{{ t("match_details.team") }} {{ match.winner }}</h1>
+            <h1 class="winner-team draw" v-else>{{ t("match_details.draw") }}</h1>
           </div>
 
           <div class="participants-card" v-if="results.length > 0">

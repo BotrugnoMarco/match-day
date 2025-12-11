@@ -43,7 +43,7 @@
           <div class="match-info">
             <div class="sport-badge" :class="nextMatch.sport_type">
               <ion-icon :icon="getSportIcon(nextMatch.sport_type)"></ion-icon>
-              {{ nextMatch.sport_type }}
+              {{ t("sports." + nextMatch.sport_type) }}
             </div>
             <div class="location">
               <ion-icon :icon="locationOutline"></ion-icon>

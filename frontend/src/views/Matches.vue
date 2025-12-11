@@ -41,14 +41,14 @@
                   <ion-icon :icon="getSportIcon(match.sport_type)"></ion-icon>
                 </div>
                 <div class="sport-details">
-                  <span class="sport-name">{{ match.sport_type }}</span>
+                  <span class="sport-name">{{ t("sports." + match.sport_type) }}</span>
                   <div class="privacy-indicator">
                     <ion-icon :icon="match.is_private ? lockClosedOutline : globeOutline" class="privacy-icon"></ion-icon>
                     <span class="privacy-text">{{ match.is_private ? t("matches.private") : t("matches.public") }}</span>
                   </div>
                 </div>
               </div>
-              <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ match.status }}</ion-badge>
+              <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ t("status." + match.status) }}</ion-badge>
             </div>
 
             <div class="match-card-body">

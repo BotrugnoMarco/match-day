@@ -45,7 +45,7 @@
                 <ion-datetime-button datetime="datetime"></ion-datetime-button>
               </ion-item>
               <ion-modal :keep-contents-mounted="true">
-                <ion-datetime id="datetime" v-model="dateTime" presentation="date-time"></ion-datetime>
+                <ion-datetime id="datetime" v-model="dateTime" presentation="date-time" :prefer-wheel="true"></ion-datetime>
               </ion-modal>
 
               <div class="divider"></div>

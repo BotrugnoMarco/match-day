@@ -7,58 +7,74 @@ export const getWeatherForLocation = async (locationName, date) => {
     try {
         console.log('WeatherService: Searching for location:', locationName);
 
-        // 1. Geocoding: Get Lat/Lon from location name
-        let result = null;
+        let latitude, longitude, name, country;
 
-        // First try: Search for the full location string
-        try {
-            const geoResponse = await axios.get(GEOCODING_API, {
-                params: {
-                    name: locationName,
-                    count: 5,
-                    language: 'it',
-                    format: 'json'
-                }
-            });
-            if (geoResponse.data.results && geoResponse.data.results.length > 0) {
-                result = geoResponse.data.results[0];
-            }
-        } catch (e) {
-            console.warn('WeatherService: Error in primary geocoding search', e);
-        }
+        // Check if locationName is actually coordinates (e.g. "41.9028, 12.4964")
+        const coordMatch = locationName.match(/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/);
 
-        // Second try: If not found, try splitting by comma and searching for parts (e.g. City)
-        if (!result && locationName.includes(',')) {
-            console.log('WeatherService: Exact location not found, trying parts...');
-            const parts = locationName.split(',').map(p => p.trim());
+        if (coordMatch) {
+            console.log('WeatherService: Input detected as coordinates');
+            latitude = parseFloat(coordMatch[1]);
+            longitude = parseFloat(coordMatch[3]);
+            name = "Posizione selezionata"; // Custom name for coords
+            country = "";
+        } else {
+            // 1. Geocoding: Get Lat/Lon from location name
+            let result = null;
 
-            // Try searching for each part, starting from the end (usually City/Country)
-            for (let i = parts.length - 1; i >= 0; i--) {
-                const part = parts[i];
-                if (part.length < 3) continue; // Skip short abbreviations like "IT" or numbers
-
-                console.log('WeatherService: Searching for part:', part);
-                try {
-                    const partResponse = await axios.get(GEOCODING_API, {
-                        params: { name: part, count: 1, language: 'it', format: 'json' }
-                    });
-                    if (partResponse.data.results && partResponse.data.results.length > 0) {
-                        result = partResponse.data.results[0];
-                        console.log('WeatherService: Found location via part:', result.name);
-                        break;
+            // First try: Search for the full location string
+            try {
+                const geoResponse = await axios.get(GEOCODING_API, {
+                    params: {
+                        name: locationName,
+                        count: 5,
+                        language: 'it',
+                        format: 'json'
                     }
-                } catch (e) {
-                    console.warn('WeatherService: Error searching for part:', part, e);
+                });
+                if (geoResponse.data.results && geoResponse.data.results.length > 0) {
+                    result = geoResponse.data.results[0];
+                }
+            } catch (e) {
+                console.warn('WeatherService: Error in primary geocoding search', e);
+            }
+
+            // Second try: If not found, try splitting by comma and searching for parts (e.g. City)
+            if (!result && locationName.includes(',')) {
+                console.log('WeatherService: Exact location not found, trying parts...');
+                const parts = locationName.split(',').map(p => p.trim());
+
+                // Try searching for each part, starting from the end (usually City/Country)
+                for (let i = parts.length - 1; i >= 0; i--) {
+                    const part = parts[i];
+                    if (part.length < 3) continue; // Skip short abbreviations like "IT" or numbers
+
+                    console.log('WeatherService: Searching for part:', part);
+                    try {
+                        const partResponse = await axios.get(GEOCODING_API, {
+                            params: { name: part, count: 1, language: 'it', format: 'json' }
+                        });
+                        if (partResponse.data.results && partResponse.data.results.length > 0) {
+                            result = partResponse.data.results[0];
+                            console.log('WeatherService: Found location via part:', result.name);
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn('WeatherService: Error searching for part:', part, e);
+                    }
                 }
             }
-        }
 
-        if (!result) {
-            console.warn('WeatherService: Location not found for:', locationName);
-            throw new Error('Location not found');
-        }
+            if (!result) {
+                console.warn('WeatherService: Location not found for:', locationName);
+                throw new Error('Location not found');
+            }
 
-        const { latitude, longitude, name, country } = result;
+            latitude = result.latitude;
+            longitude = result.longitude;
+            name = result.name;
+            country = result.country;
+        }
 
         // 2. Weather: Get forecast for specific date
         // Open-Meteo requires date in YYYY-MM-DD format

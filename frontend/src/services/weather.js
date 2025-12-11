@@ -8,7 +8,7 @@ export const getWeatherForLocation = async (locationName, date) => {
 
     try {
         const cleanLocation = locationName.trim();
-        console.log('WeatherService: Searching for location:', cleanLocation);
+        // console.log('WeatherService: Searching for location:', cleanLocation);
 
         let latitude, longitude, name, country;
 
@@ -17,7 +17,7 @@ export const getWeatherForLocation = async (locationName, date) => {
         const coordMatch = cleanLocation.match(/^(-?\d+(\.\d+)?)[,;\s]\s*(-?\d+(\.\d+)?)$/);
 
         if (coordMatch) {
-            console.log('WeatherService: Input detected as coordinates');
+            // console.log('WeatherService: Input detected as coordinates');
             latitude = parseFloat(coordMatch[1]);
             longitude = parseFloat(coordMatch[3]);
             name = "Posizione selezionata";
@@ -40,37 +40,37 @@ export const getWeatherForLocation = async (locationName, date) => {
                     result = geoResponse.data.results[0];
                 }
             } catch (e) {
-                console.warn('WeatherService: Error in primary geocoding search', e);
+                // console.warn('WeatherService: Error in primary geocoding search', e);
             }
 
             // Second try: If not found, try splitting by comma and searching for parts
             if (!result && cleanLocation.includes(',')) {
-                console.log('WeatherService: Exact location not found, trying parts (comma)...');
+                // console.log('WeatherService: Exact location not found, trying parts (comma)...');
                 const parts = cleanLocation.split(',').map(p => p.trim());
 
                 for (let i = parts.length - 1; i >= 0; i--) {
                     const part = parts[i];
                     if (part.length < 3) continue;
 
-                    console.log('WeatherService: Searching for part:', part);
+                    // console.log('WeatherService: Searching for part:', part);
                     try {
                         const partResponse = await axios.get(GEOCODING_API, {
                             params: { name: part, count: 1, language: 'it', format: 'json' }
                         });
                         if (partResponse.data.results && partResponse.data.results.length > 0) {
                             result = partResponse.data.results[0];
-                            console.log('WeatherService: Found location via part:', result.name);
+                            // console.log('WeatherService: Found location via part:', result.name);
                             break;
                         }
                     } catch (e) {
-                        console.warn('WeatherService: Error searching for part:', part, e);
+                        // console.warn('WeatherService: Error searching for part:', part, e);
                     }
                 }
             }
 
             // Third try: If still not found, try splitting by space (for addresses like "Via Roma Milano")
             if (!result && cleanLocation.includes(' ')) {
-                console.log('WeatherService: Exact location not found, trying parts (space)...');
+                // console.log('WeatherService: Exact location not found, trying parts (space)...');
                 const parts = cleanLocation.split(' ').map(p => p.trim());
 
                 // Only check the last 2 significant words (likely City or Region)
@@ -81,24 +81,24 @@ export const getWeatherForLocation = async (locationName, date) => {
                     if (checks >= 2) break; // Don't search the whole address word by word
 
                     checks++;
-                    console.log('WeatherService: Searching for word:', part);
+                    // console.log('WeatherService: Searching for word:', part);
                     try {
                         const partResponse = await axios.get(GEOCODING_API, {
                             params: { name: part, count: 1, language: 'it', format: 'json' }
                         });
                         if (partResponse.data.results && partResponse.data.results.length > 0) {
                             result = partResponse.data.results[0];
-                            console.log('WeatherService: Found location via word:', result.name);
+                            // console.log('WeatherService: Found location via word:', result.name);
                             break;
                         }
                     } catch (e) {
-                        console.warn('WeatherService: Error searching for word:', part, e);
+                        // console.warn('WeatherService: Error searching for word:', part, e);
                     }
                 }
             }
 
             if (!result) {
-                console.warn('WeatherService: Location not found for:', cleanLocation);
+                // console.warn('WeatherService: Location not found for:', cleanLocation);
                 // Return null instead of throwing to avoid cluttering console with errors for valid but unknown locations
                 return null;
             }

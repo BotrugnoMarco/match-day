@@ -141,19 +141,7 @@
     "login": "Accedi",
     "create_account": "Crea Account"
   },
-  "profile": {
-    "title": "Profilo",
-    "edit_profile": "Modifica Profilo",
-    "username": "Nome Utente",
-    "email": "Email",
-    "birth_date": "Data di Nascita",
-    "gender": "Genere",
-    "status": "Stato",
-    "jersey_number": "Numero Maglia Preferito",
-    "save_changes": "Salva Modifiche",
-    "export_data": "Esporta i miei dati",
-    "delete_account": "Elimina Account"
-  },
+
   "auth": {
     "welcome_back": "Bentornato!",
     "sign_in_continue": "Accedi per continuare",

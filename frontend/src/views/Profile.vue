@@ -943,7 +943,7 @@ const getSkillColor = (rating) => {
   background: rgba(var(--ion-color-success-rgb), 0.1);
   color: var(--ion-color-success);
 }
-.result-badge.loss {
+.result-badge.lost {
   background: rgba(var(--ion-color-danger-rgb), 0.1);
   color: var(--ion-color-danger);
 }

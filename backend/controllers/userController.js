@@ -260,7 +260,7 @@ exports.getMatchHistory = async (req, res) => {
                 } else if (match.winner === match.user_team) {
                     result = 'win';
                 } else {
-                    result = 'loss';
+                    result = 'lost';
                 }
             }
 
@@ -421,7 +421,7 @@ exports.getUserHistoryById = async (req, res) => {
                 } else if (match.winner === match.user_team) {
                     result = 'win';
                 } else {
-                    result = 'loss';
+                    result = 'lost';
                 }
             }
 

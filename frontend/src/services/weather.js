@@ -45,7 +45,7 @@ export const getWeatherForLocation = async (locationName, date) => {
 
             // Second try: If not found, try splitting by comma and searching for parts
             if (!result && cleanLocation.includes(',')) {
-                console.log('WeatherService: Exact location not found, trying parts...');
+                console.log('WeatherService: Exact location not found, trying parts (comma)...');
                 const parts = cleanLocation.split(',').map(p => p.trim());
 
                 for (let i = parts.length - 1; i >= 0; i--) {
@@ -64,6 +64,35 @@ export const getWeatherForLocation = async (locationName, date) => {
                         }
                     } catch (e) {
                         console.warn('WeatherService: Error searching for part:', part, e);
+                    }
+                }
+            }
+
+            // Third try: If still not found, try splitting by space (for addresses like "Via Roma Milano")
+            if (!result && cleanLocation.includes(' ')) {
+                console.log('WeatherService: Exact location not found, trying parts (space)...');
+                const parts = cleanLocation.split(' ').map(p => p.trim());
+
+                // Only check the last 2 significant words (likely City or Region)
+                let checks = 0;
+                for (let i = parts.length - 1; i >= 0; i--) {
+                    const part = parts[i];
+                    if (part.length < 3) continue; // Skip short words
+                    if (checks >= 2) break; // Don't search the whole address word by word
+
+                    checks++;
+                    console.log('WeatherService: Searching for word:', part);
+                    try {
+                        const partResponse = await axios.get(GEOCODING_API, {
+                            params: { name: part, count: 1, language: 'it', format: 'json' }
+                        });
+                        if (partResponse.data.results && partResponse.data.results.length > 0) {
+                            result = partResponse.data.results[0];
+                            console.log('WeatherService: Found location via word:', result.name);
+                            break;
+                        }
+                    } catch (e) {
+                        console.warn('WeatherService: Error searching for word:', part, e);
                     }
                 }
             }

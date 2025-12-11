@@ -45,7 +45,7 @@ export const requestNotificationPermission = async () => {
                 });
 
                 if (token) {
-                    console.log("FCM Token (Web):", token);
+                    // console.log("FCM Token (Web):", token);
                     await api.post('/notifications/token', { token, device_type: 'web' });
                 }
             }

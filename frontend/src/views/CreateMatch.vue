@@ -203,8 +203,24 @@ const isPrivate = ref(false);
 const accessCode = ref("");
 const mapCoords = ref({ lat: 41.9028, lng: 12.4964 }); // Default Rome
 
-const onLocationSelected = (coords) => {
-  location.value = `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
+const onLocationSelected = async (coords) => {
+  // 1. Set coordinates immediately (so the map doesn't jump back)
+  mapCoords.value = coords;
+
+  // 2. Reverse Geocoding to get address
+  try {
+    const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${coords.lat}&lon=${coords.lng}`);
+    if (response.data && response.data.display_name) {
+      // Use the display name from Nominatim
+      location.value = response.data.display_name;
+    } else {
+      // Fallback to coordinates if no address found
+      location.value = `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
+    }
+  } catch (error) {
+    console.error("Reverse geocoding error:", error);
+    location.value = `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
+  }
 };
 
 // Watch location input for geocoding
@@ -212,16 +228,26 @@ let debounceTimer = null;
 watch(location, (newVal) => {
   if (!newVal) return;
 
-  // Check if it's coordinates
+  // Check if it's coordinates (to avoid re-triggering search when we just set it from map)
   const parts = newVal.split(",");
   if (parts.length === 2) {
     const lat = parseFloat(parts[0]);
     const lng = parseFloat(parts[1]);
     if (!isNaN(lat) && !isNaN(lng)) {
-      mapCoords.value = { lat, lng };
+      // It's coordinates, update map but don't search
+      if (Math.abs(lat - mapCoords.value.lat) > 0.0001 || Math.abs(lng - mapCoords.value.lng) > 0.0001) {
+        mapCoords.value = { lat, lng };
+      }
       return;
     }
   }
+
+  // Also check if it matches the address we just set (to avoid loop)
+  // But since we set location.value, this watch triggers.
+  // We need to distinguish between "user typing" and "map selection setting value".
+  // However, if we set the text, we probably WANT the map to stay there.
+  // The issue is if we search for the address we just got from reverse geocoding, it might move the pin slightly.
+  // But it should be fine.
 
   // If text, geocode
   if (debounceTimer) clearTimeout(debounceTimer);

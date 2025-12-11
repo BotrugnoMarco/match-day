@@ -27,8 +27,8 @@ let DefaultIcon = L.icon({
 L.Marker.prototype.options.icon = DefaultIcon;
 
 const props = defineProps({
-  initialLat: { type: Number, default: 41.9028 }, // Default Rome
-  initialLng: { type: Number, default: 12.4964 },
+  lat: { type: Number, default: 41.9028 }, // Default Rome
+  lng: { type: Number, default: 12.4964 },
 });
 
 const emit = defineEmits(["location-selected"]);
@@ -52,7 +52,7 @@ onUnmounted(() => {
 const initMap = () => {
   if (map) return;
 
-  map = L.map("map").setView([props.initialLat, props.initialLng], 13);
+  map = L.map("map").setView([props.lat, props.lng], 13);
 
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -60,7 +60,7 @@ const initMap = () => {
 
   // Add initial marker if we have valid coordinates different from default or if explicitly requested
   // For now, just put marker at center
-  marker = L.marker([props.initialLat, props.initialLng], { draggable: true }).addTo(map);
+  marker = L.marker([props.lat, props.lng], { draggable: true }).addTo(map);
 
   marker.on("dragend", (event) => {
     const position = marker.getLatLng();
@@ -83,7 +83,7 @@ const initMap = () => {
 
 // Watch for prop changes to update map view
 watch(
-  () => [props.initialLat, props.initialLng],
+  () => [props.lat, props.lng],
   ([newLat, newLng]) => {
     if (map && newLat && newLng) {
       map.setView([newLat, newLng], 13);

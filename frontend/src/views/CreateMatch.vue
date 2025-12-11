@@ -56,7 +56,7 @@
               </ion-item>
 
               <div class="map-preview-container">
-                <LocationPicker @location-selected="onLocationSelected" />
+                <LocationPicker :lat="mapCoords.lat" :lng="mapCoords.lng" @location-selected="onLocationSelected" />
               </div>
             </div>
           </div>
@@ -138,10 +138,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useRouter } from "vue-router";
 import api from "../services/api";
 import LocationPicker from "../components/LocationPicker.vue";
+import axios from "axios";
 import {
   IonPage,
   IonHeader,
@@ -188,10 +189,42 @@ const isCovered = ref(false);
 const hasShowers = ref(false);
 const isPrivate = ref(false);
 const accessCode = ref("");
+const mapCoords = ref({ lat: 41.9028, lng: 12.4964 }); // Default Rome
 
 const onLocationSelected = (coords) => {
   location.value = `${coords.lat.toFixed(6)}, ${coords.lng.toFixed(6)}`;
 };
+
+// Watch location input for geocoding
+let debounceTimer = null;
+watch(location, (newVal) => {
+  if (!newVal) return;
+
+  // Check if it's coordinates
+  const parts = newVal.split(",");
+  if (parts.length === 2) {
+    const lat = parseFloat(parts[0]);
+    const lng = parseFloat(parts[1]);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      mapCoords.value = { lat, lng };
+      return;
+    }
+  }
+
+  // If text, geocode
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    try {
+      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(newVal)}`);
+      if (response.data && response.data.length > 0) {
+        const result = response.data[0];
+        mapCoords.value = { lat: parseFloat(result.lat), lng: parseFloat(result.lon) };
+      }
+    } catch (error) {
+      console.error("Geocoding error:", error);
+    }
+  }, 1000);
+});
 
 const presentToast = async (message, color = "danger") => {
   const toast = await toastController.create({

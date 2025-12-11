@@ -55,11 +55,8 @@
                 <ion-input v-model="location" placeholder="Where are we playing?"></ion-input>
               </ion-item>
 
-              <div class="map-preview-container" v-if="locationCoords">
-                <LocationPicker :initial-lat="locationCoords.lat" :initial-lng="locationCoords.lng" @location-selected="onLocationSelected" />
-              </div>
-              <div class="map-preview-container" v-else>
-                <LocationPicker @location-selected="onLocationSelected" />
+              <div class="map-preview-container">
+                <LocationPicker :lat="mapCoords.lat" :lng="mapCoords.lng" @location-selected="onLocationSelected" />
               </div>
             </div>
           </div>
@@ -144,10 +141,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import api from "../services/api";
 import LocationPicker from "../components/LocationPicker.vue";
+import axios from "axios";
 import {
   IonPage,
   IonHeader,
@@ -198,18 +196,46 @@ const isCovered = ref(false);
 const hasShowers = ref(false);
 const isPrivate = ref(false);
 const accessCode = ref("");
+const mapCoords = ref({ lat: 41.9028, lng: 12.4964 });
 
-const locationCoords = computed(() => {
-  if (!location.value) return null;
-  const parts = location.value.split(",");
+// Initialize map coords from location if possible
+watch(location, (newVal) => {
+  if (!newVal) return;
+
+  // Check if it's coordinates
+  const parts = newVal.split(",");
   if (parts.length === 2) {
     const lat = parseFloat(parts[0]);
     const lng = parseFloat(parts[1]);
     if (!isNaN(lat) && !isNaN(lng)) {
-      return { lat, lng };
+      mapCoords.value = { lat, lng };
+      return;
     }
   }
-  return null;
+});
+
+// Watch location input for geocoding
+let debounceTimer = null;
+watch(location, (newVal) => {
+  if (!newVal) return;
+
+  // Skip if coordinates (handled above)
+  const parts = newVal.split(",");
+  if (parts.length === 2 && !isNaN(parseFloat(parts[0])) && !isNaN(parseFloat(parts[1]))) return;
+
+  // If text, geocode
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(async () => {
+    try {
+      const response = await axios.get(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(newVal)}`);
+      if (response.data && response.data.length > 0) {
+        const result = response.data[0];
+        mapCoords.value = { lat: parseFloat(result.lat), lng: parseFloat(result.lon) };
+      }
+    } catch (error) {
+      console.error("Geocoding error:", error);
+    }
+  }, 1000);
 });
 
 const onLocationSelected = (coords) => {

@@ -261,7 +261,6 @@ import {
   IonModal,
   IonInput,
   IonMenuButton,
-  IonBadge,
   toastController,
 } from "@ionic/vue";
 import {

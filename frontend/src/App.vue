@@ -223,7 +223,7 @@ ion-menu ion-content {
   justify-content: space-between;
   height: 100%;
 }
-</style>
+
 ion-item.selected {
   --color: var(--ion-color-primary);
 }

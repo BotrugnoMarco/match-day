@@ -19,7 +19,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="home-content" :fullscreen="true">
-      <div class="home-banner">
+      <div class="home-header ion-padding-horizontal ion-padding-top">
         <div class="logo-wrapper" v-if="!isAuthenticated">
           <img :src="logoUrl" alt="MatchDay Logo" class="main-logo" />
         </div>
@@ -235,16 +235,9 @@ const formatTime = (dateString) => {
   overflow-y: auto;
 }
 
-.home-banner {
-  background: var(--ion-color-primary);
-  padding: 20px;
-  padding-bottom: 60px;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
-  color: white;
-  text-align: center;
-  position: relative;
-  z-index: 1;
+.home-header {
+  padding-bottom: 10px;
+  text-align: left;
 }
 
 .logo-wrapper {
@@ -257,6 +250,7 @@ const formatTime = (dateString) => {
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: var(--shadow-md);
 }
 
 .main-logo {
@@ -266,19 +260,18 @@ const formatTime = (dateString) => {
 .user-welcome h2 {
   margin: 0;
   font-weight: 800;
-  font-size: 1.8rem;
+  font-size: 2rem;
+  color: var(--ion-color-dark);
 }
 
 .user-welcome p {
   margin: 5px 0 0;
-  opacity: 0.9;
+  color: var(--ion-color-medium);
+  font-size: 1.1rem;
 }
 
 .dashboard-container {
   padding: 0 20px;
-  margin-top: -40px;
-  position: relative;
-  z-index: 2;
   padding-bottom: 30px;
 }
 
@@ -520,4 +513,3 @@ const formatTime = (dateString) => {
   --border-width: 2px;
 }
 </style>
-

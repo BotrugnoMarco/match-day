@@ -9,12 +9,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="page-content">
-      <div class="page-banner">
-        <h2>New Match</h2>
-        <p>Set up a new game</p>
-      </div>
-
-      <div class="create-container ion-padding-horizontal">
+      <div class="create-container ion-padding-horizontal ion-padding-top">
         <!-- Sport Selection -->
         <div class="section-title">Choose Sport</div>
         <div class="sports-grid">

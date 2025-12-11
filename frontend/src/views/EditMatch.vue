@@ -9,12 +9,7 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="page-content">
-      <div class="page-banner">
-        <h2>Edit Match</h2>
-        <p>Update match details</p>
-      </div>
-
-      <div class="create-container ion-padding-horizontal" v-if="match">
+      <div class="create-container ion-padding-horizontal ion-padding-top" v-if="match">
         <!-- Sport Selection (Read Only or Editable? Let's make it editable) -->
         <div class="section-title">Sport</div>
         <div class="sports-grid">

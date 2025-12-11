@@ -51,6 +51,8 @@ echo "🏠 Aggiornamento Landing Page..."
 sudo mkdir -p /home/botadmin/botrugno-landing
 sudo cp -r landing-page/* /home/botadmin/botrugno-landing/
 sudo chown -R $USER:$USER /home/botadmin/botrugno-landing
+# Assicura che Nginx possa leggere i file
+sudo chmod -R 755 /home/botadmin/botrugno-landing
 
 # 4. Aggiorna Nginx
 echo "------------------------------------------"

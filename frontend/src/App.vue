@@ -39,9 +39,7 @@
               </ion-item>
             </ion-menu-toggle>
 
-            <ion-item lines="none">
-              <LanguageSwitcher />
-            </ion-item>
+            <LanguageSwitcher />
           </ion-list>
         </div>
       </ion-content>

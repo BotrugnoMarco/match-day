@@ -4,19 +4,23 @@ const GEOCODING_API = 'https://geocoding-api.open-meteo.com/v1/search';
 const WEATHER_API = 'https://api.open-meteo.com/v1/forecast';
 
 export const getWeatherForLocation = async (locationName, date) => {
+    if (!locationName) return null;
+
     try {
-        console.log('WeatherService: Searching for location:', locationName);
+        const cleanLocation = locationName.trim();
+        console.log('WeatherService: Searching for location:', cleanLocation);
 
         let latitude, longitude, name, country;
 
-        // Check if locationName is actually coordinates (e.g. "41.9028, 12.4964")
-        const coordMatch = locationName.match(/^(-?\d+(\.\d+)?),\s*(-?\d+(\.\d+)?)$/);
+        // Check if locationName is actually coordinates
+        // Supports: "41.9, 12.5", "41.9; 12.5", "41.9 12.5"
+        const coordMatch = cleanLocation.match(/^(-?\d+(\.\d+)?)[,;\s]\s*(-?\d+(\.\d+)?)$/);
 
         if (coordMatch) {
             console.log('WeatherService: Input detected as coordinates');
             latitude = parseFloat(coordMatch[1]);
             longitude = parseFloat(coordMatch[3]);
-            name = "Posizione selezionata"; // Custom name for coords
+            name = "Posizione selezionata";
             country = "";
         } else {
             // 1. Geocoding: Get Lat/Lon from location name
@@ -26,7 +30,7 @@ export const getWeatherForLocation = async (locationName, date) => {
             try {
                 const geoResponse = await axios.get(GEOCODING_API, {
                     params: {
-                        name: locationName,
+                        name: cleanLocation,
                         count: 5,
                         language: 'it',
                         format: 'json'
@@ -39,15 +43,14 @@ export const getWeatherForLocation = async (locationName, date) => {
                 console.warn('WeatherService: Error in primary geocoding search', e);
             }
 
-            // Second try: If not found, try splitting by comma and searching for parts (e.g. City)
-            if (!result && locationName.includes(',')) {
+            // Second try: If not found, try splitting by comma and searching for parts
+            if (!result && cleanLocation.includes(',')) {
                 console.log('WeatherService: Exact location not found, trying parts...');
-                const parts = locationName.split(',').map(p => p.trim());
+                const parts = cleanLocation.split(',').map(p => p.trim());
 
-                // Try searching for each part, starting from the end (usually City/Country)
                 for (let i = parts.length - 1; i >= 0; i--) {
                     const part = parts[i];
-                    if (part.length < 3) continue; // Skip short abbreviations like "IT" or numbers
+                    if (part.length < 3) continue;
 
                     console.log('WeatherService: Searching for part:', part);
                     try {
@@ -66,8 +69,9 @@ export const getWeatherForLocation = async (locationName, date) => {
             }
 
             if (!result) {
-                console.warn('WeatherService: Location not found for:', locationName);
-                throw new Error('Location not found');
+                console.warn('WeatherService: Location not found for:', cleanLocation);
+                // Return null instead of throwing to avoid cluttering console with errors for valid but unknown locations
+                return null;
             }
 
             latitude = result.latitude;

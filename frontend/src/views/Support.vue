@@ -24,6 +24,9 @@
             <ion-segment-button value="faq">
               <ion-label>FAQ</ion-label>
             </ion-segment-button>
+            <ion-segment-button value="donate">
+              <ion-label>Support Us</ion-label>
+            </ion-segment-button>
           </ion-segment>
         </div>
       </div>
@@ -88,7 +91,7 @@
         </div>
 
         <!-- FAQ Section -->
-        <div v-else>
+        <div v-else-if="activeTab === 'faq'">
           <ion-accordion-group>
             <ion-accordion value="first">
               <ion-item slot="header" color="light">
@@ -124,6 +127,23 @@
             </ion-accordion>
           </ion-accordion-group>
         </div>
+
+        <!-- Donate Section -->
+        <div v-else-if="activeTab === 'donate'">
+          <div class="donate-card">
+            <div class="donate-header">
+              <ion-icon :icon="cafeOutline" class="donate-icon"></ion-icon>
+              <h3>Support the Developer</h3>
+            </div>
+            <p>
+              MatchDay is a passion project. If you find it useful and want to support its development, you can buy me a coffee!
+            </p>
+            <ion-button expand="block" class="kofi-btn" href="https://ko-fi.com/dlayk_mark" target="_blank">
+              <ion-icon slot="start" :icon="cafeOutline"></ion-icon>
+              Support on Ko-fi
+            </ion-button>
+          </div>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -156,7 +176,7 @@ import {
   IonBadge,
   toastController,
 } from "@ionic/vue";
-import { mailOutline } from "ionicons/icons";
+import { mailOutline, cafeOutline } from "ionicons/icons";
 
 const activeTab = ref("contact");
 const isSubmitting = ref(false);
@@ -380,5 +400,43 @@ const getStatusColor = (status) => {
   font-size: 0.75rem;
   color: var(--ion-color-medium);
   text-align: right;
+}
+
+.donate-card {
+  background: white;
+  border-radius: 20px;
+  padding: 30px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.donate-header {
+  margin-bottom: 20px;
+}
+
+.donate-icon {
+  font-size: 3rem;
+  color: #FF5E5B;
+  margin-bottom: 10px;
+}
+
+.donate-card h3 {
+  margin: 0;
+  font-weight: 800;
+  color: var(--ion-color-dark);
+}
+
+.donate-card p {
+  color: var(--ion-color-medium);
+  line-height: 1.6;
+  margin-bottom: 25px;
+}
+
+.kofi-btn {
+  --background: #FF5E5B;
+  --background-hover: #ff4f4c;
+  --border-radius: 12px;
+  font-weight: 700;
 }
 </style>

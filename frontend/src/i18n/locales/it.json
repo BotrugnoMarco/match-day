@@ -126,7 +126,8 @@
     "language": "Lingua",
     "remove": "Rimuovi",
     "date": "Data",
-    "time": "Ora"
+    "time": "Ora",
+    "back": "Indietro"
   },
   "home": {
     "welcome": "Ciao, {name}!",
@@ -268,7 +269,11 @@
     "fetch_error": "Errore nel recupero dei dettagli della partita",
     "full_waitlist": "La partita è piena. Sei stato aggiunto alla lista d'attesa.",
     "request_sent": "Richiesta inviata all'organizzatore.",
-    "skill": "Abilità"
+    "skill": "Abilità",
+    "match_results": "Risultati Partita",
+    "winner": "Vincitore",
+    "team": "Squadra",
+    "draw": "Pareggio"
   },
   "notifications": {
     "title": "Notifiche",

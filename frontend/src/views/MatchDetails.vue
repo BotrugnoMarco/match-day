@@ -3,7 +3,7 @@
     <ion-header class="ion-no-border">
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-back-button default-href="/matches"></ion-back-button>
+          <ion-back-button default-href="/matches" :text="t('common.back')"></ion-back-button>
         </ion-buttons>
         <ion-title>{{ t("match_details.title") }}</ion-title>
         <ion-buttons slot="end">

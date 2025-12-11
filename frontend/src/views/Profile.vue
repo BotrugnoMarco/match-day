@@ -4,7 +4,7 @@
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
           <ion-menu-button v-if="isOwnProfile"></ion-menu-button>
-          <ion-back-button v-else default-href="/matches"></ion-back-button>
+          <ion-back-button v-else default-href="/matches" :text="t('common.back')"></ion-back-button>
         </ion-buttons>
         <ion-title>{{ t("profile.title") }}</ion-title>
         <ion-buttons slot="end">

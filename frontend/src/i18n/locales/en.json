@@ -126,7 +126,8 @@
     "language": "Language",
     "remove": "Remove",
     "date": "Date",
-    "time": "Time"
+    "time": "Time",
+    "back": "Back"
   },
   "home": {
     "welcome": "Hi, {name}!",
@@ -266,7 +267,11 @@
     "captain_error": "Failed to update captain status",
     "fetch_error": "Error fetching match details",
     "full_waitlist": "The match is full. You have been added to the waitlist.",
-    "request_sent": "Request sent to organizer."
+    "request_sent": "Request sent to organizer.",
+    "match_results": "Match Results",
+    "winner": "Winner",
+    "team": "Team",
+    "draw": "Draw"
   },
   "notifications": {
     "title": "Notifications",

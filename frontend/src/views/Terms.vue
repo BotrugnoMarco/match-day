@@ -3,7 +3,7 @@
     <ion-header>
       <ion-toolbar color="primary">
         <ion-buttons slot="start">
-          <ion-back-button default-href="/register"></ion-back-button>
+          <ion-back-button default-href="/register" :text="t('common.back')"></ion-back-button>
         </ion-buttons>
         <ion-title>{{ t("terms.title") }}</ion-title>
       </ion-toolbar>

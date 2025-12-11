@@ -77,8 +77,8 @@
           </div>
 
           <div v-if="friendsList.length > 0">
-            <ion-card class="custom-card" v-for="friend in friendsList" :key="friend.id">
-              <ion-item lines="none" button @click="goToProfile(friend.id)">
+            <ion-card class="custom-card" v-for="friend in friendsList" :key="friend.id" button @click="goToProfile(friend.id)">
+              <ion-item lines="none">
                 <ion-avatar slot="start">
                   <img :src="friend.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>

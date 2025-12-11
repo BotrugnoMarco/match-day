@@ -15,6 +15,13 @@
             </ion-item>
           </ion-menu-toggle>
 
+          <ion-menu-toggle auto-hide="false" v-if="currentUser && currentUser.role === 'admin'">
+            <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false">
+              <ion-icon slot="start" :ios="constructOutline" :md="constructSharp"></ion-icon>
+              <ion-label>Admin Support</ion-label>
+            </ion-item>
+          </ion-menu-toggle>
+
           <ion-menu-toggle auto-hide="false" v-if="currentUser">
             <ion-item button @click="logout" lines="none" detail="false">
               <ion-icon slot="start" :icon="logOutOutline"></ion-icon>
@@ -62,6 +69,8 @@ import {
   notificationsSharp,
   helpCircleOutline,
   helpCircleSharp,
+  constructOutline,
+  constructSharp,
   logOutOutline,
 } from "ionicons/icons";
 

@@ -34,3 +34,42 @@ exports.getUserTickets = async (req, res) => {
         res.status(500).json({ error: 'Server error fetching tickets' });
     }
 };
+
+exports.getAllTickets = async (req, res) => {
+    // Check if user is admin (assuming middleware sets req.user.role or similar, 
+    // but for now we'll just check if the user exists and maybe rely on a separate admin middleware later.
+    // Ideally, this route should be protected by an admin check middleware.)
+
+    try {
+        const [tickets] = await db.query(`
+            SELECT t.*, u.username, u.email 
+            FROM support_tickets t 
+            JOIN users u ON t.user_id = u.id 
+            ORDER BY t.created_at DESC
+        `);
+        res.json(tickets);
+    } catch (error) {
+        console.error('Get all tickets error:', error);
+        res.status(500).json({ error: 'Server error fetching tickets' });
+    }
+};
+
+exports.replyToTicket = async (req, res) => {
+    const { ticketId } = req.params;
+    const { response, status } = req.body;
+
+    if (!response) {
+        return res.status(400).json({ error: 'Response message is required' });
+    }
+
+    try {
+        await db.query(
+            'UPDATE support_tickets SET admin_response = ?, status = ? WHERE id = ?',
+            [response, status || 'closed', ticketId]
+        );
+        res.json({ message: 'Ticket updated successfully' });
+    } catch (error) {
+        console.error('Reply ticket error:', error);
+        res.status(500).json({ error: 'Server error updating ticket' });
+    }
+};

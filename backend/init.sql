@@ -119,6 +119,7 @@ CREATE TABLE IF NOT EXISTS support_tickets (
     message TEXT NOT NULL,
     category ENUM('bug', 'feature_request', 'account', 'other') DEFAULT 'other',
     status ENUM('open', 'in_progress', 'closed') DEFAULT 'open',
+    admin_response TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );

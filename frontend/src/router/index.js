@@ -10,6 +10,7 @@ import Profile from '../views/Profile.vue';
 import Friends from '../views/Friends.vue';
 import Notifications from '../views/Notifications.vue';
 import Support from '../views/Support.vue';
+import AdminSupport from '../views/AdminSupport.vue';
 
 const routes = [
     {
@@ -77,6 +78,12 @@ const routes = [
         path: '/support',
         name: 'Support',
         component: Support,
+        meta: { requiresAuth: true }
+    },
+    {
+        path: '/admin/support',
+        name: 'AdminSupport',
+        component: AdminSupport,
         meta: { requiresAuth: true }
     }
 ];

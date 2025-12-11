@@ -47,10 +47,10 @@
         <ion-item>
           <ion-label position="stacked">Birth Date</ion-label>
           <ion-datetime-button datetime="birthdate"></ion-datetime-button>
-          <ion-modal :keep-contents-mounted="true">
-            <ion-datetime id="birthdate" v-model="editForm.birth_date" presentation="date" :prefer-wheel="true"></ion-datetime>
-          </ion-modal>
         </ion-item>
+        <ion-modal :keep-contents-mounted="true">
+          <ion-datetime id="birthdate" v-model="editForm.birth_date" presentation="date" :prefer-wheel="true"></ion-datetime>
+        </ion-modal>
 
         <ion-item>
           <ion-label position="stacked">Gender</ion-label>
@@ -348,7 +348,7 @@ const openEditModal = () => {
   editForm.value = {
     username: user.value?.username || "",
     email: user.value?.email || "",
-    birth_date: user.value?.birth_date ? new Date(user.value.birth_date).toISOString() : "",
+    birth_date: user.value?.birth_date ? new Date(user.value.birth_date).toISOString() : new Date().toISOString(),
     gender: user.value?.gender || "",
     status: user.value?.status || "available",
     preferred_number: user.value?.preferred_number,

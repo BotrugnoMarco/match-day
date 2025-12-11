@@ -257,11 +257,11 @@
               <div class="team-header-label team-a">TEAM A</div>
               <div class="participants-card">
                 <ion-list lines="none">
-                  <ion-item v-for="p in teamAParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
-                    <ion-avatar slot="start">
+                  <ion-item v-for="p in teamAParticipants" :key="p.id">
+                    <ion-avatar slot="start" @click="goToProfile(p.user_id)">
                       <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                     </ion-avatar>
-                    <ion-label>
+                    <ion-label @click="goToProfile(p.user_id)">
                       <h2>{{ p.username }}</h2>
                       <p>Skill: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
@@ -293,6 +293,15 @@
                         class="status-icon"
                         @click.stop="movePlayer(p.user_id, 'B')"
                       ></ion-icon>
+                      <ion-button
+                        v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                        fill="outline"
+                        size="small"
+                        :disabled="myVotes.includes(p.user_id)"
+                        @click.stop="openVoteModal(p)"
+                      >
+                        {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                      </ion-button>
                     </div>
                   </ion-item>
                 </ion-list>
@@ -304,11 +313,11 @@
               <div class="team-header-label team-b">TEAM B</div>
               <div class="participants-card">
                 <ion-list lines="none">
-                  <ion-item v-for="p in teamBParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
-                    <ion-avatar slot="start">
+                  <ion-item v-for="p in teamBParticipants" :key="p.id">
+                    <ion-avatar slot="start" @click="goToProfile(p.user_id)">
                       <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                     </ion-avatar>
-                    <ion-label>
+                    <ion-label @click="goToProfile(p.user_id)">
                       <h2>{{ p.username }}</h2>
                       <p>Skill: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
@@ -340,6 +349,15 @@
                         class="status-icon"
                         @click.stop="movePlayer(p.user_id, 'A')"
                       ></ion-icon>
+                      <ion-button
+                        v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                        fill="outline"
+                        size="small"
+                        :disabled="myVotes.includes(p.user_id)"
+                        @click.stop="openVoteModal(p)"
+                      >
+                        {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                      </ion-button>
                     </div>
                   </ion-item>
                 </ion-list>
@@ -349,11 +367,11 @@
 
           <div v-else class="participants-card">
             <ion-list lines="none">
-              <ion-item v-for="p in activeParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
-                <ion-avatar slot="start">
+              <ion-item v-for="p in activeParticipants" :key="p.id">
+                <ion-avatar slot="start" @click="goToProfile(p.user_id)">
                   <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>
-                <ion-label>
+                <ion-label @click="goToProfile(p.user_id)">
                   <h2>{{ p.username }}</h2>
                   <p>
                     <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>

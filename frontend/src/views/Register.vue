@@ -29,6 +29,11 @@
               </ion-item>
 
               <ion-item lines="none" class="custom-input">
+                <ion-icon :icon="lockClosedOutline" slot="start" class="input-icon"></ion-icon>
+                <ion-input v-model="confirmPassword" type="password" placeholder="Confirm Password" required></ion-input>
+              </ion-item>
+
+              <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="calendarOutline" slot="start" class="input-icon"></ion-icon>
                 <ion-input v-model="birthDate" type="date" :max="maxDate" required></ion-input>
               </ion-item>
@@ -84,6 +89,7 @@ import { personAddOutline, personOutline, mailOutline, lockClosedOutline, calend
 
 const username = ref("");
 const password = ref("");
+const confirmPassword = ref("");
 const email = ref("");
 const birthDate = ref("");
 const gender = ref("");
@@ -105,8 +111,13 @@ const presentToast = async (message, color = "danger") => {
 };
 
 const handleRegister = async () => {
-  if (!username.value || !password.value || !email.value || !birthDate.value || !gender.value) {
+  if (!username.value || !password.value || !confirmPassword.value || !email.value || !birthDate.value || !gender.value) {
     presentToast("All fields are required.");
+    return;
+  }
+
+  if (password.value !== confirmPassword.value) {
+    presentToast("Passwords do not match.");
     return;
   }
 

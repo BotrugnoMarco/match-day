@@ -38,11 +38,15 @@
                 <ion-label>{{ t("menu.logout") }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
-
-            <LanguageSwitcher />
           </ion-list>
         </div>
       </ion-content>
+
+      <ion-footer class="ion-no-border">
+        <ion-toolbar color="light">
+          <LanguageSwitcher />
+        </ion-toolbar>
+      </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content" />
   </ion-app>
@@ -62,6 +66,7 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
+  IonFooter,
   IonList,
   IonItem,
   IonIcon,

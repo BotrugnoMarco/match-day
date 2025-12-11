@@ -266,33 +266,10 @@
                       <p>Skill: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
-                      <ion-icon
-                        :icon="shieldCheckmarkOutline"
-                        :color="p.is_admin ? 'secondary' : 'medium'"
-                        class="status-icon"
-                        v-if="isAdmin || p.is_admin"
-                        @click.stop="isAdmin && p.user_id !== match.creator_id ? toggleAdmin(p) : null"
-                      ></ion-icon>
-                      <ion-icon
-                        :icon="p.is_captain ? ribbon : ribbonOutline"
-                        :color="p.is_captain ? 'warning' : 'medium'"
-                        class="status-icon"
-                        @click.stop="isAdmin ? toggleCaptain(p) : null"
-                      ></ion-icon>
+                      <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
+                      <ion-icon v-if="p.is_captain" :icon="ribbon" color="warning" class="status-icon"></ion-icon>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
-                      <ion-icon
-                        :icon="cashOutline"
-                        :color="p.has_paid ? 'success' : 'medium'"
-                        class="status-icon"
-                        @click.stop="isAdmin ? togglePayment(p) : null"
-                      ></ion-icon>
-                      <ion-icon
-                        v-if="isAdmin"
-                        :icon="swapHorizontalOutline"
-                        color="primary"
-                        class="status-icon"
-                        @click.stop="movePlayer(p.user_id, 'B')"
-                      ></ion-icon>
+                      <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                       <ion-button
                         v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
                         fill="outline"
@@ -301,6 +278,9 @@
                         @click.stop="openVoteModal(p)"
                       >
                         {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                      </ion-button>
+                      <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
+                        <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
                       </ion-button>
                     </div>
                   </ion-item>
@@ -322,33 +302,10 @@
                       <p>Skill: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
-                      <ion-icon
-                        :icon="shieldCheckmarkOutline"
-                        :color="p.is_admin ? 'secondary' : 'medium'"
-                        class="status-icon"
-                        v-if="isAdmin || p.is_admin"
-                        @click.stop="isAdmin && p.user_id !== match.creator_id ? toggleAdmin(p) : null"
-                      ></ion-icon>
-                      <ion-icon
-                        :icon="p.is_captain ? ribbon : ribbonOutline"
-                        :color="p.is_captain ? 'warning' : 'medium'"
-                        class="status-icon"
-                        @click.stop="isAdmin ? toggleCaptain(p) : null"
-                      ></ion-icon>
+                      <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
+                      <ion-icon v-if="p.is_captain" :icon="ribbon" color="warning" class="status-icon"></ion-icon>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
-                      <ion-icon
-                        :icon="cashOutline"
-                        :color="p.has_paid ? 'success' : 'medium'"
-                        class="status-icon"
-                        @click.stop="isAdmin ? togglePayment(p) : null"
-                      ></ion-icon>
-                      <ion-icon
-                        v-if="isAdmin"
-                        :icon="swapHorizontalOutline"
-                        color="primary"
-                        class="status-icon"
-                        @click.stop="movePlayer(p.user_id, 'A')"
-                      ></ion-icon>
+                      <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                       <ion-button
                         v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
                         fill="outline"
@@ -357,6 +314,9 @@
                         @click.stop="openVoteModal(p)"
                       >
                         {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                      </ion-button>
+                      <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
+                        <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
                       </ion-button>
                     </div>
                   </ion-item>
@@ -379,20 +339,9 @@
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
-                  <ion-icon
-                    :icon="shieldCheckmarkOutline"
-                    :color="p.is_admin ? 'secondary' : 'medium'"
-                    class="status-icon"
-                    v-if="isAdmin || p.is_admin"
-                    @click.stop="isAdmin && p.user_id !== match.creator_id ? toggleAdmin(p) : null"
-                  ></ion-icon>
+                  <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
                   <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
-                  <ion-icon
-                    :icon="cashOutline"
-                    :color="p.has_paid ? 'success' : 'medium'"
-                    class="status-icon"
-                    @click.stop="isAdmin ? togglePayment(p) : null"
-                  ></ion-icon>
+                  <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                   <ion-button
                     v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
                     fill="outline"
@@ -401,6 +350,9 @@
                     @click.stop="openVoteModal(p)"
                   >
                     {{ myVotes.includes(p.user_id) ? "Voted" : "Vote" }}
+                  </ion-button>
+                  <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
+                    <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
                   </ion-button>
                 </div>
               </ion-item>
@@ -496,6 +448,7 @@ import {
   IonBackButton,
   modalController,
   alertController,
+  actionSheetController,
   IonIcon,
   IonSpinner,
 } from "@ionic/vue";
@@ -528,6 +481,7 @@ import {
   ribbon,
   shieldCheckmarkOutline,
   mapOutline,
+  ellipsisVertical,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -929,6 +883,54 @@ const movePlayer = async (userId, team) => {
     console.error("Error moving player:", error);
     alert("Failed to move player");
   }
+};
+
+const openPlayerActions = async (player) => {
+  const buttons = [];
+
+  // Admin Toggle
+  buttons.push({
+    text: player.is_admin ? "Remove Admin" : "Make Admin",
+    icon: shieldCheckmarkOutline,
+    handler: () => toggleAdmin(player),
+  });
+
+  // Captain Toggle
+  buttons.push({
+    text: player.is_captain ? "Remove Captain" : "Make Captain",
+    icon: player.is_captain ? ribbonOutline : ribbon,
+    handler: () => toggleCaptain(player),
+  });
+
+  // Payment Toggle
+  buttons.push({
+    text: player.has_paid ? "Mark Unpaid" : "Mark Paid",
+    icon: cashOutline,
+    handler: () => togglePayment(player),
+  });
+
+  // Move Player (only if teams exist)
+  if (hasTeams.value) {
+    const targetTeam = player.team === "A" || player.team === "Team A" ? "B" : "A";
+    buttons.push({
+      text: `Move to Team ${targetTeam}`,
+      icon: swapHorizontalOutline,
+      handler: () => movePlayer(player.user_id, targetTeam),
+    });
+  }
+
+  // Cancel
+  buttons.push({
+    text: "Cancel",
+    role: "cancel",
+    icon: closeOutline,
+  });
+
+  const actionSheet = await actionSheetController.create({
+    header: `Manage ${player.username}`,
+    buttons: buttons,
+  });
+  await actionSheet.present();
 };
 
 const saveFormation = async (positions) => {

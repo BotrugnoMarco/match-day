@@ -74,6 +74,12 @@
               </div>
               <h4>{{ ticket.subject }}</h4>
               <p>{{ ticket.message }}</p>
+
+              <div v-if="ticket.admin_response" class="admin-response">
+                <strong>Admin Response:</strong>
+                <p>{{ ticket.admin_response }}</p>
+              </div>
+
               <div class="ticket-footer">
                 <span>{{ new Date(ticket.created_at).toLocaleDateString() }}</span>
               </div>
@@ -348,6 +354,26 @@ const getStatusColor = (status) => {
   font-size: 0.9rem;
   color: var(--ion-color-medium);
   line-height: 1.4;
+}
+
+.admin-response {
+  background: #e8f5e9;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  border-left: 3px solid var(--ion-color-success);
+}
+
+.admin-response strong {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--ion-color-success);
+  margin-bottom: 4px;
+}
+
+.admin-response p {
+  margin: 0;
+  color: var(--ion-color-dark);
 }
 
 .ticket-footer {

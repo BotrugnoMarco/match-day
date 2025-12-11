@@ -63,10 +63,25 @@ exports.replyToTicket = async (req, res) => {
     }
 
     try {
+        // 1. Get ticket owner
+        const [ticketRows] = await db.query('SELECT user_id, subject FROM support_tickets WHERE id = ?', [ticketId]);
+        if (ticketRows.length === 0) {
+            return res.status(404).json({ error: 'Ticket not found' });
+        }
+        const ticket = ticketRows[0];
+
+        // 2. Update ticket
         await db.query(
             'UPDATE support_tickets SET admin_response = ?, status = ? WHERE id = ?',
             [response, status || 'closed', ticketId]
         );
+
+        // 3. Send notification
+        await db.query(
+            'INSERT INTO notifications (user_id, message, type, related_match_id) VALUES (?, ?, ?, ?)',
+            [ticket.user_id, `Support ticket updated: ${ticket.subject}`, 'info', null]
+        );
+
         res.json({ message: 'Ticket updated successfully' });
     } catch (error) {
         console.error('Reply ticket error:', error);

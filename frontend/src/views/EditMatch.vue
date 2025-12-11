@@ -159,6 +159,7 @@ import {
   IonToggle,
   IonSpinner,
   alertController,
+  toastController,
 } from "@ionic/vue";
 import {
   saveOutline,
@@ -189,6 +190,16 @@ const isCovered = ref(false);
 const hasShowers = ref(false);
 const isPrivate = ref(false);
 const accessCode = ref("");
+
+const presentToast = async (message, color = "danger") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
+};
 
 const sports = [
   { value: "soccer", label: "Soccer", icon: football },
@@ -227,7 +238,7 @@ const fetchMatch = async () => {
     accessCode.value = match.value.access_code || "";
   } catch (error) {
     console.error("Error fetching match:", error);
-    alert("Error fetching match details");
+    presentToast("Error fetching match details");
     router.push("/matches");
   }
 };
@@ -238,7 +249,7 @@ onMounted(() => {
 
 const updateMatch = async () => {
   if (!location.value || !priceTotal.value) {
-    alert("Please fill in all fields");
+    presentToast("Please fill in all fields");
     return;
   }
 
@@ -258,18 +269,11 @@ const updateMatch = async () => {
       access_code: accessCode.value,
     });
 
-    const alert = await alertController.create({
-      header: "Success",
-      message: "Match updated successfully. Participants will be notified.",
-      buttons: ["OK"],
-    });
-    await alert.present();
-    await alert.onDidDismiss();
-
+    presentToast("Match updated successfully. Participants will be notified.", "success");
     router.push(`/matches/${route.params.id}`);
   } catch (error) {
     console.error("Error updating match:", error);
-    alert("Failed to update match: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to update match: " + (error.response?.data?.error || error.message));
   }
 };
 </script>

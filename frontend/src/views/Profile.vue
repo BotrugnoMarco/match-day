@@ -484,10 +484,10 @@ const handleFileChange = async (event) => {
 
     const updatedUser = { ...currentUser.value, avatar_url: response.data.avatarUrl };
     store.commit("SET_USER", updatedUser);
-    alert("Avatar updated successfully!");
+    presentToast("Avatar updated successfully!", "success");
   } catch (error) {
     console.error("Error uploading avatar:", error);
-    alert("Failed to upload avatar");
+    presentToast("Failed to upload avatar", "danger");
   }
 };
 

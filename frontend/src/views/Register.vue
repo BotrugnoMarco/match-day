@@ -67,7 +67,19 @@
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
 import api from "../services/api";
-import { IonPage, IonContent, IonItem, IonInput, IonButton, IonIcon, IonSelect, IonSelectOption, IonCheckbox, IonLabel } from "@ionic/vue";
+import {
+  IonPage,
+  IonContent,
+  IonItem,
+  IonInput,
+  IonButton,
+  IonIcon,
+  IonSelect,
+  IonSelectOption,
+  IonCheckbox,
+  IonLabel,
+  toastController,
+} from "@ionic/vue";
 import { personAddOutline, personOutline, mailOutline, lockClosedOutline, calendarOutline, maleFemaleOutline } from "ionicons/icons";
 
 const username = ref("");
@@ -82,19 +94,29 @@ const maxDate = computed(() => {
   return new Date().toISOString().split("T")[0];
 });
 
+const presentToast = async (message, color = "danger") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
+};
+
 const handleRegister = async () => {
   if (!username.value || !password.value || !email.value || !birthDate.value || !gender.value) {
-    alert("All fields are required.");
+    presentToast("All fields are required.");
     return;
   }
 
   if (!termsAccepted.value) {
-    alert("You must accept the Terms of Service and Privacy Policy.");
+    presentToast("You must accept the Terms of Service and Privacy Policy.");
     return;
   }
 
   if (new Date(birthDate.value) > new Date()) {
-    alert("Birth date cannot be in the future.");
+    presentToast("Birth date cannot be in the future.");
     return;
   }
 
@@ -107,11 +129,11 @@ const handleRegister = async () => {
       gender: gender.value,
       terms_accepted: true,
     });
-    alert("Registration successful! Please login.");
+    presentToast("Registration successful! Please login.", "success");
     router.push("/login");
   } catch (error) {
     console.error("Registration failed", error);
-    alert("Registration failed: " + (error.response?.data?.error || error.message));
+    presentToast("Registration failed: " + (error.response?.data?.error || error.message));
   }
 };
 </script>

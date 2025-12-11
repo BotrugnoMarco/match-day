@@ -166,6 +166,7 @@ import {
   IonModal,
   IonIcon,
   IonToggle,
+  toastController,
 } from "@ionic/vue";
 import {
   addCircleOutline,
@@ -195,6 +196,16 @@ const hasShowers = ref(false);
 const isPrivate = ref(false);
 const accessCode = ref("");
 
+const presentToast = async (message, color = "danger") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
+};
+
 const sports = [
   { value: "soccer", label: "Soccer", icon: football },
   { value: "volleyball", label: "Volleyball", icon: baseballOutline },
@@ -219,7 +230,7 @@ const updateMaxPlayers = () => {
 
 const createMatch = async () => {
   if (!location.value || !priceTotal.value) {
-    alert("Please fill in all fields");
+    presentToast("Please fill in all fields");
     return;
   }
 
@@ -271,10 +282,11 @@ const createMatch = async () => {
       is_private: isPrivate.value,
       access_code: accessCode.value,
     });
+    presentToast("Match created successfully!", "success");
     router.push(`/matches/${response.data.matchId}`);
   } catch (error) {
     console.error("Error creating match:", error);
-    alert("Failed to create match: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to create match: " + (error.response?.data?.error || error.message));
   }
 };
 </script>

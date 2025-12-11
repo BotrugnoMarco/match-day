@@ -449,6 +449,7 @@ import {
   modalController,
   alertController,
   actionSheetController,
+  toastController,
   IonIcon,
   IonSpinner,
 } from "@ionic/vue";
@@ -504,6 +505,16 @@ const formatDate = (dateString) => {
 const formatTime = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+};
+
+const presentToast = async (message, color = "danger") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
 };
 
 const isWaitlisted = computed(() => {
@@ -682,7 +693,7 @@ const fetchMatch = async () => {
     }
   } catch (error) {
     console.error("Error fetching match:", error);
-    alert("Error fetching match details");
+    presentToast("Error fetching match details");
   }
 };
 
@@ -740,14 +751,14 @@ const joinMatch = async () => {
 
     const response = await api.post(`/matches/${route.params.id}/join`, { status: "confirmed", access_code: accessCode });
     if (response.data.status === "waitlist") {
-      alert("Match is full. You have been added to the waitlist.");
+      presentToast("Match is full. You have been added to the waitlist.", "warning");
     } else if (response.data.status === "pending_approval") {
-      alert("Request sent to the organizer.");
+      presentToast("Request sent to the organizer.", "success");
     }
     await fetchMatch(); // Refresh data
   } catch (error) {
     console.error("Error joining match:", error);
-    alert("Failed to join match: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to join match: " + (error.response?.data?.error || error.message));
   }
 };
 
@@ -759,7 +770,7 @@ const leaveMatch = async () => {
     await fetchMatch();
   } catch (error) {
     console.error("Error leaving match:", error);
-    alert("Failed to leave match: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to leave match: " + (error.response?.data?.error || error.message));
   }
 };
 
@@ -838,18 +849,18 @@ const changeStatus = async (newStatus) => {
     await fetchMatch();
   } catch (error) {
     console.error("Error updating status:", error);
-    alert("Failed to update status");
+    presentToast("Failed to update status");
   }
 };
 
 const generateTeams = async () => {
   try {
     const response = await api.post(`/matches/${route.params.id}/generate-teams`);
-    alert(`Teams generated! Team A: ${response.data.stats.teamA_count}, Team B: ${response.data.stats.teamB_count}`);
+    presentToast(`Teams generated! Team A: ${response.data.stats.teamA_count}, Team B: ${response.data.stats.teamB_count}`, "success");
     await fetchMatch();
   } catch (error) {
     console.error("Error generating teams:", error);
-    alert("Failed to generate teams: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to generate teams: " + (error.response?.data?.error || error.message));
   }
 };
 
@@ -860,7 +871,7 @@ const togglePostMatch = async () => {
     await fetchMatch();
   } catch (error) {
     console.error("Error updating post-match status:", error);
-    alert("Failed to update status");
+    presentToast("Failed to update status");
   }
 };
 
@@ -871,7 +882,7 @@ const togglePayment = async (participant) => {
     await api.put(`/matches/${match.value.id}/payment`, { userId: participant.user_id });
   } catch (error) {
     console.error("Error toggling payment:", error);
-    alert("Failed to update payment status");
+    presentToast("Failed to update payment status");
   }
 };
 
@@ -881,7 +892,7 @@ const movePlayer = async (userId, team) => {
     // Socket will update the list, but we can also fetch manually if needed
   } catch (error) {
     console.error("Error moving player:", error);
-    alert("Failed to move player");
+    presentToast("Failed to move player");
   }
 };
 
@@ -939,7 +950,7 @@ const saveFormation = async (positions) => {
     // Socket will update
   } catch (error) {
     console.error("Error saving formation:", error);
-    alert("Failed to save formation");
+    presentToast("Failed to save formation");
   }
 };
 
@@ -949,7 +960,7 @@ const approveRequest = async (userId) => {
     await fetchMatch();
   } catch (error) {
     console.error("Error approving request:", error);
-    alert("Failed to approve request");
+    presentToast("Failed to approve request");
   }
 };
 
@@ -959,7 +970,7 @@ const rejectRequest = async (userId) => {
     await fetchMatch();
   } catch (error) {
     console.error("Error rejecting request:", error);
-    alert("Failed to reject request");
+    presentToast("Failed to reject request");
   }
 };
 
@@ -991,7 +1002,7 @@ const toggleAdmin = async (participant) => {
     fetchMatch();
   } catch (error) {
     console.error("Error toggling admin:", error);
-    alert("Failed to update admin status: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to update admin status: " + (error.response?.data?.error || error.message));
   }
 };
 

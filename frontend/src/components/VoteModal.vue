@@ -57,6 +57,7 @@ import {
   IonRange,
   IonChip,
   modalController,
+  toastController,
 } from "@ionic/vue";
 import api from "../services/api";
 
@@ -83,6 +84,16 @@ const cancel = () => {
   modalController.dismiss(null, "cancel");
 };
 
+const presentToast = async (message, color = "danger") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
+};
+
 const submitVote = async () => {
   try {
     await api.post("/votes", {
@@ -94,7 +105,7 @@ const submitVote = async () => {
     modalController.dismiss(null, "confirm");
   } catch (error) {
     console.error("Vote error:", error);
-    alert("Failed to submit vote: " + (error.response?.data?.error || error.message));
+    presentToast("Failed to submit vote: " + (error.response?.data?.error || error.message));
   }
 };
 </script>

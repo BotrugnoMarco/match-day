@@ -44,13 +44,23 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import { IonPage, IonContent, IonItem, IonInput, IonButton, IonIcon } from "@ionic/vue";
+import { IonPage, IonContent, IonItem, IonInput, IonButton, IonIcon, toastController } from "@ionic/vue";
 import { personOutline, lockClosedOutline, football } from "ionicons/icons";
 
 const username = ref("");
 const password = ref("");
 const store = useStore();
 const router = useRouter();
+
+const presentToast = async (message, color = "danger") => {
+  const toast = await toastController.create({
+    message: message,
+    duration: 2000,
+    color: color,
+    position: "top",
+  });
+  await toast.present();
+};
 
 const handleLogin = async () => {
   try {
@@ -61,7 +71,7 @@ const handleLogin = async () => {
     router.push("/matches");
   } catch (error) {
     console.error("Login failed", error);
-    alert("Login failed: " + (error.response?.data?.error || error.message));
+    presentToast("Login failed: " + (error.response?.data?.error || error.message));
   }
 };
 </script>

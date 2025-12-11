@@ -28,7 +28,8 @@ if command -v pm2 &> /dev/null; then
     echo "   -> Ricreazione processo PM2..."
     # Elimina il vecchio processo se esiste e ne crea uno nuovo
     pm2 delete match-day || true
-    pm2 start server.js --name match-day
+    # Avvia in modalità cluster usando tutti i core disponibili (-i max)
+    pm2 start server.js --name match-day -i max
     pm2 save
 else
     echo "⚠️  PM2 non trovato. Ricordati di riavviare il server Node manualmente."

@@ -15,6 +15,8 @@ const friendRoutes = require('./routes/friendRoutes');
 const supportRoutes = require('./routes/supportRoutes');
 const http = require('http');
 const { Server } = require('socket.io');
+const { createClient } = require('redis');
+const { createAdapter } = require('@socket.io/redis-adapter');
 
 const app = express();
 
@@ -28,6 +30,23 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
+
+// Configurazione Redis Adapter per Socket.io (solo se REDIS_HOST è definito)
+if (process.env.REDIS_HOST) {
+    (async () => {
+        try {
+            const pubClient = createClient({ url: `redis://${process.env.REDIS_HOST}:${process.env.REDIS_PORT || 6379}` });
+            const subClient = pubClient.duplicate();
+
+            await Promise.all([pubClient.connect(), subClient.connect()]);
+
+            io.adapter(createAdapter(pubClient, subClient));
+            console.log('✅ Redis Adapter configurato con successo');
+        } catch (err) {
+            console.error('❌ Errore connessione Redis:', err);
+        }
+    })();
+}
 
 // Make io accessible to our router
 app.set('io', io);

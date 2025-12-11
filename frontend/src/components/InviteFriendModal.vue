@@ -2,14 +2,14 @@
   <ion-modal :is-open="isOpen" @didDismiss="close">
     <ion-header>
       <ion-toolbar>
-        <ion-title>Invite Friends</ion-title>
+        <ion-title>{{ t("invite.title") }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="close">Close</ion-button>
+          <ion-button @click="close">{{ t("common.close") }}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
-      <ion-searchbar v-model="searchQuery" placeholder="Search friends..."></ion-searchbar>
+      <ion-searchbar v-model="searchQuery" :placeholder="t('invite.search_placeholder')"></ion-searchbar>
 
       <ion-list v-if="filteredFriends.length > 0">
         <ion-item v-for="friend in filteredFriends" :key="friend.id">
@@ -20,12 +20,12 @@
             <h2>{{ friend.username }}</h2>
           </ion-label>
           <ion-button slot="end" fill="outline" @click="invite(friend)" :disabled="invitedFriends.has(friend.id)">
-            {{ invitedFriends.has(friend.id) ? "Invited" : "Invite" }}
+            {{ invitedFriends.has(friend.id) ? t("invite.invited") : t("invite.invite_btn") }}
           </ion-button>
         </ion-item>
       </ion-list>
       <div v-else class="empty-state">
-        <p>No friends found.</p>
+        <p>{{ t("invite.no_friends_found") }}</p>
       </div>
     </ion-content>
   </ion-modal>
@@ -33,6 +33,7 @@
 
 <script setup>
 import { ref, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   IonModal,
   IonHeader,
@@ -61,6 +62,7 @@ const props = defineProps({
 
 const emit = defineEmits(["close"]);
 
+const { t } = useI18n();
 const friends = ref([]);
 const searchQuery = ref("");
 const invitedFriends = ref(new Set());
@@ -96,22 +98,23 @@ const invite = async (friend) => {
     await api.post(`/matches/${props.matchId}/invite`, { userId: friend.id });
     invitedFriends.value.add(friend.id);
     const toast = await toastController.create({
-      message: `Invitation sent to ${friend.username}`,
+      message: t('invite.sent_to', { name: friend.username }),
       duration: 2000,
       color: "success",
       position: "top",
     });
     await toast.present();
   } catch (error) {
-    console.error("Error sending invitation:", error);
+    console.error("Error inviting friend:", error);
     const toast = await toastController.create({
-      message: "Failed to send invitation",
+      message: t('invite.failed'),
       duration: 2000,
       color: "danger",
       position: "top",
     });
     await toast.present();
   }
+};
 };
 
 const close = () => {

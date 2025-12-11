@@ -52,15 +52,16 @@
     <div class="controls" v-if="isEditable">
       <ion-button size="small" @click="savePositions" :disabled="!hasChanges">
         <ion-icon :icon="saveOutline" slot="start"></ion-icon>
-        Save Formation
+        {{ t("formation.save") }}
       </ion-button>
-      <ion-button size="small" fill="outline" @click="resetPositions" v-if="hasChanges"> Reset </ion-button>
+      <ion-button size="small" fill="outline" @click="resetPositions" v-if="hasChanges"> {{ t("formation.reset") }} </ion-button>
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import { IonAvatar, IonButton, IonIcon } from "@ionic/vue";
 import { saveOutline } from "ionicons/icons";
 
@@ -81,6 +82,7 @@ const props = defineProps({
 
 const emit = defineEmits(["save"]);
 
+const { t } = useI18n();
 const fieldRef = ref(null);
 const draggedPlayerId = ref(null);
 const localPlayers = ref([]);

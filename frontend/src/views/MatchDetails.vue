@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-back-button default-href="/matches"></ion-back-button>
         </ion-buttons>
-        <ion-title>Match Details</ion-title>
+        <ion-title>{{ t("match_details.title") }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="openInviteModal">
             <ion-icon slot="icon-only" :icon="personAddOutline"></ion-icon>
@@ -24,7 +24,7 @@
           <h1>{{ match.sport_type }}</h1>
           <div class="header-badges">
             <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ match.status }}</ion-badge>
-            <ion-badge v-if="match.is_private" color="medium" class="status-badge">Private</ion-badge>
+            <ion-badge v-if="match.is_private" color="medium" class="status-badge">{{ t("matches.private") }}</ion-badge>
           </div>
         </div>
       </div>
@@ -36,14 +36,14 @@
             <div class="info-block">
               <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
               <div class="info-text">
-                <span class="label">Date</span>
+                <span class="label">{{ t("common.date") }}</span>
                 <span class="value">{{ formatDate(match.date_time) }}</span>
               </div>
             </div>
             <div class="info-block">
               <ion-icon :icon="timeOutline" class="info-icon"></ion-icon>
               <div class="info-text">
-                <span class="label">Time</span>
+                <span class="label">{{ t("common.time") }}</span>
                 <span class="value">{{ formatTime(match.date_time) }}</span>
                 <span class="sub-value" v-if="match.duration">({{ match.duration }} min)</span>
               </div>
@@ -56,7 +56,7 @@
             <div class="info-block full-width">
               <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
               <div class="info-text">
-                <span class="label">Location</span>
+                <span class="label">{{ t("create_match.location") }}</span>
                 <span class="value">{{ match.location }}</span>
               </div>
             </div>
@@ -73,7 +73,7 @@
             >
             </iframe>
             <ion-button fill="clear" size="small" expand="block" @click="openMaps(match.location)">
-              Open in Maps
+              {{ t("match_details.open_maps") }}
               <ion-icon slot="end" :icon="mapOutline"></ion-icon>
             </ion-button>
           </div>
@@ -84,18 +84,20 @@
             <div class="info-block">
               <ion-icon :icon="cashOutline" class="info-icon"></ion-icon>
               <div class="info-text">
-                <span class="label">Price</span>
+                <span class="label">{{ t("match_details.price") }}</span>
                 <span class="value">€{{ match.price_total }}</span>
                 <span class="sub-value" v-if="activeParticipants.length > 0">
-                  €{{ (match.price_total / activeParticipants.length).toFixed(2) }} / person
+                  €{{ (match.price_total / activeParticipants.length).toFixed(2) }} {{ t("match_details.per_person") }}
                 </span>
-                <span class="sub-value" v-else> €{{ (match.price_total / (match.max_players || 10)).toFixed(2) }} / person (est.) </span>
+                <span class="sub-value" v-else>
+                  €{{ (match.price_total / (match.max_players || 10)).toFixed(2) }} {{ t("match_details.per_person_est") }}
+                </span>
               </div>
             </div>
             <div class="info-block" @click="goToProfile(match.creator_id)">
               <ion-icon :icon="personOutline" class="info-icon"></ion-icon>
               <div class="info-text">
-                <span class="label">Organizer</span>
+                <span class="label">{{ t("match_details.organizer") }}</span>
                 <div class="organizer-value">
                   <ion-avatar class="mini-avatar">
                     <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
@@ -430,6 +432,7 @@
 import { ref, onMounted, onUnmounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import socket from "../services/socket";
 import {
@@ -492,6 +495,7 @@ import FormationField from "../components/FormationField.vue";
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
+const { t } = useI18n();
 const match = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);

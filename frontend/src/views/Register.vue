@@ -6,8 +6,8 @@
           <div class="icon-container">
             <ion-icon :icon="personAddOutline" class="app-logo"></ion-icon>
           </div>
-          <h1>Create Account</h1>
-          <p>Join the community today</p>
+          <h1>{{ t("auth.register_title") }}</h1>
+          <p>{{ t("auth.register_subtitle") }}</p>
         </div>
 
         <div class="auth-form-container">
@@ -15,22 +15,22 @@
             <div class="input-group">
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="personOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-input v-model="username" type="text" placeholder="Username" required></ion-input>
+                <ion-input v-model="username" type="text" :placeholder="t('auth.username_placeholder')" required></ion-input>
               </ion-item>
 
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="mailOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-input v-model="email" type="email" placeholder="Email" required></ion-input>
+                <ion-input v-model="email" type="email" :placeholder="t('auth.email_placeholder')" required></ion-input>
               </ion-item>
 
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="lockClosedOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-input v-model="password" type="password" placeholder="Password" required></ion-input>
+                <ion-input v-model="password" type="password" :placeholder="t('auth.password_placeholder')" required></ion-input>
               </ion-item>
 
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="lockClosedOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-input v-model="confirmPassword" type="password" placeholder="Confirm Password" required></ion-input>
+                <ion-input v-model="confirmPassword" type="password" :placeholder="t('auth.confirm_password_placeholder')" required></ion-input>
               </ion-item>
 
               <ion-item lines="none" class="custom-input">
@@ -40,27 +40,37 @@
 
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="maleFemaleOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-select v-model="gender" placeholder="Select Gender" interface="popover">
-                  <ion-select-option value="M">Male</ion-select-option>
-                  <ion-select-option value="F">Female</ion-select-option>
-                  <ion-select-option value="Other">Other</ion-select-option>
+                <ion-select v-model="gender" :placeholder="t('auth.select_gender')" interface="popover">
+                  <ion-select-option value="M">{{ t("auth.male") }}</ion-select-option>
+                  <ion-select-option value="F">{{ t("auth.female") }}</ion-select-option>
+                  <ion-select-option value="Other">{{ t("auth.other") }}</ion-select-option>
                 </ion-select>
               </ion-item>
 
               <ion-item lines="none" class="terms-item">
                 <ion-checkbox v-model="termsAccepted" slot="start"></ion-checkbox>
                 <ion-label class="ion-text-wrap">
-                  I agree to the <span class="link" @click.stop="router.push('/terms')">Terms</span> and
-                  <span class="link" @click.stop="router.push('/privacy')">Privacy Policy</span>
+                  <i18n-t keypath="auth.terms_agreement" tag="span">
+                    <template #terms>
+                      <span class="link" @click.stop="router.push('/terms')">{{ t("auth.terms") }}</span>
+                    </template>
+                    <template #privacy>
+                      <span class="link" @click.stop="router.push('/privacy')">{{ t("auth.privacy") }}</span>
+                    </template>
+                  </i18n-t>
                 </ion-label>
               </ion-item>
             </div>
 
-            <ion-button expand="block" type="submit" class="auth-btn" shape="round" :disabled="!termsAccepted"> REGISTER </ion-button>
+            <ion-button expand="block" type="submit" class="auth-btn" shape="round" :disabled="!termsAccepted">
+              {{ t("auth.register_btn") }}
+            </ion-button>
           </form>
 
           <div class="auth-footer">
-            <p>Already have an account? <span @click="router.push('/login')">Sign In</span></p>
+            <p>
+              {{ t("auth.already_have_account") }} <span @click="router.push('/login')">{{ t("auth.login_link") }}</span>
+            </p>
           </div>
         </div>
       </div>
@@ -71,6 +81,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import {
   IonPage,
@@ -95,6 +106,7 @@ const birthDate = ref("");
 const gender = ref("");
 const termsAccepted = ref(false);
 const router = useRouter();
+const { t } = useI18n();
 
 const maxDate = computed(() => {
   return new Date().toISOString().split("T")[0];
@@ -117,7 +129,7 @@ const handleRegister = async () => {
   }
 
   if (password.value !== confirmPassword.value) {
-    presentToast("Passwords do not match.");
+    presentToast(t("auth.passwords_do_not_match"));
     return;
   }
 
@@ -144,7 +156,7 @@ const handleRegister = async () => {
     router.push("/login");
   } catch (error) {
     console.error("Registration failed", error);
-    presentToast("Registration failed: " + (error.response?.data?.error || error.message));
+    presentToast(t("auth.registration_failed") + ": " + (error.response?.data?.error || error.message));
   }
 };
 </script>

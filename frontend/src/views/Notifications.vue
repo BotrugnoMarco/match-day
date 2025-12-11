@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Notifications</ion-title>
+        <ion-title>{{ t("notifications.title") }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="markAllRead" v-if="unreadCount > 0">
             <ion-icon :icon="checkmarkDoneOutline"></ion-icon>
@@ -15,8 +15,8 @@
     </ion-header>
     <ion-content class="page-content">
       <div class="page-banner">
-        <h2>Alerts</h2>
-        <p>Stay updated</p>
+        <h2>{{ t("notifications.alerts") }}</h2>
+        <p>{{ t("notifications.stay_updated") }}</p>
       </div>
 
       <div class="notifications-container ion-padding-horizontal">
@@ -41,7 +41,7 @@
 
         <div v-else class="ion-text-center ion-padding empty-state">
           <ion-icon :icon="notificationsOffOutline" class="empty-icon"></ion-icon>
-          <p>No notifications yet.</p>
+          <p>{{ t("notifications.no_notifications") }}</p>
         </div>
       </div>
     </ion-content>
@@ -52,6 +52,7 @@
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonBackButton, IonMenuButton, IonIcon } from "@ionic/vue";
 import {
   notificationsOutline,
@@ -65,6 +66,7 @@ import {
 
 const store = useStore();
 const router = useRouter();
+const { t } = useI18n();
 const notifications = computed(() => store.getters.notifications);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 

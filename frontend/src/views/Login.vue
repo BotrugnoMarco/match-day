@@ -6,8 +6,8 @@
           <div class="icon-container">
             <ion-icon :icon="football" class="app-logo"></ion-icon>
           </div>
-          <h1>Welcome Back!</h1>
-          <p>Sign in to continue</p>
+          <h1>{{ t("auth.welcome_back") }}</h1>
+          <p>{{ t("auth.sign_in_continue") }}</p>
         </div>
 
         <div class="auth-form-container">
@@ -15,24 +15,26 @@
             <div class="input-group">
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="personOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-input v-model="username" type="text" placeholder="Username" required></ion-input>
+                <ion-input v-model="username" type="text" :placeholder="t('auth.username_placeholder')" required></ion-input>
               </ion-item>
 
               <ion-item lines="none" class="custom-input">
                 <ion-icon :icon="lockClosedOutline" slot="start" class="input-icon"></ion-icon>
-                <ion-input v-model="password" type="password" placeholder="Password" required></ion-input>
+                <ion-input v-model="password" type="password" :placeholder="t('auth.password_placeholder')" required></ion-input>
               </ion-item>
             </div>
 
             <div class="forgot-password">
-              <a href="#">Forgot Password?</a>
+              <a href="#">{{ t("auth.forgot_password") }}</a>
             </div>
 
-            <ion-button expand="block" type="submit" class="auth-btn" shape="round"> LOGIN </ion-button>
+            <ion-button expand="block" type="submit" class="auth-btn" shape="round"> {{ t("auth.login_btn") }} </ion-button>
           </form>
 
           <div class="auth-footer">
-            <p>Don't have an account? <span @click="router.push('/register')">Create Account</span></p>
+            <p>
+              {{ t("auth.no_account") }} <span @click="router.push('/register')">{{ t("auth.create_account") }}</span>
+            </p>
           </div>
         </div>
       </div>
@@ -44,6 +46,7 @@
 import { ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { IonPage, IonContent, IonItem, IonInput, IonButton, IonIcon, toastController } from "@ionic/vue";
 import { personOutline, lockClosedOutline, football } from "ionicons/icons";
 
@@ -51,6 +54,7 @@ const username = ref("");
 const password = ref("");
 const store = useStore();
 const router = useRouter();
+const { t } = useI18n();
 
 const presentToast = async (message, color = "danger") => {
   const toast = await toastController.create({
@@ -71,7 +75,7 @@ const handleLogin = async () => {
     router.push("/matches");
   } catch (error) {
     console.error("Login failed", error);
-    presentToast("Login failed: " + (error.response?.data?.error || error.message));
+    presentToast(t("auth.login_failed") + ": " + (error.response?.data?.error || error.message));
   }
 };
 </script>

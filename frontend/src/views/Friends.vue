@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Friends</ion-title>
+        <ion-title>{{ t("friends.title") }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="goToNotifications">
             <ion-icon :icon="notificationsOutline"></ion-icon>
@@ -24,7 +24,7 @@
       <div class="ion-padding">
         <!-- Search Section -->
         <div class="section-container">
-          <ion-searchbar v-model="searchQuery" placeholder="Search users..." @ionInput="handleSearch"></ion-searchbar>
+          <ion-searchbar v-model="searchQuery" :placeholder="t('friends.search_placeholder')" @ionInput="handleSearch"></ion-searchbar>
 
           <div v-if="searchResults.length > 0" class="search-results">
             <ion-list lines="none">
@@ -46,7 +46,7 @@
         <div v-if="pendingRequests.length > 0" class="section-container">
           <div class="section-title">
             <ion-icon :icon="timeOutline" color="warning"></ion-icon>
-            <h3>Pending Requests</h3>
+            <h3>{{ t("friends.pending_requests") }}</h3>
           </div>
           <ion-card class="custom-card">
             <ion-list lines="none">
@@ -56,7 +56,7 @@
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ req.username }}</h2>
-                  <p>Wants to be your friend</p>
+                  <p>{{ t("friends.wants_to_be_friend") }}</p>
                 </ion-label>
                 <ion-button slot="end" size="small" color="success" @click="acceptFriendRequest(req.id)">
                   <ion-icon :icon="checkmarkCircleOutline"></ion-icon>
@@ -73,7 +73,7 @@
         <div class="section-container">
           <div class="section-title">
             <ion-icon :icon="peopleOutline" color="primary"></ion-icon>
-            <h3>My Friends ({{ friendsList.length }})</h3>
+            <h3>{{ t("friends.my_friends") }} ({{ friendsList.length }})</h3>
           </div>
 
           <div v-if="friendsList.length > 0">
@@ -98,7 +98,7 @@
 
           <div v-else class="empty-state">
             <ion-icon :icon="peopleOutline" class="empty-icon"></ion-icon>
-            <p>No friends yet. Search for players in matches to add them!</p>
+            <p>{{ t("friends.no_friends") }}</p>
           </div>
         </div>
       </div>
@@ -110,6 +110,7 @@
 import { ref, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import {
   IonPage,
@@ -144,6 +145,7 @@ import {
 
 const store = useStore();
 const router = useRouter();
+const { t } = useI18n();
 const friendsList = ref([]);
 const pendingRequests = ref([]);
 const searchQuery = ref("");
@@ -190,15 +192,15 @@ const fetchPendingRequests = async () => {
 
 const confirmRemoveFriend = async (friend) => {
   const alert = await alertController.create({
-    header: "Remove Friend",
-    message: `Are you sure you want to remove ${friend.username} from your friends?`,
+    header: t("friends.remove_friend"),
+    message: t("friends.remove_confirm", { name: friend.username }),
     buttons: [
       {
-        text: "Cancel",
+        text: t("common.cancel"),
         role: "cancel",
       },
       {
-        text: "Remove",
+        text: t("common.remove"),
         role: "destructive",
         handler: () => {
           removeFriend(friend.id);
@@ -213,10 +215,10 @@ const removeFriend = async (friendId) => {
   try {
     await api.delete(`/friends/${friendId}`);
     friendsList.value = friendsList.value.filter((f) => f.id !== friendId);
-    presentToast("Friend removed successfully");
+    presentToast(t("friends.removed"));
   } catch (error) {
     console.error("Error removing friend:", error);
-    presentToast("Failed to remove friend", "danger");
+    presentToast(t("friends.remove_error"), "danger");
   }
 };
 
@@ -225,10 +227,10 @@ const acceptFriendRequest = async (id) => {
     await api.put(`/friends/accept/${id}`);
     pendingRequests.value = pendingRequests.value.filter((r) => r.id !== id);
     fetchFriends();
-    presentToast("Friend request accepted!");
+    presentToast(t("friends.accepted"));
   } catch (error) {
     console.error("Error accepting friend request:", error);
-    presentToast("Failed to accept request", "danger");
+    presentToast(t("friends.accept_error"), "danger");
   }
 };
 
@@ -236,10 +238,10 @@ const rejectFriendRequest = async (id) => {
   try {
     await api.put(`/friends/reject/${id}`);
     pendingRequests.value = pendingRequests.value.filter((r) => r.id !== id);
-    presentToast("Friend request rejected");
+    presentToast(t("friends.rejected"));
   } catch (error) {
     console.error("Error rejecting friend request:", error);
-    presentToast("Failed to reject request", "danger");
+    presentToast(t("friends.reject_error"), "danger");
   }
 };
 

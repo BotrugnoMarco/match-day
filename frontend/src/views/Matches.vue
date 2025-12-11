@@ -5,7 +5,7 @@
         <ion-buttons slot="start">
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
-        <ion-title>Matches</ion-title>
+        <ion-title>{{ t("matches.title") }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="goToNotifications" class="notification-button">
             <ion-icon :icon="notificationsOutline"></ion-icon>
@@ -20,13 +20,13 @@
         <div class="segment-wrapper">
           <ion-segment v-model="filter" @ionChange="segmentChanged" mode="ios" class="custom-segment">
             <ion-segment-button value="all">
-              <ion-label>All</ion-label>
+              <ion-label>{{ t("matches.all") }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="mine">
-              <ion-label>My Matches</ion-label>
+              <ion-label>{{ t("matches.mine") }}</ion-label>
             </ion-segment-button>
             <ion-segment-button value="friends">
-              <ion-label>Friends</ion-label>
+              <ion-label>{{ t("matches.friends") }}</ion-label>
             </ion-segment-button>
           </ion-segment>
         </div>
@@ -44,7 +44,7 @@
                   <span class="sport-name">{{ match.sport_type }}</span>
                   <div class="privacy-indicator">
                     <ion-icon :icon="match.is_private ? lockClosedOutline : globeOutline" class="privacy-icon"></ion-icon>
-                    <span class="privacy-text">{{ match.is_private ? "Private" : "Public" }}</span>
+                    <span class="privacy-text">{{ match.is_private ? t("matches.private") : t("matches.public") }}</span>
                   </div>
                 </div>
               </div>
@@ -65,11 +65,11 @@
               <div class="match-features" v-if="match.is_covered || match.has_showers">
                 <ion-chip v-if="match.is_covered" outline color="medium" class="feature-chip">
                   <ion-icon :icon="umbrella"></ion-icon>
-                  <ion-label>Covered</ion-label>
+                  <ion-label>{{ t("matches.covered") }}</ion-label>
                 </ion-chip>
                 <ion-chip v-if="match.has_showers" outline color="medium" class="feature-chip">
                   <ion-icon :icon="water"></ion-icon>
-                  <ion-label>Showers</ion-label>
+                  <ion-label>{{ t("matches.showers") }}</ion-label>
                 </ion-chip>
               </div>
             </div>
@@ -79,7 +79,7 @@
                 <ion-avatar class="organizer-avatar">
                   <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                 </ion-avatar>
-                <span class="organizer-name">Hosted by {{ match.creator_username }}</span>
+                <span class="organizer-name">{{ t("matches.hosted_by", { name: match.creator_username }) }}</span>
               </div>
               <ion-icon :icon="chevronForwardOutline" class="arrow-icon"></ion-icon>
             </div>
@@ -88,7 +88,7 @@
 
         <div v-else class="ion-text-center ion-padding empty-state">
           <ion-icon :icon="calendarOutline" class="empty-icon"></ion-icon>
-          <p>No matches found.</p>
+          <p>{{ t("matches.no_matches_found") }}</p>
         </div>
       </div>
 
@@ -102,10 +102,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
-import socket from "../services/socket";
+import { useI18n } from "vue-i18n";
+import api from "../services/api";
 import {
   IonPage,
   IonHeader,
@@ -145,6 +146,7 @@ import {
 
 const store = useStore();
 const router = useRouter();
+const { t } = useI18n();
 const filter = ref("all");
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 

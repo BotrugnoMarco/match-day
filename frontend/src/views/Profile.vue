@@ -6,7 +6,7 @@
           <ion-menu-button v-if="isOwnProfile"></ion-menu-button>
           <ion-back-button v-else default-href="/matches"></ion-back-button>
         </ion-buttons>
-        <ion-title>Profile</ion-title>
+        <ion-title>{{ t("profile.title") }}</ion-title>
         <ion-buttons slot="end">
           <ion-button @click="goToNotifications">
             <ion-icon :icon="notificationsOutline"></ion-icon>
@@ -27,25 +27,25 @@
     <ion-modal :is-open="isEditModalOpen" @didDismiss="closeEditModal">
       <ion-header>
         <ion-toolbar>
-          <ion-title>Edit Profile</ion-title>
+          <ion-title>{{ t("profile.edit_profile") }}</ion-title>
           <ion-buttons slot="end">
-            <ion-button @click="closeEditModal">Close</ion-button>
+            <ion-button @click="closeEditModal">{{ t("common.close") }}</ion-button>
           </ion-buttons>
         </ion-toolbar>
       </ion-header>
       <ion-content class="ion-padding">
         <ion-item>
-          <ion-label position="stacked">Username</ion-label>
+          <ion-label position="stacked">{{ t("profile.username") }}</ion-label>
           <ion-input v-model="editForm.username" placeholder="Username"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked">Email</ion-label>
+          <ion-label position="stacked">{{ t("profile.email") }}</ion-label>
           <ion-input v-model="editForm.email" type="email" placeholder="Email"></ion-input>
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked">Birth Date</ion-label>
+          <ion-label position="stacked">{{ t("profile.birth_date") }}</ion-label>
           <ion-datetime-button datetime="birthdate"></ion-datetime-button>
         </ion-item>
         <ion-modal :keep-contents-mounted="true">
@@ -53,7 +53,7 @@
         </ion-modal>
 
         <ion-item>
-          <ion-label position="stacked">Gender</ion-label>
+          <ion-label position="stacked">{{ t("profile.gender") }}</ion-label>
           <ion-select v-model="editForm.gender" interface="popover">
             <ion-select-option value="M">Male</ion-select-option>
             <ion-select-option value="F">Female</ion-select-option>
@@ -62,7 +62,7 @@
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked">Status</ion-label>
+          <ion-label position="stacked">{{ t("profile.status") }}</ion-label>
           <ion-select v-model="editForm.status" interface="popover">
             <ion-select-option value="available">Available</ion-select-option>
             <ion-select-option value="injured">Injured</ion-select-option>
@@ -71,14 +71,18 @@
         </ion-item>
 
         <ion-item>
-          <ion-label position="stacked">Preferred Jersey Number</ion-label>
+          <ion-label position="stacked">{{ t("profile.jersey_number") }}</ion-label>
           <ion-input type="number" v-model="editForm.preferred_number" placeholder="e.g. 10"></ion-input>
         </ion-item>
 
         <div class="ion-padding-top">
-          <ion-button expand="block" @click="saveProfile">Save Changes</ion-button>
-          <ion-button expand="block" color="secondary" fill="outline" class="ion-margin-top" @click="exportData"> Export My Data </ion-button>
-          <ion-button expand="block" color="danger" fill="outline" class="ion-margin-top" @click="confirmDeleteAccount"> Delete Account </ion-button>
+          <ion-button expand="block" @click="saveProfile">{{ t("profile.save_changes") }}</ion-button>
+          <ion-button expand="block" color="secondary" fill="outline" class="ion-margin-top" @click="exportData">
+            {{ t("profile.export_data") }}
+          </ion-button>
+          <ion-button expand="block" color="danger" fill="outline" class="ion-margin-top" @click="confirmDeleteAccount">
+            {{ t("profile.delete_account") }}
+          </ion-button>
         </div>
       </ion-content>
     </ion-modal>
@@ -263,6 +267,7 @@
 import { computed, ref, onMounted, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
+import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import {
   IonPage,
@@ -315,6 +320,7 @@ import {
 const store = useStore();
 const router = useRouter();
 const route = useRoute();
+const { t } = useI18n();
 
 const currentUser = computed(() => store.getters.currentUser);
 const viewedUser = computed(() => store.getters.viewedUser);

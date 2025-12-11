@@ -25,9 +25,13 @@
           <ion-menu-toggle auto-hide="false" v-if="currentUser">
             <ion-item button @click="logout" lines="none" detail="false">
               <ion-icon slot="start" :icon="logOutOutline"></ion-icon>
-              <ion-label>Logout</ion-label>
+              <ion-label>{{ t("menu.logout") }}</ion-label>
             </ion-item>
           </ion-menu-toggle>
+
+          <ion-item lines="none">
+            <LanguageSwitcher />
+          </ion-item>
         </ion-list>
       </ion-content>
     </ion-menu>
@@ -39,6 +43,8 @@
 import { onMounted, watch, computed } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
+import LanguageSwitcher from "./components/LanguageSwitcher.vue";
 import {
   IonApp,
   IonRouterOutlet,
@@ -78,46 +84,47 @@ import socket from "./services/socket";
 
 const store = useStore();
 const router = useRouter();
+const { t } = useI18n();
 const currentUser = computed(() => store.state.user);
 
-const appPages = [
+const appPages = computed(() => [
   {
-    title: "Home",
+    title: t("menu.home"),
     url: "/home",
     iosIcon: homeOutline,
     mdIcon: homeSharp,
   },
   {
-    title: "My Matches",
+    title: t("menu.my_matches"),
     url: "/matches",
     iosIcon: calendarOutline,
     mdIcon: calendarSharp,
   },
   {
-    title: "Create Match",
+    title: t("menu.create_match"),
     url: "/matches/create",
     iosIcon: addCircleOutline,
     mdIcon: addCircleSharp,
   },
   {
-    title: "Friends",
+    title: t("menu.friends"),
     url: "/friends",
     iosIcon: peopleOutline,
     mdIcon: peopleSharp,
   },
   {
-    title: "Profile",
+    title: t("menu.profile"),
     url: "/profile",
     iosIcon: personCircleOutline,
     mdIcon: personCircleSharp,
   },
   {
-    title: "Support",
+    title: t("menu.support"),
     url: "/support",
     iosIcon: helpCircleOutline,
     mdIcon: helpCircleSharp,
   },
-];
+]);
 
 const logout = async () => {
   await store.dispatch("logout");

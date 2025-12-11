@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router';
 import store from './store';
+import i18n from './i18n';
 
 import { IonicVue } from '@ionic/vue';
 
@@ -27,7 +28,8 @@ import './theme/variables.css';
 const app = createApp(App)
     .use(IonicVue)
     .use(router)
-    .use(store);
+    .use(store)
+    .use(i18n);
 
 router.isReady().then(() => {
     app.mount('#app');

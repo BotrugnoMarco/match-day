@@ -24,15 +24,15 @@
           <img :src="logoUrl" alt="MatchDay Logo" class="main-logo" />
         </div>
         <div v-else class="user-welcome">
-          <h2>Hi, {{ user?.username }}!</h2>
-          <p>Ready to play?</p>
+          <h2>{{ t("home.welcome", { name: user?.username }) }}</h2>
+          <p>{{ t("home.ready_to_play") }}</p>
         </div>
       </div>
 
       <div class="dashboard-container" v-if="isAuthenticated">
         <!-- Next Match Card -->
         <div class="section-title">
-          <h3>Next Match</h3>
+          <h3>{{ t("home.next_match") }}</h3>
         </div>
 
         <div v-if="nextMatch" class="next-match-card" @click="router.push(`/matches/${nextMatch.id}`)">
@@ -56,47 +56,47 @@
         </div>
 
         <div v-else class="empty-match-card">
-          <p>No upcoming matches</p>
+          <p>{{ t("home.no_upcoming_matches") }}</p>
           <ion-button size="small" fill="outline" router-link="/matches/create">
-            Schedule One
+            {{ t("home.schedule_one") }}
             <ion-icon slot="end" :icon="addCircleOutline"></ion-icon>
           </ion-button>
         </div>
 
         <!-- Quick Actions Grid -->
         <div class="section-title">
-          <h3>Quick Actions</h3>
+          <h3>{{ t("home.quick_actions") }}</h3>
         </div>
         <div class="actions-grid">
           <div class="action-item" @click="router.push('/matches')">
             <div class="action-icon blue">
               <ion-icon :icon="calendarOutline"></ion-icon>
             </div>
-            <span>My Matches</span>
+            <span>{{ t("menu.my_matches") }}</span>
           </div>
           <div class="action-item" @click="router.push('/matches/create')">
             <div class="action-icon green">
               <ion-icon :icon="addCircleOutline"></ion-icon>
             </div>
-            <span>Create</span>
+            <span>{{ t("common.create") }}</span>
           </div>
           <div class="action-item" @click="router.push('/friends')">
             <div class="action-icon orange">
               <ion-icon :icon="peopleOutline"></ion-icon>
             </div>
-            <span>Friends</span>
+            <span>{{ t("menu.friends") }}</span>
           </div>
           <div class="action-item" @click="router.push('/profile')">
             <div class="action-icon purple">
               <ion-icon :icon="personCircleOutline"></ion-icon>
             </div>
-            <span>Profile</span>
+            <span>{{ t("menu.profile") }}</span>
           </div>
         </div>
 
         <!-- Recent Activity -->
         <div class="section-title" v-if="recentActivity.length > 0">
-          <h3>Recent Activity</h3>
+          <h3>{{ t("home.recent_activity") }}</h3>
         </div>
         <div class="activity-list" v-if="recentActivity.length > 0">
           <div v-for="notif in recentActivity" :key="notif.id" class="activity-item" @click="handleNotificationClick(notif)">
@@ -113,17 +113,17 @@
 
       <div class="actions-container" v-else>
         <div class="welcome-text">
-          <h2>Welcome!</h2>
-          <p>Organize matches, track scores, and rank up with your friends.</p>
+          <h2>{{ t("home.welcome_title") }}</h2>
+          <p>{{ t("home.welcome_subtitle") }}</p>
         </div>
 
         <div class="buttons-wrapper">
           <ion-button expand="block" size="large" router-link="/login" class="action-btn primary-btn">
-            Login
+            {{ t("home.login") }}
             <ion-icon slot="end" :icon="logInOutline"></ion-icon>
           </ion-button>
           <ion-button expand="block" size="large" fill="outline" router-link="/register" class="action-btn secondary-btn">
-            Create Account
+            {{ t("home.create_account") }}
             <ion-icon slot="end" :icon="personAddOutline"></ion-icon>
           </ion-button>
         </div>
@@ -136,6 +136,7 @@
 import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
+import { useI18n } from "vue-i18n";
 import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton } from "@ionic/vue";
 import {
   logInOutline,
@@ -157,6 +158,7 @@ import {
 
 const store = useStore();
 const router = useRouter();
+const { t } = useI18n();
 const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
 
 const isAuthenticated = computed(() => store.getters.isAuthenticated);

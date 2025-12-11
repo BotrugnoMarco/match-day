@@ -2,16 +2,16 @@
   <ion-page>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Vote for {{ targetName }}</ion-title>
+        <ion-title>{{ t("vote.title", { name: targetName }) }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="cancel">Cancel</ion-button>
+          <ion-button @click="cancel">{{ t("common.cancel") }}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
       <form @submit.prevent="submitVote">
         <ion-item lines="none" class="rating-item">
-          <ion-label position="stacked">Rating</ion-label>
+          <ion-label position="stacked">{{ t("vote.rating") }}</ion-label>
           <div class="rating-display">
             <span class="rating-value">{{ rating }}</span>
             <span class="rating-max">/ 10</span>
@@ -20,7 +20,7 @@
         </ion-item>
 
         <div class="tags-section">
-          <ion-label class="tags-label">Select a Tag (Optional)</ion-label>
+          <ion-label class="tags-label">{{ t("vote.select_tag") }}</ion-label>
           <div class="tags-container">
             <ion-chip
               v-for="tag in availableTags"
@@ -35,7 +35,7 @@
         </div>
 
         <div class="ion-padding-top">
-          <ion-button expand="block" type="submit" size="large">Submit Vote</ion-button>
+          <ion-button expand="block" type="submit" size="large">{{ t("vote.submit_btn") }}</ion-button>
         </div>
       </form>
     </ion-content>
@@ -44,6 +44,7 @@
 
 <script setup>
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 import {
   IonPage,
   IonHeader,
@@ -67,6 +68,7 @@ const props = defineProps({
   targetName: { type: String, required: true },
 });
 
+const { t } = useI18n();
 const rating = ref(6);
 const selectedTag = ref(null);
 
@@ -102,10 +104,11 @@ const submitVote = async () => {
       rating: rating.value,
       tags: selectedTag.value || "",
     });
-    modalController.dismiss(null, "confirm");
+    presentToast(t("vote.success"), "success");
+    modalController.dismiss(true, "confirm");
   } catch (error) {
-    console.error("Vote error:", error);
-    presentToast("Failed to submit vote: " + (error.response?.data?.error || error.message));
+    console.error("Error submitting vote:", error);
+    presentToast(t("vote.failed"));
   }
 };
 </script>

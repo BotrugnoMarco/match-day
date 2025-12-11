@@ -122,5 +122,3 @@ CREATE TABLE IF NOT EXISTS support_tickets (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
-UNIQUE KEY unique_friendship (requester_id, addressee_id)
-);

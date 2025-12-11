@@ -197,7 +197,7 @@
                 <ion-icon :icon="getSportIcon(skill.sport_type)" slot="start" class="sport-icon"></ion-icon>
                 <ion-label>
                   <div class="skill-header">
-                    <h3>{{ capitalize(skill.sport_type) }}</h3>
+                    <h3>{{ t("sports." + skill.sport_type) }}</h3>
                     <span class="skill-rating">{{ skill.rating }}</span>
                   </div>
                   <ion-progress-bar :value="skill.rating / 10" :color="getSkillColor(skill.rating)"></ion-progress-bar>
@@ -216,7 +216,7 @@
         </div>
         <div class="badges-container">
           <div v-for="tagItem in stats.tags" :key="tagItem.tag" class="badge-chip">
-            <span class="badge-name">{{ tagItem.tag }}</span>
+            <span class="badge-name">{{ t("vote.tags." + tagItem.tag) }}</span>
             <span class="badge-count">x{{ tagItem.count }}</span>
           </div>
         </div>
@@ -238,14 +238,14 @@
                   <span class="month">{{ new Date(match.date_time).toLocaleString("default", { month: "short" }) }}</span>
                 </div>
                 <div class="match-info">
-                  <h3 class="sport-name">{{ match.sport_type.toUpperCase() }}</h3>
+                  <h3 class="sport-name">{{ t("sports." + match.sport_type).toUpperCase() }}</h3>
                   <p class="location">{{ match.location }}</p>
                 </div>
               </div>
 
               <div class="match-right">
                 <div class="result-badge" :class="match.result">
-                  {{ match.result?.toUpperCase() || t("profile.played") }}
+                  {{ match.result ? t("results." + match.result).toUpperCase() : t("profile.played") }}
                 </div>
                 <div class="rating-mini" v-if="match.avg_rating">
                   <ion-icon :icon="star" color="warning"></ion-icon>

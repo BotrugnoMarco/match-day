@@ -279,5 +279,24 @@
     "remove_error": "Failed to remove friend",
     "accept_error": "Failed to accept request",
     "reject_error": "Failed to reject request"
+  },
+  "sports": {
+    "soccer": "Soccer",
+    "basketball": "Basketball",
+    "tennis": "Tennis",
+    "padel": "Padel",
+    "volleyball": "Volleyball"
+  },
+  "status": {
+    "open": "Open",
+    "full": "Full",
+    "finished": "Finished",
+    "cancelled": "Cancelled",
+    "voting": "Voting"
+  },
+  "results": {
+    "won": "Won",
+    "lost": "Lost",
+    "draw": "Draw"
   }
 }

@@ -102,11 +102,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
+import socket from "../services/socket";
 import {
   IonPage,
   IonHeader,

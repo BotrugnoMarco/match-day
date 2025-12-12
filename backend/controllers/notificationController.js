@@ -109,7 +109,15 @@ exports.createNotification = async (userId, message, type = 'info', relatedMatch
                         // Fallback semplice in italiano se il messaggio è una chiave di traduzione
                         // In un sistema ideale, dovremmo sapere la lingua dell'utente
                         if (parsed.key === 'notifications.match_invite') {
-                            bodyText = `${parsed.params.inviter} ti ha invitato a una partita il ${parsed.params.date}`;
+                            const dateObj = new Date(parsed.params.date);
+                            // Formato numerico neutro: DD/MM HH:mm (es. 12/12 14:30)
+                            const day = String(dateObj.getDate()).padStart(2, '0');
+                            const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+                            const hours = String(dateObj.getHours()).padStart(2, '0');
+                            const minutes = String(dateObj.getMinutes()).padStart(2, '0');
+                            const dateStr = !isNaN(dateObj) ? `${day}/${month} ${hours}:${minutes}` : parsed.params.date;
+
+                            bodyText = `${parsed.params.inviter} ti ha invitato a una partita il ${dateStr}`;
                         } else if (parsed.key === 'notifications.friend_request') {
                             bodyText = `${parsed.params.username} ti ha inviato una richiesta di amicizia`;
                         } else if (parsed.key === 'notifications.friend_accepted') {

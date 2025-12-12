@@ -101,10 +101,36 @@ exports.createNotification = async (userId, message, type = 'info', relatedMatch
             if (tokens.length > 0) {
                 const fcmTokens = tokens.map(t => t.token);
 
+                // Tenta di parsare il messaggio se è un JSON (per le traduzioni)
+                let bodyText = message;
+                try {
+                    const parsed = JSON.parse(message);
+                    if (parsed.key) {
+                        // Fallback semplice in italiano se il messaggio è una chiave di traduzione
+                        // In un sistema ideale, dovremmo sapere la lingua dell'utente
+                        if (parsed.key === 'notifications.match_invite') {
+                            bodyText = `${parsed.params.inviter} ti ha invitato a una partita il ${parsed.params.date}`;
+                        } else if (parsed.key === 'notifications.friend_request') {
+                            bodyText = `${parsed.params.username} ti ha inviato una richiesta di amicizia`;
+                        } else if (parsed.key === 'notifications.friend_accepted') {
+                            bodyText = `${parsed.params.username} ha accettato la tua richiesta di amicizia`;
+                        } else if (parsed.key === 'notifications.match_joined') {
+                            bodyText = `${parsed.params.username} si è unito alla partita`;
+                        } else if (parsed.key === 'notifications.match_left') {
+                            bodyText = `${parsed.params.username} ha lasciato la partita`;
+                        } else {
+                            bodyText = "Hai una nuova notifica su MatchDay!";
+                        }
+                    }
+                } catch (e) {
+                    // Se non è JSON, usa il messaggio così com'è
+                    bodyText = message;
+                }
+
                 const payload = {
                     notification: {
                         title: 'MatchDay',
-                        body: message,
+                        body: bodyText,
                     },
                     data: {
                         type: type,

@@ -22,3 +22,4 @@ nginx.conf
 backend/.env
 frontend/.env
 backend/config/serviceAccountKey.json
+update_android.sh

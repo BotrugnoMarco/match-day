@@ -23,7 +23,7 @@
         <div class="header-info">
           <h1>{{ t("sports." + match.sport_type) }}</h1>
           <div class="header-badges">
-            <ion-badge :color="getStatusColor(match.status)" class="status-badge">{{ t("status." + match.status) }}</ion-badge>
+            <ion-badge v-if="!(match.status === 'open' && match.is_private)" :color="getStatusColor(match.status)" class="status-badge">{{ t("status." + match.status) }}</ion-badge>
             <ion-badge v-if="match.is_private" color="medium" class="status-badge">{{ t("matches.private") }}</ion-badge>
           </div>
         </div>

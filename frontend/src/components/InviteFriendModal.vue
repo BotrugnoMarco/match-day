@@ -14,7 +14,7 @@
       <ion-list v-if="filteredFriends.length > 0">
         <ion-item v-for="friend in filteredFriends" :key="friend.id">
           <ion-avatar slot="start">
-            <img :src="friend.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+            <img :src="friend.avatar_url || '/default-avatar.svg'" />
           </ion-avatar>
           <ion-label>
             <h2>{{ friend.username }}</h2>
@@ -98,7 +98,7 @@ const invite = async (friend) => {
     await api.post(`/matches/${props.matchId}/invite`, { userId: friend.id });
     invitedFriends.value.add(friend.id);
     const toast = await toastController.create({
-      message: t('invite.sent_to', { name: friend.username }),
+      message: t("invite.sent_to", { name: friend.username }),
       duration: 2000,
       color: "success",
       position: "top",
@@ -107,7 +107,7 @@ const invite = async (friend) => {
   } catch (error) {
     console.error("Error inviting friend:", error);
     const toast = await toastController.create({
-      message: t('invite.failed'),
+      message: t("invite.failed"),
       duration: 2000,
       color: "danger",
       position: "top",

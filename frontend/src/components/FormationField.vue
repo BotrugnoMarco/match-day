@@ -40,7 +40,7 @@
       >
         <div class="token-inner">
           <ion-avatar class="token-avatar">
-            <img :src="player.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+            <img :src="player.avatar_url || '/default-avatar.svg'" />
           </ion-avatar>
           <div class="captain-band" v-if="player.is_captain">C</div>
           <div class="jersey-number" v-if="player.preferred_number">{{ player.preferred_number }}</div>

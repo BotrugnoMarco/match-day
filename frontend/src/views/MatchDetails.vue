@@ -130,7 +130,7 @@
                 <span class="label">{{ t("match_details.organizer") }}</span>
                 <div class="organizer-value">
                   <ion-avatar class="mini-avatar">
-                    <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                    <img :src="match.creator_avatar || '/default-avatar.svg'" />
                   </ion-avatar>
                   <span>{{ match.creator_username || "Unknown" }}</span>
                 </div>
@@ -258,7 +258,7 @@
             <ion-list lines="none">
               <ion-item v-for="p in pendingParticipants" :key="p.id">
                 <ion-avatar slot="start">
-                  <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="p.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ p.username }}</h2>
@@ -287,7 +287,7 @@
             <ion-list lines="none">
               <ion-item v-for="p in waitlistParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
                 <ion-avatar slot="start">
-                  <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="p.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ p.username }}</h2>
@@ -313,7 +313,7 @@
                 <ion-list lines="none">
                   <ion-item v-for="p in teamAParticipants" :key="p.id">
                     <ion-avatar slot="start" @click="goToProfile(p.user_id)">
-                      <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                      <img :src="p.avatar_url || '/default-avatar.svg'" />
                     </ion-avatar>
                     <ion-label @click="goToProfile(p.user_id)">
                       <div class="name-container">
@@ -351,7 +351,7 @@
                 <ion-list lines="none">
                   <ion-item v-for="p in teamBParticipants" :key="p.id">
                     <ion-avatar slot="start" @click="goToProfile(p.user_id)">
-                      <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                      <img :src="p.avatar_url || '/default-avatar.svg'" />
                     </ion-avatar>
                     <ion-label @click="goToProfile(p.user_id)">
                       <div class="name-container">
@@ -387,7 +387,7 @@
             <ion-list lines="none">
               <ion-item v-for="p in activeParticipants" :key="p.id">
                 <ion-avatar slot="start" @click="goToProfile(p.user_id)">
-                  <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="p.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label @click="goToProfile(p.user_id)">
                   <h2>{{ p.username }}</h2>

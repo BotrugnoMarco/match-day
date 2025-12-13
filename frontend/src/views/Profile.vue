@@ -93,7 +93,7 @@
         <div class="profile-header-row">
           <div class="avatar-wrapper" @click="triggerFileInput">
             <ion-avatar class="main-avatar">
-              <img :src="user?.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+              <img :src="user?.avatar_url || '/default-avatar.svg'" />
             </ion-avatar>
             <div class="edit-badge" v-if="isOwnProfile">
               <ion-icon :icon="camera" color="light"></ion-icon>

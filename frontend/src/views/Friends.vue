@@ -30,7 +30,7 @@
             <ion-list lines="none">
               <ion-item v-for="user in searchResults" :key="user.id" button @click="goToProfile(user.id)">
                 <ion-avatar slot="start">
-                  <img :src="user.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="user.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ user.username }}</h2>
@@ -52,7 +52,7 @@
             <ion-list lines="none">
               <ion-item v-for="req in pendingRequests" :key="req.id">
                 <ion-avatar slot="start" @click="goToProfile(req.requester_id)">
-                  <img :src="req.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="req.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ req.username }}</h2>
@@ -80,7 +80,7 @@
             <ion-card class="custom-card" v-for="friend in friendsList" :key="friend.id" button @click="goToProfile(friend.id)">
               <ion-item lines="none">
                 <ion-avatar slot="start">
-                  <img :src="friend.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="friend.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ friend.username }}</h2>

@@ -77,7 +77,7 @@
             <div class="match-card-footer">
               <div class="organizer-info">
                 <ion-avatar class="organizer-avatar">
-                  <img :src="match.creator_avatar || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
+                  <img :src="match.creator_avatar || '/default-avatar.svg'" />
                 </ion-avatar>
                 <span class="organizer-name">{{ t("matches.hosted_by", { name: match.creator_username }) }}</span>
               </div>

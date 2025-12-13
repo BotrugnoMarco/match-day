@@ -277,6 +277,7 @@
     "payment_error": "Impossibile aggiornare lo stato del pagamento",
     "move_error": "Impossibile spostare il giocatore",
     "formation_error": "Impossibile salvare la formazione",
+    "formation": "Formazione",
     "approve_error": "Impossibile approvare la richiesta",
     "reject_error": "Impossibile rifiutare la richiesta",
     "admin_error": "Impossibile aggiornare lo stato di admin",

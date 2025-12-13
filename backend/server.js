@@ -98,6 +98,21 @@ app.get('/', (req, res) => {
     res.json({ message: 'Welcome to MatchDay API' });
 });
 
+// Global Error Handler
+app.use((err, req, res, next) => {
+    console.error('Global Error Handler:', err);
+
+    // Multer Error Handling
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({ error: 'File too large. Max size is 5MB.' });
+    }
+    if (err.message === 'Not an image! Please upload an image.') {
+        return res.status(400).json({ error: err.message });
+    }
+
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
+});
+
 // Socket.io Connection
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);

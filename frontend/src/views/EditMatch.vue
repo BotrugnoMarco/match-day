@@ -91,11 +91,12 @@
           <!-- Field Options -->
           <div class="form-card">
             <div class="form-header">
-              <ion-icon :icon="umbrella" class="header-icon"></ion-icon>
+              <ion-icon :icon="homeOutline" class="header-icon"></ion-icon>
               <span>{{ t("create_match.facilities") }}</span>
             </div>
             <div class="form-content">
               <ion-item lines="none" class="custom-item toggle-item">
+                <ion-icon :icon="homeOutline" slot="start" color="medium"></ion-icon>
                 <ion-label>{{ t("create_match.covered_field") }}</ion-label>
                 <ion-toggle v-model="isCovered" slot="end"></ion-toggle>
               </ion-item>
@@ -103,6 +104,7 @@
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item toggle-item">
+                <ion-icon :icon="rainy" slot="start" color="medium"></ion-icon>
                 <ion-label>{{ t("create_match.showers") }}</ion-label>
                 <ion-toggle v-model="hasShowers" slot="end"></ion-toggle>
               </ion-item>
@@ -186,8 +188,8 @@ import {
   peopleOutline,
   cashOutline,
   baseballOutline,
-  umbrella,
-  water,
+  homeOutline,
+  rainy,
   lockClosedOutline,
   keyOutline,
 } from "ionicons/icons";

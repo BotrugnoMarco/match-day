@@ -1679,17 +1679,17 @@ onUnmounted(() => {
 }
 
 .captain-badge {
-  width: 24px;
-  height: 24px;
-  background-color: #ffc107; /* Gold/Yellow */
+  width: 20px;
+  height: 20px;
+  background-color: #ffc107;
   color: #000;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 12px;
+  box-shadow: 0 2px 4px #0000001a;
   border: 2px solid #fff;
 }
 </style>

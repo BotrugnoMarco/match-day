@@ -890,7 +890,11 @@ exports.setCaptain = async (req, res) => {
         }
 
         // Reset captain for this team in this match
-        await db.query('UPDATE participants SET is_captain = FALSE WHERE match_id = ? AND team = ?', [matchId, team]);
+        if (team) {
+            await db.query('UPDATE participants SET is_captain = FALSE WHERE match_id = ? AND team = ?', [matchId, team]);
+        } else {
+            await db.query('UPDATE participants SET is_captain = FALSE WHERE match_id = ? AND team IS NULL', [matchId]);
+        }
 
         // Set new captain if userId is provided (if null, just clears captain)
         if (userId) {

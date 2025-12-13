@@ -321,7 +321,7 @@
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                      <ion-icon v-if="p.is_captain" :icon="ribbon" color="warning" class="status-icon"></ion-icon>
+                      <div v-if="p.is_captain" class="captain-badge">C</div>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                       <ion-button
@@ -357,7 +357,7 @@
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                      <ion-icon v-if="p.is_captain" :icon="ribbon" color="warning" class="status-icon"></ion-icon>
+                      <div v-if="p.is_captain" class="captain-badge">C</div>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                       <ion-button
@@ -1036,7 +1036,7 @@ const openPlayerActions = async (player) => {
   // Captain Toggle
   buttons.push({
     text: player.is_captain ? t("match_details.remove_captain") : t("match_details.make_captain"),
-    icon: player.is_captain ? ribbonOutline : ribbon,
+    icon: ribbon, // Keeping ribbon for menu as we can't use custom HTML here easily
     handler: () => toggleCaptain(player),
   });
 
@@ -1666,5 +1666,21 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 5px;
+}
+
+.captain-badge {
+  width: 24px;
+  height: 24px;
+  background-color: #ffc107; /* Gold/Yellow */
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+  margin-right: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border: 2px solid #fff;
 }
 </style>

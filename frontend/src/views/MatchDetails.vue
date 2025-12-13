@@ -1156,10 +1156,21 @@ onMounted(() => {
       fetchMatch();
     }
   });
+
+  socket.on("vote_cast", (data) => {
+    if (data.matchId == route.params.id) {
+      if (isAdmin.value) {
+        fetchVoteStats();
+      }
+      // If match is finished, we might want to refresh results too, but votes are usually cast during 'voting' status.
+      // If we allow voting after finish (unlikely based on controller logic), we would fetchVotes().
+    }
+  });
 });
 
 onUnmounted(() => {
   socket.off("match_updated");
+  socket.off("vote_cast");
 });
 </script>
 

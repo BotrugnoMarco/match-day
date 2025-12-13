@@ -49,7 +49,8 @@ exports.submitVote = async (req, res) => {
             'INSERT INTO votes (match_id, voter_id, target_id, rating, tags) VALUES (?, ?, ?, ?, ?)',
             [match_id, voter_id, target_id, rating, tags]
         );
-
+        const io = req.app.get('io');
+        io.emit('vote_cast', { matchId: match_id });
         res.status(201).json({ message: 'Vote submitted successfully' });
     } catch (error) {
         console.error('Submit vote error:', error);

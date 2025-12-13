@@ -870,15 +870,30 @@ const joinMatch = async () => {
 };
 
 const leaveMatch = async () => {
-  try {
-    if (!confirm(t("match_details.leave_confirm"))) return;
-
-    await api.post(`/matches/${route.params.id}/leave`);
-    await fetchMatch();
-  } catch (error) {
-    console.error("Error leaving match:", error);
-    presentToast(t("match_details.leave_error") + ": " + (error.response?.data?.error || error.message));
-  }
+  const alert = await alertController.create({
+    header: t("match_details.leave_match"),
+    message: t("match_details.leave_confirm"),
+    buttons: [
+      {
+        text: t("common.cancel"),
+        role: "cancel",
+      },
+      {
+        text: t("match_details.leave_match"),
+        role: "destructive",
+        handler: async () => {
+          try {
+            await api.post(`/matches/${route.params.id}/leave`);
+            await fetchMatch();
+          } catch (error) {
+            console.error("Error leaving match:", error);
+            presentToast(t("match_details.leave_error") + ": " + (error.response?.data?.error || error.message));
+          }
+        },
+      },
+    ],
+  });
+  await alert.present();
 };
 
 const editMatch = () => {

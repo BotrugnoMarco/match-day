@@ -10,6 +10,9 @@
           <ion-button @click="markAllRead" v-if="unreadCount > 0">
             <ion-icon :icon="checkmarkDoneOutline"></ion-icon>
           </ion-button>
+          <ion-button @click="deleteAll" v-if="notifications.length > 0" color="danger">
+            <ion-icon :icon="trashOutline"></ion-icon>
+          </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -35,6 +38,11 @@
               <div class="message" :class="{ unread: !notification.is_read }">{{ getNotificationMessage(notification.message) }}</div>
               <div class="time">{{ new Date(notification.created_at).toLocaleString() }}</div>
             </div>
+            <div class="actions">
+              <ion-button fill="clear" size="small" color="medium" @click.stop="deleteNotification(notification.id)">
+                <ion-icon slot="icon-only" :icon="trashOutline"></ion-icon>
+              </ion-button>
+            </div>
             <div class="indicator" v-if="!notification.is_read"></div>
           </div>
         </div>
@@ -53,7 +61,19 @@ import { computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonButton, IonButtons, IonBackButton, IonMenuButton, IonIcon } from "@ionic/vue";
+import {
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonContent,
+  IonButton,
+  IonButtons,
+  IonBackButton,
+  IonMenuButton,
+  IonIcon,
+  alertController,
+} from "@ionic/vue";
 import {
   notificationsOutline,
   notificationsOffOutline,
@@ -62,6 +82,7 @@ import {
   checkmarkCircleOutline,
   checkmarkDoneOutline,
   personAddOutline,
+  trashOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -105,6 +126,31 @@ const getIcon = (type) => {
 
 const markAllRead = () => {
   store.dispatch("markAllNotificationsRead");
+};
+
+const deleteAll = async () => {
+  const alert = await alertController.create({
+    header: t("common.confirm"),
+    message: t("common.delete_confirm_message") || "Sei sicuro di voler eliminare tutte le notifiche?",
+    buttons: [
+      {
+        text: t("common.cancel"),
+        role: "cancel",
+      },
+      {
+        text: t("common.delete"),
+        role: "destructive",
+        handler: () => {
+          store.dispatch("deleteAllNotifications");
+        },
+      },
+    ],
+  });
+  await alert.present();
+};
+
+const deleteNotification = (id) => {
+  store.dispatch("deleteNotification", id);
 };
 
 const handleNotificationClick = (notification) => {
@@ -244,6 +290,11 @@ const handleNotificationClick = (notification) => {
   position: absolute;
   top: var(--space-4);
   right: var(--space-4);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
 }
 
 .empty-state {

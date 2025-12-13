@@ -135,6 +135,22 @@ const store = createStore({
                 console.error('Error marking all notifications read:', error);
             }
         },
+        async deleteNotification({ dispatch }, id) {
+            try {
+                await api.delete(`/notifications/${id}`);
+                dispatch('fetchNotifications');
+            } catch (error) {
+                console.error('Error deleting notification:', error);
+            }
+        },
+        async deleteAllNotifications({ dispatch }) {
+            try {
+                await api.delete('/notifications');
+                dispatch('fetchNotifications');
+            } catch (error) {
+                console.error('Error deleting all notifications:', error);
+            }
+        },
         async fetchUserStats({ commit }) {
             try {
                 const response = await api.get('/users/stats');

@@ -73,6 +73,44 @@ exports.markAllAsRead = async (req, res) => {
     }
 };
 
+// Delete a notification
+exports.deleteNotification = async (req, res) => {
+    const notificationId = req.params.id;
+    const userId = req.user.id;
+
+    try {
+        const [result] = await db.query(
+            'DELETE FROM notifications WHERE id = ? AND user_id = ?',
+            [notificationId, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Notification not found or not authorized' });
+        }
+
+        res.json({ message: 'Notification deleted successfully' });
+    } catch (error) {
+        console.error('Delete notification error:', error);
+        res.status(500).json({ error: 'Server error deleting notification' });
+    }
+};
+
+// Delete all notifications
+exports.deleteAllNotifications = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        await db.query(
+            'DELETE FROM notifications WHERE user_id = ?',
+            [userId]
+        );
+        res.json({ message: 'All notifications deleted successfully' });
+    } catch (error) {
+        console.error('Delete all notifications error:', error);
+        res.status(500).json({ error: 'Server error deleting notifications' });
+    }
+};
+
 // Helper function to create a notification (internal use)
 exports.createNotification = async (userId, message, type = 'info', relatedMatchId = null, io = null) => {
     try {

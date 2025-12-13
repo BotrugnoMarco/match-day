@@ -144,7 +144,7 @@
               <span>{{ t("create_match.covered_field") }}</span>
             </div>
             <div class="feature-item" v-if="match.has_showers">
-              <ion-icon :icon="rainy"></ion-icon>
+              <ion-icon :icon="shirtOutline"></ion-icon>
               <span>{{ t("create_match.showers_available") }}</span>
             </div>
             <div class="feature-item" v-if="averageAge">
@@ -547,6 +547,7 @@ import {
   thunderstorm,
   helpCircle,
   homeOutline,
+  shirtOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";

@@ -104,7 +104,7 @@
               <div class="divider"></div>
 
               <ion-item lines="none" class="custom-item toggle-item">
-                <ion-icon :icon="rainy" slot="start" color="medium"></ion-icon>
+                <ion-icon :icon="shirtOutline" slot="start" color="medium"></ion-icon>
                 <ion-label>{{ t("create_match.showers_available") }}</ion-label>
                 <ion-toggle v-model="hasShowers" slot="end"></ion-toggle>
               </ion-item>
@@ -184,7 +184,7 @@ import {
   cashOutline,
   baseballOutline,
   homeOutline,
-  rainy,
+  shirtOutline,
   lockClosedOutline,
   keyOutline,
   mapOutline,

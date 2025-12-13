@@ -64,11 +64,11 @@
               </div>
               <div class="match-features" v-if="match.is_covered || match.has_showers">
                 <ion-chip v-if="match.is_covered" outline color="medium" class="feature-chip">
-                  <ion-icon :icon="umbrella"></ion-icon>
+                  <ion-icon :icon="homeOutline"></ion-icon>
                   <ion-label>{{ t("matches.covered") }}</ion-label>
                 </ion-chip>
                 <ion-chip v-if="match.has_showers" outline color="medium" class="feature-chip">
-                  <ion-icon :icon="water"></ion-icon>
+                  <ion-icon :icon="shirtOutline"></ion-icon>
                   <ion-label>{{ t("matches.showers") }}</ion-label>
                 </ion-chip>
               </div>
@@ -138,8 +138,8 @@ import {
   basketball,
   tennisball,
   baseballOutline,
-  umbrella,
-  water,
+  homeOutline,
+  shirtOutline,
   chevronForwardOutline,
   lockClosedOutline,
   globeOutline,

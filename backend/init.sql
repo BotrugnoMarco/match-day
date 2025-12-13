@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS votes (
     match_id INT,
     voter_id INT,
     target_id INT,
-    rating INT CHECK (
+    rating DECIMAL(3, 1) CHECK (
         rating >= 1
         AND rating <= 10
     ),

@@ -16,7 +16,7 @@
             <span class="rating-value">{{ rating }}</span>
             <span class="rating-max">/ 10</span>
           </div>
-          <ion-range v-model="rating" min="1" max="10" pin="true" ticks="true" snaps="true" color="primary"></ion-range>
+          <ion-range v-model="rating" min="1" max="10" step="0.5" pin="true" ticks="true" snaps="true" color="primary"></ion-range>
         </ion-item>
 
         <div class="tags-section">

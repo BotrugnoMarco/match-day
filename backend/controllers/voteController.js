@@ -91,3 +91,64 @@ exports.getMyVotes = async (req, res) => {
         res.status(500).json({ error: 'Server error fetching my votes' });
     }
 };
+
+// Get vote statistics for a match
+exports.getVoteStats = async (req, res) => {
+    const matchId = req.params.matchId;
+    try {
+        // Get all confirmed participants
+        const [participants] = await db.query(
+            `SELECT u.id, u.username 
+             FROM participants p 
+             JOIN users u ON p.user_id = u.id 
+             WHERE p.match_id = ? 
+             AND p.status NOT IN ('waitlist', 'pending_approval', 'declined')`,
+            [matchId]
+        );
+
+        const participantCount = participants.length;
+        const expectedVotesPerPerson = Math.max(0, participantCount - 1);
+        const totalExpectedVotes = participantCount * expectedVotesPerPerson;
+
+        // Get vote counts per voter
+        const [voteCounts] = await db.query(
+            'SELECT voter_id, COUNT(*) as count FROM votes WHERE match_id = ? GROUP BY voter_id',
+            [matchId]
+        );
+
+        // Map vote counts for easy lookup
+        const voteMap = {};
+        voteCounts.forEach(v => {
+            voteMap[v.voter_id] = v.count;
+        });
+
+        let totalVotesCast = 0;
+        const missingVoters = [];
+
+        participants.forEach(p => {
+            const votesCast = voteMap[p.id] || 0;
+            totalVotesCast += votesCast;
+
+            if (votesCast < expectedVotesPerPerson) {
+                missingVoters.push({
+                    id: p.id,
+                    username: p.username,
+                    votes_cast: votesCast,
+                    votes_missing: expectedVotesPerPerson - votesCast
+                });
+            }
+        });
+
+        res.json({
+            total_votes: totalVotesCast,
+            expected_votes: totalExpectedVotes,
+            missing_votes: Math.max(0, totalExpectedVotes - totalVotesCast),
+            participant_count: participantCount,
+            missing_voters: missingVoters
+        });
+    } catch (error) {
+        console.error('Get vote stats error:', error);
+        res.status(500).json({ error: 'Server error fetching vote stats' });
+    }
+};
+

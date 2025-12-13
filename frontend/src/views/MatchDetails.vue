@@ -218,6 +218,27 @@
             </ion-button>
           </div>
           <div v-if="isAdmin && match.status === 'voting'">
+            <div v-if="voteStats" class="vote-stats-container ion-margin-bottom">
+              <div class="vote-progress-text">
+                {{ t("match_details.votes_progress") }}: <strong>{{ voteStats.total_votes }} / {{ voteStats.expected_votes }}</strong>
+              </div>
+              <div v-if="voteStats.missing_votes > 0">
+                <div class="missing-votes-text">
+                  {{ t("match_details.missing_votes", { count: voteStats.missing_votes }) }}
+                </div>
+                <div v-if="voteStats.missing_voters && voteStats.missing_voters.length > 0" class="missing-voters-list">
+                  <div class="missing-voters-title">{{ t("match_details.missing_voters_title") }}</div>
+                  <div v-for="voter in voteStats.missing_voters" :key="voter.id" class="missing-voter-item">
+                    <span>{{ voter.username }}</span>
+                    <span class="missing-count">-{{ voter.votes_missing }}</span>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="all-voted-text">
+                <ion-icon :icon="checkmarkOutline" color="success"></ion-icon>
+                {{ t("match_details.all_voted") }}
+              </div>
+            </div>
             <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="main-action-btn">
               <ion-icon :icon="flagOutline" slot="start"></ion-icon>
               {{ t("match_details.finish_match") }}
@@ -538,6 +559,7 @@ const match = ref(null);
 const weather = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
+const voteStats = ref(null);
 const isInviteModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
 
@@ -752,6 +774,9 @@ const fetchMatch = async () => {
     }
     if (match.value.status === "voting") {
       fetchMyVotes();
+      if (isAdmin.value) {
+        fetchVoteStats();
+      }
     }
   } catch (error) {
     console.error("Error fetching match:", error);
@@ -785,6 +810,15 @@ const fetchMyVotes = async () => {
     myVotes.value = response.data.map((v) => v.target_id);
   } catch (error) {
     console.error("Error fetching my votes:", error);
+  }
+};
+
+const fetchVoteStats = async () => {
+  try {
+    const response = await api.get(`/votes/match/${route.params.id}/stats`);
+    voteStats.value = response.data;
+  } catch (error) {
+    console.error("Error fetching vote stats:", error);
   }
 };
 
@@ -1542,5 +1576,65 @@ onUnmounted(() => {
   margin-top: 4px;
   font-size: 0.85rem;
   color: var(--ion-color-medium);
+}
+
+.vote-stats-container {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: var(--rounded-md);
+  text-align: center;
+  border: 1px solid #e0e0e0;
+}
+
+.vote-progress-text {
+  font-size: 1rem;
+  color: var(--ion-color-dark);
+  margin-bottom: 5px;
+}
+
+.missing-votes-text {
+  font-size: 0.9rem;
+  color: var(--ion-color-warning);
+  font-weight: 600;
+}
+
+.missing-voters-list {
+  margin-top: 10px;
+  text-align: left;
+  background: white;
+  padding: 10px;
+  border-radius: var(--rounded-sm);
+  border: 1px solid #eee;
+}
+
+.missing-voters-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ion-color-medium);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.missing-voter-item {
+  font-size: 0.85rem;
+  color: var(--ion-color-dark);
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+
+.missing-count {
+  color: var(--ion-color-danger);
+  font-weight: 600;
+}
+
+.all-voted-text {
+  font-size: 0.9rem;
+  color: var(--ion-color-success);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
 }
 </style>

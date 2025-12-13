@@ -7,5 +7,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 router.post('/', authMiddleware, voteController.submitVote);
 router.get('/match/:matchId', authMiddleware, voteController.getMatchVotes);
 router.get('/match/:matchId/mine', authMiddleware, voteController.getMyVotes);
+router.get('/match/:matchId/stats', authMiddleware, voteController.getVoteStats);
 
 module.exports = router;

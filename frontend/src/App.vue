@@ -96,16 +96,31 @@ import {
 
 import socket from "./services/socket";
 import { requestNotificationPermission, initPushListeners } from "./services/firebase";
+import { AppUpdate, AppUpdateAvailability } from "@capawesome/capacitor-app-update";
+import { Capacitor } from "@capacitor/core";
 
 const store = useStore();
 const router = useRouter();
 const { t, locale } = useI18n();
 const currentUser = computed(() => store.state.user);
 
-onMounted(() => {
+onMounted(async () => {
   if (currentUser.value) {
     requestNotificationPermission();
     initPushListeners();
+  }
+
+  if (Capacitor.isNativePlatform()) {
+    try {
+      const result = await AppUpdate.getAppUpdateInfo();
+      if (result.updateAvailability === AppUpdateAvailability.UPDATE_AVAILABLE) {
+        if (Capacitor.getPlatform() === "android") {
+          await AppUpdate.performImmediateUpdate();
+        }
+      }
+    } catch (e) {
+      console.error("App update check failed", e);
+    }
   }
 });
 

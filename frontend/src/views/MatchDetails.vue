@@ -962,7 +962,8 @@ const togglePayment = async (participant) => {
 const movePlayer = async (userId, team) => {
   try {
     await api.put(`/matches/${match.value.id}/move-player`, { userId, team });
-    // Socket will update the list, but we can also fetch manually if needed
+    // Fetch manually to update UI immediately while waiting for socket
+    await fetchMatch();
   } catch (error) {
     console.error("Error moving player:", error);
     presentToast(t("match_details.move_error"));

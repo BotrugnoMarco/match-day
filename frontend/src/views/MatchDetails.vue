@@ -316,12 +316,14 @@
                       <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                     </ion-avatar>
                     <ion-label @click="goToProfile(p.user_id)">
-                      <h2>{{ p.username }}</h2>
+                      <div class="name-container">
+                        <h2>{{ p.username }}</h2>
+                        <div v-if="p.is_captain" class="captain-badge">C</div>
+                      </div>
                       <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                      <div v-if="p.is_captain" class="captain-badge">C</div>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                       <ion-button
@@ -352,12 +354,14 @@
                       <img :src="p.avatar_url || 'https://ionicframework.com/docs/img/demos/avatar.svg'" />
                     </ion-avatar>
                     <ion-label @click="goToProfile(p.user_id)">
-                      <h2>{{ p.username }}</h2>
+                      <div class="name-container">
+                        <h2>{{ p.username }}</h2>
+                        <div v-if="p.is_captain" class="captain-badge">C</div>
+                      </div>
                       <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
                     <div slot="end" class="item-actions">
                       <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                      <div v-if="p.is_captain" class="captain-badge">C</div>
                       <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                       <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                       <ion-button
@@ -1668,6 +1672,12 @@ onUnmounted(() => {
   gap: 5px;
 }
 
+.name-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .captain-badge {
   width: 24px;
   height: 24px;
@@ -1679,7 +1689,6 @@ onUnmounted(() => {
   justify-content: center;
   font-weight: 800;
   font-size: 14px;
-  margin-right: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border: 2px solid #fff;
 }

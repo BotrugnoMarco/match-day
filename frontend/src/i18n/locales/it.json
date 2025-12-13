@@ -127,7 +127,9 @@
     "remove": "Rimuovi",
     "date": "Data",
     "time": "Ora",
-    "back": "Indietro"
+    "back": "Indietro",
+    "confirm": "Conferma",
+    "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?"
   },
   "home": {
     "welcome": "Ciao, {name}!",

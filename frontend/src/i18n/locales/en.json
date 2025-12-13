@@ -127,7 +127,9 @@
     "remove": "Remove",
     "date": "Date",
     "time": "Time",
-    "back": "Back"
+    "back": "Back",
+    "confirm": "Confirm",
+    "delete_confirm_message": "Are you sure you want to delete all notifications?"
   },
   "home": {
     "welcome": "Hi, {name}!",

@@ -98,6 +98,7 @@ import socket from "./services/socket";
 import { requestNotificationPermission, initPushListeners } from "./services/firebase";
 import { AppUpdate, AppUpdateAvailability } from "@capawesome/capacitor-app-update";
 import { Capacitor } from "@capacitor/core";
+import { App } from "@capacitor/app";
 
 const store = useStore();
 const router = useRouter();
@@ -192,6 +193,15 @@ const joinUserRoom = (userId) => {
 };
 
 onMounted(() => {
+  // Handle Android Hardware Back Button
+  App.addListener("backButton", ({ canGoBack }) => {
+    if (canGoBack) {
+      router.back();
+    } else {
+      App.exitApp();
+    }
+  });
+
   if (currentUser.value) {
     joinUserRoom(currentUser.value.id);
   }

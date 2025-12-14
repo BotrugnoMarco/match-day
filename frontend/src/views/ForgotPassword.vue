@@ -1,37 +1,42 @@
 <template>
-  <div class="auth-container">
-    <div class="auth-card">
-      <h2>{{ t("auth.forgot_password_title") }}</h2>
-      <p class="description">{{ t("auth.forgot_password_desc") }}</p>
+  <ion-page>
+    <ion-content class="auth-content">
+      <div class="auth-container">
+        <div class="auth-card">
+          <h2>{{ t("auth.forgot_password_title") }}</h2>
+          <p class="description">{{ t("auth.forgot_password_desc") }}</p>
 
-      <form @submit.prevent="handleForgotPassword">
-        <div class="form-group">
-          <label for="email">{{ t("auth.email_placeholder") }}</label>
-          <input type="email" id="email" v-model="email" required :placeholder="t('auth.email_placeholder')" />
-        </div>
+          <form @submit.prevent="handleForgotPassword">
+            <div class="form-group">
+              <label for="email">{{ t("auth.email_placeholder") }}</label>
+              <input type="email" id="email" v-model="email" required :placeholder="t('auth.email_placeholder')" />
+            </div>
 
-        <div v-if="message" class="success-message">
-          {{ message }}
-        </div>
-        <div v-if="error" class="error-message">
-          {{ error }}
-        </div>
+            <div v-if="message" class="success-message">
+              {{ message }}
+            </div>
+            <div v-if="error" class="error-message">
+              {{ error }}
+            </div>
 
-        <button type="submit" :disabled="loading" class="submit-btn">
-          {{ loading ? t("auth.sending") : t("auth.send_reset_link") }}
-        </button>
+            <button type="submit" :disabled="loading" class="submit-btn">
+              {{ loading ? t("auth.sending") : t("auth.send_reset_link") }}
+            </button>
 
-        <div class="auth-links">
-          <router-link to="/login">{{ t("auth.back_to_login") }}</router-link>
+            <div class="auth-links">
+              <router-link to="/login">{{ t("auth.back_to_login") }}</router-link>
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
-  </div>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
+import { IonPage, IonContent } from "@ionic/vue";
 import api from "../services/api";
 
 const { t } = useI18n();

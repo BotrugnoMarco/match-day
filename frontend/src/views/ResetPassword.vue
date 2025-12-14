@@ -1,43 +1,48 @@
 <template>
-  <div class="auth-container">
-    <div class="auth-card">
-      <h2>{{ t("auth.reset_password_title") }}</h2>
-      <p class="description">{{ t("auth.reset_password_desc") }}</p>
+  <ion-page>
+    <ion-content class="auth-content">
+      <div class="auth-container">
+        <div class="auth-card">
+          <h2>{{ t("auth.reset_password_title") }}</h2>
+          <p class="description">{{ t("auth.reset_password_desc") }}</p>
 
-      <form @submit.prevent="handleResetPassword">
-        <div class="form-group">
-          <label for="password">{{ t("auth.new_password_placeholder") }}</label>
-          <input type="password" id="password" v-model="password" required :placeholder="t('auth.min_chars')" minlength="6" />
-        </div>
+          <form @submit.prevent="handleResetPassword">
+            <div class="form-group">
+              <label for="password">{{ t("auth.new_password_placeholder") }}</label>
+              <input type="password" id="password" v-model="password" required :placeholder="t('auth.min_chars')" minlength="6" />
+            </div>
 
-        <div class="form-group">
-          <label for="confirmPassword">{{ t("auth.confirm_password_placeholder") }}</label>
-          <input type="password" id="confirmPassword" v-model="confirmPassword" required :placeholder="t('auth.repeat_password_placeholder')" />
-        </div>
+            <div class="form-group">
+              <label for="confirmPassword">{{ t("auth.confirm_password_placeholder") }}</label>
+              <input type="password" id="confirmPassword" v-model="confirmPassword" required :placeholder="t('auth.repeat_password_placeholder')" />
+            </div>
 
-        <div v-if="message" class="success-message">
-          {{ message }}
-        </div>
-        <div v-if="error" class="error-message">
-          {{ error }}
-        </div>
+            <div v-if="message" class="success-message">
+              {{ message }}
+            </div>
+            <div v-if="error" class="error-message">
+              {{ error }}
+            </div>
 
-        <button type="submit" :disabled="loading" class="submit-btn">
-          {{ loading ? t("auth.saving") : t("auth.set_password_btn") }}
-        </button>
+            <button type="submit" :disabled="loading" class="submit-btn">
+              {{ loading ? t("auth.saving") : t("auth.set_password_btn") }}
+            </button>
 
-        <div class="auth-links">
-          <router-link to="/login">{{ t("auth.back_to_login") }}</router-link>
+            <div class="auth-links">
+              <router-link to="/login">{{ t("auth.back_to_login") }}</router-link>
+            </div>
+          </form>
         </div>
-      </form>
-    </div>
-  </div>
+      </div>
+    </ion-content>
+  </ion-page>
 </template>
 
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import { IonPage, IonContent } from "@ionic/vue";
 import api from "../services/api";
 
 const { t } = useI18n();

@@ -365,7 +365,7 @@ exports.getUserMatches = async (req, res) => {
              FROM matches m 
              JOIN participants p ON m.id = p.match_id 
              JOIN users u ON m.creator_id = u.id
-             WHERE p.user_id = ? AND m.status != 'finished'
+             WHERE p.user_id = ?
              ORDER BY m.date_time DESC`,
             [userId]
         );

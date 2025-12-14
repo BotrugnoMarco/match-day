@@ -32,7 +32,7 @@
       <div class="dashboard-container" v-if="isAuthenticated">
         <!-- Next Match Card -->
         <div class="section-title">
-          <h3>{{ t("home.next_match") }}</h3>
+          <h3>{{ nextMatch && new Date(nextMatch.date_time) <= new Date() ? t("home.last_match") : t("home.next_match") }}</h3>
         </div>
 
         <div v-if="nextMatch" class="next-match-card" @click="router.push(`/matches/${nextMatch.id}`)">
@@ -171,12 +171,22 @@ const nextMatch = computed(() => {
   if (!myMatches.value || myMatches.value.length === 0) return null;
 
   const now = new Date();
+  // Filter for future matches OR the most recent finished match
   const futureMatches = myMatches.value.filter((m) => new Date(m.date_time) > now);
 
-  if (futureMatches.length === 0) return null;
+  if (futureMatches.length > 0) {
+    // Sort by date ascending (closest future match first)
+    return futureMatches.sort((a, b) => new Date(a.date_time) - new Date(b.date_time))[0];
+  }
 
-  // Sort by date ascending (closest first)
-  return futureMatches.sort((a, b) => new Date(a.date_time) - new Date(b.date_time))[0];
+  // If no future matches, show the last finished match
+  const pastMatches = myMatches.value.filter((m) => new Date(m.date_time) <= now);
+  if (pastMatches.length > 0) {
+    // Sort by date descending (most recent past match first)
+    return pastMatches.sort((a, b) => new Date(b.date_time) - new Date(a.date_time))[0];
+  }
+
+  return null;
 });
 
 const recentActivity = computed(() => {

@@ -479,7 +479,7 @@ const createMatch = () => {
   z-index: 10;
 }
 
-.fab-above-footer {
-  margin-bottom: 2.5rem; /* Space for donation footer */
-}
+/* .fab-above-footer {
+  margin-bottom: 2.5rem;
+} */
 </style>

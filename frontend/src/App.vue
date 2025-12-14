@@ -19,6 +19,13 @@
 
           <ion-list>
             <ion-menu-toggle auto-hide="false">
+              <ion-item button @click="openDonation" lines="none" detail="false">
+                <ion-icon slot="start" :icon="cafeOutline"></ion-icon>
+                <ion-label>{{ t("common.donate") }}</ion-label>
+              </ion-item>
+            </ion-menu-toggle>
+
+            <ion-menu-toggle auto-hide="false">
               <ion-item router-link-active="selected" router-link="/support" lines="none" detail="false">
                 <ion-icon slot="start" :ios="helpCircleOutline" :md="helpCircleSharp"></ion-icon>
                 <ion-label>{{ t("menu.support") }}</ion-label>
@@ -49,13 +56,6 @@
       </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content" />
-
-    <div class="donation-footer" v-if="currentUser">
-      <a href="https://ko-fi.com/dlayk_mark" target="_blank">
-        <ion-icon :icon="cafeOutline"></ion-icon>
-        <span>{{ t("common.donate") }}</span>
-      </a>
-    </div>
   </ion-app>
 </template>
 
@@ -178,6 +178,10 @@ const logout = async () => {
   router.push("/login");
 };
 
+const openDonation = () => {
+  window.open("https://ko-fi.com/dlayk_mark", "_blank");
+};
+
 const getNotificationMessage = (message) => {
   try {
     const parsed = JSON.parse(message);
@@ -273,45 +277,6 @@ ion-menu ion-content {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-}
-
-.donation-footer {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(10px);
-  border-top: 1px solid rgba(0, 0, 0, 0.05);
-  padding: 8px 0;
-  display: flex;
-  justify-content: center;
-  z-index: 1000;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.donation-footer a {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  text-decoration: none;
-  color: var(--ion-color-medium);
-  font-size: 0.85rem;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 20px;
-  background: rgba(0, 0, 0, 0.03);
-  transition: all 0.2s ease;
-}
-
-.donation-footer a:active {
-  transform: scale(0.95);
-  background: rgba(0, 0, 0, 0.08);
-}
-
-.donation-footer ion-icon {
-  font-size: 1.1rem;
-  color: #6f4e37; /* Coffee color */
 }
 
 ion-item.selected {

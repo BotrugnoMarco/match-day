@@ -1079,12 +1079,19 @@ const togglePostMatch = async () => {
 const togglePayment = async (participant) => {
   console.log("Toggling payment for:", participant.user_id);
   if (!isCreator.value) return;
+
+  // Optimistic update
+  const originalStatus = participant.has_paid;
+  participant.has_paid = !originalStatus;
+
   try {
     await api.put(`/matches/${match.value.id}/payment`, { userId: participant.user_id });
     // Fetch manually to update UI immediately while waiting for socket
     await fetchMatch();
   } catch (error) {
     console.error("Error toggling payment:", error);
+    // Revert on error
+    participant.has_paid = originalStatus;
     presentToast(t("match_details.payment_error"));
   }
 };

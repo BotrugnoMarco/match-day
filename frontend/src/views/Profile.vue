@@ -103,11 +103,11 @@
           <div class="profile-info">
             <h2 class="username">{{ user?.username }}</h2>
             <div class="badges-row">
-              <ion-badge color="light" class="role-badge">{{ user?.role?.toUpperCase() }}</ion-badge>
+              <ion-badge color="light" class="role-badge">{{ t("profile." + (user?.role || "player")) }}</ion-badge>
 
               <div class="status-section">
                 <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
-                  {{ user?.status?.toUpperCase() || "AVAILABLE" }}
+                  {{ t("profile." + (user?.status || "available")) }}
                 </ion-badge>
               </div>
             </div>

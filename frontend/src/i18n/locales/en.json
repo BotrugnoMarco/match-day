@@ -130,7 +130,7 @@
     "back": "Back",
     "confirm": "Confirm",
     "delete_confirm_message": "Are you sure you want to delete all notifications?",
-    "donate": "Buy us a coffee"
+    "donate": "Buy me a coffee"
   },
   "home": {
     "welcome": "Hi, {name}!",

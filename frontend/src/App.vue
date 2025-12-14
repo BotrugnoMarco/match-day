@@ -53,11 +53,7 @@
     <div class="donation-footer" v-if="currentUser">
       <a href="https://ko-fi.com/marcobotrugno" target="_blank">
         <ion-icon :icon="cafeOutline"></ion-icon>
-        <span>Ko-fi</span>
-      </a>
-      <a href="https://paypal.me/marcoluigibotrugno" target="_blank">
-        <ion-icon :icon="logoPaypal"></ion-icon>
-        <span>PayPal</span>
+        <span>{{ t("common.donate") }}</span>
       </a>
     </div>
   </ion-app>
@@ -104,7 +100,6 @@ import {
   constructSharp,
   logOutOutline,
   cafeOutline,
-  logoPaypal,
 } from "ionicons/icons";
 
 import socket from "./services/socket";

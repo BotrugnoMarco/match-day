@@ -49,6 +49,17 @@
       </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content" />
+
+    <div class="donation-footer" v-if="currentUser">
+      <a href="https://ko-fi.com/marcobotrugno" target="_blank">
+        <ion-icon :icon="cafeOutline"></ion-icon>
+        <span>Ko-fi</span>
+      </a>
+      <a href="https://paypal.me/marcoluigibotrugno" target="_blank">
+        <ion-icon :icon="logoPaypal"></ion-icon>
+        <span>PayPal</span>
+      </a>
+    </div>
   </ion-app>
 </template>
 
@@ -92,6 +103,8 @@ import {
   constructOutline,
   constructSharp,
   logOutOutline,
+  cafeOutline,
+  logoPaypal,
 } from "ionicons/icons";
 
 import socket from "./services/socket";
@@ -265,6 +278,46 @@ ion-menu ion-content {
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+}
+
+.donation-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  z-index: 1000;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.donation-footer a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--ion-color-medium);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
+}
+
+.donation-footer a:active {
+  transform: scale(0.95);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.donation-footer ion-icon {
+  font-size: 1.1rem;
+  color: #6f4e37; /* Coffee color */
 }
 
 ion-item.selected {

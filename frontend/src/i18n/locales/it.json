@@ -129,7 +129,8 @@
     "time": "Ora",
     "back": "Indietro",
     "confirm": "Conferma",
-    "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?"
+    "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?",
+    "donate": "Offrici un caffè"
   },
   "home": {
     "welcome": "Ciao, {name}!",

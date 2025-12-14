@@ -113,7 +113,7 @@
             </div>
 
             <!-- Preferred Number -->
-            <div class="preferred-number-section" v-if="user?.preferred_number">
+            <div class="preferred-number-section" v-if="user?.preferred_number !== null && user?.preferred_number !== undefined">
               <div class="number-display">
                 <span class="number-label">{{ t("profile.jersey_label") }}</span>
                 <span class="number-value">{{ user?.preferred_number }}</span>

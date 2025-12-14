@@ -92,7 +92,7 @@
         </div>
       </div>
 
-      <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+      <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-above-footer">
         <ion-fab-button @click="createMatch">
           <ion-icon :icon="add"></ion-icon>
         </ion-fab-button>
@@ -477,5 +477,9 @@ const createMatch = () => {
   padding: 2px var(--space-1);
   border-radius: 50%;
   z-index: 10;
+}
+
+.fab-above-footer {
+  margin-bottom: 60px; /* Space for donation footer */
 }
 </style>

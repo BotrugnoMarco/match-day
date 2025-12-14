@@ -286,7 +286,6 @@ ion-menu ion-content {
   padding: 8px 0;
   display: flex;
   justify-content: center;
-  gap: 15px;
   z-index: 1000;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
 }

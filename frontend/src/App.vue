@@ -207,9 +207,7 @@ const joinUserRoom = (userId) => {
 onMounted(() => {
   // Handle Android Hardware Back Button
   App.addListener("backButton", ({ canGoBack }) => {
-    if (canGoBack) {
-      router.back();
-    } else {
+    if (!canGoBack) {
       App.exitApp();
     }
   });

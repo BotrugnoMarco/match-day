@@ -25,7 +25,7 @@
             </div>
 
             <div class="forgot-password">
-              <a href="#">{{ t("auth.forgot_password") }}</a>
+              <span @click="router.push('/forgot-password')">{{ t("auth.forgot_password") }}</span>
             </div>
 
             <ion-button expand="block" type="submit" class="auth-btn" shape="round"> {{ t("auth.login_btn") }} </ion-button>

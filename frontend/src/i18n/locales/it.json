@@ -172,7 +172,22 @@
     "other": "Altro",
     "terms_agreement": "Accetto i {terms} e la {privacy}",
     "terms": "Termini",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "forgot_password_title": "Recupera Password",
+    "forgot_password_desc": "Inserisci la tua email per ricevere il link di reset.",
+    "send_reset_link": "Invia Link",
+    "sending": "Invio in corso...",
+    "back_to_login": "Torna al Login",
+    "reset_password_title": "Nuova Password",
+    "reset_password_desc": "Inserisci la tua nuova password.",
+    "new_password_placeholder": "Nuova Password",
+    "min_chars": "Minimo 6 caratteri",
+    "repeat_password_placeholder": "Ripeti la password",
+    "set_password_btn": "Imposta Password",
+    "saving": "Salvataggio...",
+    "passwords_mismatch": "Le password non coincidono",
+    "token_missing": "Token mancante. Assicurati di aver cliccato sul link corretto.",
+    "token_invalid": "Token non valido."
   },
   "matches": {
     "title": "Partite",

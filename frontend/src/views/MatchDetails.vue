@@ -7,6 +7,9 @@
         </ion-buttons>
         <ion-title>{{ t("match_details.title") }}</ion-title>
         <ion-buttons slot="end">
+          <ion-button @click="shareMatch">
+            <ion-icon slot="icon-only" :icon="shareSocialOutline"></ion-icon>
+          </ion-button>
           <ion-button @click="openInviteModal">
             <ion-icon slot="icon-only" :icon="personAddOutline"></ion-icon>
           </ion-button>
@@ -490,6 +493,7 @@ import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import socket from "../services/socket";
+import { Share } from "@capacitor/share";
 import { getWeatherForLocation, getWeatherIcon, getWeatherDescription } from "../services/weather";
 import {
   IonPage,
@@ -516,6 +520,7 @@ import {
 import {
   locationOutline,
   cashOutline,
+  shareSocialOutline,
   personAddOutline,
   peopleOutline,
   starOutline,
@@ -827,6 +832,48 @@ const fetchVoteStats = async () => {
     voteStats.value = response.data;
   } catch (error) {
     console.error("Error fetching vote stats:", error);
+  }
+};
+
+const shareMatch = async () => {
+  if (!match.value) return;
+
+  const shareData = {
+    title: t("match_details.share_title", { sport: t("sports." + match.value.sport_type) }),
+    text: t("match_details.share_text", {
+      sport: t("sports." + match.value.sport_type),
+      date: formatDate(match.value.date_time),
+      time: formatTime(match.value.date_time),
+      location: match.value.location,
+    }),
+    url: window.location.href,
+    dialogTitle: t("match_details.share_title", { sport: t("sports." + match.value.sport_type) }),
+  };
+
+  try {
+    await Share.share(shareData);
+  } catch (err) {
+    console.error("Error sharing:", err);
+    // Fallback: Copy to clipboard if sharing is cancelled or fails (though Share.share might throw on cancellation too, usually we just ignore it)
+    // But if it's a real error (like not supported), we might want to fallback.
+    // For now, let's keep the clipboard fallback only if Share throws an error indicating lack of support or similar.
+    // Actually, simpler to just try/catch and if it fails, maybe show toast.
+    // But the user specifically asked for app support.
+
+    // Let's keep the clipboard fallback for web/desktop where Share might not be fully supported or if the user cancels (though we don't want to copy on cancel).
+    // A simple check is if we are on a platform where Share is known to work.
+    // But Share.share() returns a promise.
+
+    // If we are on web and share fails, we can try clipboard.
+    if (err.message !== "Share canceled") {
+      try {
+        await navigator.clipboard.writeText(`${shareData.text} ${shareData.url}`);
+        presentToast(t("match_details.link_copied"), "success");
+      } catch (clipboardErr) {
+        console.error("Failed to copy:", clipboardErr);
+        presentToast(t("match_details.share_error"), "danger");
+      }
+    }
   }
 };
 

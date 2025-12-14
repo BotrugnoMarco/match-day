@@ -735,7 +735,7 @@ const results = computed(() => {
         tags: {},
       };
     }
-    grouped[v.target_id].totalRating += v.rating;
+    grouped[v.target_id].totalRating += Number(v.rating);
     grouped[v.target_id].voteCount++;
 
     if (v.tags) {

@@ -23,4 +23,4 @@ backend/.env
 frontend/.env
 backend/config/serviceAccountKey.json
 update_android.sh
-frontend/android/app/google-services.json
+frontend/android/

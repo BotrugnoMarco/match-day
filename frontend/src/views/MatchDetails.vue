@@ -204,7 +204,7 @@
           <div v-if="isAdmin && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
             <ion-button expand="block" color="secondary" fill="solid" @click="generateTeams" class="admin-btn">
               <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-              {{ t("match_details.teams") }}
+              {{ hasTeams ? t("match_details.regenerate_teams") : t("match_details.generate_teams") }}
             </ion-button>
             <ion-button expand="block" color="warning" fill="solid" @click="changeStatus('voting')" class="admin-btn">
               <ion-icon :icon="starOutline" slot="start"></ion-icon>
@@ -984,6 +984,30 @@ const changeStatus = async (newStatus) => {
 };
 
 const generateTeams = async () => {
+  if (hasTeams.value) {
+    const alert = await alertController.create({
+      header: t("match_details.regenerate_confirm_header"),
+      message: t("match_details.regenerate_confirm_message"),
+      buttons: [
+        {
+          text: t("common.cancel"),
+          role: "cancel",
+        },
+        {
+          text: t("common.confirm"),
+          handler: async () => {
+            await performGenerateTeams();
+          },
+        },
+      ],
+    });
+    await alert.present();
+  } else {
+    await performGenerateTeams();
+  }
+};
+
+const performGenerateTeams = async () => {
   try {
     const response = await api.post(`/matches/${route.params.id}/generate-teams`);
     presentToast(t("match_details.teams_generated", { countA: response.data.stats.teamA_count, countB: response.data.stats.teamB_count }), "success");

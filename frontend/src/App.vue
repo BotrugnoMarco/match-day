@@ -51,7 +51,7 @@
     <ion-router-outlet id="main-content" />
 
     <div class="donation-footer" v-if="currentUser">
-      <a href="https://ko-fi.com/marcobotrugno" target="_blank">
+      <a href="https://ko-fi.com/dlayk_mark" target="_blank">
         <ion-icon :icon="cafeOutline"></ion-icon>
         <span>{{ t("common.donate") }}</span>
       </a>

@@ -32,7 +32,7 @@ api.interceptors.response.use(
             // Token expired or invalid
             localStorage.removeItem('token');
             localStorage.removeItem('user');
-            
+
             // Redirect to login if not already there
             if (router.currentRoute.value.path !== '/login') {
                 router.push('/login');

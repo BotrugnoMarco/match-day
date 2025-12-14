@@ -1010,6 +1010,8 @@ const togglePayment = async (participant) => {
   if (!isCreator.value) return;
   try {
     await api.put(`/matches/${match.value.id}/payment`, { userId: participant.user_id });
+    // Fetch manually to update UI immediately while waiting for socket
+    await fetchMatch();
   } catch (error) {
     console.error("Error toggling payment:", error);
     presentToast(t("match_details.payment_error"));
@@ -1156,29 +1158,30 @@ const toggleCaptain = async (player) => {
   }
 };
 
+const onMatchUpdated = (data) => {
+  if (data.matchId == route.params.id) {
+    fetchMatch();
+  }
+};
+
+const onVoteCast = (data) => {
+  if (data.matchId == route.params.id) {
+    if (isAdmin.value) {
+      fetchVoteStats();
+    }
+  }
+};
+
 onMounted(() => {
   fetchMatch();
 
-  socket.on("match_updated", (data) => {
-    if (data.matchId == route.params.id) {
-      fetchMatch();
-    }
-  });
-
-  socket.on("vote_cast", (data) => {
-    if (data.matchId == route.params.id) {
-      if (isAdmin.value) {
-        fetchVoteStats();
-      }
-      // If match is finished, we might want to refresh results too, but votes are usually cast during 'voting' status.
-      // If we allow voting after finish (unlikely based on controller logic), we would fetchVotes().
-    }
-  });
+  socket.on("match_updated", onMatchUpdated);
+  socket.on("vote_cast", onVoteCast);
 });
 
 onUnmounted(() => {
-  socket.off("match_updated");
-  socket.off("vote_cast");
+  socket.off("match_updated", onMatchUpdated);
+  socket.off("vote_cast", onVoteCast);
 });
 </script>
 

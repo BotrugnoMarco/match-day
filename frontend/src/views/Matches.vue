@@ -218,18 +218,22 @@ onIonViewWillEnter(() => {
   store.dispatch("fetchNotifications");
 });
 
+const onMatchCreated = () => {
+  store.dispatch("fetchMatches");
+};
+
+const onMatchUpdated = () => {
+  store.dispatch("fetchMatches");
+};
+
 onMounted(() => {
-  socket.on("match_created", () => {
-    store.dispatch("fetchMatches");
-  });
-  socket.on("match_updated", () => {
-    store.dispatch("fetchMatches");
-  });
+  socket.on("match_created", onMatchCreated);
+  socket.on("match_updated", onMatchUpdated);
 });
 
 onUnmounted(() => {
-  socket.off("match_created");
-  socket.off("match_updated");
+  socket.off("match_created", onMatchCreated);
+  socket.off("match_updated", onMatchUpdated);
 });
 
 const goToProfile = () => {

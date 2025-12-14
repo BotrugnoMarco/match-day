@@ -480,6 +480,6 @@ const createMatch = () => {
 }
 
 .fab-above-footer {
-  margin-bottom: 60px; /* Space for donation footer */
+  margin-bottom: 2.5rem; /* Space for donation footer */
 }
 </style>

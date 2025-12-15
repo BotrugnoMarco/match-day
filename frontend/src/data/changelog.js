@@ -1,6 +1,6 @@
 export const changelog = [
     {
-        version: "1.0.11",
+        version: "1.0.12",
         date: "2025-12-15",
         title: "Feedback Anonimi & MVP",
         features: [
@@ -23,11 +23,6 @@ export const changelog = [
                 title: "Partecipanti in Lista",
                 description: "Ora puoi vedere il numero di partecipanti direttamente dall'elenco delle partite.",
                 icon: "people-outline"
-            },
-            {
-                title: "Offrimi una Birra",
-                description: "Ti piace l'app? Ora puoi supportare lo sviluppo offrendoci una birra!",
-                icon: "beer-outline"
             }
         ]
     }

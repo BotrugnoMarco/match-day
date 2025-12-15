@@ -27,14 +27,12 @@
               </ion-label>
             </ion-item>
           </ion-list>
-          <div class="donation-section ion-text-center ion-padding-top">
+          <div class="modal-actions ion-padding-top">
             <ion-button fill="clear" @click="openDonation" color="warning">
               <ion-icon :icon="beerOutline" slot="start"></ion-icon>
               {{ t("common.donate") }}
             </ion-button>
-          </div>
-          <div class="ion-padding-top">
-            <ion-button expand="block" @click="close">{{ t("changelog.got_it") }}</ion-button>
+            <ion-button @click="close">{{ t("changelog.got_it") }}</ion-button>
           </div>
         </div>
       </ion-content>
@@ -144,6 +142,7 @@ const formatDate = (dateString) => {
   background: rgba(var(--ion-color-primary-rgb), 0.1);
   padding: 8px;
   border-radius: 50%;
+  margin-left: 1rem;
 }
 
 .feature-item h3 {
@@ -156,5 +155,11 @@ const formatDate = (dateString) => {
   font-size: 0.9rem;
   line-height: 1.4;
   color: var(--ion-color-medium-shade);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 </style>

@@ -271,6 +271,8 @@
     "delete_match": "Delete Match",
     "finish_match": "Finish Match",
     "cancel_voting": "Cancel Voting",
+    "start_voting_confirm_title": "Start Voting?",
+    "start_voting_confirm_message": "Are you sure you want to start the voting phase? Players will be able to vote for MVP and ratings.",
     "pending_requests": "Pending Requests",
     "wants_to_join": "Wants to join",
     "waitlist": "Waitlist",

@@ -270,6 +270,8 @@
     "delete_match": "Elimina Partita",
     "finish_match": "Termina Partita",
     "cancel_voting": "Annulla Votazione",
+    "start_voting_confirm_title": "Avviare le votazioni?",
+    "start_voting_confirm_message": "Sei sicuro di voler avviare la fase di votazione? I giocatori potranno votare per l'MVP e le pagelle.",
     "pending_requests": "Richieste in Sospeso",
     "wants_to_join": "Vuole partecipare",
     "waitlist": "Lista d'Attesa",

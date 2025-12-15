@@ -1016,6 +1016,30 @@ const deleteMatch = async () => {
 const changeStatus = async (newStatus) => {
   try {
     let winner = null;
+
+    if (newStatus === "voting") {
+      const alert = await alertController.create({
+        header: t("match_details.start_voting_confirm_title"),
+        message: t("match_details.start_voting_confirm_message"),
+        buttons: [
+          {
+            text: t("common.cancel"),
+            role: "cancel",
+          },
+          {
+            text: t("common.confirm"),
+            role: "confirm",
+          },
+        ],
+      });
+
+      await alert.present();
+      const { role } = await alert.onDidDismiss();
+      if (role !== "confirm") {
+        return;
+      }
+    }
+
     if (newStatus === "finished") {
       const alert = await alertController.create({
         header: t("match_details.select_winner"),

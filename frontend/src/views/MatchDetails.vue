@@ -457,7 +457,7 @@
                   </div>
                   <div class="badges-row" v-if="r.badges && r.badges.length > 0">
                     <ion-badge v-for="badge in r.badges" :key="badge.name" color="secondary" class="result-badge-chip">
-                      {{ badge.name }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
+                      {{ t("vote.tags." + badge.name) }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
                     </ion-badge>
                   </div>
                 </ion-label>

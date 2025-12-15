@@ -1166,11 +1166,13 @@ const openPlayerActions = async (player) => {
   const buttons = [];
 
   // Admin Toggle
-  buttons.push({
-    text: player.is_admin ? t("match_details.remove_admin") : t("match_details.make_admin"),
-    icon: shieldCheckmarkOutline,
-    handler: () => toggleAdmin(player),
-  });
+  if (player.user_id !== match.value.creator_id) {
+    buttons.push({
+      text: player.is_admin ? t("match_details.remove_admin") : t("match_details.make_admin"),
+      icon: shieldCheckmarkOutline,
+      handler: () => toggleAdmin(player),
+    });
+  }
 
   // Captain Toggle
   buttons.push({

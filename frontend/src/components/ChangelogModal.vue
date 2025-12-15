@@ -12,11 +12,14 @@
       <ion-content class="ion-padding" v-if="currentVersion">
         <div class="changelog-content">
           <div class="version-header">
-            <h2>v{{ currentVersion.version }}</h2>
-            <p class="date">{{ formatDate(currentVersion.date) }}</p>
+            <div class="version-number">
+              <h2>v{{ currentVersion.version }}</h2>
+            </div>
+            <div class="version-info">
+              <h3 class="update-title">{{ currentVersion.title }}</h3>
+              <p class="date">{{ formatDate(currentVersion.date) }}</p>
+            </div>
           </div>
-
-          <h3 class="update-title">{{ currentVersion.title }}</h3>
 
           <ion-list lines="none">
             <ion-item v-for="(feature, index) in currentVersion.features" :key="index" class="feature-item">
@@ -107,28 +110,36 @@ const formatDate = (dateString) => {
 }
 
 .version-header {
-  text-align: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-.version-header h2 {
+.version-number h2 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 2.5rem;
   font-weight: 800;
   color: var(--ion-color-primary);
 }
 
-.date {
-  color: var(--ion-color-medium);
-  margin: 5px 0 0;
-  font-size: 0.9rem;
+.version-info {
+  text-align: right;
 }
 
 .update-title {
-  text-align: center;
-  font-size: 1.2rem;
-  font-weight: 600;
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+  color: var(--ion-color-dark);
+}
+
+.date {
+  color: var(--ion-color-medium);
+  margin: 0;
+  font-size: 0.85rem;
 }
 
 .feature-item {

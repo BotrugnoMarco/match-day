@@ -192,9 +192,30 @@ exports.joinMatch = async (req, res) => {
         }
 
         // Insert new participant
+        let assignedTeam = team || null;
+
+        // If joining as confirmed, check if teams are already generated and assign to the smaller team
+        if (newStatus === 'confirmed' && !assignedTeam) {
+            const [teamParticipants] = await db.query(
+                "SELECT team FROM participants WHERE match_id = ? AND status = 'confirmed' AND team IS NOT NULL",
+                [matchId]
+            );
+
+            if (teamParticipants.length > 0) {
+                const countA = teamParticipants.filter(p => p.team === 'A').length;
+                const countB = teamParticipants.filter(p => p.team === 'B').length;
+
+                if (countA < countB) {
+                    assignedTeam = 'A';
+                } else if (countB < countA) {
+                    assignedTeam = 'B';
+                }
+            }
+        }
+
         await db.query(
             'INSERT INTO participants (match_id, user_id, team, status) VALUES (?, ?, ?, ?)',
-            [matchId, userId, team || null, newStatus]
+            [matchId, userId, assignedTeam, newStatus]
         );
 
         const io = req.app.get('io');
@@ -239,10 +260,29 @@ exports.leaveMatch = async (req, res) => {
         );
 
         if (waitlist.length > 0) {
+            let assignedTeam = null;
+
+            // Check if teams are generated to assign the promoted user
+            const [teamParticipants] = await db.query(
+                "SELECT team FROM participants WHERE match_id = ? AND status = 'confirmed' AND team IS NOT NULL",
+                [matchId]
+            );
+
+            if (teamParticipants.length > 0) {
+                const countA = teamParticipants.filter(p => p.team === 'A').length;
+                const countB = teamParticipants.filter(p => p.team === 'B').length;
+
+                if (countA < countB) {
+                    assignedTeam = 'A';
+                } else if (countB < countA) {
+                    assignedTeam = 'B';
+                }
+            }
+
             // Promote first person in waitlist
             await db.query(
-                "UPDATE participants SET status = 'confirmed' WHERE id = ?",
-                [waitlist[0].id]
+                "UPDATE participants SET status = 'confirmed', team = ? WHERE id = ?",
+                [assignedTeam, waitlist[0].id]
             );
 
             // Notify promoted user
@@ -676,7 +716,27 @@ exports.approveJoinRequest = async (req, res) => {
             newStatus = 'waitlist';
         }
 
-        await db.query('UPDATE participants SET status = ? WHERE id = ?', [newStatus, participant[0].id]);
+        let assignedTeam = participant[0].team;
+
+        if (newStatus === 'confirmed') {
+            const [teamParticipants] = await db.query(
+                "SELECT team FROM participants WHERE match_id = ? AND status = 'confirmed' AND team IS NOT NULL",
+                [matchId]
+            );
+
+            if (teamParticipants.length > 0) {
+                const countA = teamParticipants.filter(p => p.team === 'A').length;
+                const countB = teamParticipants.filter(p => p.team === 'B').length;
+
+                if (countA < countB) {
+                    assignedTeam = 'A';
+                } else if (countB < countA) {
+                    assignedTeam = 'B';
+                }
+            }
+        }
+
+        await db.query('UPDATE participants SET status = ?, team = ? WHERE id = ?', [newStatus, assignedTeam, participant[0].id]);
 
         // Notify user
         const io = req.app.get('io');

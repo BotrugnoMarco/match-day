@@ -236,7 +236,7 @@ const goToMatch = (id) => {
 
 const fetchMatches = async () => {
   try {
-    const response = await api.get("/matches/user");
+    const response = await api.get("/matches/mine");
     matches.value = response.data;
   } catch (error) {
     console.error("Error fetching matches:", error);

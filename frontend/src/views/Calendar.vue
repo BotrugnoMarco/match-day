@@ -105,17 +105,17 @@ import {
   IonCard,
   IonCardContent,
 } from "@ionic/vue";
-import { 
-  chevronBackOutline, 
-  chevronForwardOutline, 
-  locationOutline, 
-  checkmarkCircle, 
-  hourglassOutline, 
+import {
+  chevronBackOutline,
+  chevronForwardOutline,
+  locationOutline,
+  checkmarkCircle,
+  hourglassOutline,
   helpCircleOutline,
   football,
   basketball,
   baseballOutline,
-  tennisball
+  tennisball,
 } from "ionicons/icons";
 
 const router = useRouter();
@@ -258,12 +258,17 @@ const fetchMatches = async () => {
 
 const getSportIcon = (sport) => {
   switch (sport) {
-    case 'soccer': return football;
-    case 'basketball': return basketball;
-    case 'volleyball': return baseballOutline;
-    case 'padel':
-    case 'tennis': return tennisball;
-    default: return helpCircleOutline;
+    case "soccer":
+      return football;
+    case "basketball":
+      return basketball;
+    case "volleyball":
+      return baseballOutline;
+    case "padel":
+    case "tennis":
+      return tennisball;
+    default:
+      return helpCircleOutline;
   }
 };
 

@@ -497,7 +497,7 @@ exports.generateTeams = async (req, res) => {
 
         // Get confirmed participants with skill rating
         const [participants] = await db.query(
-            `SELECT p.id, p.user_id, COALESCE(us.rating, u.skill_rating, 6.0) as skill_rating 
+            `SELECT p.id, p.user_id, COALESCE(us.rating, 6.0) as skill_rating 
              FROM participants p 
              JOIN users u ON p.user_id = u.id 
              LEFT JOIN user_skills us ON u.id = us.user_id AND us.sport_type = ?

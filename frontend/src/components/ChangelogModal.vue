@@ -31,7 +31,7 @@
             </ion-item>
           </ion-list>
           <div class="modal-actions ion-padding-top">
-            <ion-button fill="clear" @click="openDonation" color="warning">
+            <ion-button @click="openDonation">
               <ion-icon :icon="beerOutline" slot="start"></ion-icon>
               {{ t("common.donate") }}
             </ion-button>

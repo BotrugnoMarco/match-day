@@ -412,7 +412,7 @@ exports.getUserMatches = async (req, res) => {
     const userId = req.user.id;
     try {
         const [matches] = await db.query(
-            `SELECT m.*, p.status as participation_status, u.username as creator_username, u.avatar_url as creator_avatar,
+            `SELECT m.*, p.status as user_participation_status, u.username as creator_username, u.avatar_url as creator_avatar,
              (SELECT COUNT(*) FROM participants p2 WHERE p2.match_id = m.id AND p2.status = 'confirmed') as participants_count
              FROM matches m 
              JOIN participants p ON m.id = p.match_id 
@@ -434,13 +434,14 @@ exports.getFriendsMatches = async (req, res) => {
     try {
         const [matches] = await db.query(
             `SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar,
-             (SELECT COUNT(*) FROM participants p WHERE p.match_id = m.id AND p.status = 'confirmed') as participants_count
+             (SELECT COUNT(*) FROM participants p WHERE p.match_id = m.id AND p.status = 'confirmed') as participants_count,
+             (SELECT status FROM participants p WHERE p.match_id = m.id AND p.user_id = ?) as user_participation_status
              FROM matches m 
              JOIN users u ON m.creator_id = u.id 
              JOIN friendships f ON (f.requester_id = u.id AND f.addressee_id = ?) OR (f.addressee_id = u.id AND f.requester_id = ?)
              WHERE f.status = 'accepted' AND m.status != 'finished'
              ORDER BY m.date_time ASC`,
-            [userId, userId]
+            [userId, userId, userId]
         );
         res.json(matches);
     } catch (error) {

@@ -48,15 +48,25 @@ exports.createMatch = async (req, res) => {
 
 // Get all matches
 exports.getAllMatches = async (req, res) => {
+    const userId = req.user ? req.user.id : null;
     try {
-        const [matches] = await db.query(`
+        let query = `
             SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar,
             (SELECT COUNT(*) FROM participants p WHERE p.match_id = m.id AND p.status = 'confirmed') as participants_count
+        `;
+
+        if (userId) {
+            query += `, (SELECT status FROM participants p WHERE p.match_id = m.id AND p.user_id = ${db.escape(userId)}) as user_participation_status`;
+        }
+
+        query += `
             FROM matches m 
             JOIN users u ON m.creator_id = u.id 
             WHERE m.status != 'finished'
             ORDER BY m.date_time ASC
-        `);
+        `;
+
+        const [matches] = await db.query(query);
         res.json(matches);
     } catch (error) {
         console.error('Get matches error:', error);

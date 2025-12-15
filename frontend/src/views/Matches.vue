@@ -50,7 +50,9 @@
               </div>
               <ion-badge :color="getStatusColor(match)" class="status-badge">
                 {{
-                  match.user_participation_status === "confirmed"
+                  match.status === "finished"
+                    ? t("status.finished")
+                    : match.user_participation_status === "confirmed"
                     ? t("match_details.im_in")
                     : match.user_participation_status === "waitlist"
                     ? t("match_details.waitlist")
@@ -210,6 +212,7 @@ const segmentChanged = (ev) => {
 const getStatusColor = (status) => {
   // If we are passing the match object (which has user_participation_status)
   if (typeof status === "object") {
+    if (status.status === "finished") return "medium";
     if (status.user_participation_status === "confirmed") return "success";
     if (status.user_participation_status === "waitlist") return "warning";
     if (status.user_participation_status === "pending_approval") return "tertiary";

@@ -1,49 +1,64 @@
 <template>
   <ion-modal :is-open="isOpen" @didDismiss="close" class="changelog-modal">
-    <ion-header>
-      <ion-toolbar>
-        <ion-title>{{ t("changelog.title") }}</ion-title>
-        <ion-buttons slot="end">
-          <ion-button @click="close">{{ t("common.close") }}</ion-button>
-        </ion-buttons>
-      </ion-toolbar>
-    </ion-header>
-    <ion-content class="ion-padding" v-if="currentVersion">
-      <div class="changelog-content">
-        <div class="version-header">
-          <h2>v{{ currentVersion.version }}</h2>
-          <p class="date">{{ formatDate(currentVersion.date) }}</p>
-        </div>
+    <ion-page>
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>{{ t("changelog.title") }}</ion-title>
+          <ion-buttons slot="end">
+            <ion-button @click="close">{{ t("common.close") }}</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding" v-if="currentVersion">
+        <div class="changelog-content">
+          <div class="version-header">
+            <h2>v{{ currentVersion.version }}</h2>
+            <p class="date">{{ formatDate(currentVersion.date) }}</p>
+          </div>
 
-        <h3 class="update-title">{{ currentVersion.title }}</h3>
+          <h3 class="update-title">{{ currentVersion.title }}</h3>
 
-        <ion-list lines="none">
-          <ion-item v-for="(feature, index) in currentVersion.features" :key="index" class="feature-item">
-            <ion-icon :icon="getIcon(feature.icon)" slot="start" color="primary" class="feature-icon"></ion-icon>
-            <ion-label class="ion-text-wrap">
-              <h3>{{ feature.title }}</h3>
-              <p>{{ feature.description }}</p>
-            </ion-label>
-          </ion-item>
-        </ion-list>
-        <div class="donation-section ion-text-center ion-padding-top">
-          <ion-button fill="clear" @click="openDonation" color="warning">
-            <ion-icon :icon="beerOutline" slot="start"></ion-icon>
-            {{ t("common.donate") }}
-          </ion-button>
+          <ion-list lines="none">
+            <ion-item v-for="(feature, index) in currentVersion.features" :key="index" class="feature-item">
+              <ion-icon :icon="getIcon(feature.icon)" slot="start" color="primary" class="feature-icon"></ion-icon>
+              <ion-label class="ion-text-wrap">
+                <h3>{{ feature.title }}</h3>
+                <p>{{ feature.description }}</p>
+              </ion-label>
+            </ion-item>
+          </ion-list>
+          <div class="donation-section ion-text-center ion-padding-top">
+            <ion-button fill="clear" @click="openDonation" color="warning">
+              <ion-icon :icon="beerOutline" slot="start"></ion-icon>
+              {{ t("common.donate") }}
+            </ion-button>
+          </div>
+          <div class="ion-padding-top">
+            <ion-button expand="block" @click="close">{{ t("changelog.got_it") }}</ion-button>
+          </div>
         </div>
-        <div class="ion-padding-top">
-          <ion-button expand="block" @click="close">{{ t("changelog.got_it") }}</ion-button>
-        </div>
-      </div>
-    </ion-content>
+      </ion-content>
+    </ion-page>
   </ion-modal>
 </template>
 
 <script setup>
 import { defineProps, defineEmits } from "vue";
 import { useI18n } from "vue-i18n";
-import { IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel, IonIcon } from "@ionic/vue";
+import {
+  IonModal,
+  IonPage,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonContent,
+  IonList,
+  IonItem,
+  IonLabel,
+  IonIcon,
+} from "@ionic/vue";
 import * as icons from "ionicons/icons";
 import { beerOutline } from "ionicons/icons";
 
@@ -89,8 +104,7 @@ const formatDate = (dateString) => {
 
 <style scoped>
 .changelog-modal {
-  --height: auto;
-  --max-height: 90%;
+  --height: 80%;
   --border-radius: 16px;
 }
 

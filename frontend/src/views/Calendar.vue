@@ -246,8 +246,8 @@ const fetchMatches = async () => {
 };
 
 const getStatusIcon = (status) => {
-  if (status === 'confirmed') return checkmarkCircle;
-  if (status === 'waitlist') return hourglassOutline;
+  if (status === "confirmed") return checkmarkCircle;
+  if (status === "waitlist") return hourglassOutline;
   return helpCircleOutline;
 };
 
@@ -309,11 +309,21 @@ onMounted(() => {
 .status-icon-small {
   font-size: 12px;
 }
-.status-icon-small.soccer { color: #2dd36f; }
-.status-icon-small.basketball { color: #ffc409; }
-.status-icon-small.padel { color: #3880ff; }
-.status-icon-small.tennis { color: #eb445a; }
-.status-icon-small.other { color: #8c8c8c; }
+.status-icon-small.soccer {
+  color: #2dd36f;
+}
+.status-icon-small.basketball {
+  color: #ffc409;
+}
+.status-icon-small.padel {
+  color: #3880ff;
+}
+.status-icon-small.tennis {
+  color: #eb445a;
+}
+.status-icon-small.other {
+  color: #8c8c8c;
+}
 
 .day-cell.other-month {
   opacity: 0.3;

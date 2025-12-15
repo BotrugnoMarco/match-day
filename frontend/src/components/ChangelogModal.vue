@@ -173,4 +173,8 @@ const formatDate = (dateString) => {
   justify-content: space-between;
   align-items: center;
 }
+
+.donate-btn {
+  --color: white;
+}
 </style>

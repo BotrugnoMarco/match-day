@@ -142,13 +142,6 @@ exports.joinMatch = async (req, res) => {
 
         // Private match logic
         if (match.is_private && userId !== match.creator_id) {
-            // Check if friend
-            const [friendship] = await db.query(
-                'SELECT * FROM friendships WHERE ((requester_id = ? AND addressee_id = ?) OR (requester_id = ? AND addressee_id = ?)) AND status = "accepted"',
-                [userId, match.creator_id, match.creator_id, userId]
-            );
-            const isFriend = friendship.length > 0;
-
             // Check access code
             const isCodeCorrect = access_code && access_code === match.access_code;
 
@@ -157,7 +150,7 @@ exports.joinMatch = async (req, res) => {
                 return res.status(403).json({ error: 'Invalid access code' });
             }
 
-            if (!isFriend && !isCodeCorrect) {
+            if (!isCodeCorrect) {
                 // Requesting to join
                 newStatus = 'pending_approval';
             }

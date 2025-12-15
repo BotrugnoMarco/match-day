@@ -402,7 +402,8 @@ const formatTime = (dateString) => {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 15px;
+  text-align: center;
+  /* gap: 15px; */
 }
 
 .action-item {

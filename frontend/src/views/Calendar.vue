@@ -337,10 +337,13 @@ onMounted(() => {
   color: #ffc409;
 }
 .status-icon-small.padel {
-  color: #3880ff;
+  color: #3dc2ff;
 }
 .status-icon-small.tennis {
   color: #eb445a;
+}
+.status-icon-small.volleyball {
+  color: #5260ff;
 }
 .status-icon-small.other {
   color: #8c8c8c;

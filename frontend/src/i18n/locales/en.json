@@ -365,7 +365,28 @@
     "success": "Vote submitted successfully",
     "failed": "Failed to submit vote",
     "voted": "Voted",
-    "vote_action": "Vote"
+    "vote_action": "Vote",
+    "tags": {
+      "MVP": "MVP",
+      "Fair Play": "Fair Play",
+      "Top Scorer": "Top Scorer",
+      "Best Defender": "Best Defender",
+      "Playmaker": "Playmaker",
+      "Goalkeeper": "Goalkeeper",
+      "Team Spirit": "Team Spirit",
+      "Hustle": "Hustle",
+      "Clutch": "Clutch",
+      "Leader": "Leader",
+      "Best Spiker": "Best Spiker",
+      "Best Setter": "Best Setter",
+      "Best Receiver": "Best Receiver",
+      "Best Blocker": "Best Blocker",
+      "Best Smash": "Best Smash",
+      "Best Net Player": "Best Net Player",
+      "Consistency": "Consistency",
+      "Best Serve": "Best Serve",
+      "Rebounder": "Rebounder"
+    }
   },
   "formation": {
     "save": "Save Formation",

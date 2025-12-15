@@ -378,7 +378,16 @@
       "Team Spirit": "Spirito di Squadra",
       "Hustle": "Grinta",
       "Clutch": "Decisivo",
-      "Leader": "Leader"
+      "Leader": "Leader",
+      "Best Spiker": "Miglior Schiacciatore",
+      "Best Setter": "Miglior Alzatore",
+      "Best Receiver": "Miglior Ricevitore",
+      "Best Blocker": "Miglior Muro",
+      "Best Smash": "Miglior Smash",
+      "Best Net Player": "Miglior Gioco a Rete",
+      "Consistency": "Costanza",
+      "Best Serve": "Miglior Servizio",
+      "Rebounder": "Rimbalzista"
     }
   },
   "formation": {

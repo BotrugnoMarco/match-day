@@ -1249,6 +1249,7 @@ const openVoteModal = async (participant) => {
       matchId: match.value.id,
       targetId: participant.user_id,
       targetName: participant.username,
+      sportType: match.value.sport_type,
     },
   });
 

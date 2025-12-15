@@ -48,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   IonPage,
@@ -73,13 +73,25 @@ const props = defineProps({
   matchId: { type: Number, required: true },
   targetId: { type: Number, required: true },
   targetName: { type: String, required: true },
+  sportType: { type: String, default: "soccer" },
 });
 
 const { t } = useI18n();
 const rating = ref(6);
 const selectedTag = ref(null);
 
-const availableTags = ["MVP", "Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Goalkeeper", "Team Spirit", "Hustle", "Clutch", "Leader"];
+const tagsBySport = {
+  soccer: ["MVP", "Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Goalkeeper", "Team Spirit", "Hustle", "Clutch", "Leader"],
+  volleyball: ["MVP", "Fair Play", "Best Spiker", "Best Setter", "Best Receiver", "Best Blocker", "Team Spirit", "Hustle", "Leader"],
+  padel: ["MVP", "Fair Play", "Best Smash", "Best Net Player", "Consistency", "Team Spirit", "Hustle", "Clutch"],
+  tennis: ["MVP", "Fair Play", "Best Serve", "Consistency", "Team Spirit", "Hustle", "Clutch"],
+  // basketball: ["MVP", "Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Rebounder", "Team Spirit", "Hustle", "Clutch", "Leader"],
+  default: ["MVP", "Fair Play", "Team Spirit", "Hustle", "Clutch", "Leader"],
+};
+
+const availableTags = computed(() => {
+  return tagsBySport[props.sportType] || tagsBySport.default;
+});
 
 const toggleTag = (tag) => {
   if (selectedTag.value === tag) {

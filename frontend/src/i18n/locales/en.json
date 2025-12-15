@@ -366,7 +366,7 @@
     "warning": "Votes are anonymous and will influence future team balancing. Please ensure you vote honestly!",
     "rating": "Rating",
     "select_tag": "Select a Tag (Optional)",
-    "comment_label": "Comment (Anonymous)",
+    "comment_label": "Comment (Optional)",
     "comment_placeholder": "Write a constructive comment...",
     "submit_btn": "Submit Vote",
     "success": "Vote submitted successfully",

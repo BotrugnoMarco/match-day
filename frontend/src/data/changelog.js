@@ -1,8 +1,8 @@
 export const changelog = [
     {
-        version: "1.0.12",
+        version: "1.2.0",
         date: "2025-12-15",
-        title: "Feedback Anonimi & MVP",
+        title: "Commenti, MVP & Calendario",
         features: [
             {
                 title: "Commenti Anonimi",
@@ -13,6 +13,11 @@ export const changelog = [
                 title: "Calcolo MVP Automatico",
                 description: "L'MVP viene calcolato automaticamente per entrambe le squadre in base alla media voti.",
                 icon: "trophy-outline"
+            },
+            {
+                title: "Calendario Personale",
+                description: "Visualizza tutti i tuoi impegni sportivi in un comodo calendario mensile con icone specifiche per ogni sport.",
+                icon: "calendar-number-outline"
             },
             {
                 title: "Tag per Sport",

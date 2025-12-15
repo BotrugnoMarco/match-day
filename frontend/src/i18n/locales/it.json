@@ -368,7 +368,7 @@
     "warning": "I voti sono anonimi e influenzeranno il bilanciamento delle squadre future. Assicurati di votare in modo onesto!",
     "rating": "Voto",
     "select_tag": "Seleziona un Tag (Opzionale)",
-    "comment_label": "Commento (Anonimo)",
+    "comment_label": "Commento (Opzionale)",
     "comment_placeholder": "Scrivi un commento costruttivo...",
     "submit_btn": "Invia Voto",
     "success": "Voto inviato con successo",

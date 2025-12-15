@@ -132,17 +132,6 @@ const closeMenu = () => {
 };
 
 onMounted(async () => {
-  // Check changelog
-  /*
-  const lastSeenVersion = localStorage.getItem("last_seen_version");
-  if (!lastSeenVersion || lastSeenVersion !== latestVersion.version) {
-    // Wait a bit before showing to let app load
-    setTimeout(() => {
-      isChangelogOpen.value = true;
-    }, 1000);
-  }
-  */
-
   if (currentUser.value) {
     requestNotificationPermission();
     initPushListeners();
@@ -159,6 +148,15 @@ onMounted(async () => {
     } catch (e) {
       console.error("App update check failed", e);
     }
+  }
+
+  // Check changelog
+  const lastSeenVersion = localStorage.getItem("last_seen_version");
+  if (!lastSeenVersion || lastSeenVersion !== latestVersion.version) {
+    // Wait a bit before showing to let app load
+    setTimeout(() => {
+      isChangelogOpen.value = true;
+    }, 1000);
   }
 });
 

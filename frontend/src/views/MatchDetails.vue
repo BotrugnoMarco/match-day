@@ -879,6 +879,32 @@ const shareMatch = async () => {
 
 const joinMatch = async () => {
   try {
+    // Confirmation Alert
+    const confirmAlert = await alertController.create({
+      header: t("match_details.join_confirm_header"),
+      message: t("match_details.join_confirm_message"),
+      buttons: [
+        {
+          text: t("common.cancel"),
+          role: "cancel",
+        },
+        {
+          text: t("match_details.join_confirm_btn"),
+          role: "confirm",
+          handler: async () => {
+            await performJoinMatch();
+          },
+        },
+      ],
+    });
+    await confirmAlert.present();
+  } catch (error) {
+    console.error("Error showing confirmation:", error);
+  }
+};
+
+const performJoinMatch = async () => {
+  try {
     let accessCode = null;
     // Only ask for code if private, not creator, AND NOT FRIEND
     if (match.value.is_private && !isCreator.value && !match.value.is_friend) {

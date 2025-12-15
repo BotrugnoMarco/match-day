@@ -74,6 +74,12 @@
             </div>
             <span>{{ t("menu.my_matches") }}</span>
           </div>
+          <div class="action-item" @click="router.push('/calendar')">
+            <div class="action-icon orange">
+              <ion-icon :icon="calendarNumberOutline"></ion-icon>
+            </div>
+            <span>{{ t("menu.calendar") }}</span>
+          </div>
           <div class="action-item" @click="router.push('/matches/create')">
             <div class="action-icon green">
               <ion-icon :icon="addCircleOutline"></ion-icon>
@@ -81,13 +87,13 @@
             <span>{{ t("common.create") }}</span>
           </div>
           <div class="action-item" @click="router.push('/friends')">
-            <div class="action-icon orange">
+            <div class="action-icon purple">
               <ion-icon :icon="peopleOutline"></ion-icon>
             </div>
             <span>{{ t("menu.friends") }}</span>
           </div>
           <div class="action-item" @click="router.push('/profile')">
-            <div class="action-icon purple">
+            <div class="action-icon pink">
               <ion-icon :icon="personCircleOutline"></ion-icon>
             </div>
             <span>{{ t("menu.profile") }}</span>
@@ -142,6 +148,7 @@ import {
   logInOutline,
   personAddOutline,
   calendarOutline,
+  calendarNumberOutline,
   personCircleOutline,
   notificationsOutline,
   addCircleOutline,
@@ -392,9 +399,10 @@ const formatTime = (dateString) => {
 
 /* Quick Actions Grid */
 .actions-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
 }
 
 .action-item {
@@ -403,6 +411,7 @@ const formatTime = (dateString) => {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  width: 70px;
 }
 
 .action-icon {
@@ -433,6 +442,9 @@ const formatTime = (dateString) => {
 }
 .action-icon.purple {
   background: #9d4edd;
+}
+.action-icon.pink {
+  background: #eb445a;
 }
 
 .action-item span {

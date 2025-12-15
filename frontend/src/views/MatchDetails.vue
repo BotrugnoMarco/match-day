@@ -248,6 +248,10 @@
               <ion-icon :icon="flagOutline" slot="start"></ion-icon>
               {{ t("match_details.finish_match") }}
             </ion-button>
+            <ion-button expand="block" color="medium" fill="outline" @click="changeStatus('locked')" class="main-action-btn">
+              <ion-icon :icon="arrowUndoOutline" slot="start"></ion-icon>
+              {{ t("match_details.cancel_voting") }}
+            </ion-button>
           </div>
         </div>
 
@@ -559,6 +563,7 @@ import {
   helpCircle,
   homeOutline,
   shirtOutline,
+  arrowUndoOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";

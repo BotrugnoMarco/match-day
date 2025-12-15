@@ -270,6 +270,7 @@
     "voting": "Voting",
     "delete_match": "Delete Match",
     "finish_match": "Finish Match",
+    "cancel_voting": "Cancel Voting",
     "pending_requests": "Pending Requests",
     "wants_to_join": "Wants to join",
     "waitlist": "Waitlist",

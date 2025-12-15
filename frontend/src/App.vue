@@ -10,7 +10,7 @@
         <div class="menu-inner">
           <ion-list>
             <ion-menu-toggle auto-hide="false" v-for="p in appPages" :key="p.url">
-              <ion-item router-link-active="selected" :router-link="p.url" lines="none" detail="false" class="hydrated">
+              <ion-item router-link-active="selected" :router-link="p.url" lines="none" detail="false" class="hydrated" @click="closeMenu">
                 <ion-icon slot="start" :ios="p.iosIcon" :md="p.mdIcon"></ion-icon>
                 <ion-label>{{ p.title }}</ion-label>
               </ion-item>
@@ -26,14 +26,14 @@
             </ion-menu-toggle>
 
             <ion-menu-toggle auto-hide="false">
-              <ion-item router-link-active="selected" router-link="/support" lines="none" detail="false">
+              <ion-item router-link-active="selected" router-link="/support" lines="none" detail="false" @click="closeMenu">
                 <ion-icon slot="start" :ios="helpCircleOutline" :md="helpCircleSharp"></ion-icon>
                 <ion-label>{{ t("menu.support") }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
 
             <ion-menu-toggle auto-hide="false" v-if="currentUser && currentUser.role === 'admin'">
-              <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false">
+              <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false" @click="closeMenu">
                 <ion-icon slot="start" :ios="constructOutline" :md="constructSharp"></ion-icon>
                 <ion-label>{{ t("menu.admin_support") }}</ion-label>
               </ion-item>
@@ -83,6 +83,7 @@ import {
   IonLabel,
   IonMenuToggle,
   toastController,
+  menuController,
 } from "@ionic/vue";
 import {
   homeOutline,
@@ -122,6 +123,10 @@ const latestVersion = changelog[0];
 const closeChangelog = () => {
   isChangelogOpen.value = false;
   localStorage.setItem("last_seen_version", latestVersion.version);
+};
+
+const closeMenu = () => {
+  menuController.close();
 };
 
 onMounted(async () => {

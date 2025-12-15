@@ -473,6 +473,24 @@
             </ion-list>
           </div>
         </div>
+
+        <!-- My Feedback Section -->
+        <div v-if="match.status === 'finished' && myComments.length > 0" class="feedback-section">
+          <div class="section-title">
+            <h3>{{ t("match_details.my_feedback") }}</h3>
+            <ion-icon :icon="chatboxEllipsesOutline" color="primary"></ion-icon>
+          </div>
+
+          <div class="feedback-card">
+            <ion-list lines="none">
+              <ion-item v-for="(comment, index) in myComments" :key="index" class="feedback-item">
+                <ion-label class="ion-text-wrap">
+                  <p class="feedback-text">"{{ comment.comment }}"</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+          </div>
+        </div>
       </div>
     </ion-content>
     <div v-else class="ion-padding">
@@ -564,6 +582,7 @@ import {
   homeOutline,
   shirtOutline,
   arrowUndoOutline,
+  chatboxEllipsesOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -577,6 +596,7 @@ const match = ref(null);
 const weather = ref(null);
 const votes = ref([]);
 const myVotes = ref([]);
+const myComments = ref([]);
 const voteStats = ref(null);
 const isInviteModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
@@ -789,6 +809,7 @@ const fetchMatch = async () => {
 
     if (match.value.status === "finished") {
       fetchVotes();
+      fetchMyReceivedComments();
     }
     if (match.value.status === "voting") {
       fetchMyVotes();
@@ -837,6 +858,15 @@ const fetchVoteStats = async () => {
     voteStats.value = response.data;
   } catch (error) {
     console.error("Error fetching vote stats:", error);
+  }
+};
+
+const fetchMyReceivedComments = async () => {
+  try {
+    const response = await api.get(`/votes/match/${route.params.id}/comments`);
+    myComments.value = response.data;
+  } catch (error) {
+    console.error("Error fetching my comments:", error);
   }
 };
 
@@ -1839,5 +1869,42 @@ onUnmounted(() => {
   font-size: 12px;
   box-shadow: 0 2px 4px #0000001a;
   border: 2px solid #fff;
+}
+
+.feedback-section {
+  margin-top: var(--space-4);
+}
+
+.feedback-card {
+  background: white;
+  border-radius: var(--rounded-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  padding: var(--space-2);
+}
+
+.feedback-item {
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  margin-bottom: var(--space-3);
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.feedback-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.feedback-text {
+  font-style: italic;
+  color: var(--ion-color-dark);
+  margin-bottom: var(--space-2);
+  font-size: 0.95rem;
+}
+
+.feedback-meta {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
 }
 </style>

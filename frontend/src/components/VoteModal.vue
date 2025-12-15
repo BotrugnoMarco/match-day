@@ -39,6 +39,17 @@
           </div>
         </div>
 
+        <ion-item lines="none" class="comment-item">
+          <ion-label position="stacked">{{ t("vote.comment_label") }}</ion-label>
+          <ion-textarea
+            v-model="comment"
+            :placeholder="t('vote.comment_placeholder')"
+            :rows="3"
+            :auto-grow="true"
+            class="custom-textarea"
+          ></ion-textarea>
+        </ion-item>
+
         <div class="ion-padding-top">
           <ion-button expand="block" type="submit" size="large">{{ t("vote.submit_btn") }}</ion-button>
         </div>
@@ -63,6 +74,7 @@ import {
   IonRange,
   IonChip,
   IonIcon,
+  IonTextarea,
   modalController,
   toastController,
 } from "@ionic/vue";
@@ -79,6 +91,7 @@ const props = defineProps({
 const { t } = useI18n();
 const rating = ref(6);
 const selectedTag = ref(null);
+const comment = ref("");
 
 const tagsBySport = {
   soccer: ["Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Goalkeeper", "Team Spirit", "Hustle", "Clutch", "Leader"],
@@ -122,6 +135,7 @@ const submitVote = async () => {
       target_id: props.targetId,
       rating: rating.value,
       tags: selectedTag.value || "",
+      comment: comment.value,
     });
     presentToast(t("vote.success"), "success");
     modalController.dismiss(true, "confirm");
@@ -201,5 +215,20 @@ const submitVote = async () => {
 ion-chip {
   margin: 0;
   font-weight: 600;
+}
+
+.comment-item {
+  --background: transparent;
+  margin-top: var(--space-4);
+}
+
+.custom-textarea {
+  --background: var(--ion-color-light);
+  --padding-start: 10px;
+  --padding-end: 10px;
+  --padding-top: 10px;
+  --padding-bottom: 10px;
+  border-radius: 8px;
+  margin-top: 8px;
 }
 </style>

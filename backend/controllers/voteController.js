@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // Submit a vote
 exports.submitVote = async (req, res) => {
-    const { match_id, target_id, rating, tags } = req.body;
+    const { match_id, target_id, rating, tags, comment } = req.body;
     const voter_id = req.user.id;
 
     if (!match_id || !target_id || !rating) {
@@ -46,8 +46,8 @@ exports.submitVote = async (req, res) => {
 
         // Insert vote
         await db.query(
-            'INSERT INTO votes (match_id, voter_id, target_id, rating, tags) VALUES (?, ?, ?, ?, ?)',
-            [match_id, voter_id, target_id, rating, tags]
+            'INSERT INTO votes (match_id, voter_id, target_id, rating, tags, comment) VALUES (?, ?, ?, ?, ?, ?)',
+            [match_id, voter_id, target_id, rating, tags, comment]
         );
         const io = req.app.get('io');
         io.emit('vote_cast', { matchId: match_id });
@@ -152,4 +152,23 @@ exports.getVoteStats = async (req, res) => {
         res.status(500).json({ error: 'Server error fetching vote stats' });
     }
 };
+
+// Get comments received by the current user for a match
+exports.getMyReceivedComments = async (req, res) => {
+    const matchId = req.params.matchId;
+    const userId = req.user.id;
+    try {
+        const [comments] = await db.query(
+            `SELECT comment, rating, tags 
+             FROM votes 
+             WHERE match_id = ? AND target_id = ? AND comment IS NOT NULL AND comment != ''`,
+            [matchId, userId]
+        );
+        res.json(comments);
+    } catch (error) {
+        console.error('Get my received comments error:', error);
+        res.status(500).json({ error: 'Server error fetching comments' });
+    }
+};
+
 

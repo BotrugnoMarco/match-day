@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS votes (
         AND rating <= 10
     ),
     tags VARCHAR(255),
+    comment TEXT,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (voter_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (target_id) REFERENCES users(id) ON DELETE CASCADE

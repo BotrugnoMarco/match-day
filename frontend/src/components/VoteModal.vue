@@ -81,12 +81,12 @@ const rating = ref(6);
 const selectedTag = ref(null);
 
 const tagsBySport = {
-  soccer: ["MVP", "Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Goalkeeper", "Team Spirit", "Hustle", "Clutch", "Leader"],
-  volleyball: ["MVP", "Fair Play", "Best Spiker", "Best Setter", "Best Receiver", "Best Blocker", "Team Spirit", "Hustle", "Leader"],
-  padel: ["MVP", "Fair Play", "Best Smash", "Best Net Player", "Consistency", "Team Spirit", "Hustle", "Clutch"],
-  tennis: ["MVP", "Fair Play", "Best Serve", "Consistency", "Team Spirit", "Hustle", "Clutch"],
-  // basketball: ["MVP", "Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Rebounder", "Team Spirit", "Hustle", "Clutch", "Leader"],
-  default: ["MVP", "Fair Play", "Team Spirit", "Hustle", "Clutch", "Leader"],
+  soccer: ["Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Goalkeeper", "Team Spirit", "Hustle", "Clutch", "Leader"],
+  volleyball: ["Fair Play", "Best Spiker", "Best Setter", "Best Receiver", "Best Blocker", "Team Spirit", "Hustle", "Leader"],
+  padel: ["Fair Play", "Best Smash", "Best Net Player", "Consistency", "Team Spirit", "Hustle", "Clutch"],
+  tennis: ["Fair Play", "Best Serve", "Consistency", "Team Spirit", "Hustle", "Clutch"],
+  // basketball: ["Fair Play", "Top Scorer", "Best Defender", "Playmaker", "Rebounder", "Team Spirit", "Hustle", "Clutch", "Leader"],
+  default: ["Fair Play", "Team Spirit", "Hustle", "Clutch", "Leader"],
 };
 
 const availableTags = computed(() => {

@@ -388,6 +388,43 @@ exports.updateMatchStatus = async (req, res) => {
             const [matchInfo] = await db.query('SELECT sport_type FROM matches WHERE id = ?', [matchId]);
             const sportType = matchInfo[0].sport_type;
 
+            // Calculate MVP for Team A and Team B
+            const [voteStats] = await db.query(
+                `SELECT v.target_id, p.team, AVG(v.rating) as avg_rating
+                 FROM votes v
+                 JOIN participants p ON v.target_id = p.user_id AND v.match_id = p.match_id
+                 WHERE v.match_id = ?
+                 GROUP BY v.target_id, p.team`,
+                [matchId]
+            );
+
+            let mvpA = null;
+            let maxRatingA = -1;
+            let mvpB = null;
+            let maxRatingB = -1;
+
+            for (const stat of voteStats) {
+                const rating = parseFloat(stat.avg_rating);
+                if (stat.team === 'A') {
+                    if (rating > maxRatingA) {
+                        maxRatingA = rating;
+                        mvpA = stat.target_id;
+                    }
+                } else if (stat.team === 'B') {
+                    if (rating > maxRatingB) {
+                        maxRatingB = rating;
+                        mvpB = stat.target_id;
+                    }
+                }
+            }
+
+            if (mvpA) {
+                await db.query('UPDATE participants SET is_mvp = TRUE WHERE match_id = ? AND user_id = ?', [matchId, mvpA]);
+            }
+            if (mvpB) {
+                await db.query('UPDATE participants SET is_mvp = TRUE WHERE match_id = ? AND user_id = ?', [matchId, mvpB]);
+            }
+
             // Find all users who received votes in this match
             const [votedUsers] = await db.query(
                 'SELECT DISTINCT target_id FROM votes WHERE match_id = ?',

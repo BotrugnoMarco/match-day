@@ -75,6 +75,7 @@ CREATE TABLE IF NOT EXISTS participants (
     y_pos DECIMAL(5, 2) DEFAULT NULL,
     is_captain BOOLEAN DEFAULT FALSE,
     is_admin BOOLEAN DEFAULT FALSE,
+    is_mvp BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE(match_id, user_id)

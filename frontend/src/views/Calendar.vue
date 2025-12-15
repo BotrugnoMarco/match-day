@@ -44,7 +44,9 @@
         >
           <span class="day-number">{{ day.dayNumber }}</span>
           <div class="event-dots" v-if="day.events.length > 0">
-            <div v-for="event in day.events.slice(0, 3)" :key="event.id" class="dot" :class="event.sport_type"></div>
+            <div v-for="event in day.events.slice(0, 3)" :key="event.id" class="dot-wrapper">
+              <ion-icon :icon="getStatusIcon(event.user_participation_status)" class="status-icon-small" :class="event.sport_type"></ion-icon>
+            </div>
             <div v-if="day.events.length > 3" class="dot more">+</div>
           </div>
         </div>
@@ -243,6 +245,12 @@ const fetchMatches = async () => {
   }
 };
 
+const getStatusIcon = (status) => {
+  if (status === 'confirmed') return checkmarkCircle;
+  if (status === 'waitlist') return hourglassOutline;
+  return helpCircleOutline;
+};
+
 onMounted(() => {
   fetchMatches();
 });
@@ -298,6 +306,15 @@ onMounted(() => {
   transition: all 0.2s;
 }
 
+.status-icon-small {
+  font-size: 12px;
+}
+.status-icon-small.soccer { color: #2dd36f; }
+.status-icon-small.basketball { color: #ffc409; }
+.status-icon-small.padel { color: #3880ff; }
+.status-icon-small.tennis { color: #eb445a; }
+.status-icon-small.other { color: #8c8c8c; }
+
 .day-cell.other-month {
   opacity: 0.3;
 }
@@ -321,6 +338,12 @@ onMounted(() => {
   gap: 2px;
   margin-top: 4px;
   flex-wrap: wrap;
+  justify-content: center;
+}
+
+.dot-wrapper {
+  display: flex;
+  align-items: center;
   justify-content: center;
 }
 

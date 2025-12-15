@@ -56,15 +56,18 @@
       </ion-footer>
     </ion-menu>
     <ion-router-outlet id="main-content" />
+    <ChangelogModal :is-open="isChangelogOpen" :current-version="latestVersion" @close="closeChangelog" />
   </ion-app>
 </template>
 
 <script setup>
-import { onMounted, watch, computed } from "vue";
+import { onMounted, watch, computed, ref } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import LanguageSwitcher from "./components/LanguageSwitcher.vue";
+import ChangelogModal from "./components/ChangelogModal.vue";
+import { changelog } from "./data/changelog";
 import {
   IonApp,
   IonRouterOutlet,
@@ -113,7 +116,24 @@ const router = useRouter();
 const { t, locale } = useI18n();
 const currentUser = computed(() => store.state.user);
 
+const isChangelogOpen = ref(false);
+const latestVersion = changelog[0];
+
+const closeChangelog = () => {
+  isChangelogOpen.value = false;
+  localStorage.setItem("last_seen_version", latestVersion.version);
+};
+
 onMounted(async () => {
+  // Check changelog
+  const lastSeenVersion = localStorage.getItem("last_seen_version");
+  if (!lastSeenVersion || lastSeenVersion !== latestVersion.version) {
+    // Wait a bit before showing to let app load
+    setTimeout(() => {
+      isChangelogOpen.value = true;
+    }, 1000);
+  }
+
   if (currentUser.value) {
     requestNotificationPermission();
     initPushListeners();

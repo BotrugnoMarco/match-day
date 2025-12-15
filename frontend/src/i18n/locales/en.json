@@ -133,7 +133,7 @@
     "back": "Back",
     "confirm": "Confirm",
     "delete_confirm_message": "Are you sure you want to delete all notifications?",
-    "donate": "Buy me a beer"
+    "donate": "Buy us a beer"
   },
   "home": {
     "welcome": "Hi, {name}!",
@@ -431,5 +431,9 @@
     "draw": "Draw",
     "win": "Won",
     "lose": "Lost"
+  },
+  "changelog": {
+    "title": "What's New",
+    "got_it": "Got it!"
   }
 }

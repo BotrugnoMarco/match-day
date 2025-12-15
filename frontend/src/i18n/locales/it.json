@@ -133,7 +133,7 @@
     "back": "Indietro",
     "confirm": "Conferma",
     "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?",
-    "donate": "Offrimi una birra"
+    "donate": "Offri una birra"
   },
   "home": {
     "welcome": "Ciao, {name}!",
@@ -433,5 +433,9 @@
     "draw": "Pareggio",
     "win": "Vinta",
     "lose": "Persa"
+  },
+  "changelog": {
+    "title": "Novità",
+    "got_it": "Ho capito!"
   }
 }

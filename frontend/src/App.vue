@@ -126,6 +126,7 @@ const closeChangelog = () => {
 
 onMounted(async () => {
   // Check changelog
+  /*
   const lastSeenVersion = localStorage.getItem("last_seen_version");
   if (!lastSeenVersion || lastSeenVersion !== latestVersion.version) {
     // Wait a bit before showing to let app load
@@ -133,6 +134,7 @@ onMounted(async () => {
       isChangelogOpen.value = true;
     }, 1000);
   }
+  */
 
   if (currentUser.value) {
     requestNotificationPermission();

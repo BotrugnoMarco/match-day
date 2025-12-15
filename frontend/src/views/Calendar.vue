@@ -45,7 +45,7 @@
           <span class="day-number">{{ day.dayNumber }}</span>
           <div class="event-dots" v-if="day.events.length > 0">
             <div v-for="event in day.events.slice(0, 3)" :key="event.id" class="dot-wrapper">
-              <ion-icon :icon="getStatusIcon(event.user_participation_status)" class="status-icon-small" :class="event.sport_type"></ion-icon>
+              <ion-icon :icon="getSportIcon(event.sport_type)" class="status-icon-small" :class="event.sport_type"></ion-icon>
             </div>
             <div v-if="day.events.length > 3" class="dot more">+</div>
           </div>
@@ -105,7 +105,18 @@ import {
   IonCard,
   IonCardContent,
 } from "@ionic/vue";
-import { chevronBackOutline, chevronForwardOutline, locationOutline, checkmarkCircle, hourglassOutline, helpCircleOutline } from "ionicons/icons";
+import { 
+  chevronBackOutline, 
+  chevronForwardOutline, 
+  locationOutline, 
+  checkmarkCircle, 
+  hourglassOutline, 
+  helpCircleOutline,
+  football,
+  basketball,
+  baseballOutline,
+  tennisball
+} from "ionicons/icons";
 
 const router = useRouter();
 const { t, locale } = useI18n();
@@ -245,10 +256,15 @@ const fetchMatches = async () => {
   }
 };
 
-const getStatusIcon = (status) => {
-  if (status === "confirmed") return checkmarkCircle;
-  if (status === "waitlist") return hourglassOutline;
-  return helpCircleOutline;
+const getSportIcon = (sport) => {
+  switch (sport) {
+    case 'soccer': return football;
+    case 'basketball': return basketball;
+    case 'volleyball': return baseballOutline;
+    case 'padel':
+    case 'tennis': return tennisball;
+    default: return helpCircleOutline;
+  }
 };
 
 onMounted(() => {

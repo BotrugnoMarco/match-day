@@ -1307,16 +1307,25 @@ const onVoteCast = (data) => {
   }
 };
 
+const onMatchDeleted = (data) => {
+  if (data.matchId == route.params.id) {
+    presentToast(t("match_details.match_deleted_toast"), "warning");
+    router.push("/home");
+  }
+};
+
 onMounted(() => {
   fetchMatch();
 
   socket.on("match_updated", onMatchUpdated);
   socket.on("vote_cast", onVoteCast);
+  socket.on("match_deleted", onMatchDeleted);
 });
 
 onUnmounted(() => {
   socket.off("match_updated", onMatchUpdated);
   socket.off("vote_cast", onVoteCast);
+  socket.off("match_deleted", onMatchDeleted);
 });
 </script>
 

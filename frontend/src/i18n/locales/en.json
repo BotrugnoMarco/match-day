@@ -304,6 +304,7 @@
     "join_confirm_message": "By confirming your participation, you commit to respecting the time and location of the match. Are you sure you want to join?",
     "join_confirm_btn": "I Confirm and Join",
     "leave_error": "Failed to leave match",
+    "match_deleted_toast": "The match has been deleted because the last participant left.",
     "status_error": "Failed to update status",
     "payment_error": "Failed to update payment status",
     "move_error": "Failed to move player",

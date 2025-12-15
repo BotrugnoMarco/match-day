@@ -305,6 +305,7 @@
     "join_confirm_message": "Confermando la partecipazione, ti impegni a rispettare l'orario e il luogo dell'incontro. Sei sicuro di voler partecipare?",
     "join_confirm_btn": "Confermo e Partecipo",
     "leave_error": "Impossibile lasciare la partita",
+    "match_deleted_toast": "La partita è stata eliminata perché l'ultimo partecipante è uscito.",
     "status_error": "Impossibile aggiornare lo stato",
     "payment_error": "Impossibile aggiornare lo stato del pagamento",
     "share_title": "Partita di {sport}",

@@ -130,12 +130,12 @@
         <div v-else-if="activeTab === 'donate'">
           <div class="donate-card">
             <div class="donate-header">
-              <ion-icon :icon="beerOutline" class="donate-icon"></ion-icon>
+              <ion-icon :icon="beer" class="donate-icon"></ion-icon>
               <h3>{{ t("support.support_dev") }}</h3>
             </div>
             <p>{{ t("support.support_desc") }}</p>
             <ion-button expand="block" class="kofi-btn" href="https://ko-fi.com/dlayk_mark" target="_blank">
-              <ion-icon slot="start" :icon="beerOutline"></ion-icon>
+              <ion-icon slot="start" :icon="beer"></ion-icon>
               {{ t("support.support_kofi") }}
             </ion-button>
           </div>
@@ -173,7 +173,7 @@ import {
   IonBadge,
   toastController,
 } from "@ionic/vue";
-import { mailOutline, beerOutline } from "ionicons/icons";
+import { mailOutline, beer } from "ionicons/icons";
 
 const { t } = useI18n();
 const activeTab = ref("contact");

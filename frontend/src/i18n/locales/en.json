@@ -358,7 +358,7 @@
   },
   "vote": {
     "title": "Vote for {name}",
-    "warning": "The votes given will influence future team balancing. Please ensure you vote honestly!",
+    "warning": "Votes are anonymous and will influence future team balancing. Please ensure you vote honestly!",
     "rating": "Rating",
     "select_tag": "Select a Tag (Optional)",
     "submit_btn": "Submit Vote",

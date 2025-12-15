@@ -360,7 +360,7 @@
   },
   "vote": {
     "title": "Vota per {name}",
-    "warning": "I voti assegnati influenzeranno il bilanciamento delle squadre future. Assicurati di votare in modo onesto!",
+    "warning": "I voti sono anonimi e influenzeranno il bilanciamento delle squadre future. Assicurati di votare in modo onesto!",
     "rating": "Voto",
     "select_tag": "Seleziona un Tag (Opzionale)",
     "submit_btn": "Invia Voto",

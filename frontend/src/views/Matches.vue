@@ -62,6 +62,10 @@
                 <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
                 <span>{{ match.location }}</span>
               </div>
+              <div class="match-participants">
+                <ion-icon :icon="peopleOutline" class="info-icon"></ion-icon>
+                <span>{{ match.participants_count || 0 }} / {{ match.max_players }}</span>
+              </div>
               <div class="match-features" v-if="match.is_covered || match.has_showers">
                 <ion-chip v-if="match.is_covered" outline color="medium" class="feature-chip">
                   <ion-icon :icon="homeOutline"></ion-icon>
@@ -143,6 +147,7 @@ import {
   chevronForwardOutline,
   lockClosedOutline,
   globeOutline,
+  peopleOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -400,6 +405,15 @@ const createMatch = () => {
 }
 
 .match-location {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+  margin-bottom: var(--space-2);
+}
+
+.match-participants {
   display: flex;
   align-items: center;
   gap: var(--space-2);

@@ -120,7 +120,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import socket from "../services/socket";
@@ -164,6 +164,7 @@ import {
 
 const store = useStore();
 const router = useRouter();
+const route = useRoute();
 const { t, locale } = useI18n();
 const filter = ref("all");
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
@@ -234,6 +235,10 @@ const getStatusColor = (status) => {
 };
 
 onIonViewWillEnter(() => {
+  if (route.query.filter) {
+    filter.value = route.query.filter;
+  }
+
   if (filter.value === "mine") {
     store.dispatch("fetchMyMatches");
   } else if (filter.value === "friends") {

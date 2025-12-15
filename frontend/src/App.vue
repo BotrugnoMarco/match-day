@@ -169,7 +169,7 @@ const appPages = computed(() => [
   },
   {
     title: t("menu.my_matches"),
-    url: "/matches",
+    url: "/matches?filter=mine",
     iosIcon: calendarOutline,
     mdIcon: calendarSharp,
   },

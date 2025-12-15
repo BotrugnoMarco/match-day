@@ -1,6 +1,6 @@
 export const changelog = [
     {
-        version: "1.0.1",
+        version: "1.0.2",
         date: "2025-12-15",
         title: "Feedback Anonimi & MVP",
         features: [

@@ -8,7 +8,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content class="ion-padding" v-if="currentVersion">
       <div class="changelog-content">
         <div class="version-header">
           <h2>v{{ currentVersion.version }}</h2>
@@ -28,7 +28,7 @@
         </ion-list>
         <div class="donation-section ion-text-center ion-padding-top">
           <ion-button fill="clear" @click="openDonation" color="warning">
-            <ion-icon :icon="icons.beerOutline" slot="start"></ion-icon>
+            <ion-icon :icon="beerOutline" slot="start"></ion-icon>
             {{ t("common.donate") }}
           </ion-button>
         </div>
@@ -45,6 +45,7 @@ import { defineProps, defineEmits } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel, IonIcon } from "@ionic/vue";
 import * as icons from "ionicons/icons";
+import { beerOutline } from "ionicons/icons";
 
 const props = defineProps({
   isOpen: {
@@ -53,7 +54,7 @@ const props = defineProps({
   },
   currentVersion: {
     type: Object,
-    required: true,
+    default: () => ({}),
   },
 });
 
@@ -69,16 +70,20 @@ const openDonation = () => {
 };
 
 const getIcon = (iconName) => {
-  // Convert kebab-case to camelCase for icon import lookup if needed,
-  // but usually we can just map or use the string if we import * as icons
-  // Let's try to find it in the icons object
+  if (!iconName) return icons.helpCircleOutline;
+  // Convert kebab-case to camelCase
   const camelName = iconName.replace(/-([a-z])/g, (g) => g[1].toUpperCase());
   return icons[camelName] || icons.helpCircleOutline;
 };
 
 const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString(locale.value, { year: "numeric", month: "long", day: "numeric" });
+  if (!dateString) return "";
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(locale.value, { year: "numeric", month: "long", day: "numeric" });
+  } catch (e) {
+    return dateString;
+  }
 };
 </script>
 

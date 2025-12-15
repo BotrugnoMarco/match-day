@@ -20,7 +20,7 @@
           <ion-list>
             <ion-menu-toggle auto-hide="false">
               <ion-item button @click="openDonation" lines="none" detail="false">
-                <ion-icon slot="start" :icon="cafeOutline"></ion-icon>
+                <ion-icon slot="start" :icon="beerOutline"></ion-icon>
                 <ion-label>{{ t("common.donate") }}</ion-label>
               </ion-item>
             </ion-menu-toggle>
@@ -99,7 +99,7 @@ import {
   constructOutline,
   constructSharp,
   logOutOutline,
-  cafeOutline,
+  beerOutline,
 } from "ionicons/icons";
 
 import socket from "./services/socket";

@@ -146,10 +146,14 @@ exports.exportData = async (req, res) => {
 exports.getUserStats = async (req, res) => {
     const userId = req.user.id;
     try {
-        // Matches Played
+        // Matches Played (Only finished matches)
         const [matchesResult] = await db.query(
-            `SELECT COUNT(*) as count FROM participants 
-             WHERE user_id = ? AND status = 'confirmed'`,
+            `SELECT COUNT(*) as count 
+             FROM participants p
+             JOIN matches m ON p.match_id = m.id
+             WHERE p.user_id = ? 
+               AND p.status = 'confirmed'
+               AND m.status = 'finished'`,
             [userId]
         );
         const matchesPlayed = matchesResult[0].count;
@@ -308,10 +312,14 @@ exports.getUserProfileById = async (req, res) => {
 exports.getUserStatsById = async (req, res) => {
     const userId = req.params.id;
     try {
-        // Matches Played
+        // Matches Played (Only finished matches)
         const [matchesResult] = await db.query(
-            `SELECT COUNT(*) as count FROM participants 
-             WHERE user_id = ? AND status = 'confirmed'`,
+            `SELECT COUNT(*) as count 
+             FROM participants p
+             JOIN matches m ON p.match_id = m.id
+             WHERE p.user_id = ? 
+               AND p.status = 'confirmed'
+               AND m.status = 'finished'`,
             [userId]
         );
         const matchesPlayed = matchesResult[0].count;

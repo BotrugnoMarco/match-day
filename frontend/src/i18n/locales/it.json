@@ -1,6 +1,7 @@
 {
   "menu": {
     "home": "Home",
+    "calendar": "Calendario",
     "my_matches": "Le mie Partite",
     "create_match": "Crea Partita",
     "friends": "Amici",
@@ -9,6 +10,10 @@
     "logout": "Esci",
     "admin_support": "Supporto Admin",
     "menu_title": "Menu"
+  },
+  "calendar": {
+    "title": "Calendario",
+    "no_matches": "Nessuna partita in questo giorno"
   },
   "profile": {
     "title": "Profilo",

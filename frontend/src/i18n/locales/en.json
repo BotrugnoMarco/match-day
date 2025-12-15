@@ -1,6 +1,7 @@
 {
   "menu": {
     "home": "Home",
+    "calendar": "Calendar",
     "my_matches": "My Matches",
     "create_match": "Create Match",
     "friends": "Friends",
@@ -9,6 +10,10 @@
     "logout": "Logout",
     "admin_support": "Admin Support",
     "menu_title": "Menu"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "no_matches": "No matches on this day"
   },
   "profile": {
     "title": "Profile",

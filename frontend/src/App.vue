@@ -90,6 +90,8 @@ import {
   homeSharp,
   calendarOutline,
   calendarSharp,
+  calendarNumberOutline,
+  calendarNumberSharp,
   addCircleOutline,
   addCircleSharp,
   peopleOutline,
@@ -173,6 +175,12 @@ const appPages = computed(() => [
     url: "/home",
     iosIcon: homeOutline,
     mdIcon: homeSharp,
+  },
+  {
+    title: t("menu.calendar"),
+    url: "/calendar",
+    iosIcon: calendarNumberOutline,
+    mdIcon: calendarNumberSharp,
   },
   {
     title: t("menu.my_matches"),

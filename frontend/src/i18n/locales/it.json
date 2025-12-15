@@ -353,6 +353,7 @@
   },
   "vote": {
     "title": "Vota per {name}",
+    "warning": "I voti assegnati influenzeranno il bilanciamento delle squadre future. Assicurati di votare in modo onesto!",
     "rating": "Voto",
     "select_tag": "Seleziona un Tag (Opzionale)",
     "submit_btn": "Invia Voto",
@@ -361,16 +362,16 @@
     "voted": "Votato",
     "vote_action": "Vota",
     "tags": {
-        "MVP": "MVP",
-        "Fair Play": "Fair Play",
-        "Top Scorer": "Capocannoniere",
-        "Best Defender": "Miglior Difensore",
-        "Playmaker": "Regista",
-        "Goalkeeper": "Portiere",
-        "Team Spirit": "Spirito di Squadra",
-        "Hustle": "Grinta",
-        "Clutch": "Decisivo",
-        "Leader": "Leader"
+      "MVP": "MVP",
+      "Fair Play": "Fair Play",
+      "Top Scorer": "Capocannoniere",
+      "Best Defender": "Miglior Difensore",
+      "Playmaker": "Regista",
+      "Goalkeeper": "Portiere",
+      "Team Spirit": "Spirito di Squadra",
+      "Hustle": "Grinta",
+      "Clutch": "Decisivo",
+      "Leader": "Leader"
     }
   },
   "formation": {

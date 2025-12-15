@@ -10,6 +10,11 @@
     </ion-header>
     <ion-content class="ion-padding">
       <form @submit.prevent="submitVote">
+        <div class="vote-warning">
+          <ion-icon :icon="informationCircleOutline"></ion-icon>
+          <p>{{ t("vote.warning") }}</p>
+        </div>
+
         <ion-item lines="none" class="rating-item">
           <ion-label position="stacked">{{ t("vote.rating") }}</ion-label>
           <div class="rating-display">
@@ -57,9 +62,11 @@ import {
   IonLabel,
   IonRange,
   IonChip,
+  IonIcon,
   modalController,
   toastController,
 } from "@ionic/vue";
+import { informationCircleOutline } from "ionicons/icons";
 import api from "../services/api";
 
 const props = defineProps({
@@ -114,6 +121,30 @@ const submitVote = async () => {
 </script>
 
 <style scoped>
+.vote-warning {
+  background-color: rgba(var(--ion-color-warning-rgb), 0.1);
+  color: var(--ion-color-warning-shade);
+  padding: 12px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  border: 1px solid rgba(var(--ion-color-warning-rgb), 0.3);
+}
+
+.vote-warning ion-icon {
+  font-size: 1.4rem;
+  min-width: 24px;
+  color: var(--ion-color-warning);
+}
+
+.vote-warning p {
+  margin: 0;
+  line-height: 1.4;
+}
+
 .rating-item {
   --background: transparent;
   margin-bottom: var(--space-5);

@@ -77,7 +77,7 @@
     "faq_free": "Is the app free?",
     "faq_free_ans": "Yes, MatchDay is completely free to use for organizing your amateur sports matches.",
     "support_dev": "Support the Developer",
-    "support_desc": "MatchDay is a passion project. If you find it useful and want to support its development, you can buy me a coffee!",
+    "support_desc": "MatchDay is a passion project. If you find it useful and want to support its development, you can buy me a beer!",
     "support_kofi": "Support on Ko-fi"
   },
   "privacy": {
@@ -133,7 +133,7 @@
     "back": "Back",
     "confirm": "Confirm",
     "delete_confirm_message": "Are you sure you want to delete all notifications?",
-    "donate": "Buy me a coffee"
+    "donate": "Buy me a beer"
   },
   "home": {
     "welcome": "Hi, {name}!",

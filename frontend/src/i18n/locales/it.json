@@ -77,7 +77,7 @@
     "faq_free": "L'app è gratuita?",
     "faq_free_ans": "Sì, MatchDay è completamente gratuita per organizzare le tue partite sportive amatoriali.",
     "support_dev": "Supporta lo Sviluppatore",
-    "support_desc": "MatchDay è un progetto nato dalla passione. Se lo trovi utile e vuoi supportare il suo sviluppo, puoi offrirmi un caffè!",
+    "support_desc": "MatchDay è un progetto nato dalla passione. Se lo trovi utile e vuoi supportare il suo sviluppo, puoi offrirmi una birra!",
     "support_kofi": "Supporta su Ko-fi"
   },
   "privacy": {
@@ -133,7 +133,7 @@
     "back": "Indietro",
     "confirm": "Conferma",
     "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?",
-    "donate": "Offrimi un caffè"
+    "donate": "Offrimi una birra"
   },
   "home": {
     "welcome": "Ciao, {name}!",

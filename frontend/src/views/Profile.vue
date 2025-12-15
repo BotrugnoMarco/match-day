@@ -113,10 +113,12 @@
             </div>
 
             <!-- Preferred Number -->
-            <div class="preferred-number-section" v-if="user?.preferred_number !== null && user?.preferred_number !== undefined">
+            <div class="preferred-number-section">
               <div class="number-display">
                 <span class="number-label">{{ t("profile.jersey_label") }}</span>
-                <span class="number-value">{{ user?.preferred_number }}</span>
+                <span class="number-value" :class="{ 'missing-number': user?.preferred_number == null }">
+                  {{ user?.preferred_number != null ? user.preferred_number : "-" }}
+                </span>
               </div>
             </div>
           </div>
@@ -375,7 +377,8 @@ const saveProfile = async () => {
       birth_date: editForm.value.birth_date ? editForm.value.birth_date.split("T")[0] : null,
       gender: editForm.value.gender,
       status: editForm.value.status,
-      preferred_number: editForm.value.preferred_number ? parseInt(editForm.value.preferred_number) : null,
+      preferred_number:
+        editForm.value.preferred_number !== null && editForm.value.preferred_number !== "" ? parseInt(editForm.value.preferred_number) : null,
     };
 
     await api.put("/users/profile", payload);
@@ -949,6 +952,11 @@ const getSkillColor = (rating) => {
   font-size: 1.2rem;
   font-weight: bold;
   color: white;
+}
+
+.missing-number {
+  color: rgba(255, 255, 255, 0.5);
+  font-style: italic;
 }
 
 .result-badge.win {

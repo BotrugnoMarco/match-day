@@ -22,13 +22,11 @@
           </div>
         </div>
 
-        <!-- Preferred Number -->
+        <!-- Preferred Number (Jersey Style) -->
         <div class="preferred-number-section">
-          <div class="number-display">
-            <span class="number-label">{{ t("profile.jersey_label") }}</span>
-            <span class="number-value" :class="{ 'missing-number': user?.preferred_number == null }">
-              {{ user?.preferred_number != null ? user.preferred_number : "-" }}
-            </span>
+          <div class="jersey-container">
+            <ion-icon :icon="shirt" class="jersey-icon"></ion-icon>
+            <span class="jersey-number">{{ user?.preferred_number != null ? user.preferred_number : "?" }}</span>
           </div>
         </div>
       </div>
@@ -75,7 +73,7 @@
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonAvatar, IonIcon, IonBadge, IonButton } from "@ionic/vue";
-import { camera, personAddOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, peopleOutline } from "ionicons/icons";
+import { camera, personAddOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, peopleOutline, shirt } from "ionicons/icons";
 
 const props = defineProps({
   user: {
@@ -126,7 +124,7 @@ const getStatusColor = (status) => {
 
 <style scoped>
 .profile-banner {
-  background: var(--ion-color-primary);
+  background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-tertiary) 100%);
   padding: 20px;
   display: flex;
   flex-direction: column;
@@ -135,13 +133,42 @@ const getStatusColor = (status) => {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   margin-bottom: 20px;
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Decorative circles */
+.profile-banner::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -50px;
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.profile-banner::after {
+  content: "";
+  position: absolute;
+  bottom: -20px;
+  left: -40px;
+  width: 100px;
+  height: 100px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .profile-header-row {
   display: flex;
   align-items: center;
   gap: 20px;
+  position: relative;
+  z-index: 1;
 }
 
 .profile-info {
@@ -170,77 +197,82 @@ const getStatusColor = (status) => {
 }
 
 .main-avatar {
-  width: 70px;
-  height: 70px;
-  border: 3px solid rgba(255, 255, 255, 0.3);
+  width: 80px;
+  height: 80px;
+  border: 3px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .edit-badge {
   position: absolute;
-  bottom: -2px;
-  right: -2px;
+  bottom: 0;
+  right: 0;
   background: var(--ion-color-secondary);
   border-radius: 50%;
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .edit-badge ion-icon {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .username {
   margin: 0;
-  font-weight: 700;
-  font-size: 1.3rem;
+  font-weight: 800;
+  font-size: 1.5rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .role-badge {
   margin-top: var(--space-1);
   opacity: 0.9;
+  font-weight: 600;
 }
 
 .preferred-number-section {
-  margin-top: var(--space-3);
+  margin-top: var(--space-2);
   display: flex;
   justify-content: center;
 }
 
-.number-display {
-  background: rgba(255, 255, 255, 0.2);
-  padding: var(--space-2) var(--space-4);
-  border-radius: var(--rounded-sm);
+.jersey-container {
+  position: relative;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
-.number-label {
-  font-size: 0.7rem;
-  color: rgba(255, 255, 255, 0.8);
-  text-transform: uppercase;
+.jersey-icon {
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.2);
 }
 
-.number-value {
-  font-size: 1.2rem;
-  font-weight: bold;
+.jersey-number {
+  position: absolute;
+  font-size: 1.1rem;
+  font-weight: 900;
   color: white;
-}
-
-.missing-number {
-  color: rgba(255, 255, 255, 0.5);
-  font-style: italic;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .friend-actions {
-  margin-top: 16px;
+  margin-top: 20px;
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .friend-request-actions {

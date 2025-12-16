@@ -464,7 +464,10 @@
               <ion-item v-for="(r, index) in results" :key="r.target_id" button @click="goToProfile(r.target_id)">
                 <div slot="start" class="rank-number">{{ index + 1 }}</div>
                 <ion-label>
-                  <h2>{{ r.target_name }}</h2>
+                  <div class="name-container">
+                    <h2>{{ r.target_name }}</h2>
+                    <ion-icon v-if="isMvp(r.target_id)" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
+                  </div>
                   <div class="rating-bar-container">
                     <div class="rating-bar" :style="{ width: r.averageRating * 10 + '%' }"></div>
                   </div>
@@ -744,6 +747,10 @@ const isParticipant = computed(() => {
   if (!match.value || !match.value.participants || !currentUser.value) return false;
   return match.value.participants.some((p) => p.user_id === currentUser.value.id);
 });
+
+const isMvp = (userId) => {
+  return match.value?.participants?.find((p) => p.user_id === userId)?.is_mvp;
+};
 
 const isCreator = computed(() => {
   if (!match.value || !currentUser.value) return false;

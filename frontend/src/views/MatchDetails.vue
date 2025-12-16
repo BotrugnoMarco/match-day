@@ -322,13 +322,16 @@
                 </div>
                 <ion-list lines="none">
                   <ion-item v-for="p in teamAParticipants" :key="p.id">
-                    <ion-avatar slot="start" @click="goToProfile(p.user_id)">
-                      <img :src="p.avatar_url || '/default-avatar.svg'" />
-                    </ion-avatar>
+                    <div slot="start" class="avatar-wrapper" @click="goToProfile(p.user_id)">
+                      <ion-avatar>
+                        <img :src="p.avatar_url || '/default-avatar.svg'" />
+                      </ion-avatar>
+                      <div v-if="p.is_captain" class="captain-badge-overlay">C</div>
+                    </div>
                     <ion-label @click="goToProfile(p.user_id)">
                       <div class="name-container">
                         <h2>{{ p.username }}</h2>
-                        <div v-if="p.is_captain" class="captain-badge">C</div>
+                        <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
                       </div>
                       <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
@@ -364,13 +367,16 @@
                 </div>
                 <ion-list lines="none">
                   <ion-item v-for="p in teamBParticipants" :key="p.id">
-                    <ion-avatar slot="start" @click="goToProfile(p.user_id)">
-                      <img :src="p.avatar_url || '/default-avatar.svg'" />
-                    </ion-avatar>
+                    <div slot="start" class="avatar-wrapper" @click="goToProfile(p.user_id)">
+                      <ion-avatar>
+                        <img :src="p.avatar_url || '/default-avatar.svg'" />
+                      </ion-avatar>
+                      <div v-if="p.is_captain" class="captain-badge-overlay">C</div>
+                    </div>
                     <ion-label @click="goToProfile(p.user_id)">
                       <div class="name-container">
                         <h2>{{ p.username }}</h2>
-                        <div v-if="p.is_captain" class="captain-badge">C</div>
+                        <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
                       </div>
                       <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
                     </ion-label>
@@ -405,7 +411,10 @@
                   <img :src="p.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label @click="goToProfile(p.user_id)">
-                  <h2>{{ p.username }}</h2>
+                  <div class="name-container">
+                    <h2>{{ p.username }}</h2>
+                    <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
+                  </div>
                   <p>
                     <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
                     <span v-if="p.user_status" :class="'status-text ' + p.user_status">{{ p.user_status }}</span>
@@ -1973,5 +1982,39 @@ onUnmounted(() => {
 
 .text-team-b {
   color: var(--ion-color-danger);
+}
+
+.avatar-wrapper {
+  position: relative;
+  margin-inline-end: 16px;
+}
+
+.captain-badge-overlay {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+  background-color: #ffc107;
+  color: #000;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  border: 2px solid #fff;
+  z-index: 10;
+}
+
+.jersey-number {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  font-weight: 600;
+  background: #f0f2f5;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 6px;
 }
 </style>

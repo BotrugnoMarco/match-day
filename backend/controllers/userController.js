@@ -171,10 +171,10 @@ exports.getUserStats = async (req, res) => {
         );
         const matchesWon = winsResult[0].count;
 
-        // MVP Count (based on tags containing 'MVP')
+        // MVP Count (based on is_mvp flag in participants)
         const [mvpResult] = await db.query(
-            `SELECT COUNT(*) as count FROM votes 
-             WHERE target_id = ? AND tags LIKE '%MVP%'`,
+            `SELECT COUNT(*) as count FROM participants 
+             WHERE user_id = ? AND is_mvp = TRUE`,
             [userId]
         );
         const mvpCount = mvpResult[0].count;
@@ -337,10 +337,10 @@ exports.getUserStatsById = async (req, res) => {
         );
         const matchesWon = winsResult[0].count;
 
-        // MVP Count (based on tags containing 'MVP')
+        // MVP Count (based on is_mvp flag in participants)
         const [mvpResult] = await db.query(
-            `SELECT COUNT(*) as count FROM votes 
-             WHERE target_id = ? AND tags LIKE '%MVP%'`,
+            `SELECT COUNT(*) as count FROM participants 
+             WHERE user_id = ? AND is_mvp = TRUE`,
             [userId]
         );
         const mvpCount = mvpResult[0].count;

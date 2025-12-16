@@ -13,7 +13,8 @@
       <div class="profile-info">
         <h2 class="username">{{ user?.username }}</h2>
         <div class="badges-row">
-          <ion-badge color="light" class="role-badge">{{ t("profile." + (user?.role || "player")) }}</ion-badge>
+          <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
+          <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
 
           <div class="status-section">
             <ion-badge :color="getStatusColor(user?.status)" class="status-badge">

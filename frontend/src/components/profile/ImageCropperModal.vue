@@ -104,7 +104,7 @@ onUnmounted(() => {
 <style scoped>
 .cropper-modal {
   --background: #000;
-  --opacity: 1;
+  opacity: 1;
 }
 
 .cropper-content {

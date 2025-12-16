@@ -465,7 +465,9 @@
                 <div slot="start" class="rank-number">{{ index + 1 }}</div>
                 <ion-label>
                   <div class="name-container">
-                    <h2>{{ r.target_name }}</h2>
+                    <h2 :class="{ 'text-team-a': getPlayerTeam(r.target_id) === 'A', 'text-team-b': getPlayerTeam(r.target_id) === 'B' }">
+                      {{ r.target_name }}
+                    </h2>
                     <ion-icon v-if="isMvp(r.target_id)" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
                   </div>
                   <div class="rating-bar-container">
@@ -750,6 +752,12 @@ const isParticipant = computed(() => {
 
 const isMvp = (userId) => {
   return match.value?.participants?.find((p) => p.user_id === userId)?.is_mvp;
+};
+
+const getPlayerTeam = (userId) => {
+  const player = match.value?.participants?.find((p) => p.user_id === userId);
+  if (!player) return null;
+  return player.team === "A" || player.team === "Team A" ? "A" : player.team === "B" || player.team === "Team B" ? "B" : null;
 };
 
 const isCreator = computed(() => {
@@ -1957,5 +1965,13 @@ onUnmounted(() => {
   font-weight: normal;
   margin-left: 8px;
   opacity: 0.9;
+}
+
+.text-team-a {
+  color: var(--ion-color-primary);
+}
+
+.text-team-b {
+  color: var(--ion-color-danger);
 }
 </style>

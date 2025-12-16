@@ -42,7 +42,7 @@
           <ion-avatar class="token-avatar">
             <img :src="player.avatar_url || '/default-avatar.svg'" />
           </ion-avatar>
-          <div class="captain-band" v-if="player.is_captain">C</div>
+          <div class="captain-badge-overlay" v-if="player.is_captain">C</div>
           <div class="jersey-number" v-if="player.preferred_number">{{ player.preferred_number }}</div>
           <span class="player-name">{{ getPlayerLabel(player.username) }}</span>
         </div>
@@ -428,23 +428,22 @@ const resetPositions = () => {
   z-index: 2;
 }
 
-.captain-band {
+.captain-badge-overlay {
   position: absolute;
-  top: -8px;
-  left: -8px;
-  background: #ffc409; /* Warning Yellow */
+  bottom: -2px;
+  right: -2px;
+  background: var(--ion-color-warning);
   color: black;
   font-size: 10px;
-  font-weight: 900;
-  width: 18px;
-  height: 18px;
+  font-weight: bold;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid white;
-  z-index: 3;
-  box-shadow: var(--shadow-sm);
+  z-index: 10;
 }
 
 .player-name {

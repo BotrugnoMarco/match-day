@@ -158,7 +158,10 @@
     "welcome_title": "Welcome!",
     "welcome_subtitle": "Organize matches, track scores, and rank up with your friends.",
     "login": "Login",
-    "create_account": "Create Account"
+    "create_account": "Create Account",
+    "monthly_stats": "Monthly Stats",
+    "matches_played": "Matches Played",
+    "win_rate": "Win Rate"
   },
 
   "auth": {

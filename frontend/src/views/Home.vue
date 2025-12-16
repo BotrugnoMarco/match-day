@@ -69,6 +69,22 @@
           </ion-button>
         </div>
 
+        <!-- Monthly Stats -->
+        <div class="section-title" v-if="monthlyStats.played > 0">
+          <h3>{{ t("home.monthly_stats") }}</h3>
+        </div>
+        <div class="stats-card" v-if="monthlyStats.played > 0">
+          <div class="stat-item">
+            <span class="stat-value">{{ monthlyStats.played }}</span>
+            <span class="stat-label">{{ t("home.matches_played") }}</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-value">{{ monthlyStats.winRate }}%</span>
+            <span class="stat-label">{{ t("home.win_rate") }}</span>
+          </div>
+        </div>
+
         <!-- Quick Actions Grid -->
         <div class="section-title">
           <h3>{{ t("home.quick_actions") }}</h3>
@@ -209,6 +225,27 @@ const nextMatch = computed(() => {
   }
 
   return null;
+});
+
+const monthlyStats = computed(() => {
+  if (!myMatches.value) return { played: 0, winRate: 0 };
+
+  const now = new Date();
+  const currentMonth = now.getMonth();
+  const currentYear = now.getFullYear();
+
+  const finishedMatches = myMatches.value.filter((m) => {
+    const d = new Date(m.date_time);
+    return m.status === "finished" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+
+  const played = finishedMatches.length;
+  if (played === 0) return { played: 0, winRate: 0 };
+
+  const won = finishedMatches.filter((m) => m.winner && m.user_team && m.winner === m.user_team).length;
+  const winRate = Math.round((won / played) * 100);
+
+  return { played, winRate };
 });
 
 watch(
@@ -466,6 +503,43 @@ const formatTime = (dateString) => {
   text-align: center;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
   color: var(--ion-color-medium);
+}
+
+/* Stats Card */
+.stats-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--ion-color-primary);
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.stat-divider {
+  width: 1px;
+  height: 40px;
+  background: #f0f0f0;
 }
 
 /* Quick Actions Grid */

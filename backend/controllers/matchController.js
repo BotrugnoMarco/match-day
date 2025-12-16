@@ -465,7 +465,7 @@ exports.getUserMatches = async (req, res) => {
     const userId = req.user.id;
     try {
         const [matches] = await db.query(
-            `SELECT m.*, p.status as user_participation_status, u.username as creator_username, u.avatar_url as creator_avatar,
+            `SELECT m.*, p.status as user_participation_status, p.team as user_team, u.username as creator_username, u.avatar_url as creator_avatar,
              (SELECT COUNT(*) FROM participants p2 WHERE p2.match_id = m.id AND p2.status = 'confirmed') as participants_count
              FROM matches m 
              JOIN participants p ON m.id = p.match_id 

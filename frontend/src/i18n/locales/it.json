@@ -158,7 +158,10 @@
     "welcome_title": "Benvenuto!",
     "welcome_subtitle": "Organizza partite, tieni traccia dei punteggi e scala la classifica con i tuoi amici.",
     "login": "Accedi",
-    "create_account": "Crea Account"
+    "create_account": "Crea Account",
+    "monthly_stats": "Statistiche del Mese",
+    "matches_played": "Partite Giocate",
+    "win_rate": "Vittorie"
   },
 
   "auth": {

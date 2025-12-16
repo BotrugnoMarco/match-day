@@ -451,7 +451,12 @@
     "rejected": "Richiesta di amicizia rifiutata",
     "remove_error": "Impossibile rimuovere l'amico",
     "accept_error": "Impossibile accettare la richiesta",
-    "reject_error": "Impossibile rifiutare la richiesta"
+    "reject_error": "Impossibile rifiutare la richiesta",
+    "leaderboard": "Classifica",
+    "rank": "Pos.",
+    "player": "Giocatore",
+    "matches": "Partite",
+    "win_rate": "Vittorie %"
   },
   "sports": {
     "soccer": "Calcio",

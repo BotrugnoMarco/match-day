@@ -116,7 +116,25 @@ exports.getFriends = async (req, res) => {
 
     try {
         const [friends] = await db.query(
-            `SELECT u.id, u.username, u.avatar_url, u.status, u.birth_date 
+            `SELECT 
+                u.id, 
+                u.username, 
+                u.avatar_url, 
+                u.status, 
+                u.birth_date,
+                (SELECT COUNT(*) 
+                 FROM participants p 
+                 JOIN matches m ON p.match_id = m.id 
+                 WHERE p.user_id = u.id 
+                   AND p.status = 'confirmed' 
+                   AND m.status = 'finished') as matches_played,
+                (SELECT COUNT(*) 
+                 FROM participants p 
+                 JOIN matches m ON p.match_id = m.id 
+                 WHERE p.user_id = u.id 
+                   AND p.status = 'confirmed' 
+                   AND m.status = 'finished'
+                   AND m.winner = p.team) as matches_won
              FROM friendships f
              JOIN users u ON (f.requester_id = u.id OR f.addressee_id = u.id)
              WHERE (f.requester_id = ? OR f.addressee_id = ?) 
@@ -125,7 +143,15 @@ exports.getFriends = async (req, res) => {
             [userId, userId, userId]
         );
 
-        res.json(friends);
+        // Calculate win rate
+        const friendsWithStats = friends.map(friend => {
+            const played = friend.matches_played || 0;
+            const won = friend.matches_won || 0;
+            const winRate = played > 0 ? Math.round((won / played) * 100) : 0;
+            return { ...friend, win_rate: winRate };
+        });
+
+        res.json(friendsWithStats);
     } catch (error) {
         console.error('Get friends error:', error);
         res.status(500).json({ error: 'Server error fetching friends' });

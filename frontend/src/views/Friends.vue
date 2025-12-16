@@ -18,10 +18,20 @@
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
+      <ion-toolbar color="primary">
+        <ion-segment v-model="selectedTab" mode="md">
+          <ion-segment-button value="list">
+            <ion-label>{{ t("friends.title") }}</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="leaderboard">
+            <ion-label>{{ t("friends.leaderboard") }}</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
     </ion-header>
 
     <ion-content class="page-content">
-      <div class="ion-padding">
+      <div class="ion-padding" v-if="selectedTab === 'list'">
         <!-- Search Section -->
         <div class="section-container">
           <ion-searchbar v-model="searchQuery" :placeholder="t('friends.search_placeholder')" @ionInput="handleSearch"></ion-searchbar>
@@ -102,6 +112,47 @@
           </div>
         </div>
       </div>
+
+      <!-- Leaderboard Tab -->
+      <div class="ion-padding" v-if="selectedTab === 'leaderboard'">
+        <div class="sort-buttons">
+          <ion-button size="small" :fill="leaderboardSort === 'matches' ? 'solid' : 'outline'" @click="leaderboardSort = 'matches'">
+            {{ t("friends.matches") }}
+          </ion-button>
+          <ion-button size="small" :fill="leaderboardSort === 'win_rate' ? 'solid' : 'outline'" @click="leaderboardSort = 'win_rate'">
+            {{ t("friends.win_rate") }}
+          </ion-button>
+        </div>
+
+        <ion-card class="leaderboard-card">
+          <div class="leaderboard-header">
+            <span class="rank-col">#</span>
+            <span class="player-col">{{ t("friends.player") }}</span>
+            <span class="stat-col">{{ leaderboardSort === "matches" ? t("friends.matches") : t("friends.win_rate") }}</span>
+          </div>
+
+          <div v-if="sortedLeaderboard.length > 0">
+            <div v-for="(friend, index) in sortedLeaderboard" :key="friend.id" class="leaderboard-row" @click="goToProfile(friend.id)">
+              <span class="rank-col">
+                <span v-if="index < 3" class="medal" :class="'medal-' + (index + 1)">{{ index + 1 }}</span>
+                <span v-else>{{ index + 1 }}</span>
+              </span>
+              <div class="player-col player-info">
+                <ion-avatar class="small-avatar">
+                  <img :src="friend.avatar_url || '/default-avatar.svg'" />
+                </ion-avatar>
+                <span class="username">{{ friend.username }}</span>
+              </div>
+              <span class="stat-col highlight">
+                {{ leaderboardSort === "matches" ? friend.matches_played : friend.win_rate + "%" }}
+              </span>
+            </div>
+          </div>
+          <div v-else class="empty-state">
+            <p>{{ t("friends.no_friends") }}</p>
+          </div>
+        </ion-card>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -132,6 +183,8 @@ import {
   toastController,
   alertController,
   IonSearchbar,
+  IonSegment,
+  IonSegmentButton,
 } from "@ionic/vue";
 import {
   peopleOutline,
@@ -150,8 +203,20 @@ const friendsList = ref([]);
 const pendingRequests = ref([]);
 const searchQuery = ref("");
 const searchResults = ref([]);
+const selectedTab = ref("list");
+const leaderboardSort = ref("matches");
 
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
+
+const sortedLeaderboard = computed(() => {
+  return [...friendsList.value].sort((a, b) => {
+    if (leaderboardSort.value === "matches") {
+      return (b.matches_played || 0) - (a.matches_played || 0);
+    } else {
+      return (b.win_rate || 0) - (a.win_rate || 0);
+    }
+  });
+});
 
 const goToNotifications = () => {
   router.push("/notifications");
@@ -329,5 +394,104 @@ onMounted(() => {
   box-shadow: var(--shadow-sm);
   margin-top: var(--space-3);
   overflow: hidden;
+}
+
+/* Leaderboard Styles */
+.sort-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.leaderboard-card {
+  background: white;
+  border-radius: 15px;
+  padding: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.leaderboard-header {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  font-weight: 700;
+  color: var(--ion-color-medium);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.leaderboard-row {
+  display: flex;
+  align-items: center;
+  padding: 15px 10px;
+  border-bottom: 1px solid #f9f9f9;
+  cursor: pointer;
+}
+
+.leaderboard-row:last-child {
+  border-bottom: none;
+}
+
+.rank-col {
+  width: 40px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--ion-color-medium);
+}
+
+.player-col {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-col {
+  width: 80px;
+  text-align: center;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.stat-col.highlight {
+  color: var(--ion-color-primary);
+  font-size: 1.1rem;
+}
+
+.small-avatar {
+  width: 35px;
+  height: 35px;
+}
+
+.username {
+  font-weight: 600;
+  color: var(--ion-color-dark);
+}
+
+.medal {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.medal-1 {
+  background: #ffd700; /* Gold */
+  box-shadow: 0 2px 5px rgba(255, 215, 0, 0.4);
+}
+
+.medal-2 {
+  background: #c0c0c0; /* Silver */
+  box-shadow: 0 2px 5px rgba(192, 192, 192, 0.4);
+}
+
+.medal-3 {
+  background: #cd7f32; /* Bronze */
+  box-shadow: 0 2px 5px rgba(205, 127, 50, 0.4);
 }
 </style>

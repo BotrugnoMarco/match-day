@@ -449,7 +449,12 @@
     "rejected": "Friend request rejected",
     "remove_error": "Failed to remove friend",
     "accept_error": "Failed to accept request",
-    "reject_error": "Failed to reject request"
+    "reject_error": "Failed to reject request",
+    "leaderboard": "Leaderboard",
+    "rank": "Rank",
+    "player": "Player",
+    "matches": "Matches",
+    "win_rate": "Win Rate"
   },
   "sports": {
     "soccer": "Soccer",

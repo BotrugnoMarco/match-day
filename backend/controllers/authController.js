@@ -29,10 +29,16 @@ exports.register = async (req, res) => {
     }
 
     try {
-        // Check if user already exists
-        const [existingUser] = await db.query('SELECT * FROM users WHERE username = ? OR email = ?', [username, email]);
-        if (existingUser.length > 0) {
-            return res.status(400).json({ error: 'Username or email already exists' });
+        // Check if username exists
+        const [existingUsername] = await db.query('SELECT id FROM users WHERE username = ?', [username]);
+        if (existingUsername.length > 0) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+
+        // Check if email exists
+        const [existingEmail] = await db.query('SELECT id FROM users WHERE email = ?', [email]);
+        if (existingEmail.length > 0) {
+            return res.status(400).json({ error: 'Email already exists' });
         }
 
         // Hash password

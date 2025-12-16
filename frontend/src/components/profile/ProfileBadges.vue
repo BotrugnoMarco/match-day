@@ -5,21 +5,25 @@
       <h3>{{ t("profile.badges") }}</h3>
     </div>
 
-    <div class="trophy-case">
-      <div v-for="tagItem in tags" :key="tagItem.tag" class="trophy-item">
-        <div class="trophy-icon-wrapper" :class="getBadgeColorClass(tagItem.tag)">
-          <ion-icon :icon="getBadgeIcon(tagItem.tag)"></ion-icon>
-          <div class="trophy-count">{{ tagItem.count }}</div>
+    <ion-card class="badges-card">
+      <ion-card-content>
+        <div class="trophy-case">
+          <div v-for="tagItem in tags" :key="tagItem.tag" class="trophy-item">
+            <div class="trophy-icon-wrapper" :class="getBadgeColorClass(tagItem.tag)">
+              <ion-icon :icon="getBadgeIcon(tagItem.tag)"></ion-icon>
+              <div class="trophy-count">{{ tagItem.count }}</div>
+            </div>
+            <span class="trophy-name">{{ t("vote.tags." + tagItem.tag) }}</span>
+          </div>
         </div>
-        <span class="trophy-name">{{ t("vote.tags." + tagItem.tag) }}</span>
-      </div>
-    </div>
+      </ion-card-content>
+    </ion-card>
   </div>
 </template>
 
 <script setup>
 import { useI18n } from "vue-i18n";
-import { IonIcon } from "@ionic/vue";
+import { IonIcon, IonCard, IonCardContent } from "@ionic/vue";
 import { ribbon, trophy, shield, star, flash, heart, people, eye, fitness, handLeft, medal, flame, rocket, diamond } from "ionicons/icons";
 
 defineProps({
@@ -91,6 +95,13 @@ const getBadgeColorClass = (tag) => {
   font-size: 1.1rem;
   font-weight: 700;
   color: var(--ion-color-dark);
+}
+
+.badges-card {
+  margin: 0;
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-md);
+  background: white;
 }
 
 .trophy-case {

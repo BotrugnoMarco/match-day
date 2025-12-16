@@ -227,7 +227,7 @@ const winRate = computed(() => {
   background-color: var(--ion-color-success);
 }
 
-.form-dot.loss {
+.form-dot.lost {
   background-color: var(--ion-color-danger);
 }
 

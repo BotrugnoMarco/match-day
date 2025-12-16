@@ -315,7 +315,10 @@
           <div v-if="hasTeams" class="teams-container">
             <!-- Team A -->
             <div class="team-block">
-              <div class="team-header-label team-a">{{ t("match_details.team_a") }}</div>
+              <div class="team-header-label team-a">
+                {{ t("match_details.team_a") }}
+                <span v-if="teamAAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamAAverageSkill }}) </span>
+              </div>
               <div class="participants-card">
                 <ion-list lines="none">
                   <ion-item v-for="p in teamAParticipants" :key="p.id">
@@ -353,7 +356,10 @@
 
             <!-- Team B -->
             <div class="team-block">
-              <div class="team-header-label team-b">{{ t("match_details.team_b") }}</div>
+              <div class="team-header-label team-b">
+                {{ t("match_details.team_b") }}
+                <span v-if="teamBAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamBAverageSkill }}) </span>
+              </div>
               <div class="participants-card">
                 <ion-list lines="none">
                   <ion-item v-for="p in teamBParticipants" :key="p.id">
@@ -667,6 +673,18 @@ const teamAParticipants = computed(() => {
 
 const teamBParticipants = computed(() => {
   return activeParticipants.value.filter((p) => p.team === "B" || p.team === "Team B");
+});
+
+const teamAAverageSkill = computed(() => {
+  if (!teamAParticipants.value || teamAParticipants.value.length === 0) return 0;
+  const totalSkill = teamAParticipants.value.reduce((sum, p) => sum + (parseFloat(p.skill_rating) || 0), 0);
+  return (totalSkill / teamAParticipants.value.length).toFixed(1);
+});
+
+const teamBAverageSkill = computed(() => {
+  if (!teamBParticipants.value || teamBParticipants.value.length === 0) return 0;
+  const totalSkill = teamBParticipants.value.reduce((sum, p) => sum + (parseFloat(p.skill_rating) || 0), 0);
+  return (totalSkill / teamBParticipants.value.length).toFixed(1);
 });
 
 const isFull = computed(() => {
@@ -1906,5 +1924,12 @@ onUnmounted(() => {
   display: flex;
   gap: var(--space-2);
   align-items: center;
+}
+
+.team-avg {
+  font-size: 0.85rem;
+  font-weight: normal;
+  margin-left: 8px;
+  opacity: 0.9;
 }
 </style>

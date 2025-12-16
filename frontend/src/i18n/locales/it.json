@@ -250,6 +250,7 @@
   },
   "match_details": {
     "title": "Dettagli Partita",
+    "average_skill": "Media",
     "weather_forecast": "Previsioni Meteo",
     "precip_prob": "prob. precipitazioni",
     "open_maps": "Apri nelle Mappe",

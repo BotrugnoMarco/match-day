@@ -67,6 +67,13 @@
     </div>
 
     <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept="image/*" />
+
+    <ImageCropperModal
+      :is-open="isCropperOpen"
+      :image-src="tempImageSrc"
+      @cancel="closeCropper"
+      @crop="handleCrop"
+    />
   </div>
 </template>
 
@@ -75,6 +82,7 @@ import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonAvatar, IonIcon, IonBadge, IonButton } from "@ionic/vue";
 import { camera, personAddOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, peopleOutline, shirt } from "ionicons/icons";
+import ImageCropperModal from "./ImageCropperModal.vue";
 
 const props = defineProps({
   user: {
@@ -95,6 +103,8 @@ const emit = defineEmits(["send-friend-request", "accept-friend-request", "rejec
 
 const { t } = useI18n();
 const fileInput = ref(null);
+const isCropperOpen = ref(false);
+const tempImageSrc = ref(null);
 
 const triggerFileInput = () => {
   if (props.isOwnProfile) {
@@ -105,8 +115,25 @@ const triggerFileInput = () => {
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
-    emit("change-avatar", file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      tempImageSrc.value = e.target.result;
+      isCropperOpen.value = true;
+    };
+    reader.readAsDataURL(file);
   }
+  // Reset input so same file can be selected again if needed
+  event.target.value = "";
+};
+
+const closeCropper = () => {
+  isCropperOpen.value = false;
+  tempImageSrc.value = null;
+};
+
+const handleCrop = (blob) => {
+  emit("change-avatar", blob);
+  closeCropper();
 };
 
 const getStatusColor = (status) => {

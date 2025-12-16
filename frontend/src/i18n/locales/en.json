@@ -19,6 +19,7 @@
   "profile": {
     "title": "Profile",
     "edit_profile": "Edit Profile",
+    "crop_image": "Crop Image",
     "username": "Username",
     "email": "Email",
     "birth_date": "Birth Date",

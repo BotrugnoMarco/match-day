@@ -13,7 +13,7 @@
     </ion-header>
     <ion-content class="ion-padding">
       <div class="img-container">
-        <img ref="image" :src="imageSrc" v-if="imageSrc" style="max-width: 100%; display: block;" />
+        <img ref="image" :src="imageSrc" v-if="imageSrc" style="max-width: 100%; display: block" />
       </div>
     </ion-content>
   </ion-modal>
@@ -53,7 +53,7 @@ watch(
       cropper = new Cropper(image.value, {
         aspectRatio: 1,
         viewMode: 1,
-        dragMode: 'move',
+        dragMode: "move",
         autoCropArea: 1,
         restore: false,
         guides: true,
@@ -78,12 +78,14 @@ const cancel = () => {
 
 const crop = () => {
   if (cropper) {
-    cropper.getCroppedCanvas({
-      width: 300,
-      height: 300,
-    }).toBlob((blob) => {
-      emit("crop", blob);
-    });
+    cropper
+      .getCroppedCanvas({
+        width: 300,
+        height: 300,
+      })
+      .toBlob((blob) => {
+        emit("crop", blob);
+      });
   }
 };
 

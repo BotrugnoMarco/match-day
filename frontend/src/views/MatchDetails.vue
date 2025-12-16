@@ -315,11 +315,11 @@
           <div v-if="hasTeams" class="teams-container">
             <!-- Team A -->
             <div class="team-block">
-              <div class="team-header-label team-a">
-                {{ t("match_details.team_a") }}
-                <span v-if="teamAAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamAAverageSkill }}) </span>
-              </div>
-              <div class="participants-card">
+              <div class="participants-card team-a-card">
+                <div class="team-header-label team-a">
+                  {{ t("match_details.team_a") }}
+                  <span v-if="teamAAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamAAverageSkill }}) </span>
+                </div>
                 <ion-list lines="none">
                   <ion-item v-for="p in teamAParticipants" :key="p.id">
                     <ion-avatar slot="start" @click="goToProfile(p.user_id)">
@@ -357,11 +357,11 @@
 
             <!-- Team B -->
             <div class="team-block">
-              <div class="team-header-label team-b">
-                {{ t("match_details.team_b") }}
-                <span v-if="teamBAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamBAverageSkill }}) </span>
-              </div>
-              <div class="participants-card">
+              <div class="participants-card team-b-card">
+                <div class="team-header-label team-b">
+                  {{ t("match_details.team_b") }}
+                  <span v-if="teamBAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamBAverageSkill }}) </span>
+                </div>
                 <ion-list lines="none">
                   <ion-item v-for="p in teamBParticipants" :key="p.id">
                     <ion-avatar slot="start" @click="goToProfile(p.user_id)">
@@ -1657,9 +1657,7 @@ onUnmounted(() => {
 .team-header-label {
   font-size: 0.9rem;
   font-weight: 800;
-  margin-bottom: var(--space-2);
-  padding: 8px 12px;
-  border-radius: var(--rounded-md);
+  padding: 12px 16px;
   text-transform: uppercase;
   display: flex;
   align-items: center;
@@ -1672,6 +1670,14 @@ onUnmounted(() => {
 .team-b {
   background-color: var(--ion-color-danger);
   color: white;
+}
+
+.team-a-card {
+  border: 2px solid var(--ion-color-primary);
+}
+
+.team-b-card {
+  border: 2px solid var(--ion-color-danger);
 }
 
 .item-actions {

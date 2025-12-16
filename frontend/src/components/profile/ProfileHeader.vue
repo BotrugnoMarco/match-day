@@ -23,47 +23,47 @@
           </div>
         </div>
 
-        <!-- Preferred Number (Jersey Style) -->
+        <!-- Preferred Number (Jersey Style) & Actions -->
         <div class="preferred-number-section">
           <div class="jersey-container">
             <ion-icon :icon="shirt" class="jersey-icon"></ion-icon>
             <span class="jersey-number">{{ user?.preferred_number != null ? user.preferred_number : "?" }}</span>
           </div>
+
+          <!-- Friend Actions Inline -->
+          <div class="friend-actions-inline" v-if="!isOwnProfile">
+            <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
+              <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
+              {{ t("profile.add_friend") }}
+            </ion-button>
+            <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
+              <ion-icon :icon="timeOutline" slot="start"></ion-icon>
+              {{ t("profile.request_sent") }}
+            </ion-button>
+            <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
+              <ion-button size="small" color="success" @click="$emit('accept-friend-request')">
+                <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
+                {{ t("profile.accept") }}
+              </ion-button>
+              <ion-button size="small" color="danger" @click="$emit('reject-friend-request')">
+                <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+                {{ t("profile.reject") }}
+              </ion-button>
+            </div>
+            <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
+              <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
+            </ion-badge>
+          </div>
+
+          <!-- My Friends Button Inline -->
+          <div class="friend-actions-inline" v-if="isOwnProfile">
+            <ion-button size="small" fill="outline" color="light" @click="$emit('open-friends')">
+              <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
+              {{ t("profile.friends_btn") }}
+            </ion-button>
+          </div>
         </div>
       </div>
-    </div>
-
-    <!-- Friend Actions -->
-    <div class="friend-actions" v-if="!isOwnProfile">
-      <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
-        <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
-        {{ t("profile.add_friend") }}
-      </ion-button>
-      <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
-        <ion-icon :icon="timeOutline" slot="start"></ion-icon>
-        {{ t("profile.request_sent") }}
-      </ion-button>
-      <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
-        <ion-button size="small" color="success" @click="$emit('accept-friend-request')">
-          <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
-          {{ t("profile.accept") }}
-        </ion-button>
-        <ion-button size="small" color="danger" @click="$emit('reject-friend-request')">
-          <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-          {{ t("profile.reject") }}
-        </ion-button>
-      </div>
-      <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
-        <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
-      </ion-badge>
-    </div>
-
-    <!-- My Friends Button -->
-    <div class="friend-actions" v-if="isOwnProfile">
-      <ion-button size="small" fill="outline" color="light" @click="$emit('open-friends')">
-        <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-        {{ t("profile.friends_btn") }}
-      </ion-button>
     </div>
 
     <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept="image/*" />
@@ -239,7 +239,8 @@ const getStatusColor = (status) => {
 .preferred-number-section {
   margin-top: var(--space-2);
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 16px;
 }
 
 .jersey-container {
@@ -267,13 +268,10 @@ const getStatusColor = (status) => {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.friend-actions {
-  margin-top: 20px;
+.friend-actions-inline {
   display: flex;
-  justify-content: center;
+  align-items: center;
   gap: 10px;
-  position: relative;
-  z-index: 1;
 }
 
 .friend-request-actions {

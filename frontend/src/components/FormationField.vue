@@ -407,7 +407,7 @@ const resetPositions = () => {
 }
 
 .team-b .token-avatar {
-  border-color: #ffc409; /* Warning Yellow */
+  border-color: var(--ion-color-danger);
 }
 
 .jersey-number {

@@ -1653,18 +1653,23 @@ onUnmounted(() => {
 }
 
 .team-header-label {
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 800;
   margin-bottom: var(--space-2);
-  padding-left: var(--space-2);
+  padding: 8px 12px;
+  border-radius: var(--rounded-md);
   text-transform: uppercase;
+  display: flex;
+  align-items: center;
 }
 
 .team-a {
-  color: var(--ion-color-primary);
+  background-color: var(--ion-color-primary);
+  color: white;
 }
 .team-b {
-  color: var(--ion-color-tertiary);
+  background-color: var(--ion-color-danger);
+  color: white;
 }
 
 .item-actions {

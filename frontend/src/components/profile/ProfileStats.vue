@@ -9,9 +9,28 @@
           </div>
         </ion-col>
         <ion-col size="4">
-          <div class="stat-box">
-            <div class="stat-value text-primary">{{ stats.matchesWon }}</div>
-            <div class="stat-label">{{ t("profile.won") }}</div>
+          <div class="stat-box win-rate-box">
+            <div class="circular-chart">
+              <svg viewBox="0 0 36 36" class="circle-svg">
+                <path
+                  class="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path
+                  class="circle-progress"
+                  :stroke-dasharray="winRate + ', 100'"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+              </svg>
+              <div class="percentage-text">
+                <span class="value">{{ winRate }}%</span>
+                <span class="label">{{ t("profile.win_rate") }}</span>
+              </div>
+            </div>
           </div>
         </ion-col>
         <ion-col size="4">
@@ -40,10 +59,11 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonGrid, IonRow, IonCol } from "@ionic/vue";
 
-defineProps({
+const props = defineProps({
   stats: {
     type: Object,
     required: true,
@@ -55,6 +75,11 @@ defineProps({
 });
 
 const { t } = useI18n();
+
+const winRate = computed(() => {
+  if (!props.stats || !props.stats.matchesPlayed) return 0;
+  return Math.round((props.stats.matchesWon / props.stats.matchesPlayed) * 100);
+});
 </script>
 
 <style scoped>
@@ -73,6 +98,94 @@ const { t } = useI18n();
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+}
+
+.win-rate-box {
+  padding: var(--space-2);
+}
+
+.circular-chart {
+  position: relative;
+  width: 100%;
+  max-width: 80px;
+  aspect-ratio: 1;
+}
+
+.circle-svg {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle-progress {
+  fill: none;
+  stroke: var(--ion-color-primary);
+  stroke-width: 3.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+.percentage-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.percentage-text .value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+  line-height: 1;
+}
+
+.percentage-text .label {
+  font-size: 0.5rem;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+.stat-value {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--ion-color-dark);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: var(--space-1);
+}
+
+.text-primary {
+  color: var(--ion-color-primary);
+}
+
+.text-warning {
+  color: var(--ion-color-warning);
 }
 
 .form-box {

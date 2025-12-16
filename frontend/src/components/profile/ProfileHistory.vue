@@ -5,9 +5,6 @@
         <ion-icon :icon="timeOutline" color="medium"></ion-icon>
         <h3>{{ t("profile.history") }}</h3>
       </div>
-      <ion-button v-if="limit > 0 && history.length > limit" fill="clear" size="small" @click="$emit('view-all')">
-        {{ t("common.view_all") }}
-      </ion-button>
     </div>
 
     <div v-if="displayedHistory.length > 0">
@@ -35,6 +32,13 @@
           </div>
         </ion-card-content>
       </ion-card>
+
+      <div class="ion-text-center ion-padding-top" v-if="limit > 0 && history.length > limit">
+        <ion-button fill="clear" size="small" @click="$emit('view-all')">
+          {{ t("common.view_all") }}
+          <ion-icon slot="end" :icon="chevronForward"></ion-icon>
+        </ion-button>
+      </div>
     </div>
     <div v-else class="empty-state">
       <p>{{ t("profile.no_matches") }}</p>
@@ -46,7 +50,7 @@
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonIcon, IonCard, IonCardContent, IonButton } from "@ionic/vue";
-import { timeOutline, star } from "ionicons/icons";
+import { timeOutline, star, chevronForward } from "ionicons/icons";
 
 const props = defineProps({
   history: {

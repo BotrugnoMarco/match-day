@@ -412,6 +412,7 @@
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
+                  <ion-icon v-if="p.is_mvp" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
                   <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
                   <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                   <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
@@ -1646,6 +1647,11 @@ onUnmounted(() => {
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
+}
+
+.participants-card ion-item {
+  --padding-start: 0.5rem;
+  --inner-padding-end: 0.5rem;
 }
 
 .teams-container {

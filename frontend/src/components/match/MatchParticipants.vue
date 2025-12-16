@@ -306,7 +306,7 @@ defineEmits(["approve-request", "reject-request", "go-to-profile", "open-vote-mo
 }
 
 .team-b-card .team-header-label {
-  background: linear-gradient(135deg, var(--ion-color-secondary), var(--ion-color-secondary-shade));
+  background: linear-gradient(135deg, var(--ion-color-danger), var(--ion-color-danger-shade));
 }
 
 .team-avg {

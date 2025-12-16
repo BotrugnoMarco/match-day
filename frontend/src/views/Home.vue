@@ -50,6 +50,12 @@
               {{ nextMatch.location }}
             </div>
           </div>
+
+          <div class="weather-widget" v-if="nextMatchWeather">
+            <ion-icon :icon="getWeatherIconName(nextMatchWeather.weatherCode)" class="weather-icon"></ion-icon>
+            <span class="weather-temp">{{ Math.round(nextMatchWeather.maxTemp) }}°</span>
+          </div>
+
           <div class="match-action">
             <ion-icon :icon="chevronForwardOutline"></ion-icon>
           </div>
@@ -139,11 +145,12 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton } from "@ionic/vue";
+import { getWeatherForLocation, getWeatherIcon } from "../services/weather";
 import {
   logInOutline,
   personAddOutline,
@@ -161,6 +168,13 @@ import {
   baseballOutline,
   umbrella,
   trophy,
+  sunny,
+  cloudy,
+  rainy,
+  snow,
+  thunderstorm,
+  partlySunny,
+  helpCircleOutline,
 } from "ionicons/icons";
 
 const store = useStore();
@@ -173,6 +187,7 @@ const user = computed(() => store.getters.currentUser);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 const myMatches = computed(() => store.state.myMatches);
 const notifications = computed(() => store.state.notifications);
+const nextMatchWeather = ref(null);
 
 const nextMatch = computed(() => {
   if (!myMatches.value || myMatches.value.length === 0) return null;
@@ -195,6 +210,38 @@ const nextMatch = computed(() => {
 
   return null;
 });
+
+watch(
+  nextMatch,
+  async (newMatch) => {
+    if (newMatch && new Date(newMatch.date_time) > new Date()) {
+      try {
+        const weather = await getWeatherForLocation(newMatch.location, newMatch.date_time);
+        nextMatchWeather.value = weather;
+      } catch (e) {
+        console.error("Error fetching weather for home:", e);
+        nextMatchWeather.value = null;
+      }
+    } else {
+      nextMatchWeather.value = null;
+    }
+  },
+  { immediate: true }
+);
+
+const getWeatherIconName = (code) => {
+  const iconName = getWeatherIcon(code);
+  const iconMap = {
+    sunny: sunny,
+    "partly-sunny": partlySunny,
+    cloudy: cloudy,
+    rainy: rainy,
+    snow: snow,
+    thunderstorm: thunderstorm,
+    "help-circle": helpCircleOutline,
+  };
+  return iconMap[iconName] || helpCircleOutline;
+};
 
 const recentActivity = computed(() => {
   if (!notifications.value) return [];
@@ -386,6 +433,30 @@ const formatTime = (dateString) => {
 
 .match-action {
   color: var(--ion-color-medium);
+}
+
+.weather-widget {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+  background: #f0f8ff;
+  padding: 8px;
+  border-radius: 12px;
+  min-width: 50px;
+}
+
+.weather-icon {
+  font-size: 1.5rem;
+  color: var(--ion-color-primary);
+  margin-bottom: 2px;
+}
+
+.weather-temp {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
 }
 
 .empty-match-card {

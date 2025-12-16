@@ -417,7 +417,7 @@
                   </div>
                   <p>
                     <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
-                    <span v-if="p.user_status" :class="'status-text ' + p.user_status">{{ p.user_status }}</span>
+                    <span v-if="p.user_status" :class="'status-text ' + p.user_status">{{ t("profile." + p.user_status) }}</span>
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
@@ -2009,12 +2009,11 @@ onUnmounted(() => {
 }
 
 .jersey-number {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--ion-color-medium);
   font-weight: 600;
   background: #f0f2f5;
-  padding: 2px 6px;
+  padding: 1px 3px;
   border-radius: 4px;
-  margin-left: 6px;
 }
 </style>

@@ -248,7 +248,7 @@
   },
   "match_details": {
     "title": "Match Details",
-    "average_skill": "Avg Skill",
+    "average_skill": "Average Skill",
     "weather_forecast": "Weather Forecast",
     "precip_prob": "precip. prob.",
     "open_maps": "Open in Maps",

@@ -73,6 +73,12 @@ const routes = [
         meta: { requiresAuth: true }
     },
     {
+        path: '/profile/:id/history',
+        name: 'UserHistory',
+        component: () => import('../views/UserHistory.vue'),
+        meta: { requiresAuth: true }
+    },
+    {
         path: '/friends',
         name: 'Friends',
         component: () => import('../views/Friends.vue'),

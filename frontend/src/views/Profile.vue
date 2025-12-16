@@ -51,7 +51,7 @@
 
       <ProfileBadges :tags="stats?.tags" />
 
-      <ProfileHistory :history="history" @go-to-match="goToMatch" />
+      <ProfileHistory :history="history" :limit="5" @go-to-match="goToMatch" @view-all="goToAllMatches" />
     </ion-content>
   </ion-page>
 </template>
@@ -255,6 +255,14 @@ watch(
 
 const goToMatch = (matchId) => {
   router.push(`/matches/${matchId}`);
+};
+
+const goToAllMatches = () => {
+  if (isOwnProfile.value) {
+    router.push("/matches?filter=mine");
+  } else {
+    router.push(`/profile/${user.value.id}/history`);
+  }
 };
 
 const fetchMyHistory = async () => {

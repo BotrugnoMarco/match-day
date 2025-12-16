@@ -1,12 +1,17 @@
 <template>
   <div class="section-container ion-padding-horizontal">
     <div class="section-title">
-      <ion-icon :icon="timeOutline" color="medium"></ion-icon>
-      <h3>{{ t("profile.history") }}</h3>
+      <div class="title-left">
+        <ion-icon :icon="timeOutline" color="medium"></ion-icon>
+        <h3>{{ t("profile.history") }}</h3>
+      </div>
+      <ion-button v-if="limit > 0 && history.length > limit" fill="clear" size="small" @click="$emit('view-all')">
+        {{ t("common.view_all") }}
+      </ion-button>
     </div>
 
-    <div v-if="history.length > 0">
-      <ion-card v-for="match in history" :key="match.id" class="match-card" @click="$emit('go-to-match', match.id)">
+    <div v-if="displayedHistory.length > 0">
+      <ion-card v-for="match in displayedHistory" :key="match.id" class="match-card" @click="$emit('go-to-match', match.id)">
         <ion-card-content class="match-card-content">
           <div class="match-left">
             <div class="match-date">
@@ -38,20 +43,32 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { IonIcon, IonCard, IonCardContent } from "@ionic/vue";
+import { IonIcon, IonCard, IonCardContent, IonButton } from "@ionic/vue";
 import { timeOutline, star } from "ionicons/icons";
 
-defineProps({
+const props = defineProps({
   history: {
     type: Array,
     default: () => [],
   },
+  limit: {
+    type: Number,
+    default: 0,
+  },
 });
 
-defineEmits(["go-to-match"]);
+defineEmits(["go-to-match", "view-all"]);
 
 const { t } = useI18n();
+
+const displayedHistory = computed(() => {
+  if (props.limit > 0) {
+    return props.history.slice(0, props.limit);
+  }
+  return props.history;
+});
 </script>
 
 <style scoped>
@@ -62,9 +79,15 @@ const { t } = useI18n();
 .section-title {
   display: flex;
   align-items: center;
-  gap: var(--space-3);
+  justify-content: space-between;
   margin-bottom: var(--space-4);
   padding-left: var(--space-1);
+}
+
+.title-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
 }
 
 .section-title h3 {

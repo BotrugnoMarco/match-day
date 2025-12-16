@@ -137,6 +137,7 @@
     "remove": "Remove",
     "date": "Date",
     "time": "Time",
+    "view_all": "View All",
     "back": "Back",
     "confirm": "Confirm",
     "delete_confirm_message": "Are you sure you want to delete all notifications?",

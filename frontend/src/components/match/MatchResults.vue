@@ -25,7 +25,14 @@
                 <ion-icon v-if="isMvp(r.target_id)" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
               </div>
               <div class="rating-bar-container">
-                <div class="rating-bar" :style="{ width: r.averageRating * 10 + '%' }"></div>
+                <div
+                  class="rating-bar"
+                  :class="{
+                    'rating-bar-a': getPlayerTeam(r.target_id) === 'A',
+                    'rating-bar-b': getPlayerTeam(r.target_id) === 'B',
+                  }"
+                  :style="{ width: r.averageRating * 10 + '%' }"
+                ></div>
               </div>
               <div class="badges-row" v-if="r.badges && r.badges.length > 0">
                 <ion-badge v-for="badge in r.badges" :key="badge.name" color="secondary" class="result-badge-chip">
@@ -169,7 +176,7 @@ const isMvp = (userId) => {
 }
 
 .text-team-b {
-  color: var(--ion-color-secondary);
+  color: var(--ion-color-danger);
 }
 
 .status-icon {
@@ -186,7 +193,15 @@ const isMvp = (userId) => {
 
 .rating-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: var(--ion-color-medium); /* Default fallback */
+}
+
+.rating-bar-a {
+  background: var(--ion-color-primary);
+}
+
+.rating-bar-b {
+  background: var(--ion-color-danger);
 }
 
 .badges-row {

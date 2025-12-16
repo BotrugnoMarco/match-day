@@ -46,19 +46,19 @@ echo "   -> Build dell'applicazione..."
 npm run build
 cd ..
 
-# 3b. Aggiorna Landing Page
-echo "------------------------------------------"
-echo "🏠 Aggiornamento Landing Page..."
-sudo mkdir -p /home/botadmin/botrugno-landing
-sudo cp -r landing-page/* /home/botadmin/botrugno-landing/
-sudo chown -R $USER:$USER /home/botadmin/botrugno-landing
-# Assicura che Nginx possa leggere i file
-sudo chmod -R 755 /home/botadmin/botrugno-landing
+# # 3b. Aggiorna Landing Page
+# echo "------------------------------------------"
+# echo "🏠 Aggiornamento Landing Page..."
+# sudo mkdir -p /home/botadmin/botrugno-landing
+# sudo cp -r landing-page/* /home/botadmin/botrugno-landing/
+# sudo chown -R $USER:$USER /home/botadmin/botrugno-landing
+# # Assicura che Nginx possa leggere i file
+# sudo chmod -R 755 /home/botadmin/botrugno-landing
 
-# 4. Riavvio Nginx
-echo "------------------------------------------"
-echo "🔄 Riavvio Nginx..."
-sudo systemctl restart nginx
+# # 4. Riavvio Nginx
+# echo "------------------------------------------"
+# echo "🔄 Riavvio Nginx..."
+# sudo systemctl restart nginx
 
 echo "=========================================="
 echo "✅ Deploy completato con successo!"

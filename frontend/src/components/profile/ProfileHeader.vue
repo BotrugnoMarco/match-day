@@ -67,9 +67,9 @@
     </div>
 
     <input type="file" ref="fileInput" @change="handleFileChange" style="display: none" accept="image/*" />
-
-    <ImageCropperModal :is-open="isCropperOpen" :image-src="tempImageSrc" @cancel="closeCropper" @crop="handleCrop" />
   </div>
+
+  <ImageCropperModal :is-open="isCropperOpen" :image-src="tempImageSrc" @cancel="closeCropper" @crop="handleCrop" />
 </template>
 
 <script setup>

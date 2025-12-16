@@ -11,7 +11,7 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
+    <ion-content class="ion-padding cropper-content">
       <div class="img-container">
         <img ref="image" :src="imageSrc" v-if="imageSrc" style="max-width: 100%; display: block" />
       </div>
@@ -46,23 +46,28 @@ watch(
   () => props.isOpen,
   async (newVal) => {
     if (newVal && props.imageSrc) {
-      await nextTick();
-      if (cropper) {
-        cropper.destroy();
-      }
-      cropper = new Cropper(image.value, {
-        aspectRatio: 1,
-        viewMode: 1,
-        dragMode: "move",
-        autoCropArea: 1,
-        restore: false,
-        guides: true,
-        center: true,
-        highlight: false,
-        cropBoxMovable: false,
-        cropBoxResizable: false,
-        toggleDragModeOnDblclick: false,
-      });
+      // Wait for modal animation
+      setTimeout(async () => {
+        if (cropper) {
+          cropper.destroy();
+        }
+        if (image.value) {
+          cropper = new Cropper(image.value, {
+            aspectRatio: 1,
+            viewMode: 1,
+            dragMode: "move",
+            autoCropArea: 1,
+            restore: false,
+            guides: true,
+            center: true,
+            highlight: false,
+            cropBoxMovable: false,
+            cropBoxResizable: false,
+            toggleDragModeOnDblclick: false,
+            background: false, // Disable default background pattern
+          });
+        }
+      }, 300); // Delay to ensure modal is visible
     } else {
       if (cropper) {
         cropper.destroy();
@@ -97,16 +102,24 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.cropper-content {
+  --background: #000;
+}
+
 .img-container {
   height: 100%;
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #000;
+  overflow: hidden;
 }
 
 /* Ensure the image fits within the container */
 .img-container img {
   max-height: 80vh;
+  max-width: 100%;
+  display: block;
 }
 </style>

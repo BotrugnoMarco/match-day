@@ -47,6 +47,8 @@
 
       <ProfileStats :stats="stats" :form="formHistory" />
 
+      <ProfileRatingChart :history="history" />
+
       <ProfileSkills :skills="user?.skills" />
 
       <ProfileBadges :tags="stats?.tags" />
@@ -82,6 +84,7 @@ import { createOutline, notificationsOutline } from "ionicons/icons";
 
 import ProfileHeader from "../components/profile/ProfileHeader.vue";
 import ProfileStats from "../components/profile/ProfileStats.vue";
+import ProfileRatingChart from "../components/profile/ProfileRatingChart.vue";
 import ProfileSkills from "../components/profile/ProfileSkills.vue";
 import ProfileBadges from "../components/profile/ProfileBadges.vue";
 import ProfileHistory from "../components/profile/ProfileHistory.vue";

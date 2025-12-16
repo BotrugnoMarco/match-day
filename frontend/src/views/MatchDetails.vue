@@ -19,145 +19,18 @@
 
     <ion-content class="page-content" v-if="match">
       <!-- Header Section -->
-      <div class="match-header">
-        <div class="sport-icon-large" :class="match.sport_type">
-          <ion-icon :icon="getSportIcon(match.sport_type)"></ion-icon>
-        </div>
-        <div class="header-info">
-          <h1>{{ t("sports." + match.sport_type) }}</h1>
-          <div class="header-badges">
-            <ion-badge v-if="!(match.status === 'open' && match.is_private)" :color="getStatusColor(match.status)" class="status-badge">{{
-              t("status." + match.status)
-            }}</ion-badge>
-            <ion-badge v-if="match.is_private" color="medium" class="status-badge">{{ t("matches.private") }}</ion-badge>
-          </div>
-        </div>
-      </div>
+      <MatchHeader :match="match" />
 
       <div class="details-wrapper">
         <!-- Main Info Card -->
-        <div class="info-card">
-          <div class="info-row">
-            <div class="info-block">
-              <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
-              <div class="info-text">
-                <span class="label">{{ t("common.date") }}</span>
-                <span class="value">{{ formatDate(match.date_time) }}</span>
-              </div>
-            </div>
-            <div class="info-block">
-              <ion-icon :icon="timeOutline" class="info-icon"></ion-icon>
-              <div class="info-text">
-                <span class="label">{{ t("common.time") }}</span>
-                <span class="value">{{ formatTime(match.date_time) }}</span>
-                <span class="sub-value" v-if="match.duration">({{ match.duration }} min)</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="info-row">
-            <div class="info-block full-width">
-              <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
-              <div class="info-text">
-                <span class="label">{{ t("create_match.location") }}</span>
-                <span class="value">{{ match.location }}</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="map-container" v-if="match.location">
-            <iframe
-              width="100%"
-              height="200"
-              style="border: 0; border-radius: var(--radius-md)"
-              loading="lazy"
-              allowfullscreen
-              :src="`https://maps.google.com/maps?q=${encodeURIComponent(match.location)}&t=&z=15&ie=UTF8&iwloc=&output=embed`"
-            >
-            </iframe>
-            <ion-button fill="clear" size="small" expand="block" @click="openMaps(match.location)">
-              {{ t("match_details.open_maps") }}
-              <ion-icon slot="end" :icon="mapOutline"></ion-icon>
-            </ion-button>
-          </div>
-
-          <div class="divider" v-if="weather"></div>
-
-          <div class="info-row" v-if="weather">
-            <div class="info-block full-width">
-              <ion-icon :icon="getWeatherIconObj(getWeatherIcon(weather.weatherCode))" class="info-icon"></ion-icon>
-              <div class="info-text">
-                <span class="label">{{ t("match_details.weather_forecast") }}</span>
-                <div class="weather-value">
-                  <span class="weather-desc">{{ t(getWeatherDescription(weather.weatherCode)) }}</span>
-                  <span class="weather-temp">
-                    <ion-icon :icon="arrowUpOutline" size="small" style="vertical-align: middle; color: var(--ion-color-danger)"></ion-icon>
-                    {{ weather.maxTemp }}°
-                    <ion-icon
-                      :icon="arrowDownOutline"
-                      size="small"
-                      style="vertical-align: middle; color: var(--ion-color-primary); margin-left: 8px"
-                    ></ion-icon>
-                    {{ weather.minTemp }}°
-                  </span>
-                </div>
-                <div class="weather-sub" v-if="weather.precipProb > 0">
-                  <ion-icon :icon="umbrella" size="small" style="vertical-align: middle; margin-right: 4px"></ion-icon>
-                  {{ weather.precipProb }}% {{ t("match_details.precip_prob") }}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="info-row">
-            <div class="info-block">
-              <ion-icon :icon="cashOutline" class="info-icon"></ion-icon>
-              <div class="info-text">
-                <span class="label">{{ t("match_details.price") }}</span>
-                <span class="value">€{{ match.price_total }}</span>
-                <span class="sub-value" v-if="activeParticipants.length > 0">
-                  €{{ (match.price_total / activeParticipants.length).toFixed(2) }} {{ t("match_details.per_person") }}
-                </span>
-                <span class="sub-value" v-else>
-                  €{{ (match.price_total / (match.max_players || 10)).toFixed(2) }} {{ t("match_details.per_person_est") }}
-                </span>
-              </div>
-            </div>
-            <div class="info-block" @click="goToProfile(match.creator_id)">
-              <ion-icon :icon="personOutline" class="info-icon"></ion-icon>
-              <div class="info-text">
-                <span class="label">{{ t("match_details.organizer") }}</span>
-                <div class="organizer-value">
-                  <ion-avatar class="mini-avatar">
-                    <img :src="match.creator_avatar || '/default-avatar.svg'" />
-                  </ion-avatar>
-                  <span>{{ match.creator_username || "Unknown" }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="divider" v-if="match.is_covered || match.has_showers || averageAge"></div>
-
-          <div class="features-row" v-if="match.is_covered || match.has_showers || averageAge">
-            <div class="feature-item" v-if="match.is_covered">
-              <ion-icon :icon="homeOutline"></ion-icon>
-              <span>{{ t("create_match.covered_field") }}</span>
-            </div>
-            <div class="feature-item" v-if="match.has_showers">
-              <ion-icon :icon="shirtOutline"></ion-icon>
-              <span>{{ t("create_match.showers_available") }}</span>
-            </div>
-            <div class="feature-item" v-if="averageAge">
-              <ion-icon :icon="peopleOutline"></ion-icon>
-              <span>{{ t("match_details.avg_age", { age: averageAge }) }}</span>
-            </div>
-          </div>
-        </div>
+        <MatchInfoCard
+          :match="match"
+          :weather="weather"
+          :active-participants="activeParticipants"
+          :average-age="averageAge"
+          @open-maps="openMaps"
+          @go-to-profile="goToProfile"
+        />
 
         <!-- Post Match Section -->
         <div class="post-match-card">
@@ -182,338 +55,46 @@
           </ion-button>
         </div>
 
-        <!-- Action Buttons -->
-        <div class="actions-section">
-          <div v-if="match.status === 'open' && !isParticipant">
-            <ion-button expand="block" @click="joinMatch" size="large" :color="isFull ? 'warning' : 'primary'" class="main-action-btn">
-              <ion-icon :icon="isFull ? timeOutline : personAddOutline" slot="start"></ion-icon>
-              {{ isFull ? t("match_details.join_waitlist") : t("match_details.join_match") }}
-            </ion-button>
-          </div>
-          <div v-if="match.status === 'open' && isConfirmed">
-            <ion-button expand="block" color="danger" fill="outline" @click="leaveMatch" class="main-action-btn">
-              <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-              {{ t("match_details.leave_match") }}
-            </ion-button>
-          </div>
-          <div v-if="match.status === 'open' && isWaitlisted">
-            <ion-button expand="block" color="danger" fill="outline" @click="leaveMatch" class="main-action-btn">
-              <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-              {{ t("match_details.leave_waitlist") }}
-            </ion-button>
-          </div>
+        <MatchActions
+          :match="match"
+          :is-participant="isParticipant"
+          :is-confirmed="isConfirmed"
+          :is-waitlisted="isWaitlisted"
+          :is-full="isFull"
+          :is-admin="isAdmin"
+          :is-creator="isCreator"
+          :has-teams="hasTeams"
+          :vote-stats="voteStats"
+          @join="joinMatch"
+          @leave="leaveMatch"
+          @generate-teams="generateTeams"
+          @change-status="changeStatus"
+          @edit="editMatch"
+          @delete="deleteMatch"
+        />
 
-          <!-- Admin Controls -->
-          <div v-if="isAdmin && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
-            <ion-button expand="block" color="secondary" fill="solid" @click="generateTeams" class="admin-btn">
-              <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-              {{ hasTeams ? t("match_details.regenerate_teams") : t("match_details.generate_teams") }}
-            </ion-button>
-            <ion-button expand="block" color="warning" fill="solid" @click="changeStatus('voting')" class="admin-btn">
-              <ion-icon :icon="starOutline" slot="start"></ion-icon>
-              {{ t("match_details.voting") }}
-            </ion-button>
-            <ion-button expand="block" color="tertiary" fill="solid" @click="editMatch" class="admin-btn">
-              <ion-icon :icon="createOutline" slot="start"></ion-icon>
-              {{ t("common.edit") }}
-            </ion-button>
-            <ion-button v-if="isCreator" expand="block" color="danger" fill="clear" @click="deleteMatch" class="admin-btn full-width">
-              <ion-icon :icon="trashOutline" slot="start"></ion-icon>
-              {{ t("match_details.delete_match") }}
-            </ion-button>
-          </div>
-          <div v-if="isAdmin && match.status === 'voting'">
-            <div v-if="voteStats" class="vote-stats-container ion-margin-bottom">
-              <div class="vote-progress-text">
-                {{ t("match_details.votes_progress") }}: <strong>{{ voteStats.total_votes }} / {{ voteStats.expected_votes }}</strong>
-              </div>
-              <div v-if="voteStats.missing_votes > 0">
-                <div class="missing-votes-text">
-                  {{ t("match_details.missing_votes", { count: voteStats.missing_votes }) }}
-                </div>
-                <div v-if="voteStats.missing_voters && voteStats.missing_voters.length > 0" class="missing-voters-list">
-                  <div class="missing-voters-title">{{ t("match_details.missing_voters_title") }}</div>
-                  <div v-for="voter in voteStats.missing_voters" :key="voter.id" class="missing-voter-item">
-                    <span>{{ voter.username }}</span>
-                    <span class="missing-count">-{{ voter.votes_missing }}</span>
-                  </div>
-                </div>
-              </div>
-              <div v-else class="all-voted-text">
-                <ion-icon :icon="checkmarkOutline" color="success"></ion-icon>
-                {{ t("match_details.all_voted") }}
-              </div>
-            </div>
-            <ion-button expand="block" color="danger" @click="changeStatus('finished')" class="main-action-btn">
-              <ion-icon :icon="flagOutline" slot="start"></ion-icon>
-              {{ t("match_details.finish_match") }}
-            </ion-button>
-            <ion-button expand="block" color="medium" fill="outline" @click="changeStatus('locked')" class="main-action-btn">
-              <ion-icon :icon="arrowUndoOutline" slot="start"></ion-icon>
-              {{ t("match_details.cancel_voting") }}
-            </ion-button>
-          </div>
-        </div>
+        <MatchParticipants
+          :match="match"
+          :pending-participants="pendingParticipants"
+          :waitlist-participants="waitlistParticipants"
+          :active-participants="activeParticipants"
+          :team-a-participants="teamAParticipants"
+          :team-b-participants="teamBParticipants"
+          :has-teams="hasTeams"
+          :team-a-average-skill="teamAAverageSkill"
+          :team-b-average-skill="teamBAverageSkill"
+          :is-admin="isAdmin"
+          :current-user="currentUser"
+          :my-votes="myVotes"
+          @approve-request="approveRequest"
+          @reject-request="rejectRequest"
+          @go-to-profile="goToProfile"
+          @open-vote-modal="openVoteModal"
+          @open-player-actions="openPlayerActions"
+          @save-formation="saveFormation"
+        />
 
-        <!-- Pending Requests -->
-        <div v-if="isAdmin && pendingParticipants.length > 0" class="list-section">
-          <div class="section-title">
-            <h3>{{ t("match_details.pending_requests") }}</h3>
-            <ion-badge color="tertiary">{{ pendingParticipants.length }}</ion-badge>
-          </div>
-          <div class="participants-card">
-            <ion-list lines="none">
-              <ion-item v-for="p in pendingParticipants" :key="p.id">
-                <ion-avatar slot="start">
-                  <img :src="p.avatar_url || '/default-avatar.svg'" />
-                </ion-avatar>
-                <ion-label>
-                  <h2>{{ p.username }}</h2>
-                  <p>{{ t("match_details.wants_to_join") }}</p>
-                </ion-label>
-                <div class="action-buttons-small">
-                  <ion-button color="success" fill="clear" @click="approveRequest(p.user_id)">
-                    <ion-icon :icon="checkmarkOutline" slot="icon-only"></ion-icon>
-                  </ion-button>
-                  <ion-button color="danger" fill="clear" @click="rejectRequest(p.user_id)">
-                    <ion-icon :icon="closeOutline" slot="icon-only"></ion-icon>
-                  </ion-button>
-                </div>
-              </ion-item>
-            </ion-list>
-          </div>
-        </div>
-
-        <!-- Waitlist -->
-        <div v-if="waitlistParticipants.length > 0" class="list-section">
-          <div class="section-title">
-            <h3>{{ t("match_details.waitlist") }}</h3>
-            <ion-badge color="warning">{{ waitlistParticipants.length }}</ion-badge>
-          </div>
-          <div class="participants-card">
-            <ion-list lines="none">
-              <ion-item v-for="p in waitlistParticipants" :key="p.id" button @click="goToProfile(p.user_id)">
-                <ion-avatar slot="start">
-                  <img :src="p.avatar_url || '/default-avatar.svg'" />
-                </ion-avatar>
-                <ion-label>
-                  <h2>{{ p.username }}</h2>
-                  <p>{{ t("match_details.waiting") }}</p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </div>
-        </div>
-
-        <!-- Participants / Teams -->
-        <div class="list-section">
-          <div class="section-title">
-            <h3>{{ t("match_details.participants") }}</h3>
-            <ion-badge color="medium">{{ activeParticipants ? activeParticipants.length : 0 }} / {{ match.max_players || 10 }}</ion-badge>
-          </div>
-
-          <div v-if="hasTeams" class="teams-container">
-            <!-- Team A -->
-            <div class="team-block">
-              <div class="participants-card team-a-card">
-                <div class="team-header-label team-a">
-                  {{ t("match_details.team_a") }}
-                  <span v-if="teamAAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamAAverageSkill }}) </span>
-                </div>
-                <ion-list lines="none">
-                  <ion-item v-for="p in teamAParticipants" :key="p.id">
-                    <div slot="start" class="avatar-wrapper" @click="goToProfile(p.user_id)">
-                      <ion-avatar>
-                        <img :src="p.avatar_url || '/default-avatar.svg'" />
-                      </ion-avatar>
-                      <div v-if="p.is_captain" class="captain-badge-overlay">C</div>
-                    </div>
-                    <ion-label @click="goToProfile(p.user_id)">
-                      <div class="name-container">
-                        <h2>{{ p.username }}</h2>
-                        <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
-                      </div>
-                      <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
-                    </ion-label>
-                    <div slot="end" class="item-actions">
-                      <ion-icon v-if="p.is_mvp" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
-                      <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                      <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
-                      <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
-                      <ion-button
-                        v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-                        fill="outline"
-                        size="small"
-                        :disabled="myVotes.includes(p.user_id)"
-                        @click.stop="openVoteModal(p)"
-                      >
-                        {{ myVotes.includes(p.user_id) ? t("vote.voted") : t("vote.vote_action") }}
-                      </ion-button>
-                      <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
-                        <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
-                      </ion-button>
-                    </div>
-                  </ion-item>
-                </ion-list>
-              </div>
-            </div>
-
-            <!-- Team B -->
-            <div class="team-block">
-              <div class="participants-card team-b-card">
-                <div class="team-header-label team-b">
-                  {{ t("match_details.team_b") }}
-                  <span v-if="teamBAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamBAverageSkill }}) </span>
-                </div>
-                <ion-list lines="none">
-                  <ion-item v-for="p in teamBParticipants" :key="p.id">
-                    <div slot="start" class="avatar-wrapper" @click="goToProfile(p.user_id)">
-                      <ion-avatar>
-                        <img :src="p.avatar_url || '/default-avatar.svg'" />
-                      </ion-avatar>
-                      <div v-if="p.is_captain" class="captain-badge-overlay">C</div>
-                    </div>
-                    <ion-label @click="goToProfile(p.user_id)">
-                      <div class="name-container">
-                        <h2>{{ p.username }}</h2>
-                        <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
-                      </div>
-                      <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
-                    </ion-label>
-                    <div slot="end" class="item-actions">
-                      <ion-icon v-if="p.is_mvp" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
-                      <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                      <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
-                      <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
-                      <ion-button
-                        v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-                        fill="outline"
-                        size="small"
-                        :disabled="myVotes.includes(p.user_id)"
-                        @click.stop="openVoteModal(p)"
-                      >
-                        {{ myVotes.includes(p.user_id) ? t("vote.voted") : t("vote.vote_action") }}
-                      </ion-button>
-                      <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
-                        <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
-                      </ion-button>
-                    </div>
-                  </ion-item>
-                </ion-list>
-              </div>
-            </div>
-          </div>
-
-          <div v-else class="participants-card">
-            <ion-list lines="none">
-              <ion-item v-for="p in activeParticipants" :key="p.id">
-                <ion-avatar slot="start" @click="goToProfile(p.user_id)">
-                  <img :src="p.avatar_url || '/default-avatar.svg'" />
-                </ion-avatar>
-                <ion-label @click="goToProfile(p.user_id)">
-                  <div class="name-container">
-                    <h2>{{ p.username }}</h2>
-                    <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
-                  </div>
-                  <p>
-                    <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
-                    <span v-if="p.user_status" :class="'status-text ' + p.user_status">{{ t("profile." + p.user_status) }}</span>
-                  </p>
-                </ion-label>
-                <div slot="end" class="item-actions">
-                  <ion-icon v-if="p.is_mvp" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
-                  <ion-icon v-if="p.is_admin" :icon="shieldCheckmarkOutline" color="secondary" class="status-icon"></ion-icon>
-                  <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
-                  <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
-                  <ion-button
-                    v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
-                    fill="outline"
-                    size="small"
-                    :disabled="myVotes.includes(p.user_id)"
-                    @click.stop="openVoteModal(p)"
-                  >
-                    {{ myVotes.includes(p.user_id) ? t("vote.voted") : t("vote.vote_action") }}
-                  </ion-button>
-                  <ion-button v-if="isAdmin" fill="clear" size="small" @click.stop="openPlayerActions(p)">
-                    <ion-icon slot="icon-only" :icon="ellipsisVertical"></ion-icon>
-                  </ion-button>
-                </div>
-              </ion-item>
-            </ion-list>
-          </div>
-
-          <div v-if="hasTeams" class="field-container ion-margin-top">
-            <div class="section-title">
-              <h3>{{ t("match_details.formation") }}</h3>
-            </div>
-            <FormationField
-              :players="[...teamAParticipants, ...teamBParticipants]"
-              :is-editable="isAdmin"
-              :sport-type="match.sport_type"
-              @save="saveFormation"
-            />
-          </div>
-        </div>
-
-        <!-- Results Section -->
-        <div v-if="match.status === 'finished'" class="results-section">
-          <div class="section-title">
-            <h3>{{ t("match_details.match_results") }}</h3>
-            <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
-          </div>
-
-          <div class="winner-card">
-            <div class="winner-label">{{ t("match_details.winner") }}</div>
-            <h1 class="winner-team" v-if="match.winner !== 'Draw'">{{ t("match_details.team") }} {{ match.winner }}</h1>
-            <h1 class="winner-team draw" v-else>{{ t("match_details.draw") }}</h1>
-          </div>
-
-          <div class="participants-card" v-if="results.length > 0">
-            <ion-list lines="none">
-              <ion-item v-for="(r, index) in results" :key="r.target_id" button @click="goToProfile(r.target_id)">
-                <div slot="start" class="rank-number">{{ index + 1 }}</div>
-                <ion-label>
-                  <div class="name-container">
-                    <h2 :class="{ 'text-team-a': getPlayerTeam(r.target_id) === 'A', 'text-team-b': getPlayerTeam(r.target_id) === 'B' }">
-                      {{ r.target_name }}
-                    </h2>
-                    <ion-icon v-if="isMvp(r.target_id)" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
-                  </div>
-                  <div class="rating-bar-container">
-                    <div class="rating-bar" :style="{ width: r.averageRating * 10 + '%' }"></div>
-                  </div>
-                  <div class="badges-row" v-if="r.badges && r.badges.length > 0">
-                    <ion-badge v-for="badge in r.badges" :key="badge.name" color="secondary" class="result-badge-chip">
-                      {{ t("vote.tags." + badge.name) }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
-                    </ion-badge>
-                  </div>
-                </ion-label>
-                <div slot="end" class="rating-score">
-                  <span class="score">{{ r.averageRating.toFixed(1) }}</span>
-                  <span class="votes">{{ t("match_details.votes_count", { count: r.voteCount }) }}</span>
-                </div>
-              </ion-item>
-            </ion-list>
-          </div>
-        </div>
-
-        <!-- My Feedback Section -->
-        <div v-if="match.status === 'finished' && myComments.length > 0" class="feedback-section">
-          <div class="section-title">
-            <h3>{{ t("match_details.my_feedback") }}</h3>
-            <ion-icon :icon="chatboxEllipsesOutline" color="primary"></ion-icon>
-          </div>
-
-          <div class="feedback-card">
-            <ion-list lines="none">
-              <ion-item v-for="(comment, index) in myComments" :key="index" class="feedback-item">
-                <ion-label class="ion-text-wrap">
-                  <p class="feedback-text">"{{ comment.comment }}"</p>
-                </ion-label>
-              </ion-item>
-            </ion-list>
-          </div>
-        </div>
+        <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
       </div>
     </ion-content>
     <div v-else class="ion-padding">
@@ -546,12 +127,6 @@ import {
   IonToolbar,
   IonTitle,
   IonContent,
-  IonCardSubtitle,
-  IonList,
-  IonItem,
-  IonLabel,
-  IonAvatar,
-  IonBadge,
   IonButton,
   IonButtons,
   IonBackButton,
@@ -563,53 +138,22 @@ import {
   IonSpinner,
 } from "@ionic/vue";
 import {
-  locationOutline,
   cashOutline,
-  shareSocialOutline,
-  personAddOutline,
-  peopleOutline,
-  starOutline,
-  flagOutline,
-  trophyOutline,
-  timeOutline,
-  closeCircleOutline,
-  calendarOutline,
-  football,
-  basketball,
-  tennisball,
-  baseballOutline,
-  umbrella,
-  water,
-  personOutline,
-  beerOutline,
-  beer,
-  checkmarkOutline,
   closeOutline,
-  trashOutline,
-  createOutline,
   swapHorizontalOutline,
-  ribbonOutline,
   ribbon,
   shieldCheckmarkOutline,
-  mapOutline,
-  ellipsisVertical,
-  arrowUpOutline,
-  arrowDownOutline,
-  sunny,
-  partlySunny,
-  cloudy,
-  rainy,
-  snow,
-  thunderstorm,
-  helpCircle,
-  homeOutline,
-  shirtOutline,
-  arrowUndoOutline,
-  chatboxEllipsesOutline,
+  shareSocialOutline,
+  personAddOutline,
+  beerOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
-import FormationField from "../components/FormationField.vue";
+import MatchHeader from "../components/match/MatchHeader.vue";
+import MatchInfoCard from "../components/match/MatchInfoCard.vue";
+import MatchActions from "../components/match/MatchActions.vue";
+import MatchParticipants from "../components/match/MatchParticipants.vue";
+import MatchResults from "../components/match/MatchResults.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -623,20 +167,6 @@ const myComments = ref([]);
 const voteStats = ref(null);
 const isInviteModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
-
-const weatherIcons = {
-  sunny: sunny,
-  "partly-sunny": partlySunny,
-  cloudy: cloudy,
-  rainy: rainy,
-  snow: snow,
-  thunderstorm: thunderstorm,
-  "help-circle": helpCircle,
-};
-
-const getWeatherIconObj = (iconName) => {
-  return weatherIcons[iconName] || helpCircle;
-};
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -725,49 +255,10 @@ const averageAge = computed(() => {
   return (totalAge / participantsWithAge.length).toFixed(1);
 });
 
-const getStatusColor = (status) => {
-  switch (status) {
-    case "open":
-      return "success";
-    case "locked":
-      return "warning";
-    case "finished":
-      return "medium";
-    case "voting":
-      return "tertiary";
-    default:
-      return "primary";
-  }
-};
-
-const getSportIcon = (type) => {
-  switch (type) {
-    case "soccer":
-      return football;
-    case "volleyball":
-      return baseballOutline;
-    case "padel":
-    case "tennis":
-      return tennisball;
-    default:
-      return calendarOutline;
-  }
-};
-
 const isParticipant = computed(() => {
   if (!match.value || !match.value.participants || !currentUser.value) return false;
   return match.value.participants.some((p) => p.user_id === currentUser.value.id);
 });
-
-const isMvp = (userId) => {
-  return match.value?.participants?.find((p) => p.user_id === userId)?.is_mvp;
-};
-
-const getPlayerTeam = (userId) => {
-  const player = match.value?.participants?.find((p) => p.user_id === userId);
-  if (!player) return null;
-  return player.team === "A" || player.team === "Team A" ? "A" : player.team === "B" || player.team === "Team B" ? "B" : null;
-};
 
 const isCreator = computed(() => {
   if (!match.value || !currentUser.value) return false;
@@ -1410,68 +901,6 @@ onUnmounted(() => {
   /* --background: #ffffff; */
   height: 100%;
   overflow-y: auto;
-}
-
-.match-header {
-  background: white;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  border-bottom-left-radius: 30px;
-  border-bottom-right-radius: 30px;
-  box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
-}
-
-.sport-icon-large {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
-  color: white;
-  box-shadow: var(--shadow-lg);
-}
-
-.sport-icon-large.soccer {
-  background-color: #2dd36f;
-}
-.sport-icon-large.basketball {
-  background-color: #ffc409;
-}
-.sport-icon-large.tennis {
-  background-color: #eb445a;
-}
-.sport-icon-large.padel {
-  background-color: #3dc2ff;
-}
-.sport-icon-large.volleyball {
-  background-color: #5260ff;
-}
-
-.header-info h1 {
-  margin: 0 0 8px;
-  font-weight: 800;
-  font-size: 1.8rem;
-  text-transform: capitalize;
-  color: var(--ion-color-dark);
-}
-
-.header-badges {
-  display: flex;
-  gap: 8px;
-}
-
-.status-badge {
-  padding: 6px 12px;
-  border-radius: var(--rounded-lg);
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .details-wrapper {

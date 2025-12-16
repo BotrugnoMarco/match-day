@@ -186,7 +186,7 @@ const isMvp = (userId) => {
 
 .rating-bar {
   height: 100%;
-  background: linear-gradient(90deg, var(--ion-color-primary), var(--ion-color-secondary));
+  background: var(--ion-color-warning);
 }
 
 .badges-row {

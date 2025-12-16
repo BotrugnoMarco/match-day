@@ -1,0 +1,173 @@
+<template>
+  <div class="section-container ion-padding-horizontal">
+    <div class="section-title">
+      <ion-icon :icon="timeOutline" color="medium"></ion-icon>
+      <h3>{{ t("profile.history") }}</h3>
+    </div>
+
+    <div v-if="history.length > 0">
+      <ion-card v-for="match in history" :key="match.id" class="match-card" @click="$emit('go-to-match', match.id)">
+        <ion-card-content class="match-card-content">
+          <div class="match-left">
+            <div class="match-date">
+              <span class="day">{{ new Date(match.date_time).getDate() }}</span>
+              <span class="month">{{ new Date(match.date_time).toLocaleString("default", { month: "short" }) }}</span>
+            </div>
+            <div class="match-info">
+              <h3 class="sport-name">{{ t("sports." + match.sport_type).toUpperCase() }}</h3>
+              <p class="location">{{ match.location }}</p>
+            </div>
+          </div>
+
+          <div class="match-right">
+            <div class="result-badge" :class="match.result">
+              {{ match.result ? t("results." + match.result).toUpperCase() : t("profile.played") }}
+            </div>
+            <div class="rating-mini" v-if="match.avg_rating">
+              <ion-icon :icon="star" color="warning"></ion-icon>
+              <span>{{ match.avg_rating }}</span>
+            </div>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </div>
+    <div v-else class="empty-state">
+      <p>{{ t("profile.no_matches") }}</p>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { useI18n } from "vue-i18n";
+import { IonIcon, IonCard, IonCardContent } from "@ionic/vue";
+import { timeOutline, star } from "ionicons/icons";
+
+defineProps({
+  history: {
+    type: Array,
+    default: () => [],
+  },
+});
+
+defineEmits(["go-to-match"]);
+
+const { t } = useI18n();
+</script>
+
+<style scoped>
+.section-container {
+  margin-bottom: var(--space-5);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-1);
+}
+
+.section-title h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.match-card {
+  margin: 0 0 var(--space-4) 0;
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.match-card-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--space-4);
+}
+
+.match-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.match-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f0f2f5;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--rounded-sm);
+  min-width: 50px;
+}
+
+.match-date .day {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--ion-color-dark);
+}
+
+.match-date .month {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--ion-color-medium);
+  font-weight: 600;
+}
+
+.match-info .sport-name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ion-color-dark);
+}
+
+.match-info .location {
+  margin: 3px 0 0;
+  font-size: 0.85rem;
+  color: var(--ion-color-medium);
+}
+
+.match-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-1);
+}
+
+.result-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: var(--space-1) var(--space-2);
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+
+.result-badge.win {
+  background: rgba(var(--ion-color-success-rgb), 0.1);
+  color: var(--ion-color-success);
+}
+.result-badge.lost {
+  background: rgba(var(--ion-color-danger-rgb), 0.1);
+  color: var(--ion-color-danger);
+}
+.result-badge.draw {
+  background: rgba(var(--ion-color-medium-rgb), 0.1);
+  color: var(--ion-color-medium);
+}
+
+.rating-mini {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--ion-color-medium);
+  padding: var(--space-5);
+}
+</style>

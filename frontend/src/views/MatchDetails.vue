@@ -926,7 +926,7 @@ const shareMatch = async () => {
       time: formatTime(match.value.date_time),
       location: match.value.location,
     }),
-    url: window.location.href,
+    url: `https://matchday.botrugno.dev/matches/${match.value.id}`,
     dialogTitle: t("match_details.share_title", { sport: t("sports." + match.value.sport_type) }),
   };
 

@@ -259,25 +259,25 @@ exports.leaveMatch = async (req, res) => {
             return res.status(400).json({ error: 'You are not a participant of this match' });
         }
 
-        // Handle Creator Leaving
-        if (isCreator) {
-            // Find a new creator
-            const [candidates] = await db.query(
-                "SELECT user_id FROM participants WHERE match_id = ? AND status != 'declined' ORDER BY is_admin DESC, id ASC LIMIT 1",
-                [matchId]
-            );
+        // Check remaining active participants
+        const [candidates] = await db.query(
+            "SELECT user_id FROM participants WHERE match_id = ? AND status != 'declined' ORDER BY is_admin DESC, id ASC LIMIT 1",
+            [matchId]
+        );
 
-            if (candidates.length > 0) {
-                const newCreatorId = candidates[0].user_id;
-                await db.query('UPDATE matches SET creator_id = ? WHERE id = ?', [newCreatorId, matchId]);
-                await db.query('UPDATE participants SET is_admin = 1 WHERE match_id = ? AND user_id = ?', [matchId, newCreatorId]);
-            } else {
-                // No one left, delete match
-                await db.query('DELETE FROM matches WHERE id = ?', [matchId]);
-                const io = req.app.get('io');
-                io.emit('match_deleted', { matchId });
-                return res.json({ message: 'Match deleted as last participant left' });
-            }
+        if (candidates.length === 0) {
+            // No active participants left, delete match
+            await db.query('DELETE FROM matches WHERE id = ?', [matchId]);
+            const io = req.app.get('io');
+            io.emit('match_deleted', { matchId });
+            return res.json({ message: 'Match deleted as last participant left' });
+        }
+
+        // If creator left, transfer ownership
+        if (isCreator) {
+            const newCreatorId = candidates[0].user_id;
+            await db.query('UPDATE matches SET creator_id = ? WHERE id = ?', [newCreatorId, matchId]);
+            await db.query('UPDATE participants SET is_admin = 1 WHERE match_id = ? AND user_id = ?', [matchId, newCreatorId]);
         }
 
         // Check if there is someone in the waitlist to promote

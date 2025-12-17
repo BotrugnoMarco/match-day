@@ -522,9 +522,12 @@ const performJoinMatch = async () => {
 };
 
 const leaveMatch = async () => {
+  const isLast = activeParticipants.value.length === 1 && isParticipant.value;
+  const message = isLast ? t("match_details.leave_confirm_last") : t("match_details.leave_confirm");
+
   const alert = await alertController.create({
     header: t("match_details.leave_match"),
-    message: t("match_details.leave_confirm"),
+    message: message,
     buttons: [
       {
         text: t("common.cancel"),
@@ -535,8 +538,13 @@ const leaveMatch = async () => {
         role: "destructive",
         handler: async () => {
           try {
-            await api.post(`/matches/${route.params.id}/leave`);
-            await fetchMatch();
+            const response = await api.post(`/matches/${route.params.id}/leave`);
+            if (response.data.message === 'Match deleted as last participant left') {
+               presentToast(t("match_details.match_deleted_toast"), "warning");
+               router.push('/matches');
+            } else {
+               await fetchMatch();
+            }
           } catch (error) {
             console.error("Error leaving match:", error);
             presentToast(t("match_details.leave_error") + ": " + (error.response?.data?.error || error.message));

@@ -303,6 +303,7 @@
     "private_match_alert_message": "Inserisci il codice di accesso per entrare subito, o lascia vuoto per inviare una richiesta.",
     "private_match_alert_placeholder": "Codice di Accesso",
     "leave_confirm": "Sei sicuro di voler lasciare questa partita?",
+    "leave_confirm_last": "Sei l'ultimo partecipante. Se lasci la partita, questa verrà eliminata. Sei sicuro?",
     "delete_confirm_header": "Elimina Partita",
     "delete_confirm_message": "Sei sicuro di voler eliminare questa partita? Questa azione non può essere annullata e tutti i partecipanti saranno avvisati.",
     "manage_player": "Gestisci {name}",

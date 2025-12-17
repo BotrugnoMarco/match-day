@@ -53,10 +53,10 @@
         <ion-toolbar color="light">
           <div class="footer-content">
             <LanguageSwitcher />
-            <div class="theme-toggle">
+            <!-- <div class="theme-toggle">
               <ion-icon :icon="moonOutline" class="theme-icon"></ion-icon>
               <ion-toggle :checked="isDarkMode" @ionChange="toggleTheme"></ion-toggle>
-            </div>
+            </div> -->
           </div>
         </ion-toolbar>
       </ion-footer>

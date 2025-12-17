@@ -539,11 +539,11 @@ const leaveMatch = async () => {
         handler: async () => {
           try {
             const response = await api.post(`/matches/${route.params.id}/leave`);
-            if (response.data.message === 'Match deleted as last participant left') {
-               presentToast(t("match_details.match_deleted_toast"), "warning");
-               router.push('/matches');
+            if (response.data.message === "Match deleted as last participant left") {
+              presentToast(t("match_details.match_deleted_toast"), "warning");
+              router.push("/matches");
             } else {
-               await fetchMatch();
+              await fetchMatch();
             }
           } catch (error) {
             console.error("Error leaving match:", error);

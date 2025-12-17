@@ -51,7 +51,13 @@
 
       <ion-footer class="ion-no-border">
         <ion-toolbar color="light">
-          <LanguageSwitcher />
+          <div class="footer-content">
+            <LanguageSwitcher />
+            <div class="theme-toggle">
+              <ion-icon :icon="moonOutline" class="theme-icon"></ion-icon>
+              <ion-toggle :checked="isDarkMode" @ionChange="toggleTheme"></ion-toggle>
+            </div>
+          </div>
         </ion-toolbar>
       </ion-footer>
     </ion-menu>
@@ -84,6 +90,7 @@ import {
   IonMenuToggle,
   toastController,
   menuController,
+  IonToggle,
 } from "@ionic/vue";
 import {
   homeOutline,
@@ -106,6 +113,7 @@ import {
   constructSharp,
   logOutOutline,
   beerOutline,
+  moonOutline,
 } from "ionicons/icons";
 
 import socket from "./services/socket";
@@ -121,6 +129,7 @@ const currentUser = computed(() => store.state.user);
 
 const isChangelogOpen = ref(false);
 const latestVersion = changelog[0];
+const isDarkMode = ref(false);
 
 const closeChangelog = () => {
   isChangelogOpen.value = false;
@@ -131,7 +140,39 @@ const closeMenu = () => {
   menuController.close();
 };
 
+// Initialize Dark Mode
+const initializeTheme = () => {
+  const savedTheme = localStorage.getItem("theme");
+  if (savedTheme === "dark") {
+    document.body.classList.add("dark");
+    isDarkMode.value = true;
+  } else if (savedTheme === "light") {
+    document.body.classList.remove("dark");
+    isDarkMode.value = false;
+  } else {
+    // Check system preference
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+    if (prefersDark.matches) {
+      document.body.classList.add("dark");
+      isDarkMode.value = true;
+    }
+  }
+};
+
+const toggleTheme = (event) => {
+  isDarkMode.value = event.detail.checked;
+  if (isDarkMode.value) {
+    document.body.classList.add("dark");
+    localStorage.setItem("theme", "dark");
+  } else {
+    document.body.classList.remove("dark");
+    localStorage.setItem("theme", "light");
+  }
+};
+
 onMounted(async () => {
+  initializeTheme();
+
   if (currentUser.value) {
     requestNotificationPermission();
     initPushListeners();
@@ -297,6 +338,26 @@ watch(currentUser, (newUser) => {
   }
 });
 </script>
+
+<style scoped>
+.footer-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.theme-icon {
+  font-size: 1.2rem;
+  color: var(--ion-color-medium);
+}
+</style>
 
 <style scoped>
 ion-menu ion-content {

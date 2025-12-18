@@ -32,12 +32,12 @@ exports.getProfile = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const [skills] = await db.query('SELECT sport_type, rating FROM user_skills WHERE user_id = ?', [userId]);
+        const [skills] = await db.query('SELECT sport_type, rating, role FROM user_skills WHERE user_id = ?', [userId]);
 
         const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
         const completeSkills = sports.map(sport => {
             const found = skills.find(s => s.sport_type === sport);
-            return found ? found : { sport_type: sport, rating: 6.0 };
+            return found ? found : { sport_type: sport, rating: 6.0, role: null };
         });
 
         const user = users[0];
@@ -52,7 +52,7 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
-    const { username, email, birth_date, gender, status, preferred_number } = req.body;
+    const { username, email, birth_date, gender, status, preferred_number, skills } = req.body;
 
     try {
         if (username && filter.check(username)) {
@@ -70,6 +70,31 @@ exports.updateProfile = async (req, res) => {
             }
         }
 
+        // Update Skills (Roles)
+        if (skills && Array.isArray(skills)) {
+            for (const skill of skills) {
+                if (skill.sport_type && skill.role) {
+                    // Check if skill exists
+                    const [existingSkill] = await db.query(
+                        'SELECT id FROM user_skills WHERE user_id = ? AND sport_type = ?',
+                        [userId, skill.sport_type]
+                    );
+
+                    if (existingSkill.length > 0) {
+                        await db.query(
+                            'UPDATE user_skills SET role = ? WHERE id = ?',
+                            [skill.role, existingSkill[0].id]
+                        );
+                    } else {
+                        await db.query(
+                            'INSERT INTO user_skills (user_id, sport_type, role) VALUES (?, ?, ?)',
+                            [userId, skill.sport_type, skill.role]
+                        );
+                    }
+                }
+            }
+        }
+
         // Build dynamic query
         let fields = [];
         let values = [];
@@ -81,13 +106,14 @@ exports.updateProfile = async (req, res) => {
         if (status) { fields.push('status = ?'); values.push(status); }
         if (preferred_number !== undefined) { fields.push('preferred_number = ?'); values.push(preferred_number); }
 
-        if (fields.length === 0) {
+        if (fields.length === 0 && (!skills || skills.length === 0)) {
             return res.json({ message: 'No changes to update' });
         }
 
-        values.push(userId);
-
-        await db.query(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values);
+        if (fields.length > 0) {
+            values.push(userId);
+            await db.query(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values);
+        }
 
         res.json({ message: 'Profile updated successfully' });
     } catch (error) {
@@ -296,12 +322,12 @@ exports.getUserProfileById = async (req, res) => {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const [skills] = await db.query('SELECT sport_type, rating FROM user_skills WHERE user_id = ?', [userId]);
+        const [skills] = await db.query('SELECT sport_type, rating, role FROM user_skills WHERE user_id = ?', [userId]);
 
         const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
         const completeSkills = sports.map(sport => {
             const found = skills.find(s => s.sport_type === sport);
-            return found ? found : { sport_type: sport, rating: 6.0 };
+            return found ? found : { sport_type: sport, rating: 6.0, role: null };
         });
 
         const user = users[0];

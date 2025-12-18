@@ -50,6 +50,27 @@
         <ion-input type="number" v-model="localForm.preferred_number" :placeholder="t('profile.jersey_placeholder')"></ion-input>
       </ion-item>
 
+      <!-- Roles Selection -->
+      <ion-item>
+        <ion-label position="stacked">{{ t("sports.soccer") }} - {{ t("profile.role") }}</ion-label>
+        <ion-select v-model="localForm.soccer_role" interface="popover" :placeholder="t('common.select')">
+          <ion-select-option value="Goalkeeper">{{ t("roles.soccer.goalkeeper") }}</ion-select-option>
+          <ion-select-option value="Defender">{{ t("roles.soccer.defender") }}</ion-select-option>
+          <ion-select-option value="Midfielder">{{ t("roles.soccer.midfielder") }}</ion-select-option>
+          <ion-select-option value="Forward">{{ t("roles.soccer.forward") }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ t("sports.volleyball") }} - {{ t("profile.role") }}</ion-label>
+        <ion-select v-model="localForm.volleyball_role" interface="popover" :placeholder="t('common.select')">
+          <ion-select-option value="Setter">{{ t("roles.volleyball.setter") }}</ion-select-option>
+          <ion-select-option value="Hitter">{{ t("roles.volleyball.hitter") }}</ion-select-option>
+          <ion-select-option value="Libero">{{ t("roles.volleyball.libero") }}</ion-select-option>
+          <ion-select-option value="Middle Blocker">{{ t("roles.volleyball.middle_blocker") }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
       <div class="ion-padding-top">
         <ion-button expand="block" @click="save">{{ t("profile.save_changes") }}</ion-button>
         <ion-button expand="block" color="secondary" fill="outline" class="ion-margin-top" @click="$emit('export')">
@@ -103,6 +124,9 @@ watch(
   () => props.user,
   (newUser) => {
     if (newUser) {
+      const soccerSkill = newUser.skills?.find((s) => s.sport_type === "soccer");
+      const volleyballSkill = newUser.skills?.find((s) => s.sport_type === "volleyball");
+
       localForm.value = {
         username: newUser.username || "",
         email: newUser.email || "",
@@ -110,6 +134,8 @@ watch(
         gender: newUser.gender || "",
         status: newUser.status || "available",
         preferred_number: newUser.preferred_number,
+        soccer_role: soccerSkill?.role || "",
+        volleyball_role: volleyballSkill?.role || "",
       };
     }
   },
@@ -117,6 +143,14 @@ watch(
 );
 
 const save = () => {
-  emit("save", localForm.value);
+  const skills = [];
+  if (localForm.value.soccer_role) {
+    skills.push({ sport_type: "soccer", role: localForm.value.soccer_role });
+  }
+  if (localForm.value.volleyball_role) {
+    skills.push({ sport_type: "volleyball", role: localForm.value.volleyball_role });
+  }
+  const payload = { ...localForm.value, skills };
+  emit("save", payload);
 };
 </script>

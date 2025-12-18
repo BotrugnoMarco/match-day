@@ -103,7 +103,7 @@ exports.getMatchById = async (req, res) => {
         }
 
         const [participants] = await db.query(
-            `SELECT p.*, u.username, u.avatar_url, u.status as user_status, u.birth_date, u.preferred_number, COALESCE(us.rating, 6.0) as skill_rating 
+            `SELECT p.*, u.username, u.avatar_url, u.status as user_status, u.birth_date, u.preferred_number, COALESCE(us.rating, 6.0) as skill_rating, us.role 
        FROM participants p 
        JOIN users u ON p.user_id = u.id 
        LEFT JOIN user_skills us ON u.id = us.user_id AND us.sport_type = ?

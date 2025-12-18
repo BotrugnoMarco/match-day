@@ -78,7 +78,10 @@
                     <h2>{{ p.username }}</h2>
                     <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
-                  <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
+                  <p>
+                    {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
+                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-primary)"> • {{ p.role }}</span>
+                  </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
                   <ion-icon v-if="p.is_mvp" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
@@ -123,7 +126,10 @@
                     <h2>{{ p.username }}</h2>
                     <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
-                  <p>{{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}</p>
+                  <p>
+                    {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
+                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-danger)"> • {{ p.role }}</span>
+                  </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
                   <ion-icon v-if="p.is_mvp" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>

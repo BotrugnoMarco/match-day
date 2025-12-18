@@ -12,6 +12,20 @@
     "admin_support": "Admin Support",
     "menu_title": "Menu"
   },
+  "roles": {
+    "soccer": {
+      "goalkeeper": "Goalkeeper",
+      "defender": "Defender",
+      "midfielder": "Midfielder",
+      "forward": "Forward"
+    },
+    "volleyball": {
+      "setter": "Setter",
+      "hitter": "Hitter",
+      "libero": "Libero",
+      "middle_blocker": "Middle Blocker"
+    }
+  },
   "calendar": {
     "title": "Calendar",
     "no_matches": "No matches on this day"

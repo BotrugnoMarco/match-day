@@ -12,6 +12,20 @@
     "admin_support": "Supporto Admin",
     "menu_title": "Menu"
   },
+  "roles": {
+    "soccer": {
+      "goalkeeper": "Portiere",
+      "defender": "Difensore",
+      "midfielder": "Centrocampista",
+      "forward": "Attaccante"
+    },
+    "volleyball": {
+      "setter": "Palleggiatore",
+      "hitter": "Schiacciatore",
+      "libero": "Libero",
+      "middle_blocker": "Centrale"
+    }
+  },
   "calendar": {
     "title": "Calendario",
     "no_matches": "Nessuna partita in questo giorno"

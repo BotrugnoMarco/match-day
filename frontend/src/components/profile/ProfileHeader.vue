@@ -15,6 +15,9 @@
         <div class="badges-row">
           <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
           <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
+          <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
+            {{ skill.role }}
+          </ion-badge>
 
           <div class="status-section">
             <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
@@ -73,7 +76,7 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonAvatar, IonIcon, IonBadge, IonButton } from "@ionic/vue";
 import { camera, personAddOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, peopleOutline, shirt } from "ionicons/icons";
@@ -98,6 +101,10 @@ const emit = defineEmits(["send-friend-request", "accept-friend-request", "rejec
 
 const { t } = useI18n();
 const fileInput = ref(null);
+
+const userRoles = computed(() => {
+  return props.user?.skills?.filter((s) => s.role) || [];
+});
 const isCropperOpen = ref(false);
 const tempImageSrc = ref(null);
 

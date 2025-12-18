@@ -43,6 +43,7 @@
         @reject-friend-request="rejectFriendRequest"
         @open-friends="router.push('/friends')"
         @change-avatar="handleFileChange"
+        @open-edit-modal="openEditModal"
       />
 
       <ProfileStats :stats="stats" :form="formHistory" />

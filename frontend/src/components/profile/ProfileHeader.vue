@@ -35,6 +35,14 @@
         </ion-badge>
       </div>
 
+      <!-- Incomplete Profile Warning -->
+      <div class="info-group" v-if="isProfileIncomplete">
+        <ion-button size="small" color="warning" @click="$emit('open-edit-modal')">
+          <ion-icon :icon="alertCircleOutline" slot="start"></ion-icon>
+          {{ t("profile.complete_profile") }}
+        </ion-button>
+      </div>
+
       <!-- Friend Actions Inline -->
       <div class="friend-actions-inline" v-if="!isOwnProfile">
         <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
@@ -83,6 +91,7 @@ import {
   baseballOutline,
   tennisball,
   calendarOutline,
+  alertCircleOutline,
 } from "ionicons/icons";
 import ImageCropperModal from "./ImageCropperModal.vue";
 
@@ -101,13 +110,27 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(["send-friend-request", "accept-friend-request", "reject-friend-request", "open-friends", "change-avatar"]);
+const emit = defineEmits([
+  "send-friend-request",
+  "accept-friend-request",
+  "reject-friend-request",
+  "open-friends",
+  "change-avatar",
+  "open-edit-modal",
+]);
 
 const { t } = useI18n();
 const fileInput = ref(null);
 
 const userRoles = computed(() => {
   return props.user?.skills?.filter((s) => s.role) || [];
+});
+
+const isProfileIncomplete = computed(() => {
+  if (!props.isOwnProfile) return false;
+  const hasNumber = props.user?.preferred_number != null;
+  const hasRoles = userRoles.value.length > 0;
+  return !hasNumber || !hasRoles;
 });
 
 const getRoleLabel = (skill) => {

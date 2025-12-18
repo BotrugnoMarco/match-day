@@ -77,6 +77,14 @@
         {{ t("match_details.cancel_voting") }}
       </ion-button>
     </div>
+
+    <!-- Finished Match Admin Controls -->
+    <div v-if="isAdmin && match.status === 'finished'" class="admin-controls-grid">
+      <ion-button expand="block" color="success" fill="solid" @click="$emit('open-score-modal')" class="admin-btn">
+        <ion-icon :icon="createOutline" slot="start"></ion-icon>
+        {{ t("match_details.score_points") }}
+      </ion-button>
+    </div>
   </div>
 </template>
 

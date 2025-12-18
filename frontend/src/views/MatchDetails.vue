@@ -110,13 +110,7 @@
       :participants="match?.participants || []"
       @close="isInviteModalOpen = false"
     />
-    <ScoreModal
-      :is-open="isScoreModalOpen"
-      :match="match"
-      :participants="activeParticipants"
-      @close="isScoreModalOpen = false"
-      @save="saveScore"
-    />
+    <ScoreModal :is-open="isScoreModalOpen" :match="match" :participants="activeParticipants" @close="isScoreModalOpen = false" @save="saveScore" />
   </ion-page>
 </template>
 

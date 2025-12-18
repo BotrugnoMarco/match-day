@@ -2,9 +2,9 @@
   <ion-modal :is-open="isOpen" @didDismiss="close">
     <ion-header>
       <ion-toolbar>
-        <ion-title>{{ t('match_details.score_points') }}</ion-title>
+        <ion-title>{{ t("match_details.score_points") }}</ion-title>
         <ion-buttons slot="end">
-          <ion-button @click="close">{{ t('common.close') }}</ion-button>
+          <ion-button @click="close">{{ t("common.close") }}</ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -12,12 +12,12 @@
       <!-- Score Inputs -->
       <div class="score-container">
         <div class="team-score">
-          <h3>{{ t('match_details.team_a') }}</h3>
+          <h3>{{ t("match_details.team_a") }}</h3>
           <ion-input type="number" v-model="scoreA" class="score-input"></ion-input>
         </div>
         <div class="vs">-</div>
         <div class="team-score">
-          <h3>{{ t('match_details.team_b') }}</h3>
+          <h3>{{ t("match_details.team_b") }}</h3>
           <ion-input type="number" v-model="scoreB" class="score-input"></ion-input>
         </div>
       </div>
@@ -26,10 +26,10 @@
       <div v-if="match.sport_type === 'soccer'" class="player-stats-section">
         <ion-segment v-model="selectedTeam" value="A">
           <ion-segment-button value="A">
-            <ion-label>{{ t('match_details.team_a') }}</ion-label>
+            <ion-label>{{ t("match_details.team_a") }}</ion-label>
           </ion-segment-button>
           <ion-segment-button value="B">
-            <ion-label>{{ t('match_details.team_b') }}</ion-label>
+            <ion-label>{{ t("match_details.team_b") }}</ion-label>
           </ion-segment-button>
         </ion-segment>
 
@@ -44,7 +44,7 @@
                 <ion-button size="small" fill="clear" @click="decrementStat(player.user_id, 'goals')">
                   <ion-icon :icon="removeCircleOutline"></ion-icon>
                 </ion-button>
-                <span class="stat-value">{{ getStat(player.user_id, 'goals') }}</span>
+                <span class="stat-value">{{ getStat(player.user_id, "goals") }}</span>
                 <ion-button size="small" fill="clear" @click="incrementStat(player.user_id, 'goals')">
                   <ion-icon :icon="addCircleOutline"></ion-icon>
                 </ion-button>
@@ -54,7 +54,7 @@
                 <ion-button size="small" fill="clear" @click="decrementStat(player.user_id, 'assists')">
                   <ion-icon :icon="removeCircleOutline"></ion-icon>
                 </ion-button>
-                <span class="stat-value">{{ getStat(player.user_id, 'assists') }}</span>
+                <span class="stat-value">{{ getStat(player.user_id, "assists") }}</span>
                 <ion-button size="small" fill="clear" @click="incrementStat(player.user_id, 'assists')">
                   <ion-icon :icon="addCircleOutline"></ion-icon>
                 </ion-button>
@@ -65,57 +65,72 @@
       </div>
 
       <ion-button expand="block" class="ion-margin-top" @click="save">
-        {{ t('common.save') }}
+        {{ t("common.save") }}
       </ion-button>
     </ion-content>
   </ion-modal>
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import { 
-  IonModal, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonContent, 
-  IonInput, IonSegment, IonSegmentButton, IonLabel, IonList, IonItem, IonIcon 
-} from '@ionic/vue';
-import { addCircleOutline, removeCircleOutline } from 'ionicons/icons';
-import { useI18n } from 'vue-i18n';
+import { ref, computed, watch } from "vue";
+import {
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonButton,
+  IonContent,
+  IonInput,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
+  IonList,
+  IonItem,
+  IonIcon,
+} from "@ionic/vue";
+import { addCircleOutline, removeCircleOutline } from "ionicons/icons";
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
 
 const props = defineProps({
   isOpen: Boolean,
   match: Object,
-  participants: Array
+  participants: Array,
 });
 
-const emit = defineEmits(['close', 'save']);
+const emit = defineEmits(["close", "save"]);
 
 const scoreA = ref(0);
 const scoreB = ref(0);
-const selectedTeam = ref('A');
+const selectedTeam = ref("A");
 const playerStats = ref({});
 
 // Initialize stats when modal opens or match changes
-watch(() => props.isOpen, (newVal) => {
-  if (newVal && props.match) {
-    scoreA.value = props.match.score_team_a || 0;
-    scoreB.value = props.match.score_team_b || 0;
-    
-    // Initialize player stats map
-    const stats = {};
-    props.participants.forEach(p => {
-      stats[p.user_id] = {
-        goals: p.goals || 0,
-        assists: p.assists || 0
-      };
-    });
-    playerStats.value = stats;
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal && props.match) {
+      scoreA.value = props.match.score_team_a || 0;
+      scoreB.value = props.match.score_team_b || 0;
+
+      // Initialize player stats map
+      const stats = {};
+      props.participants.forEach((p) => {
+        stats[p.user_id] = {
+          goals: p.goals || 0,
+          assists: p.assists || 0,
+        };
+      });
+      playerStats.value = stats;
+    }
   }
-});
+);
 
 const currentTeamPlayers = computed(() => {
   if (!props.participants) return [];
-  return props.participants.filter(p => p.team === selectedTeam.value);
+  return props.participants.filter((p) => p.team === selectedTeam.value);
 });
 
 const getStat = (userId, type) => {
@@ -126,13 +141,13 @@ const getStat = (userId, type) => {
 const incrementStat = (userId, type) => {
   if (!playerStats.value[userId]) playerStats.value[userId] = { goals: 0, assists: 0 };
   playerStats.value[userId][type]++;
-  
+
   // Auto-increment team score for goals
-  if (type === 'goals') {
-    const player = props.participants.find(p => p.user_id === userId);
+  if (type === "goals") {
+    const player = props.participants.find((p) => p.user_id === userId);
     if (player) {
-      if (player.team === 'A') scoreA.value++;
-      else if (player.team === 'B') scoreB.value++;
+      if (player.team === "A") scoreA.value++;
+      else if (player.team === "B") scoreB.value++;
     }
   }
 };
@@ -141,34 +156,34 @@ const decrementStat = (userId, type) => {
   if (!playerStats.value[userId]) return;
   if (playerStats.value[userId][type] > 0) {
     playerStats.value[userId][type]--;
-    
+
     // Auto-decrement team score for goals
-    if (type === 'goals') {
-      const player = props.participants.find(p => p.user_id === userId);
+    if (type === "goals") {
+      const player = props.participants.find((p) => p.user_id === userId);
       if (player) {
-        if (player.team === 'A' && scoreA.value > 0) scoreA.value--;
-        else if (player.team === 'B' && scoreB.value > 0) scoreB.value--;
+        if (player.team === "A" && scoreA.value > 0) scoreA.value--;
+        else if (player.team === "B" && scoreB.value > 0) scoreB.value--;
       }
     }
   }
 };
 
 const close = () => {
-  emit('close');
+  emit("close");
 };
 
 const save = () => {
   // Convert stats map to array
-  const statsArray = Object.keys(playerStats.value).map(userId => ({
+  const statsArray = Object.keys(playerStats.value).map((userId) => ({
     userId: parseInt(userId),
     goals: playerStats.value[userId].goals,
-    assists: playerStats.value[userId].assists
+    assists: playerStats.value[userId].assists,
   }));
 
-  emit('save', {
+  emit("save", {
     score_team_a: parseInt(scoreA.value),
     score_team_b: parseInt(scoreB.value),
-    player_stats: statsArray
+    player_stats: statsArray,
   });
 };
 </script>

@@ -34,10 +34,10 @@
         </ion-segment>
 
         <ion-list>
-          <ion-item v-for="player in currentTeamPlayers" :key="player.user_id">
-            <ion-label>
+          <div v-for="player in currentTeamPlayers" :key="player.user_id" class="player-stat-row">
+            <div class="player-name">
               <h2>{{ player.username }}</h2>
-            </ion-label>
+            </div>
             <div class="stats-controls">
               <div class="stat-group">
                 <span class="stat-label">G</span>
@@ -60,7 +60,7 @@
                 </ion-button>
               </div>
             </div>
-          </ion-item>
+          </div>
         </ion-list>
       </div>
 
@@ -235,29 +235,46 @@ const save = () => {
   margin-top: 20px;
 }
 
+.player-stat-row {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ion-color-light-shade);
+}
+
+.player-name h2 {
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .stats-controls {
   display: flex;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .stat-group {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   background: var(--ion-color-light);
-  border-radius: 20px;
-  padding: 0 4px;
+  border-radius: 12px;
+  padding: 4px 8px;
+  flex: 1;
 }
 
 .stat-label {
   font-weight: bold;
-  margin-left: 8px;
   color: var(--ion-color-medium);
+  font-size: 0.9rem;
+  margin-right: 4px;
 }
 
 .stat-value {
   font-weight: bold;
   font-size: 1.1rem;
-  width: 20px;
+  min-width: 24px;
   text-align: center;
 }
 </style>

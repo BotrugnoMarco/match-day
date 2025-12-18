@@ -160,7 +160,8 @@
     "back": "Indietro",
     "confirm": "Conferma",
     "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?",
-    "donate": "Offri una birra"
+    "donate": "Offri una birra",
+    "select": "Seleziona"
   },
   "home": {
     "welcome": "Ciao, {name}!",
@@ -452,12 +453,6 @@
   "formation": {
     "save": "Salva Formazione",
     "reset": "Reimposta"
-  },
-  "common": {
-    "select": "Seleziona",
-    "close": "Chiudi",
-    "back": "Indietro",
-    "view_all": "Vedi tutti"
   },
   "friends": {
     "title": "Amici",

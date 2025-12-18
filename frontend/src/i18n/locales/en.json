@@ -160,7 +160,8 @@
     "back": "Back",
     "confirm": "Confirm",
     "delete_confirm_message": "Are you sure you want to delete all notifications?",
-    "donate": "Buy us a beer"
+    "donate": "Buy us a beer",
+    "select": "Select"
   },
   "home": {
     "welcome": "Hi, {name}!",
@@ -450,12 +451,6 @@
   "formation": {
     "save": "Save Formation",
     "reset": "Reset"
-  },
-  "common": {
-    "select": "Select",
-    "close": "Close",
-    "back": "Back",
-    "view_all": "View All"
   },
   "friends": {
     "title": "Friends",

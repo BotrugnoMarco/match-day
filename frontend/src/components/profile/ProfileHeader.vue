@@ -28,7 +28,6 @@
     <!-- Bottom Row: Roles -->
     <div class="profile-bottom-row">
       <div class="info-group">
-        <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
         <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
         <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
           <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>

@@ -44,7 +44,7 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="displayedMatches.length > 0">
-          <div v-if="nearbyOnly && userLocation" class="map-container" style="margin-bottom: 20px">
+          <div v-if="nearbyOnly && userLocation && filter === 'all'" class="map-container" style="margin-bottom: 20px">
             <MatchesMap :matches="displayedMatches" :userLocation="userLocation" />
           </div>
           <div v-for="match in displayedMatches" :key="match.id" @click="viewMatch(match.id)" class="match-card">

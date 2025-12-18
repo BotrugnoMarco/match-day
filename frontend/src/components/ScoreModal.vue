@@ -24,12 +24,12 @@
 
       <!-- Soccer Specific: Player Stats -->
       <div v-if="match.sport_type === 'soccer'" class="player-stats-section">
-        <ion-segment v-model="selectedTeam" value="A">
+        <ion-segment v-model="selectedTeam" :value="selectedTeam">
           <ion-segment-button value="A">
-            <ion-label>{{ t("match_details.team_a") }}</ion-label>
+            <ion-label :color="selectedTeam === 'A' ? 'danger' : ''">{{ t("match_details.team_a") }}</ion-label>
           </ion-segment-button>
           <ion-segment-button value="B">
-            <ion-label>{{ t("match_details.team_b") }}</ion-label>
+            <ion-label :color="selectedTeam === 'B' ? 'primary' : ''">{{ t("match_details.team_b") }}</ion-label>
           </ion-segment-button>
         </ion-segment>
 
@@ -199,7 +199,19 @@ const save = () => {
 
 .team-score {
   text-align: center;
-  width: 100px;
+  width: 100%;
+}
+
+.team-score h3 {
+  font-weight: bold;
+}
+
+.team-score:first-child h3 {
+  color: var(--ion-color-danger); /* Red for Team A */
+}
+
+.team-score:last-child h3 {
+  color: var(--ion-color-primary); /* Blue for Team B */
 }
 
 .score-input {

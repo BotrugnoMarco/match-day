@@ -1,5 +1,5 @@
 <template>
-  <div class="section-container ion-padding-horizontal">
+  <div class="section-container ion-padding-horizontal" v-if="filteredSkills.length > 0">
     <div class="section-title">
       <ion-icon :icon="trophy" color="warning"></ion-icon>
       <h3>{{ t("profile.skills") }}</h3>
@@ -7,7 +7,7 @@
     <ion-card class="skills-card">
       <ion-card-content>
         <ion-list lines="none">
-          <ion-item v-for="skill in skills" :key="skill.sport_type">
+          <ion-item v-for="skill in filteredSkills" :key="skill.sport_type">
             <ion-icon :icon="getSportIcon(skill.sport_type)" slot="start" class="sport-icon"></ion-icon>
             <ion-label>
               <div class="skill-header">
@@ -38,6 +38,7 @@
 </template>
 
 <script setup>
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonCard, IonCardContent, IonList, IonItem, IonIcon, IonLabel, IonProgressBar } from "@ionic/vue";
 import { trophy, football, tennisballOutline, baseballOutline } from "ionicons/icons";
@@ -54,6 +55,15 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
+
+const filteredSkills = computed(() => {
+  if (!props.skills) return [];
+  return props.skills.filter((skill) => {
+    if (!props.stats || !props.stats.statsBySport) return false;
+    const data = props.stats.statsBySport[skill.sport_type];
+    return data && data.matchesPlayed > 0;
+  });
+});
 
 const getSportStats = (sport) => {
   if (!props.stats || !props.stats.statsBySport) return null;

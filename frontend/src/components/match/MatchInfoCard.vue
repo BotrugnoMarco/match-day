@@ -5,7 +5,12 @@
         <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
         <div class="info-text">
           <span class="label">{{ t("common.date") }}</span>
-          <span class="value">{{ formatDate(match.date_time) }}</span>
+          <div class="date-value-row">
+            <span class="value">{{ formatDate(match.date_time) }}</span>
+            <ion-button fill="clear" size="small" class="calendar-btn" @click="addToCalendar" title="Add to Google Calendar">
+              <ion-icon slot="icon-only" :icon="logoGoogle"></ion-icon>
+            </ion-button>
+          </div>
         </div>
       </div>
       <div class="info-block">
@@ -173,6 +178,7 @@ import {
   snow,
   thunderstorm,
   helpCircle,
+  logoGoogle,
 } from "ionicons/icons";
 import { getWeatherIcon, getWeatherDescription } from "../../services/weather";
 
@@ -234,6 +240,25 @@ const formatTime = (dateString) => {
   const date = new Date(dateString);
   return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 };
+
+const addToCalendar = () => {
+  const matchDate = new Date(props.match.date_time);
+  const startTime = matchDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+  const duration = props.match.duration || 90;
+  const endDate = new Date(matchDate.getTime() + duration * 60000);
+  const endTime = endDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+  const title = encodeURIComponent("Partita MatchDay");
+  const details = encodeURIComponent(
+    `${t("match_details.organizer")}: ${props.match.creator_username || "Unknown"}\n${t("match_details.price")}: €${props.match.price_total}`
+  );
+  const location = encodeURIComponent(props.match.location);
+
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
+
+  window.open(url, "_blank");
+};
 </script>
 
 <style scoped>
@@ -281,6 +306,21 @@ const formatTime = (dateString) => {
   font-weight: 600;
   letter-spacing: 0.5px;
   margin-bottom: 2px;
+}
+
+.date-value-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.calendar-btn {
+  margin: 0;
+  height: 20px;
+  width: 20px;
+  --padding-start: 0;
+  --padding-end: 0;
+  color: var(--ion-color-medium);
 }
 
 .value {

@@ -151,11 +151,11 @@ const initializeTheme = () => {
     isDarkMode.value = false;
   } else {
     // Check system preference
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+    /* const prefersDark = window.matchMedia("(prefers-color-scheme: dark)");
     if (prefersDark.matches) {
       document.body.classList.add("dark");
       isDarkMode.value = true;
-    }
+    } */
   }
 };
 

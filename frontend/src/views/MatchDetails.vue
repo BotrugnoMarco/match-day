@@ -19,7 +19,13 @@
 
     <ion-content class="page-content" v-if="match">
       <!-- Header Section -->
-      <MatchHeader :match="match" />
+      <MatchHeader
+        :match="match"
+        :post-match-count="postMatchCount"
+        :my-post-match-status="myPostMatchStatus"
+        :is-participant="isParticipant"
+        @toggle-post-match="togglePostMatch"
+      />
 
       <div class="details-wrapper">
         <!-- Main Info Card -->
@@ -31,29 +37,6 @@
           @open-maps="openMaps"
           @go-to-profile="goToProfile"
         />
-
-        <!-- Post Match Section -->
-        <div class="post-match-card">
-          <div class="pm-content">
-            <div class="pm-icon">
-              <ion-icon :icon="beerOutline"></ion-icon>
-            </div>
-            <div class="pm-info">
-              <h3>{{ t("match_details.post_match") }}</h3>
-              <p>{{ postMatchCount }} {{ t("match_details.people_staying") }}</p>
-            </div>
-          </div>
-          <ion-button
-            v-if="isParticipant && match.status !== 'finished'"
-            size="small"
-            :fill="myPostMatchStatus ? 'solid' : 'outline'"
-            :color="myPostMatchStatus ? 'warning' : 'medium'"
-            @click="togglePostMatch"
-            shape="round"
-          >
-            {{ myPostMatchStatus ? t("match_details.im_in") : t("match_details.join") }}
-          </ion-button>
-        </div>
 
         <MatchActions
           :match="match"
@@ -1057,43 +1040,6 @@ onUnmounted(() => {
   font-size: 0.8rem;
   color: var(--ion-color-medium);
   font-weight: 500;
-}
-
-.post-match-card {
-  background: var(--ion-card-background);
-  border-radius: var(--rounded-lg);
-  padding: var(--space-4);
-  box-shadow: var(--shadow-md);
-  margin-bottom: var(--space-5);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pm-content {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-}
-
-.pm-icon {
-  font-size: 1.5rem;
-  color: var(--ion-color-warning);
-  background: rgba(var(--ion-color-warning-rgb), 0.1);
-  padding: var(--space-3);
-  border-radius: var(--rounded-sm);
-}
-
-.pm-info h3 {
-  margin: 0;
-  font-size: 1rem;
-  font-weight: 700;
-}
-
-.pm-info p {
-  margin: 2px 0 0;
-  font-size: 0.8rem;
-  color: var(--ion-color-medium);
 }
 
 .actions-section {

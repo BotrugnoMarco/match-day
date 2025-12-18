@@ -192,13 +192,13 @@ onMounted(async () => {
   }
 
   // Check changelog
-  const lastSeenVersion = localStorage.getItem("last_seen_version");
+  /* const lastSeenVersion = localStorage.getItem("last_seen_version");
   if (!lastSeenVersion || lastSeenVersion !== latestVersion.version) {
     // Wait a bit before showing to let app load
     setTimeout(() => {
       isChangelogOpen.value = true;
     }, 1000);
-  }
+  } */
 });
 
 watch(currentUser, (newUser) => {

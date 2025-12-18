@@ -21,20 +21,20 @@
           <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
             {{ t("profile." + (user?.status || "available")) }}
           </ion-badge>
+          <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
+        </div>
+
+        <div class="roles-row">
+          <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
+            <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
+            {{ getRoleLabel(skill) }}
+          </ion-badge>
         </div>
       </div>
     </div>
 
-    <!-- Bottom Row: Roles -->
+    <!-- Bottom Row: Actions -->
     <div class="profile-bottom-row">
-      <div class="info-group">
-        <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
-        <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
-          <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
-          {{ getRoleLabel(skill) }}
-        </ion-badge>
-      </div>
-
       <!-- Incomplete Profile Warning -->
       <div class="info-group" v-if="isProfileIncomplete">
         <ion-button size="small" color="warning" @click="$emit('open-edit-modal')">
@@ -202,7 +202,7 @@ const getStatusColor = (status) => {
 <style scoped>
 .profile-banner {
   background: linear-gradient(135deg, var(--ion-color-primary) 0%, var(--ion-color-tertiary) 100%);
-  padding: 20px;
+  padding: 10px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -262,6 +262,15 @@ const getStatusColor = (status) => {
   display: flex;
   align-items: center;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.roles-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 4px;
 }
 
 .profile-bottom-row {

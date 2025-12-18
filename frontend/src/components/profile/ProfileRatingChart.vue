@@ -21,18 +21,9 @@
             <text x="25" y="79" text-anchor="end" font-size="10" fill="#999">5</text>
             <text x="25" y="144" text-anchor="end" font-size="10" fill="#999">0</text>
 
-            <!-- X Axis Labels (Results) -->
-            <text
-              v-for="(point, index) in pointsData"
-              :key="'label-' + index"
-              :x="point.x"
-              y="160"
-              text-anchor="middle"
-              font-size="10"
-              font-weight="bold"
-              :fill="getResultColor(point.result)"
-            >
-              {{ getResultLabel(point.result) }}
+            <!-- X Axis Labels (Dates) -->
+            <text v-for="(point, index) in pointsData" :key="'label-' + index" :x="point.x" y="160" text-anchor="middle" font-size="9" fill="#999">
+              {{ point.date }}
             </text>
 
             <!-- Trend Line -->
@@ -51,10 +42,10 @@
               :key="index"
               :cx="point.x"
               :cy="point.y"
-              r="3"
-              fill="white"
-              stroke="var(--ion-color-primary)"
-              stroke-width="2"
+              r="4"
+              :fill="getResultColor(point.result)"
+              stroke="white"
+              stroke-width="1"
             />
           </svg>
         </div>
@@ -105,19 +96,17 @@ const pointsData = computed(() => {
     // y = height + startY - (rating / 10) * height
     const y = startY + height - (rating / 10) * height;
     const x = startX + index * stepX;
-    return { x, y, rating, result: match.result };
+
+    const date = new Date(match.date_time);
+    const dateStr = `${date.getDate()}/${date.getMonth() + 1}`;
+
+    return { x, y, rating, result: match.result, date: dateStr };
   });
 });
 
 const chartPoints = computed(() => {
   return pointsData.value.map((p) => `${p.x},${p.y}`).join(" ");
 });
-
-const getResultLabel = (result) => {
-  if (result === "win") return "W";
-  if (result === "lost") return "L";
-  return "D";
-};
 
 const getResultColor = (result) => {
   if (result === "win") return "var(--ion-color-success)";

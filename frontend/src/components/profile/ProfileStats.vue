@@ -121,7 +121,7 @@ const getSportIcon = (sport) => {
 }
 
 .mini-stat-card {
-  background: var(--ion-card-background);
+  background: var(--ion-item-background);
   border-radius: var(--rounded-md);
   padding: var(--space-2);
   text-align: center;
@@ -154,7 +154,7 @@ const getSportIcon = (sport) => {
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  background: var(--ion-card-background);
+  background: var(--ion-item-background);
   padding: var(--space-2);
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
@@ -202,7 +202,7 @@ const getSportIcon = (sport) => {
 .sport-item {
   display: flex;
   align-items: center;
-  background: var(--ion-card-background);
+  background: var(--ion-item-background);
   padding: var(--space-3);
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);

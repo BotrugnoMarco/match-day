@@ -22,9 +22,6 @@
             <ion-segment-button value="all">
               <ion-label>{{ t("matches.all") }}</ion-label>
             </ion-segment-button>
-            <ion-segment-button value="nearby">
-              <ion-label>{{ t("matches.nearby") }}</ion-label>
-            </ion-segment-button>
             <ion-segment-button value="mine">
               <ion-label>{{ t("matches.mine") }}</ion-label>
             </ion-segment-button>
@@ -32,6 +29,13 @@
               <ion-label>{{ t("matches.friends") }}</ion-label>
             </ion-segment-button>
           </ion-segment>
+        </div>
+        <div class="filters-container" v-if="filter === 'all'">
+          <ion-item lines="none" class="filter-item">
+            <ion-icon :icon="locationOutline" slot="start" size="small" color="medium"></ion-icon>
+            <ion-label>{{ t("matches.nearby") }}</ion-label>
+            <ion-toggle v-model="nearbyOnly" @ionChange="onNearbyChange" slot="end"></ion-toggle>
+          </ion-item>
         </div>
       </div>
 
@@ -150,6 +154,8 @@ import {
   IonMenuButton,
   onIonViewWillEnter,
   IonSpinner,
+  IonToggle,
+  IonItem,
 } from "@ionic/vue";
 import {
   add,
@@ -174,6 +180,7 @@ const router = useRouter();
 const route = useRoute();
 const { t, locale } = useI18n();
 const filter = ref("all");
+const nearbyOnly = ref(false);
 const isLoading = ref(false);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 
@@ -214,10 +221,21 @@ const segmentChanged = (ev) => {
     store.dispatch("fetchMyMatches");
   } else if (val === "friends") {
     store.dispatch("fetchFriendsMatches");
-  } else if (val === "nearby") {
+  } else {
+    if (nearbyOnly.value) {
+      getUserLocationAndFetch();
+    } else {
+      store.dispatch("fetchMatches");
+    }
+  }
+};
+
+const onNearbyChange = () => {
+  if (nearbyOnly.value) {
     getUserLocationAndFetch();
   } else {
-    store.dispatch("fetchMatches");
+    isLoading.value = true;
+    store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
   }
 };
 
@@ -278,10 +296,12 @@ onIonViewWillEnter(() => {
     store.dispatch("fetchMyMatches");
   } else if (filter.value === "friends") {
     store.dispatch("fetchFriendsMatches");
-  } else if (filter.value === "nearby") {
-    getUserLocationAndFetch();
   } else {
-    store.dispatch("fetchMatches");
+    if (nearbyOnly.value) {
+      getUserLocationAndFetch();
+    } else {
+      store.dispatch("fetchMatches");
+    }
   }
   store.dispatch("fetchNotifications");
 });
@@ -544,6 +564,23 @@ const createMatch = () => {
 .empty-icon {
   font-size: 60px;
   margin-bottom: var(--space-3);
+}
+
+.filters-container {
+  padding: 0 16px 10px;
+}
+
+.filter-item {
+  --background: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --min-height: 40px;
+}
+
+.filter-item ion-label {
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  margin-left: 8px;
 }
 
 .notification-button {

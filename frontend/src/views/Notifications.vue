@@ -232,7 +232,7 @@ const handleNotificationClick = (notification) => {
 }
 
 .notification-card.is-unread {
-  background: rgba(var(--ion-color-primary-rgb), 0.05);
+  background: linear-gradient(0deg, rgba(var(--ion-color-primary-rgb), 0.1), rgba(var(--ion-color-primary-rgb), 0.1)), var(--ion-card-background);
   border-left: 4px solid var(--ion-color-primary);
 }
 

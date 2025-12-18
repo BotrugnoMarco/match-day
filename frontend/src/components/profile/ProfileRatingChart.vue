@@ -125,7 +125,6 @@ const getResultColor = (result) => {
   return "var(--ion-color-medium)";
 };
 </script>
-</script>
 
 <style scoped>
 .section-container {

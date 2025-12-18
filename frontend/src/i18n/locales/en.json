@@ -180,7 +180,8 @@
     "create_account": "Create Account",
     "monthly_stats": "Monthly Stats",
     "matches_played": "Matches Played",
-    "win_rate": "Win Rate"
+    "win_rate": "Win Rate",
+    "nearby_matches": "Nearby Matches"
   },
 
   "auth": {

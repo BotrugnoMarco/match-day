@@ -129,22 +129,6 @@
             <span>{{ t("menu.profile") }}</span>
           </div>
         </div>
-
-        <!-- Recent Activity -->
-        <div class="section-title" v-if="recentActivity.length > 0">
-          <h3>{{ t("home.recent_activity") }}</h3>
-        </div>
-        <div class="activity-list" v-if="recentActivity.length > 0">
-          <div v-for="notif in recentActivity" :key="notif.id" class="activity-item" @click="handleNotificationClick(notif)">
-            <div class="activity-icon" :class="notif.type || 'info'">
-              <ion-icon :icon="notificationsOutline"></ion-icon>
-            </div>
-            <div class="activity-content">
-              <p class="activity-text">{{ getNotificationMessage(notif.message) }}</p>
-              <span class="activity-time">{{ new Date(notif.created_at).toLocaleDateString() }}</span>
-            </div>
-          </div>
-        </div>
       </div>
 
       <div class="actions-container" v-else>
@@ -237,7 +221,7 @@ const fetchNearbyMatches = async () => {
     if (userLocation.value) {
       params.lat = userLocation.value.lat;
       params.lng = userLocation.value.lng;
-      params.radius = 100; // 100km radius
+      params.radius = 50; // 100km radius
     }
     const response = await api.get("/matches", { params });
     // Filter only future matches
@@ -329,11 +313,6 @@ const getWeatherIconName = (code) => {
   return iconMap[iconName] || helpCircleOutline;
 };
 
-const recentActivity = computed(() => {
-  if (!notifications.value) return [];
-  return notifications.value.slice(0, 3);
-});
-
 onMounted(() => {
   if (isAuthenticated.value) {
     store.dispatch("fetchMyMatches");
@@ -344,30 +323,6 @@ onMounted(() => {
 
 const goToNotifications = () => {
   router.push("/notifications");
-};
-
-const handleNotificationClick = (notification) => {
-  if (notification.related_match_id) {
-    router.push(`/matches/${notification.related_match_id}`);
-  } else {
-    router.push("/notifications");
-  }
-};
-
-const getNotificationMessage = (message) => {
-  try {
-    const parsed = JSON.parse(message);
-    if (parsed.key) {
-      const params = { ...parsed.params };
-      if (params.date) {
-        params.date = new Date(params.date).toLocaleDateString(locale.value);
-      }
-      return t(parsed.key, params);
-    }
-    return message;
-  } catch (e) {
-    return message;
-  }
 };
 
 const getSportIcon = (type) => {

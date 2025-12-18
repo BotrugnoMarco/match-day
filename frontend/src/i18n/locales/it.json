@@ -180,7 +180,8 @@
     "create_account": "Crea Account",
     "monthly_stats": "Statistiche del Mese",
     "matches_played": "Partite Giocate",
-    "win_rate": "Vittorie"
+    "win_rate": "Vittorie",
+    "nearby_matches": "Partite nelle vicinanze"
   },
 
   "auth": {

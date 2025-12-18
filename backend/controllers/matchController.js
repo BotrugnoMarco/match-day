@@ -463,6 +463,51 @@ exports.updateMatchStatus = async (req, res) => {
     }
 };
 
+// Update match stats (scores, goals, assists)
+exports.updateMatchStats = async (req, res) => {
+    const matchId = req.params.id;
+    const { score_team_a, score_team_b, player_stats } = req.body; // player_stats: [{ userId, goals, assists }]
+    const userId = req.user.id;
+
+    try {
+        // Check admin permissions
+        const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
+        if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
+
+        const [adminCheck] = await db.query(
+            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, userId]
+        );
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === userId);
+
+        if (!isAdmin) return res.status(403).json({ error: 'Only match admins can update stats' });
+
+        // Update Match Score
+        await db.query(
+            'UPDATE matches SET score_team_a = ?, score_team_b = ? WHERE id = ?',
+            [score_team_a || 0, score_team_b || 0, matchId]
+        );
+
+        // Update Player Stats
+        if (player_stats && Array.isArray(player_stats)) {
+            for (const stat of player_stats) {
+                await db.query(
+                    'UPDATE participants SET goals = ?, assists = ? WHERE match_id = ? AND user_id = ?',
+                    [stat.goals || 0, stat.assists || 0, matchId, stat.userId]
+                );
+            }
+        }
+
+        const io = req.app.get('io');
+        io.emit('match_updated', { matchId });
+
+        res.json({ message: 'Match stats updated' });
+    } catch (error) {
+        console.error('Update stats error:', error);
+        res.status(500).json({ error: 'Server error updating stats' });
+    }
+};
+
 // Get matches for the current user
 exports.getUserMatches = async (req, res) => {
     const userId = req.user.id;

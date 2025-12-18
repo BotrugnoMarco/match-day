@@ -60,6 +60,10 @@
           {{ t("match_details.all_voted") }}
         </div>
       </div>
+      <ion-button expand="block" color="success" @click="$emit('open-score-modal')" class="main-action-btn">
+        <ion-icon :icon="createOutline" slot="start"></ion-icon>
+        {{ t("match_details.score_points") }}
+      </ion-button>
       <ion-button expand="block" color="danger" @click="$emit('change-status', 'finished')" class="main-action-btn">
         <ion-icon :icon="flagOutline" slot="start"></ion-icon>
         {{ t("match_details.finish_match") }}

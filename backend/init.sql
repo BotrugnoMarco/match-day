@@ -78,6 +78,8 @@ CREATE TABLE IF NOT EXISTS participants (
     is_captain BOOLEAN DEFAULT FALSE,
     is_admin BOOLEAN DEFAULT FALSE,
     is_mvp BOOLEAN DEFAULT FALSE,
+    goals INT DEFAULT 0,
+    assists INT DEFAULT 0,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE(match_id, user_id)

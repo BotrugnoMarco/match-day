@@ -71,6 +71,7 @@
           @change-status="changeStatus"
           @edit="editMatch"
           @delete="deleteMatch"
+          @open-score-modal="isScoreModalOpen = true"
         />
 
         <MatchParticipants
@@ -108,6 +109,13 @@
       :match-id="match?.id"
       :participants="match?.participants || []"
       @close="isInviteModalOpen = false"
+    />
+    <ScoreModal
+      :is-open="isScoreModalOpen"
+      :match="match"
+      :participants="activeParticipants"
+      @close="isScoreModalOpen = false"
+      @save="saveScore"
     />
   </ion-page>
 </template>
@@ -149,6 +157,7 @@ import {
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
+import ScoreModal from "../components/ScoreModal.vue";
 import MatchHeader from "../components/match/MatchHeader.vue";
 import MatchInfoCard from "../components/match/MatchInfoCard.vue";
 import MatchActions from "../components/match/MatchActions.vue";
@@ -166,6 +175,7 @@ const myVotes = ref([]);
 const myComments = ref([]);
 const voteStats = ref(null);
 const isInviteModalOpen = ref(false);
+const isScoreModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
 
 const formatDate = (dateString) => {
@@ -585,6 +595,18 @@ const deleteMatch = async () => {
     ],
   });
   await alert.present();
+};
+
+const saveScore = async (data) => {
+  try {
+    await api.put(`/matches/${route.params.id}/stats`, data);
+    isScoreModalOpen.value = false;
+    await fetchMatch();
+    presentToast(t("match_details.score_updated"), "success");
+  } catch (error) {
+    console.error("Error saving score:", error);
+    presentToast(t("match_details.score_error"), "danger");
+  }
 };
 
 const changeStatus = async (newStatus) => {

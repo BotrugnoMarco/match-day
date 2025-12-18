@@ -374,4 +374,8 @@ ion-menu ion-content {
 ion-item.selected {
   --color: var(--ion-color-primary);
 }
+
+ion-menu ion-item {
+  --color: var(--ion-text-color);
+}
 </style>

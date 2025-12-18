@@ -6,6 +6,11 @@
           <ion-menu-button></ion-menu-button>
         </ion-buttons>
         <ion-title>{{ t("calendar.title") }}</ion-title>
+        <ion-buttons slot="end">
+          <ion-button @click="exportMonthToICS">
+            <ion-icon slot="icon-only" :icon="cloudDownloadOutline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
       </ion-toolbar>
     </ion-header>
 
@@ -54,7 +59,9 @@
 
       <!-- Selected Day Events -->
       <div class="selected-events-section">
-        <h3>{{ formatDateFull(selectedDate) }}</h3>
+        <div class="section-header">
+          <h3>{{ formatDateFull(selectedDate) }}</h3>
+        </div>
 
         <div v-if="selectedDayEvents.length === 0" class="no-events">
           <p>{{ t("calendar.no_matches") }}</p>
@@ -78,6 +85,9 @@
                 <ion-icon v-if="match.user_participation_status === 'confirmed'" :icon="checkmarkCircle" color="success"></ion-icon>
                 <ion-icon v-else-if="match.user_participation_status === 'waitlist'" :icon="hourglassOutline" color="warning"></ion-icon>
                 <ion-icon v-else :icon="helpCircleOutline" color="medium"></ion-icon>
+                <ion-button fill="clear" size="small" @click.stop="addToGoogleCalendar(match)">
+                  <ion-icon slot="icon-only" :icon="logoGoogle" style="font-size: 1.2rem"></ion-icon>
+                </ion-button>
               </div>
             </div>
           </ion-card-content>
@@ -116,6 +126,8 @@ import {
   basketball,
   baseballOutline,
   tennisball,
+  logoGoogle,
+  cloudDownloadOutline,
 } from "ionicons/icons";
 
 const router = useRouter();
@@ -272,12 +284,84 @@ const getSportIcon = (sport) => {
   }
 };
 
+const addToGoogleCalendar = (match) => {
+  const matchDate = new Date(match.date_time);
+  const startTime = matchDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+  const duration = 90; // Default duration
+  const endDate = new Date(matchDate.getTime() + duration * 60000);
+  const endTime = endDate.toISOString().replace(/-|:|\.\d\d\d/g, "");
+
+  const title = encodeURIComponent(`Partita ${t("sports." + match.sport_type)}`);
+  const details = encodeURIComponent(`Partita organizzata su MatchDay`);
+  const location = encodeURIComponent(match.location);
+
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startTime}/${endTime}&details=${details}&location=${location}`;
+
+  window.open(url, "_blank");
+};
+
+const exportMonthToICS = () => {
+  const year = currentDate.value.getFullYear();
+  const month = currentDate.value.getMonth();
+
+  // Filter matches for current month
+  const monthMatches = matches.value.filter((m) => {
+    const d = new Date(m.date_time);
+    return d.getFullYear() === year && d.getMonth() === month;
+  });
+
+  if (monthMatches.length === 0) {
+    // Could show a toast here
+    return;
+  }
+
+  let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//MatchDay//NONSGML v1.0//EN\n";
+
+  monthMatches.forEach((match) => {
+    const matchDate = new Date(match.date_time);
+    // Format date to YYYYMMDDTHHMMSSZ
+    const startTime = matchDate.toISOString().replace(/-|:|\.\d{3}/g, "");
+    const duration = 90; // Default
+    const endDate = new Date(matchDate.getTime() + duration * 60000);
+    const endTime = endDate.toISOString().replace(/-|:|\.\d{3}/g, "");
+    const now = new Date().toISOString().replace(/-|:|\.\d{3}/g, "");
+
+    icsContent += "BEGIN:VEVENT\n";
+    icsContent += `UID:${match.id}@matchday.app\n`;
+    icsContent += `DTSTAMP:${now}\n`;
+    icsContent += `DTSTART:${startTime}\n`;
+    icsContent += `DTEND:${endTime}\n`;
+    icsContent += `SUMMARY:Partita ${t("sports." + match.sport_type)}\n`;
+    icsContent += `DESCRIPTION:Partita su MatchDay - ${match.location}\n`;
+    icsContent += `LOCATION:${match.location}\n`;
+    icsContent += "END:VEVENT\n";
+  });
+
+  icsContent += "END:VCALENDAR";
+
+  const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = window.URL.createObjectURL(blob);
+  link.setAttribute("download", `matchday_${year}_${month + 1}.ics`);
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
 onMounted(() => {
   fetchMatches();
 });
 </script>
 
 <style scoped>
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
 .calendar-header {
   display: flex;
   justify-content: space-between;

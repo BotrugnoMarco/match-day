@@ -105,7 +105,7 @@
 
             <div class="match-card-footer">
               <div class="organizer-info">
-                <ion-avatar class="organizer-avatar">
+                <ion-avatar class="organizer-avatar" :class="{ 'supporter-border': match.creator_is_supporter }">
                   <img :src="match.creator_avatar || '/default-avatar.svg'" />
                 </ion-avatar>
                 <span class="organizer-name">{{ t("matches.hosted_by", { name: match.creator_username }) }}</span>
@@ -572,6 +572,11 @@ const createMatch = () => {
 .organizer-avatar {
   width: 24px;
   height: 24px;
+}
+
+.organizer-avatar.supporter-border {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 5px rgba(255, 215, 0, 0.6);
 }
 
 .organizer-name {

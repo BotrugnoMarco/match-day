@@ -2,7 +2,7 @@
   <div class="profile-banner">
     <!-- Top Row: Avatar (Left) and User Info (Right) -->
     <div class="profile-top-row">
-      <div class="avatar-wrapper" @click="triggerFileInput">
+      <div class="avatar-wrapper" :class="{ 'supporter-border': user?.is_supporter }" @click="triggerFileInput">
         <ion-avatar class="main-avatar">
           <img :src="user?.avatar_url || '/default-avatar.svg'" />
         </ion-avatar>
@@ -305,6 +305,24 @@ const getStatusColor = (status) => {
   height: 150px;
   border: 3px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.supporter-border .main-avatar {
+  border: 4px solid #ffd700; /* Gold */
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+  animation: pulse-gold 2s infinite;
+}
+
+@keyframes pulse-gold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+  }
 }
 
 .edit-badge {

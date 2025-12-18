@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS users (
     terms_accepted_at DATETIME DEFAULT NULL,
     reset_password_token VARCHAR(255) DEFAULT NULL,
     reset_password_expires DATETIME DEFAULT NULL,
+    is_supporter BOOLEAN DEFAULT FALSE,
     -- Deprecato ma mantenuto per compatibilità
     role VARCHAR(20) DEFAULT 'player' -- 'admin' or 'player'
 );

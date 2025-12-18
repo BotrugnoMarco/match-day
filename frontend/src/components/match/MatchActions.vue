@@ -29,6 +29,10 @@
         <ion-icon :icon="starOutline" slot="start"></ion-icon>
         {{ t("match_details.voting") }}
       </ion-button>
+      <ion-button expand="block" color="success" fill="solid" @click="$emit('open-score-modal')" class="admin-btn">
+        <ion-icon :icon="createOutline" slot="start"></ion-icon>
+        {{ t("match_details.score_points") }}
+      </ion-button>
       <ion-button expand="block" color="tertiary" fill="solid" @click="$emit('edit')" class="admin-btn">
         <ion-icon :icon="createOutline" slot="start"></ion-icon>
         {{ t("common.edit") }}

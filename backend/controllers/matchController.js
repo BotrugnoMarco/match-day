@@ -587,6 +587,12 @@ exports.generateTeams = async (req, res) => {
             return res.status(400).json({ error: 'Not enough participants to generate teams' });
         }
 
+        // Shuffle participants to ensure randomness for equal skill ratings
+        for (let i = participants.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [participants[i], participants[j]] = [participants[j], participants[i]];
+        }
+
         // Sort by skill rating descending
         participants.sort((a, b) => b.skill_rating - a.skill_rating);
 
@@ -597,7 +603,16 @@ exports.generateTeams = async (req, res) => {
 
         // Greedy distribution to balance teams
         for (const p of participants) {
-            if (skillA <= skillB) {
+            let addToA = false;
+            if (skillA < skillB) {
+                addToA = true;
+            } else if (skillA > skillB) {
+                addToA = false;
+            } else {
+                addToA = Math.random() < 0.5;
+            }
+
+            if (addToA) {
                 teamA.push(p);
                 skillA += parseFloat(p.skill_rating || 6.0); // Default 6.0 if null
             } else {

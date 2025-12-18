@@ -3,7 +3,7 @@ const notificationController = require('./notificationController');
 
 // Create a new match
 exports.createMatch = async (req, res) => {
-    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration } = req.body;
+    const { date_time, location, latitude, longitude, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration } = req.body;
     const creator_id = req.user.id;
 
     if (!date_time || !sport_type) {
@@ -12,8 +12,8 @@ exports.createMatch = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO matches (date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-            [date_time, location, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, duration || 60, creator_id]
+            'INSERT INTO matches (date_time, location, latitude, longitude, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [date_time, location, latitude || null, longitude || null, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, duration || 60, creator_id]
         );
 
         // Automatically add creator as participant and admin
@@ -49,6 +49,8 @@ exports.createMatch = async (req, res) => {
 // Get all matches
 exports.getAllMatches = async (req, res) => {
     const userId = req.user ? req.user.id : null;
+    const { lat, lng, radius } = req.query; // radius in km
+
     try {
         let query = `
             SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar,
@@ -59,12 +61,27 @@ exports.getAllMatches = async (req, res) => {
             query += `, (SELECT status FROM participants p WHERE p.match_id = m.id AND p.user_id = ${db.escape(userId)}) as user_participation_status`;
         }
 
+        if (lat && lng) {
+            // Haversine formula for distance in km
+            query += `, (
+                6371 * acos(
+                    cos(radians(${db.escape(lat)})) * cos(radians(m.latitude)) * cos(radians(m.longitude) - radians(${db.escape(lng)})) + 
+                    sin(radians(${db.escape(lat)})) * sin(radians(m.latitude))
+                )
+            ) as distance`;
+        }
+
         query += `
             FROM matches m 
             JOIN users u ON m.creator_id = u.id 
             WHERE m.status != 'finished'
-            ORDER BY m.date_time ASC
         `;
+
+        if (lat && lng && radius) {
+            query += ` HAVING distance <= ${db.escape(radius)}`;
+        }
+
+        query += ` ORDER BY m.date_time ASC`;
 
         const [matches] = await db.query(query);
         res.json(matches);

@@ -41,6 +41,8 @@ CREATE TABLE IF NOT EXISTS matches (
     id INT AUTO_INCREMENT PRIMARY KEY,
     date_time DATETIME NOT NULL,
     location VARCHAR(100),
+    latitude DECIMAL(10, 8) DEFAULT NULL,
+    longitude DECIMAL(11, 8) DEFAULT NULL,
     sport_type ENUM('soccer', 'volleyball', 'padel', 'tennis') NOT NULL,
     status ENUM('open', 'locked', 'finished', 'voting') DEFAULT 'open',
     winner ENUM('A', 'B', 'Draw'),

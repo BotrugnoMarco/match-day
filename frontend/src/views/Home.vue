@@ -69,6 +69,14 @@
           </ion-button>
         </div>
 
+        <!-- Nearby Matches Map -->
+        <div class="section-title" v-if="nearbyMatches.length > 0">
+          <h3>{{ t("home.nearby_matches") }}</h3>
+        </div>
+        <div class="map-container" v-if="nearbyMatches.length > 0" style="margin-bottom: 20px">
+          <MatchesMap :matches="nearbyMatches" :userLocation="userLocation" />
+        </div>
+
         <!-- Monthly Stats -->
         <div class="section-title" v-if="monthlyStats.played > 0">
           <h3>{{ t("home.monthly_stats") }}</h3>
@@ -165,6 +173,8 @@ import { computed, onMounted, ref, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
+import api from "../services/api";
+import MatchesMap from "../components/MatchesMap.vue";
 import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton } from "@ionic/vue";
 import { getWeatherForLocation, getWeatherIcon } from "../services/weather";
 import {
@@ -197,6 +207,45 @@ const store = useStore();
 const router = useRouter();
 const { t, locale } = useI18n();
 const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
+
+const userLocation = ref(null);
+const nearbyMatches = ref([]);
+
+const getUserLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        userLocation.value = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        fetchNearbyMatches();
+      },
+      (error) => {
+        console.log("Geolocation error:", error);
+        fetchNearbyMatches();
+      }
+    );
+  } else {
+    fetchNearbyMatches();
+  }
+};
+
+const fetchNearbyMatches = async () => {
+  try {
+    const params = {};
+    if (userLocation.value) {
+      params.lat = userLocation.value.lat;
+      params.lng = userLocation.value.lng;
+      params.radius = 50; // 50km radius
+    }
+    const response = await api.get("/matches", { params });
+    // Filter only future matches
+    nearbyMatches.value = response.data.filter((m) => new Date(m.date_time) > new Date());
+  } catch (e) {
+    console.error("Error fetching nearby matches:", e);
+  }
+};
 
 const isAuthenticated = computed(() => store.getters.isAuthenticated);
 const user = computed(() => store.getters.currentUser);
@@ -289,6 +338,7 @@ onMounted(() => {
   if (isAuthenticated.value) {
     store.dispatch("fetchMyMatches");
     store.dispatch("fetchNotifications");
+    getUserLocation();
   }
 });
 

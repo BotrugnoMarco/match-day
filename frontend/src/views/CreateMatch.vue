@@ -345,6 +345,8 @@ const createMatch = async () => {
       sport_type: sportType.value,
       date_time: formattedDate,
       location: location.value,
+      latitude: mapCoords.value.lat,
+      longitude: mapCoords.value.lng,
       max_players: maxPlayers.value,
       price_total: priceTotal.value,
       is_covered: isCovered.value,

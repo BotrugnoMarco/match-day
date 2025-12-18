@@ -121,6 +121,30 @@ const routes = [
         meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
+        path: '/admin/votes',
+        name: 'AdminVotes',
+        component: () => import('../views/AdminVotes.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin/friendships',
+        name: 'AdminFriendships',
+        component: () => import('../views/AdminFriendships.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin/participants',
+        name: 'AdminParticipants',
+        component: () => import('../views/AdminParticipants.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin/notifications',
+        name: 'AdminNotifications',
+        component: () => import('../views/AdminNotifications.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
         path: '/privacy',
         name: 'PrivacyPolicy',
         component: () => import('../views/PrivacyPolicy.vue')

@@ -13,4 +13,16 @@ router.delete('/users/:id', adminController.deleteUser);
 router.get('/matches', adminController.getMatches);
 router.delete('/matches/:id', adminController.deleteMatch);
 
+router.get('/votes', adminController.getVotes);
+router.delete('/votes/:id', adminController.deleteVote);
+
+router.get('/friendships', adminController.getFriendships);
+router.delete('/friendships/:id', adminController.deleteFriendship);
+
+router.get('/participants', adminController.getParticipants);
+router.delete('/participants/:id', adminController.deleteParticipant);
+
+router.get('/notifications', adminController.getNotifications);
+router.delete('/notifications/:id', adminController.deleteNotification);
+
 module.exports = router;

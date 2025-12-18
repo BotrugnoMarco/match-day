@@ -35,6 +35,38 @@
               <ion-card-content>Manage tickets ({{ stats.tickets }})</ion-card-content>
             </ion-card>
           </ion-col>
+          <ion-col size="12" size-md="6">
+            <ion-card button @click="$router.push('/admin/votes')">
+              <ion-card-header>
+                <ion-card-title>Votes</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>Manage votes ({{ stats.votes }})</ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" size-md="6">
+            <ion-card button @click="$router.push('/admin/friendships')">
+              <ion-card-header>
+                <ion-card-title>Friendships</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>Manage friendships ({{ stats.friendships }})</ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" size-md="6">
+            <ion-card button @click="$router.push('/admin/participants')">
+              <ion-card-header>
+                <ion-card-title>Participants</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>Manage participants ({{ stats.participants }})</ion-card-content>
+            </ion-card>
+          </ion-col>
+          <ion-col size="12" size-md="6">
+            <ion-card button @click="$router.push('/admin/notifications')">
+              <ion-card-header>
+                <ion-card-title>Notifications</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>Manage notifications ({{ stats.notifications }})</ion-card-content>
+            </ion-card>
+          </ion-col>
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -80,7 +112,7 @@ export default {
   },
   data() {
     return {
-      stats: { users: 0, matches: 0, tickets: 0 },
+      stats: { users: 0, matches: 0, tickets: 0, votes: 0, friendships: 0, participants: 0, notifications: 0 },
     };
   },
   async mounted() {

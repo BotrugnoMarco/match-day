@@ -43,7 +43,7 @@
             <img :src="player.avatar_url || '/default-avatar.svg'" />
           </ion-avatar>
           <div class="captain-badge-overlay" v-if="player.is_captain">C</div>
-          <div class="jersey-number" v-if="player.preferred_number">{{ player.preferred_number }}</div>
+          <div class="jersey-number" v-if="player.preferred_number != null">{{ player.preferred_number }}</div>
           <span class="player-name">{{ getPlayerLabel(player.username) }}</span>
         </div>
       </div>

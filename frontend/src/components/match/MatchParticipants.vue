@@ -76,7 +76,7 @@
                 <ion-label @click="$emit('go-to-profile', p.user_id)">
                   <div class="name-container">
                     <h2>{{ p.username }}</h2>
-                    <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
+                    <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
                   <p>
                     {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
@@ -126,7 +126,7 @@
                 <ion-label @click="$emit('go-to-profile', p.user_id)">
                   <div class="name-container">
                     <h2>{{ p.username }}</h2>
-                    <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
+                    <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
                   <p>
                     {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
@@ -168,7 +168,7 @@
             <ion-label @click="$emit('go-to-profile', p.user_id)">
               <div class="name-container">
                 <h2>{{ p.username }}</h2>
-                <span v-if="p.preferred_number" class="jersey-number">#{{ p.preferred_number }}</span>
+                <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
               </div>
               <p>
                 <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>

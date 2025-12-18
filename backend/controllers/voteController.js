@@ -26,9 +26,14 @@ exports.submitVote = async (req, res) => {
 
         // Check if voter and target were participants
         const [participants] = await db.query(
-            'SELECT user_id FROM participants WHERE match_id = ? AND (user_id = ? OR user_id = ?)',
+            "SELECT user_id FROM participants WHERE match_id = ? AND status = 'confirmed' AND (user_id = ? OR user_id = ?)",
             [match_id, voter_id, target_id]
         );
+
+        const isVoterParticipant = participants.some(p => p.user_id === voter_id);
+        if (!isVoterParticipant) {
+            return res.status(403).json({ error: 'Only confirmed participants can vote' });
+        }
 
         // Ideally we should check if both are participants, but for simplicity let's assume if they have the ID they can try.
         // A stricter check would be:

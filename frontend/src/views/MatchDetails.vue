@@ -85,6 +85,7 @@
           :team-a-average-skill="teamAAverageSkill"
           :team-b-average-skill="teamBAverageSkill"
           :is-admin="isAdmin"
+          :is-confirmed="isConfirmed"
           :current-user="currentUser"
           :my-votes="myVotes"
           @approve-request="approveRequest"

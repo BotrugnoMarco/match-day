@@ -91,7 +91,7 @@
                   <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                   <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                   <ion-button
-                    v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                    v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id && isConfirmed"
                     fill="outline"
                     size="small"
                     :disabled="myVotes.includes(p.user_id)"
@@ -141,7 +141,7 @@
                   <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
                   <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
                   <ion-button
-                    v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                    v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id && isConfirmed"
                     fill="outline"
                     size="small"
                     :disabled="myVotes.includes(p.user_id)"
@@ -181,7 +181,7 @@
               <ion-icon v-if="p.post_match" :icon="beer" color="warning" class="status-icon"></ion-icon>
               <ion-icon :icon="cashOutline" :color="p.has_paid ? 'success' : 'medium'" class="status-icon"></ion-icon>
               <ion-button
-                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id"
+                v-if="match.status === 'voting' && currentUser && p.user_id !== currentUser.id && isConfirmed"
                 fill="outline"
                 size="small"
                 :disabled="myVotes.includes(p.user_id)"
@@ -249,6 +249,7 @@ defineProps({
   teamAAverageSkill: [Number, String],
   teamBAverageSkill: [Number, String],
   isAdmin: Boolean,
+  isConfirmed: Boolean,
   currentUser: Object,
   myVotes: {
     type: Array,

@@ -8,20 +8,24 @@
       </div>
 
       <div class="winner-card">
-        <div class="winner-label">{{ t("match_details.winner") }}</div>
-        <h1 class="winner-team" v-if="match.winner !== 'Draw'">{{ t("match_details.team") }} {{ match.winner }}</h1>
-        <h1 class="winner-team draw" v-else>{{ t("match_details.draw") }}</h1>
+        <div class="main-result-row">
+          <div class="winner-info">
+            <div class="winner-label">{{ t("match_details.winner") }}</div>
+            <h2 class="winner-team" v-if="match.winner !== 'Draw'">{{ t("match_details.team") }} {{ match.winner }}</h2>
+            <h2 class="winner-team draw" v-else>{{ t("match_details.draw") }}</h2>
+          </div>
 
-        <div class="score-display" v-if="match.score_team_a != null && match.score_team_b != null">
-          <span class="score-team-a">{{ match.score_team_a }}</span>
-          <span class="score-divider">-</span>
-          <span class="score-team-b">{{ match.score_team_b }}</span>
+          <div class="score-display" v-if="match.score_team_a != null && match.score_team_b != null">
+            <span class="score-team-a">{{ match.score_team_a }}</span>
+            <span class="score-divider">-</span>
+            <span class="score-team-b">{{ match.score_team_b }}</span>
+          </div>
         </div>
 
         <div class="sets-display" v-if="match.set_scores && match.set_scores.length > 0">
-          <div v-for="(set, index) in match.set_scores" :key="index" class="set-score">
-            <span class="set-label">{{ t("match_details.set") }} {{ index + 1 }}:</span>
-            <span class="set-value">{{ set.a }} - {{ set.b }}</span>
+          <div v-for="(set, index) in match.set_scores" :key="index" class="set-pill">
+            <span class="set-num">{{ index + 1 }}°</span>
+            <span class="set-value">{{ set.a }}-{{ set.b }}</span>
           </div>
         </div>
       </div>
@@ -134,56 +138,71 @@ const isMvp = (userId) => {
 .winner-card {
   background: linear-gradient(135deg, var(--ion-color-warning), var(--ion-color-warning-shade));
   color: black;
-  padding: 20px;
+  padding: 16px;
   border-radius: 16px;
-  text-align: center;
   margin-bottom: 16px;
   box-shadow: 0 8px 20px rgba(255, 196, 9, 0.3);
 }
 
+.main-result-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.winner-info {
+  text-align: left;
+}
+
 .winner-label {
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 0.75rem;
   letter-spacing: 1px;
   opacity: 0.8;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
 .winner-team {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 800;
 }
 
 .score-display {
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 16px;
-  margin-top: 8px;
-  font-size: 3.5rem;
+  gap: 8px;
+  font-size: 2.5rem;
   font-weight: 900;
   line-height: 1;
 }
 
 .sets-display {
-  margin-top: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   display: flex;
-  flex-direction: column;
-  gap: 4px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.set-pill {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  display: flex;
+  gap: 6px;
   align-items: center;
 }
 
-.set-score {
-  font-size: 1rem;
-  color: var(--ion-color-medium);
-  display: flex;
-  gap: 8px;
+.set-num {
+  opacity: 0.7;
+  font-size: 0.8rem;
 }
 
 .set-value {
   font-weight: bold;
-  color: var(--ion-color-dark);
 }
 
 .participants-card,

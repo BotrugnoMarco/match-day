@@ -39,6 +39,7 @@
     "birth_date": "Birth Date",
     "gender": "Gender",
     "status": "Status",
+    "role": "Role",
     "jersey_number": "Jersey Number",
     "save_changes": "Save Changes",
     "export_data": "Export Data",
@@ -448,6 +449,12 @@
   "formation": {
     "save": "Save Formation",
     "reset": "Reset"
+  },
+  "common": {
+    "select": "Select",
+    "close": "Close",
+    "back": "Back",
+    "view_all": "View All"
   },
   "friends": {
     "title": "Friends",

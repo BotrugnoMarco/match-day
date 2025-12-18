@@ -39,6 +39,7 @@
     "birth_date": "Data di Nascita",
     "gender": "Genere",
     "status": "Stato",
+    "role": "Ruolo",
     "jersey_number": "Numero Maglia",
     "save_changes": "Salva Modifiche",
     "export_data": "Esporta Dati",
@@ -450,6 +451,12 @@
   "formation": {
     "save": "Salva Formazione",
     "reset": "Reimposta"
+  },
+  "common": {
+    "select": "Seleziona",
+    "close": "Chiudi",
+    "back": "Indietro",
+    "view_all": "Vedi tutti"
   },
   "friends": {
     "title": "Amici",

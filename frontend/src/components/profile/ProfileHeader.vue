@@ -1,6 +1,6 @@
 <template>
   <div class="profile-banner">
-    <!-- Top Row: Avatar (Left) and Name (Right) -->
+    <!-- Top Row: Avatar (Left) and User Info (Right) -->
     <div class="profile-top-row">
       <div class="avatar-wrapper" @click="triggerFileInput">
         <ion-avatar class="main-avatar">
@@ -11,10 +11,21 @@
         </div>
       </div>
 
-      <h2 class="username">{{ user?.username }}</h2>
+      <div class="user-info-container">
+        <h2 class="username">{{ user?.username }}</h2>
+        <div class="jersey-status-row">
+          <div class="jersey-container">
+            <ion-icon :icon="shirt" class="jersey-icon"></ion-icon>
+            <span class="jersey-number">{{ user?.preferred_number != null ? user.preferred_number : "?" }}</span>
+          </div>
+          <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
+            {{ t("profile." + (user?.status || "available")) }}
+          </ion-badge>
+        </div>
+      </div>
     </div>
 
-    <!-- Bottom Row: Roles, Jersey, Status, Actions -->
+    <!-- Bottom Row: Roles -->
     <div class="profile-bottom-row">
       <div class="info-group">
         <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
@@ -22,19 +33,6 @@
         <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
           <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
           {{ getRoleLabel(skill) }}
-        </ion-badge>
-      </div>
-
-      <div class="info-group">
-        <div class="jersey-container">
-          <ion-icon :icon="shirt" class="jersey-icon"></ion-icon>
-          <span class="jersey-number">{{ user?.preferred_number != null ? user.preferred_number : "?" }}</span>
-        </div>
-      </div>
-
-      <div class="info-group">
-        <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
-          {{ t("profile." + (user?.status || "available")) }}
         </ion-badge>
       </div>
 
@@ -223,11 +221,25 @@ const getStatusColor = (status) => {
 .profile-top-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
+  gap: 20px;
   width: 100%;
   margin-bottom: 15px;
   position: relative;
   z-index: 1;
+}
+
+.user-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.jersey-status-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .profile-bottom-row {
@@ -258,8 +270,8 @@ const getStatusColor = (status) => {
 }
 
 .main-avatar {
-  width: 100px; /* Smaller avatar for top row layout? Or keep 150? User said "foto in alto a sinistra". 150 might be too big if name is right next to it. Let's try 100. */
-  height: 100px;
+  width: 150px;
+  height: 150px;
   border: 3px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -286,9 +298,8 @@ const getStatusColor = (status) => {
 .username {
   margin: 0;
   font-weight: 800;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  text-align: right; /* Ensure name aligns right */
 }
 
 .role-badge {

@@ -229,6 +229,7 @@
   "matches": {
     "title": "Matches",
     "all": "All",
+    "nearby": "Nearby",
     "mine": "My Matches",
     "friends": "Friends",
     "private": "Private",

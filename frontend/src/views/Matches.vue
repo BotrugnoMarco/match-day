@@ -22,6 +22,9 @@
             <ion-segment-button value="all">
               <ion-label>{{ t("matches.all") }}</ion-label>
             </ion-segment-button>
+            <ion-segment-button value="nearby">
+              <ion-label>{{ t("matches.nearby") }}</ion-label>
+            </ion-segment-button>
             <ion-segment-button value="mine">
               <ion-label>{{ t("matches.mine") }}</ion-label>
             </ion-segment-button>
@@ -33,7 +36,10 @@
       </div>
 
       <div class="matches-container ion-padding-horizontal">
-        <div v-if="displayedMatches.length > 0">
+        <div v-if="isLoading" class="ion-padding ion-text-center">
+          <ion-spinner></ion-spinner>
+        </div>
+        <div v-else-if="displayedMatches.length > 0">
           <div v-for="match in displayedMatches" :key="match.id" @click="viewMatch(match.id)" class="match-card">
             <div class="match-card-header">
               <div class="sport-info">
@@ -143,6 +149,7 @@ import {
   IonChip,
   IonMenuButton,
   onIonViewWillEnter,
+  IonSpinner,
 } from "@ionic/vue";
 import {
   add,
@@ -167,6 +174,7 @@ const router = useRouter();
 const route = useRoute();
 const { t, locale } = useI18n();
 const filter = ref("all");
+const isLoading = ref(false);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 
 const displayedMatches = computed(() => {
@@ -201,12 +209,39 @@ const formatTime = (dateString) => {
 };
 
 const segmentChanged = (ev) => {
-  if (ev.detail.value === "mine") {
+  const val = ev.detail.value;
+  if (val === "mine") {
     store.dispatch("fetchMyMatches");
-  } else if (ev.detail.value === "friends") {
+  } else if (val === "friends") {
     store.dispatch("fetchFriendsMatches");
+  } else if (val === "nearby") {
+    getUserLocationAndFetch();
   } else {
     store.dispatch("fetchMatches");
+  }
+};
+
+const getUserLocationAndFetch = () => {
+  isLoading.value = true;
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        store
+          .dispatch("fetchMatches", {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+            radius: 100, // 100km
+          })
+          .finally(() => (isLoading.value = false));
+      },
+      (error) => {
+        console.error("Geolocation error:", error);
+        store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
+      },
+      { timeout: 5000, maximumAge: 60000 }
+    );
+  } else {
+    store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
   }
 };
 
@@ -243,6 +278,8 @@ onIonViewWillEnter(() => {
     store.dispatch("fetchMyMatches");
   } else if (filter.value === "friends") {
     store.dispatch("fetchFriendsMatches");
+  } else if (filter.value === "nearby") {
+    getUserLocationAndFetch();
   } else {
     store.dispatch("fetchMatches");
   }

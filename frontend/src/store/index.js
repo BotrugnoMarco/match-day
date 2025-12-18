@@ -87,9 +87,9 @@ const store = createStore({
         logout({ commit }) {
             commit('LOGOUT');
         },
-        async fetchMatches({ commit }) {
+        async fetchMatches({ commit }, params = {}) {
             try {
-                const response = await api.get('/matches');
+                const response = await api.get('/matches', { params });
                 commit('SET_MATCHES', response.data);
             } catch (error) {
                 console.error('Error fetching matches:', error);

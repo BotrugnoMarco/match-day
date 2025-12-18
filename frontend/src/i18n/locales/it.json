@@ -229,6 +229,7 @@
   "matches": {
     "title": "Partite",
     "all": "Tutte",
+    "nearby": "Vicine",
     "mine": "Le mie partite",
     "friends": "Amici",
     "private": "Privata",

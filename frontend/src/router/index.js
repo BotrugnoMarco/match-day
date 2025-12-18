@@ -100,7 +100,25 @@ const routes = [
         path: '/admin/support',
         name: 'AdminSupport',
         component: () => import('../views/AdminSupport.vue'),
-        meta: { requiresAuth: true }
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin',
+        name: 'AdminDashboard',
+        component: () => import('../views/AdminDashboard.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin/users',
+        name: 'AdminUsers',
+        component: () => import('../views/AdminUsers.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
+    },
+    {
+        path: '/admin/matches',
+        name: 'AdminMatches',
+        component: () => import('../views/AdminMatches.vue'),
+        meta: { requiresAuth: true, requiresAdmin: true }
     },
     {
         path: '/privacy',
@@ -121,9 +139,12 @@ const router = createRouter({
 
 router.beforeEach((to, from, next) => {
     const isAuthenticated = localStorage.getItem('token');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
 
     if (to.matched.some(record => record.meta.requiresAuth) && !isAuthenticated) {
         next('/login');
+    } else if (to.matched.some(record => record.meta.requiresAdmin) && user.role !== 'admin') {
+        next('/home');
     } else if ((to.name === 'Login' || to.name === 'Register') && isAuthenticated) {
         next('/matches');
     } else {

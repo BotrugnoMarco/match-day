@@ -33,9 +33,9 @@
             </ion-menu-toggle>
 
             <ion-menu-toggle auto-hide="false" v-if="currentUser && currentUser.role === 'admin'">
-              <ion-item router-link-active="selected" router-link="/admin/support" lines="none" detail="false" @click="closeMenu">
+              <ion-item router-link-active="selected" router-link="/admin" lines="none" detail="false" @click="closeMenu">
                 <ion-icon slot="start" :ios="constructOutline" :md="constructSharp"></ion-icon>
-                <ion-label>{{ t("menu.admin_support") }}</ion-label>
+                <ion-label>Admin Dashboard</ion-label>
               </ion-item>
             </ion-menu-toggle>
 

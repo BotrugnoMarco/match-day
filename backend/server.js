@@ -20,6 +20,7 @@ const userRoutes = require('./routes/userRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const friendRoutes = require('./routes/friendRoutes');
 const supportRoutes = require('./routes/supportRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const http = require('http');
 const { Server } = require('socket.io');
 const { createClient } = require('redis');
@@ -88,6 +89,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/friends', friendRoutes);
 app.use('/api/support', supportRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Test Database Connection
 app.get('/test-db', async (req, res) => {

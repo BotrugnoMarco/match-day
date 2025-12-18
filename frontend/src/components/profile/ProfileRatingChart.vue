@@ -8,7 +8,7 @@
     <ion-card class="chart-card">
       <ion-card-content>
         <div class="chart-container">
-          <svg viewBox="0 0 300 150" class="chart-svg">
+          <svg viewBox="0 0 300 165" class="chart-svg">
             <!-- Grid lines -->
             <line x1="30" y1="10" x2="300" y2="10" stroke="#f0f0f0" stroke-width="1" />
             <line x1="30" y1="42.5" x2="300" y2="42.5" stroke="#f0f0f0" stroke-width="1" />
@@ -20,6 +20,20 @@
             <text x="25" y="14" text-anchor="end" font-size="10" fill="#999">10</text>
             <text x="25" y="79" text-anchor="end" font-size="10" fill="#999">5</text>
             <text x="25" y="144" text-anchor="end" font-size="10" fill="#999">0</text>
+
+            <!-- X Axis Labels (Results) -->
+            <text
+              v-for="(point, index) in pointsData"
+              :key="'label-' + index"
+              :x="point.x"
+              y="160"
+              text-anchor="middle"
+              font-size="10"
+              font-weight="bold"
+              :fill="getResultColor(point.result)"
+            >
+              {{ getResultLabel(point.result) }}
+            </text>
 
             <!-- Trend Line -->
             <polyline
@@ -91,13 +105,26 @@ const pointsData = computed(() => {
     // y = height + startY - (rating / 10) * height
     const y = startY + height - (rating / 10) * height;
     const x = startX + index * stepX;
-    return { x, y, rating };
+    return { x, y, rating, result: match.result };
   });
 });
 
 const chartPoints = computed(() => {
   return pointsData.value.map((p) => `${p.x},${p.y}`).join(" ");
 });
+
+const getResultLabel = (result) => {
+  if (result === "win") return "W";
+  if (result === "lost") return "L";
+  return "D";
+};
+
+const getResultColor = (result) => {
+  if (result === "win") return "var(--ion-color-success)";
+  if (result === "lost") return "var(--ion-color-danger)";
+  return "var(--ion-color-medium)";
+};
+</script>
 </script>
 
 <style scoped>

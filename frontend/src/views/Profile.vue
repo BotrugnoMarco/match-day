@@ -132,6 +132,7 @@ const saveProfile = async (formData) => {
       gender: formData.gender,
       status: formData.status,
       preferred_number: formData.preferred_number !== null && formData.preferred_number !== "" ? parseInt(formData.preferred_number) : null,
+      skills: formData.skills,
     };
 
     await api.put("/users/profile", payload);

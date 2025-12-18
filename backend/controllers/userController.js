@@ -81,15 +81,30 @@ exports.updateProfile = async (req, res) => {
                     );
 
                     if (existingSkill.length > 0) {
-                        await db.query(
-                            'UPDATE user_skills SET role = ? WHERE id = ?',
-                            [skill.role, existingSkill[0].id]
-                        );
+                        try {
+                            await db.query(
+                                'UPDATE user_skills SET role = ? WHERE id = ?',
+                                [skill.role, existingSkill[0].id]
+                            );
+                        } catch (err) {
+                            if (err.code !== 'ER_BAD_FIELD_ERROR') throw err;
+                        }
                     } else {
-                        await db.query(
-                            'INSERT INTO user_skills (user_id, sport_type, role) VALUES (?, ?, ?)',
-                            [userId, skill.sport_type, skill.role]
-                        );
+                        try {
+                            await db.query(
+                                'INSERT INTO user_skills (user_id, sport_type, role) VALUES (?, ?, ?)',
+                                [userId, skill.sport_type, skill.role]
+                            );
+                        } catch (err) {
+                            if (err.code === 'ER_BAD_FIELD_ERROR') {
+                                await db.query(
+                                    'INSERT INTO user_skills (user_id, sport_type) VALUES (?, ?)',
+                                    [userId, skill.sport_type]
+                                );
+                            } else {
+                                throw err;
+                            }
+                        }
                     }
                 }
             }

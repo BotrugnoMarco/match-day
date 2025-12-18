@@ -53,7 +53,7 @@ exports.getAllMatches = async (req, res) => {
 
     try {
         let query = `
-            SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar, u.is_supporter as creator_is_supporter,
+            SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar, u.is_supporter as creator_is_supporter, u.role as creator_role,
             (SELECT COUNT(*) FROM participants p WHERE p.match_id = m.id AND p.status = 'confirmed') as participants_count
         `;
 
@@ -96,7 +96,7 @@ exports.getMatchById = async (req, res) => {
     const matchId = req.params.id;
     try {
         const [matches] = await db.query(`
-            SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar, u.is_supporter as creator_is_supporter 
+            SELECT m.*, u.username as creator_username, u.avatar_url as creator_avatar, u.is_supporter as creator_is_supporter, u.role as creator_role 
             FROM matches m 
             JOIN users u ON m.creator_id = u.id 
             WHERE m.id = ?
@@ -120,7 +120,7 @@ exports.getMatchById = async (req, res) => {
         }
 
         const [participants] = await db.query(
-            `SELECT p.*, u.username, u.avatar_url, u.status as user_status, u.birth_date, u.preferred_number, u.is_supporter, COALESCE(us.rating, 6.0) as skill_rating, us.role 
+            `SELECT p.*, u.username, u.avatar_url, u.status as user_status, u.birth_date, u.preferred_number, u.is_supporter, u.role as system_role, COALESCE(us.rating, 6.0) as skill_rating, us.role 
        FROM participants p 
        JOIN users u ON p.user_id = u.id 
        LEFT JOIN user_skills us ON u.id = us.user_id AND us.sport_type = ?

@@ -105,7 +105,7 @@
 
             <div class="match-card-footer">
               <div class="organizer-info">
-                <ion-avatar class="organizer-avatar" :class="{ 'supporter-border': match.creator_is_supporter }">
+                <ion-avatar class="organizer-avatar" :class="{ 'supporter-border': match.creator_is_supporter || match.creator_role === 'admin' }">
                   <img :src="match.creator_avatar || '/default-avatar.svg'" />
                 </ion-avatar>
                 <span class="organizer-name">{{ t("matches.hosted_by", { name: match.creator_username }) }}</span>

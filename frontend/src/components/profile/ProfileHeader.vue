@@ -2,7 +2,7 @@
   <div class="profile-banner">
     <!-- Top Row: Avatar (Left) and User Info (Right) -->
     <div class="profile-top-row">
-      <div class="avatar-wrapper" :class="{ 'supporter-border': user?.is_supporter }" @click="triggerFileInput">
+      <div class="avatar-wrapper" :class="{ 'supporter-border': user?.is_supporter || user?.role === 'admin' }" @click="triggerFileInput">
         <ion-avatar class="main-avatar">
           <img :src="user?.avatar_url || '/default-avatar.svg'" />
         </ion-avatar>

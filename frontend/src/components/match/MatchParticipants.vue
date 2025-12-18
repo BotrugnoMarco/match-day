@@ -171,8 +171,15 @@
                 <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
               </div>
               <p>
+                {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
+                <span v-if="p.role"> • {{ getRoleLabel(p.role, match.sport_type) }}</span>
+              </p>
+              <p v-if="p.status !== 'confirmed' || p.user_status">
                 <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>
-                <span v-if="p.user_status" :class="'status-text ' + p.user_status">{{ t("profile." + p.user_status) }}</span>
+                <span v-if="p.user_status" :class="'status-text ' + p.user_status">
+                  <span v-if="p.status !== 'confirmed'"> • </span>
+                  {{ t("profile." + p.user_status) }}
+                </span>
               </p>
             </ion-label>
             <div slot="end" class="item-actions">

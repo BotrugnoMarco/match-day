@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS matches (
     winner ENUM('A', 'B', 'Draw'),
     score_team_a INT DEFAULT 0,
     score_team_b INT DEFAULT 0,
+    set_scores JSON DEFAULT NULL,
     -- Nuova colonna vincitore
     duration INT DEFAULT 60,
     price_total DECIMAL(10, 2),

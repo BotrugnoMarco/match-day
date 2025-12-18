@@ -22,6 +22,27 @@
         </div>
       </div>
 
+      <!-- Volleyball/Padel/Tennis Specific: Set Scores -->
+      <div v-if="['volleyball', 'padel', 'tennis'].includes(match.sport_type)" class="sets-section">
+        <div class="section-header">
+          <h4>{{ t("match_details.set_scores") }}</h4>
+          <ion-button size="small" fill="clear" @click="addSet">
+            <ion-icon :icon="addCircleOutline"></ion-icon>
+          </ion-button>
+        </div>
+        <div v-for="(set, index) in sets" :key="index" class="set-row">
+          <span class="set-label">Set {{ index + 1 }}</span>
+          <div class="set-inputs">
+            <ion-input type="number" v-model="set.a" class="set-input" placeholder="A"></ion-input>
+            <span class="set-divider">:</span>
+            <ion-input type="number" v-model="set.b" class="set-input" placeholder="B"></ion-input>
+          </div>
+          <ion-button size="small" color="danger" fill="clear" @click="removeSet(index)">
+            <ion-icon :icon="removeCircleOutline"></ion-icon>
+          </ion-button>
+        </div>
+      </div>
+
       <!-- Soccer Specific: Player Stats -->
       <div v-if="match.sport_type === 'soccer'" class="player-stats-section">
         <ion-segment v-model="selectedTeam" :value="selectedTeam">
@@ -106,6 +127,7 @@ const scoreA = ref(0);
 const scoreB = ref(0);
 const selectedTeam = ref("A");
 const playerStats = ref({});
+const sets = ref([]);
 
 // Initialize stats when modal opens or match changes
 watch(
@@ -114,6 +136,17 @@ watch(
     if (newVal && props.match) {
       scoreA.value = props.match.score_team_a || 0;
       scoreB.value = props.match.score_team_b || 0;
+
+      // Initialize sets
+      if (props.match.set_scores) {
+        try {
+          sets.value = typeof props.match.set_scores === "string" ? JSON.parse(props.match.set_scores) : props.match.set_scores;
+        } catch (e) {
+          sets.value = [];
+        }
+      } else {
+        sets.value = [];
+      }
 
       // Initialize player stats map
       const stats = {};
@@ -127,6 +160,14 @@ watch(
     }
   }
 );
+
+const addSet = () => {
+  sets.value.push({ a: 0, b: 0 });
+};
+
+const removeSet = (index) => {
+  sets.value.splice(index, 1);
+};
 
 const currentTeamPlayers = computed(() => {
   if (!props.participants) return [];
@@ -184,6 +225,7 @@ const save = () => {
     score_team_a: parseInt(scoreA.value),
     score_team_b: parseInt(scoreB.value),
     player_stats: statsArray,
+    set_scores: sets.value,
   });
 };
 </script>

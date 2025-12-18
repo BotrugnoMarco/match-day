@@ -17,6 +17,13 @@
           <span class="score-divider">-</span>
           <span class="score-team-b">{{ match.score_team_b }}</span>
         </div>
+
+        <div class="sets-display" v-if="match.set_scores && match.set_scores.length > 0">
+          <div v-for="(set, index) in match.set_scores" :key="index" class="set-score">
+            <span class="set-label">{{ t("match_details.set") }} {{ index + 1 }}:</span>
+            <span class="set-value">{{ set.scoreA }} - {{ set.scoreB }}</span>
+          </div>
+        </div>
       </div>
 
       <div class="participants-card" v-if="results.length > 0">
@@ -157,6 +164,26 @@ const isMvp = (userId) => {
   font-size: 3.5rem;
   font-weight: 900;
   line-height: 1;
+}
+
+.sets-display {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+}
+
+.set-score {
+  font-size: 1rem;
+  color: var(--ion-color-medium);
+  display: flex;
+  gap: 8px;
+}
+
+.set-value {
+  font-weight: bold;
+  color: var(--ion-color-dark);
 }
 
 .participants-card,

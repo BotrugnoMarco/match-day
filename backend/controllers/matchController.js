@@ -466,7 +466,7 @@ exports.updateMatchStatus = async (req, res) => {
 // Update match stats (scores, goals, assists)
 exports.updateMatchStats = async (req, res) => {
     const matchId = req.params.id;
-    const { score_team_a, score_team_b, player_stats } = req.body; // player_stats: [{ userId, goals, assists }]
+    const { score_team_a, score_team_b, player_stats, set_scores } = req.body; // player_stats: [{ userId, goals, assists }], set_scores: [{a: 25, b: 20}, ...]
     const userId = req.user.id;
 
     try {
@@ -484,8 +484,8 @@ exports.updateMatchStats = async (req, res) => {
 
         // Update Match Score
         await db.query(
-            'UPDATE matches SET score_team_a = ?, score_team_b = ? WHERE id = ?',
-            [score_team_a || 0, score_team_b || 0, matchId]
+            'UPDATE matches SET score_team_a = ?, score_team_b = ?, set_scores = ? WHERE id = ?',
+            [score_team_a || 0, score_team_b || 0, set_scores ? JSON.stringify(set_scores) : null, matchId]
         );
 
         // Update Player Stats

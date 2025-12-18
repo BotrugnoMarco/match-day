@@ -343,6 +343,16 @@ const fetchMatch = async () => {
     const response = await api.get(`/matches/${route.params.id}`);
     match.value = response.data;
 
+    // Parse set_scores if it's a string
+    if (match.value.set_scores && typeof match.value.set_scores === "string") {
+      try {
+        match.value.set_scores = JSON.parse(match.value.set_scores);
+      } catch (e) {
+        console.error("Error parsing set_scores", e);
+        match.value.set_scores = [];
+      }
+    }
+
     if (match.value.location && match.value.date_time) {
       fetchWeather();
     }

@@ -188,7 +188,7 @@ const getStatusColor = (status) => {
 
 <style scoped>
 .page-content {
-  --background: #f4f5f8;
+  --background: var(--ion-background-color);
 }
 
 .custom-segment {
@@ -196,11 +196,11 @@ const getStatusColor = (status) => {
 }
 
 .ticket-card {
-  background: white;
+  background: var(--ion-card-background);
   padding: 15px;
   border-radius: 12px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .ticket-header {

@@ -355,7 +355,7 @@ onMounted(() => {
 }
 
 .custom-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
   margin: 0 0 var(--space-3) 0;
@@ -389,7 +389,7 @@ onMounted(() => {
 }
 
 .search-results {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
   margin-top: var(--space-3);
@@ -405,16 +405,16 @@ onMounted(() => {
 }
 
 .leaderboard-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 15px;
   padding: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .leaderboard-header {
   display: flex;
   padding: 10px;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--ion-color-light);
   font-weight: 700;
   color: var(--ion-color-medium);
   font-size: 0.8rem;
@@ -425,7 +425,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   padding: 15px 10px;
-  border-bottom: 1px solid #f9f9f9;
+  border-bottom: 1px solid var(--ion-color-light);
   cursor: pointer;
 }
 

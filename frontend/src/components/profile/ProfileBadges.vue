@@ -101,7 +101,7 @@ const getBadgeColorClass = (tag) => {
   margin: 0;
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-md);
-  background: white;
+  background: var(--ion-card-background);
 }
 
 .trophy-case {

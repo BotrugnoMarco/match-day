@@ -262,7 +262,7 @@ const getStatusColor = (status) => {
 
 <style scoped>
 .page-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
 }
 
 .page-banner {
@@ -286,10 +286,10 @@ const getStatusColor = (status) => {
 }
 
 .segment-wrapper {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 15px;
   padding: 5px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
 }
 
 .custom-segment {
@@ -297,12 +297,12 @@ const getStatusColor = (status) => {
 }
 
 .form-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-md);
   margin-bottom: 20px;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--ion-color-light);
 }
 
 .form-header {
@@ -321,7 +321,7 @@ const getStatusColor = (status) => {
 }
 
 .custom-item {
-  --background: #f8f9fa;
+  --background: var(--ion-color-light);
   --border-radius: 12px;
   margin-bottom: 15px;
   --padding-start: 15px;
@@ -341,7 +341,7 @@ const getStatusColor = (status) => {
 }
 
 .ticket-card {
-  background: #f8f9fa;
+  background: var(--ion-color-light);
   border-radius: 15px;
   padding: 15px;
   margin-bottom: 10px;
@@ -401,12 +401,12 @@ const getStatusColor = (status) => {
 }
 
 .donate-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 20px;
   padding: 30px;
   text-align: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f0f0f0;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--ion-color-light);
 }
 
 .donate-header {

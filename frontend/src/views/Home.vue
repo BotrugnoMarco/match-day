@@ -350,7 +350,7 @@ const formatTime = (dateString) => {
 
 <style scoped>
 .home-content {
-  --background: #ffffff;
+  --background: var(--ion-background-color);
   overflow-y: auto;
 }
 
@@ -360,7 +360,7 @@ const formatTime = (dateString) => {
 }
 
 .logo-wrapper {
-  background: white;
+  background: var(--ion-card-background);
   padding: 15px;
   border-radius: 20px;
   width: 100px;

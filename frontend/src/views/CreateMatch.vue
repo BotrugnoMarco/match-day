@@ -413,7 +413,7 @@ const createMatch = async () => {
 }
 
 .sport-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   padding: 15px 5px;
   display: flex;
@@ -434,7 +434,7 @@ const createMatch = async () => {
   align-items: center;
   justify-content: center;
   margin-bottom: 8px;
-  background: #f0f2f5;
+  background: var(--ion-color-light);
   color: var(--ion-color-medium);
   font-size: 1.2rem;
   transition: all 0.2s ease;
@@ -448,7 +448,7 @@ const createMatch = async () => {
 
 .sport-card.active {
   border-color: var(--ion-color-primary);
-  background: white;
+  background: var(--ion-card-background);
   transform: translateY(-2px);
   box-shadow: var(--shadow-lg);
 }
@@ -501,19 +501,19 @@ const createMatch = async () => {
 }
 
 .form-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-lg);
   overflow: hidden;
   box-shadow: var(--shadow-md);
 }
 
 .form-header {
-  background: #f8f9fa;
+  background: var(--ion-color-light);
   padding: var(--space-3) var(--space-4);
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--ion-color-light);
 }
 
 .header-icon {

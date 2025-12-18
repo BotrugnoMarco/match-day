@@ -72,23 +72,23 @@ const handleForgotPassword = async () => {
 }
 
 .auth-card {
-  background: white;
+  background: var(--ion-card-background);
   padding: 2rem;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   width: 100%;
   max-width: 400px;
 }
 
 h2 {
   text-align: center;
-  color: #2c3e50;
+  color: var(--ion-color-dark);
   margin-bottom: 0.5rem;
 }
 
 .description {
   text-align: center;
-  color: #666;
+  color: var(--ion-color-medium);
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
 }

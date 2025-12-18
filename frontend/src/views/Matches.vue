@@ -327,7 +327,7 @@ const createMatch = () => {
 }
 
 .match-card {
-  background: #ffffff;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-sm);
   margin-bottom: var(--space-4);
@@ -346,7 +346,7 @@ const createMatch = () => {
   justify-content: space-between;
   align-items: center;
   padding: var(--space-3) var(--space-4);
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--ion-color-light);
 }
 
 .sport-info {

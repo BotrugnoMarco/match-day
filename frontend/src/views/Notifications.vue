@@ -214,7 +214,7 @@ const handleNotificationClick = (notification) => {
 }
 
 .notification-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   padding: var(--space-4);
   display: flex;

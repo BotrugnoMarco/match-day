@@ -124,7 +124,7 @@ const chartPoints = computed(() => {
   margin: 0;
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-md);
-  background: white;
+  background: var(--ion-card-background);
 }
 
 .chart-container {

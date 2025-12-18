@@ -1001,7 +1001,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  background: #f8f9fa;
+  background: var(--ion-color-light);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--rounded-md);
   font-size: 0.8rem;
@@ -1010,7 +1010,7 @@ onUnmounted(() => {
 }
 
 .post-match-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-lg);
   padding: var(--space-4);
   box-shadow: var(--shadow-md);
@@ -1104,7 +1104,7 @@ onUnmounted(() => {
 }
 
 .participants-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-md);
   overflow: hidden;
@@ -1214,7 +1214,7 @@ onUnmounted(() => {
 
 .rating-bar-container {
   height: 6px;
-  background-color: #f0f2f5;
+  background-color: var(--ion-color-light);
   border-radius: 3px;
   margin: var(--space-2) 0;
   overflow: hidden;
@@ -1289,11 +1289,11 @@ onUnmounted(() => {
 }
 
 .vote-stats-container {
-  background: #f8f9fa;
+  background: var(--ion-color-light);
   padding: 15px;
   border-radius: var(--rounded-md);
   text-align: center;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--ion-color-medium-shade);
 }
 
 .vote-progress-text {
@@ -1311,10 +1311,10 @@ onUnmounted(() => {
 .missing-voters-list {
   margin-top: 10px;
   text-align: left;
-  background: white;
+  background: var(--ion-card-background);
   padding: 10px;
   border-radius: var(--rounded-sm);
-  border: 1px solid #eee;
+  border: 1px solid var(--ion-color-light);
 }
 
 .missing-voters-title {
@@ -1374,7 +1374,7 @@ onUnmounted(() => {
 }
 
 .feedback-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-sm);
   overflow: hidden;
@@ -1385,7 +1385,7 @@ onUnmounted(() => {
   --padding-start: 0;
   --inner-padding-end: 0;
   margin-bottom: var(--space-3);
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid var(--ion-color-light);
 }
 
 .feedback-item:last-child {

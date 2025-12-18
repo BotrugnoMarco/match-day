@@ -89,7 +89,7 @@ const winRate = computed(() => {
 }
 
 .stat-box {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   padding: var(--space-4) var(--space-1);
   text-align: center;
@@ -121,7 +121,7 @@ const winRate = computed(() => {
 
 .circle-bg {
   fill: none;
-  stroke: #eee;
+  stroke: var(--ion-color-light);
   stroke-width: 3.8;
 }
 
@@ -189,7 +189,7 @@ const winRate = computed(() => {
 }
 
 .form-box {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   padding: var(--space-3) var(--space-4);
   box-shadow: var(--shadow-md);

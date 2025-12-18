@@ -21,7 +21,7 @@
         <div class="sets-display" v-if="match.set_scores && match.set_scores.length > 0">
           <div v-for="(set, index) in match.set_scores" :key="index" class="set-score">
             <span class="set-label">{{ t("match_details.set") }} {{ index + 1 }}:</span>
-            <span class="set-value">{{ set.scoreA }} - {{ set.scoreB }}</span>
+            <span class="set-value">{{ set.a }} - {{ set.b }}</span>
           </div>
         </div>
       </div>

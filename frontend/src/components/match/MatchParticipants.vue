@@ -80,7 +80,9 @@
                   </div>
                   <p>
                     {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
-                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-primary)"> • {{ p.role }}</span>
+                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-primary)">
+                      • {{ getRoleLabel(p.role, match.sport_type) }}</span
+                    >
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
@@ -128,7 +130,9 @@
                   </div>
                   <p>
                     {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
-                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-danger)"> • {{ p.role }}</span>
+                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-danger)">
+                      • {{ getRoleLabel(p.role, match.sport_type) }}</span
+                    >
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
@@ -253,6 +257,12 @@ defineProps({
 });
 
 defineEmits(["approve-request", "reject-request", "go-to-profile", "open-vote-modal", "open-player-actions", "save-formation"]);
+
+const getRoleLabel = (role, sportType) => {
+  if (!role) return "";
+  const roleKey = role.toLowerCase().replace(" ", "_");
+  return t(`roles.${sportType}.${roleKey}`);
+};
 </script>
 
 <style scoped>

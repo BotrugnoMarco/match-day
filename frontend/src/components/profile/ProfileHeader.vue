@@ -16,7 +16,7 @@
           <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
           <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
           <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
-            {{ skill.role }}
+            {{ getRoleLabel(skill) }}
           </ion-badge>
 
           <div class="status-section">
@@ -105,6 +105,12 @@ const fileInput = ref(null);
 const userRoles = computed(() => {
   return props.user?.skills?.filter((s) => s.role) || [];
 });
+
+const getRoleLabel = (skill) => {
+  if (!skill.role) return "";
+  const roleKey = skill.role.toLowerCase().replace(" ", "_");
+  return t(`roles.${skill.sport_type}.${roleKey}`);
+};
 const isCropperOpen = ref(false);
 const tempImageSrc = ref(null);
 

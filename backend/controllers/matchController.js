@@ -993,7 +993,7 @@ exports.deleteMatch = async (req, res) => {
 exports.updateMatch = async (req, res) => {
     const matchId = req.params.id;
     const userId = req.user.id;
-    const { date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration } = req.body;
+    const { date_time, location, latitude, longitude, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration } = req.body;
 
     try {
         // Check if match exists and user is creator or admin
@@ -1014,8 +1014,8 @@ exports.updateMatch = async (req, res) => {
 
         // Update match
         await db.query(
-            'UPDATE matches SET date_time = ?, location = ?, sport_type = ?, price_total = ?, max_players = ?, is_covered = ?, has_showers = ?, is_private = ?, access_code = ?, duration = ? WHERE id = ?',
-            [date_time, location, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration || 60, matchId]
+            'UPDATE matches SET date_time = ?, location = ?, latitude = ?, longitude = ?, sport_type = ?, price_total = ?, max_players = ?, is_covered = ?, has_showers = ?, is_private = ?, access_code = ?, duration = ? WHERE id = ?',
+            [date_time, location, latitude, longitude, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration || 60, matchId]
         );
 
         // Get participants to notify

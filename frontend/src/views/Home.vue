@@ -70,10 +70,13 @@
         </div>
 
         <!-- Nearby Matches Map -->
-        <div class="section-title" v-if="nearbyMatches.length > 0">
+        <div class="section-title" v-if="nearbyMatches.length > 0 || isLoadingNearby">
           <h3>{{ t("home.nearby_matches") }}</h3>
         </div>
-        <div class="map-container" v-if="nearbyMatches.length > 0" style="margin-bottom: 20px">
+        <div v-if="isLoadingNearby" class="ion-padding ion-text-center">
+          <ion-spinner></ion-spinner>
+        </div>
+        <div class="map-container" v-else-if="nearbyMatches.length > 0" style="margin-bottom: 20px">
           <MatchesMap :matches="nearbyMatches" :userLocation="userLocation" />
         </div>
 
@@ -159,7 +162,7 @@ import { useRouter } from "vue-router";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import MatchesMap from "../components/MatchesMap.vue";
-import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton } from "@ionic/vue";
+import { IonPage, IonContent, IonButton, IonIcon, IonBadge, IonHeader, IonToolbar, IonButtons, IonMenuButton, IonSpinner } from "@ionic/vue";
 import { getWeatherForLocation, getWeatherIcon } from "../services/weather";
 import {
   logInOutline,
@@ -194,8 +197,10 @@ const logoUrl = `${import.meta.env.BASE_URL}logo.jpg`;
 
 const userLocation = ref(null);
 const nearbyMatches = ref([]);
+const isLoadingNearby = ref(false);
 
 const getUserLocation = () => {
+  isLoadingNearby.value = true;
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -208,7 +213,8 @@ const getUserLocation = () => {
       (error) => {
         console.log("Geolocation error:", error);
         fetchNearbyMatches();
-      }
+      },
+      { timeout: 5000, maximumAge: 60000 }
     );
   } else {
     fetchNearbyMatches();
@@ -221,13 +227,15 @@ const fetchNearbyMatches = async () => {
     if (userLocation.value) {
       params.lat = userLocation.value.lat;
       params.lng = userLocation.value.lng;
-      params.radius = 50; // 100km radius
+      params.radius = 100; // 100km radius
     }
     const response = await api.get("/matches", { params });
     // Filter only future matches
     nearbyMatches.value = response.data.filter((m) => new Date(m.date_time) > new Date());
   } catch (e) {
     console.error("Error fetching nearby matches:", e);
+  } finally {
+    isLoadingNearby.value = false;
   }
 };
 

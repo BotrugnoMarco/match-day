@@ -67,7 +67,12 @@
             </div>
             <ion-list lines="none">
               <ion-item v-for="p in teamAParticipants" :key="p.id">
-                <div slot="start" class="avatar-wrapper" @click="$emit('go-to-profile', p.user_id)" :class="{ 'supporter-border': p.is_supporter || p.system_role === 'admin' }">
+                <div
+                  slot="start"
+                  class="avatar-wrapper"
+                  @click="$emit('go-to-profile', p.user_id)"
+                  :class="{ 'supporter-border': p.is_supporter || p.system_role === 'admin' }"
+                >
                   <ion-avatar>
                     <img :src="p.avatar_url || '/default-avatar.svg'" />
                   </ion-avatar>
@@ -117,7 +122,12 @@
             </div>
             <ion-list lines="none">
               <ion-item v-for="p in teamBParticipants" :key="p.id">
-                <div slot="start" class="avatar-wrapper" @click="$emit('go-to-profile', p.user_id)" :class="{ 'supporter-border': p.is_supporter || p.system_role === 'admin' }">
+                <div
+                  slot="start"
+                  class="avatar-wrapper"
+                  @click="$emit('go-to-profile', p.user_id)"
+                  :class="{ 'supporter-border': p.is_supporter || p.system_role === 'admin' }"
+                >
                   <ion-avatar>
                     <img :src="p.avatar_url || '/default-avatar.svg'" />
                   </ion-avatar>
@@ -162,7 +172,11 @@
       <div v-else class="participants-card">
         <ion-list lines="none">
           <ion-item v-for="p in activeParticipants" :key="p.id">
-            <ion-avatar slot="start" @click="$emit('go-to-profile', p.user_id)" :class="{ 'supporter-border': p.is_supporter || p.system_role === 'admin' }">
+            <ion-avatar
+              slot="start"
+              @click="$emit('go-to-profile', p.user_id)"
+              :class="{ 'supporter-border': p.is_supporter || p.system_role === 'admin' }"
+            >
               <img :src="p.avatar_url || '/default-avatar.svg'" />
             </ion-avatar>
             <ion-label @click="$emit('go-to-profile', p.user_id)">

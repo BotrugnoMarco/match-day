@@ -28,7 +28,7 @@ exports.getStats = async (req, res) => {
 
 exports.getUsers = async (req, res) => {
     try {
-        const [users] = await db.query('SELECT id, username, email, role, status, created_at FROM users ORDER BY id DESC');
+        const [users] = await db.query('SELECT id, username, email, role, status FROM users ORDER BY id DESC');
         res.json(users);
     } catch (err) {
         console.error(err);

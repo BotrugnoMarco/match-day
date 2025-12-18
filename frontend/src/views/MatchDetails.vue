@@ -22,6 +22,8 @@
       <MatchHeader :match="match" />
 
       <div class="details-wrapper">
+        <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
+
         <!-- Main Info Card -->
         <MatchInfoCard
           :match="match"
@@ -76,8 +78,6 @@
           @open-player-actions="openPlayerActions"
           @save-formation="saveFormation"
         />
-
-        <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
       </div>
     </ion-content>
     <div v-else class="ion-padding">

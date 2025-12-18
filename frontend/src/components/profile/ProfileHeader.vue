@@ -16,6 +16,7 @@
           <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
           <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
           <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
+            <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
             {{ getRoleLabel(skill) }}
           </ion-badge>
 
@@ -57,14 +58,6 @@
               <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
             </ion-badge>
           </div>
-
-          <!-- My Friends Button Inline -->
-          <div class="friend-actions-inline" v-if="isOwnProfile">
-            <ion-button size="small" fill="outline" color="light" @click="$emit('open-friends')">
-              <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-              {{ t("profile.friends_btn") }}
-            </ion-button>
-          </div>
         </div>
       </div>
     </div>
@@ -79,7 +72,19 @@
 import { ref, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import { IonAvatar, IonIcon, IonBadge, IonButton } from "@ionic/vue";
-import { camera, personAddOutline, timeOutline, checkmarkCircleOutline, closeCircleOutline, peopleOutline, shirt } from "ionicons/icons";
+import {
+  camera,
+  personAddOutline,
+  timeOutline,
+  checkmarkCircleOutline,
+  closeCircleOutline,
+  peopleOutline,
+  shirt,
+  football,
+  baseballOutline,
+  tennisball,
+  calendarOutline,
+} from "ionicons/icons";
 import ImageCropperModal from "./ImageCropperModal.vue";
 
 const props = defineProps({
@@ -110,6 +115,20 @@ const getRoleLabel = (skill) => {
   if (!skill.role) return "";
   const roleKey = skill.role.toLowerCase().replace(" ", "_");
   return t(`roles.${skill.sport_type}.${roleKey}`);
+};
+
+const getSportIcon = (type) => {
+  switch (type) {
+    case "soccer":
+      return football;
+    case "volleyball":
+      return baseballOutline;
+    case "padel":
+    case "tennis":
+      return tennisball;
+    default:
+      return calendarOutline;
+  }
 };
 const isCropperOpen = ref(false);
 const tempImageSrc = ref(null);

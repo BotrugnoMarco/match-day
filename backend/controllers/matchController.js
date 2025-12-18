@@ -719,6 +719,10 @@ exports.inviteUser = async (req, res) => {
         }
         const match = matches[0];
 
+        if (match.status !== 'open') {
+            return res.status(400).json({ error: 'Cannot invite users to a match that is not open' });
+        }
+
         // Check if user exists
         const [users] = await db.query('SELECT username FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {

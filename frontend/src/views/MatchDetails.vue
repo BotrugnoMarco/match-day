@@ -10,7 +10,7 @@
           <ion-button @click="shareMatch">
             <ion-icon slot="icon-only" :icon="shareSocialOutline"></ion-icon>
           </ion-button>
-          <ion-button @click="openInviteModal">
+          <ion-button @click="openInviteModal" v-if="match && match.status === 'open'">
             <ion-icon slot="icon-only" :icon="personAddOutline"></ion-icon>
           </ion-button>
         </ion-buttons>

@@ -1,6 +1,7 @@
 <template>
   <div class="profile-banner">
-    <div class="profile-header-row">
+    <!-- Top Row: Avatar (Left) and Name (Right) -->
+    <div class="profile-top-row">
       <div class="avatar-wrapper" @click="triggerFileInput">
         <ion-avatar class="main-avatar">
           <img :src="user?.avatar_url || '/default-avatar.svg'" />
@@ -10,55 +11,56 @@
         </div>
       </div>
 
-      <div class="profile-info">
-        <h2 class="username">{{ user?.username }}</h2>
-        <div class="badges-row">
-          <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
-          <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
-          <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
-            <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
-            {{ getRoleLabel(skill) }}
-          </ion-badge>
+      <h2 class="username">{{ user?.username }}</h2>
+    </div>
 
-          <div class="status-section">
-            <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
-              {{ t("profile." + (user?.status || "available")) }}
-            </ion-badge>
-          </div>
+    <!-- Bottom Row: Roles, Jersey, Status, Actions -->
+    <div class="profile-bottom-row">
+      <div class="info-group">
+        <ion-badge color="light" class="role-badge">{{ t("profile.player") }}</ion-badge>
+        <ion-badge color="warning" class="role-badge" v-if="user?.role === 'admin'">{{ t("profile.admin") }}</ion-badge>
+        <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
+          <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
+          {{ getRoleLabel(skill) }}
+        </ion-badge>
+      </div>
+
+      <div class="info-group">
+        <div class="jersey-container">
+          <ion-icon :icon="shirt" class="jersey-icon"></ion-icon>
+          <span class="jersey-number">{{ user?.preferred_number != null ? user.preferred_number : "?" }}</span>
         </div>
+      </div>
 
-        <!-- Preferred Number (Jersey Style) & Actions -->
-        <div class="preferred-number-section">
-          <div class="jersey-container">
-            <ion-icon :icon="shirt" class="jersey-icon"></ion-icon>
-            <span class="jersey-number">{{ user?.preferred_number != null ? user.preferred_number : "?" }}</span>
-          </div>
+      <div class="info-group">
+        <ion-badge :color="getStatusColor(user?.status)" class="status-badge">
+          {{ t("profile." + (user?.status || "available")) }}
+        </ion-badge>
+      </div>
 
-          <!-- Friend Actions Inline -->
-          <div class="friend-actions-inline" v-if="!isOwnProfile">
-            <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
-              <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
-              {{ t("profile.add_friend") }}
-            </ion-button>
-            <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
-              <ion-icon :icon="timeOutline" slot="start"></ion-icon>
-              {{ t("profile.request_sent") }}
-            </ion-button>
-            <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
-              <ion-button size="small" color="success" @click="$emit('accept-friend-request')">
-                <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
-                {{ t("profile.accept") }}
-              </ion-button>
-              <ion-button size="small" color="danger" @click="$emit('reject-friend-request')">
-                <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-                {{ t("profile.reject") }}
-              </ion-button>
-            </div>
-            <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
-              <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
-            </ion-badge>
-          </div>
+      <!-- Friend Actions Inline -->
+      <div class="friend-actions-inline" v-if="!isOwnProfile">
+        <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
+          <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
+          {{ t("profile.add_friend") }}
+        </ion-button>
+        <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
+          <ion-icon :icon="timeOutline" slot="start"></ion-icon>
+          {{ t("profile.request_sent") }}
+        </ion-button>
+        <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
+          <ion-button size="small" color="success" @click="$emit('accept-friend-request')">
+            <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
+            {{ t("profile.accept") }}
+          </ion-button>
+          <ion-button size="small" color="danger" @click="$emit('reject-friend-request')">
+            <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+            {{ t("profile.reject") }}
+          </ion-button>
         </div>
+        <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
+          <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
+        </ion-badge>
       </div>
     </div>
 
@@ -218,26 +220,30 @@ const getStatusColor = (status) => {
   pointer-events: none;
 }
 
-.profile-header-row {
+.profile-top-row {
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 15px;
   position: relative;
   z-index: 1;
 }
 
-.profile-info {
+.profile-bottom-row {
   display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  flex: 1;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
 }
 
-.badges-row {
+.info-group {
   display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  margin-top: 5px;
+  align-items: center;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -252,8 +258,8 @@ const getStatusColor = (status) => {
 }
 
 .main-avatar {
-  width: 150px;
-  height: 150px;
+  width: 100px; /* Smaller avatar for top row layout? Or keep 150? User said "foto in alto a sinistra". 150 might be too big if name is right next to it. Let's try 100. */
+  height: 100px;
   border: 3px solid rgba(255, 255, 255, 0.5);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
@@ -282,19 +288,12 @@ const getStatusColor = (status) => {
   font-weight: 800;
   font-size: 1.5rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: right; /* Ensure name aligns right */
 }
 
 .role-badge {
-  margin-top: var(--space-1);
   opacity: 0.9;
   font-weight: 600;
-}
-
-.preferred-number-section {
-  margin-top: var(--space-2);
-  display: flex;
-  align-items: center;
-  gap: 16px;
 }
 
 .jersey-container {

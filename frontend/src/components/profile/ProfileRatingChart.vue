@@ -10,11 +10,11 @@
         <div class="chart-container">
           <svg viewBox="0 0 300 165" class="chart-svg">
             <!-- Grid lines -->
-            <line x1="30" y1="10" x2="300" y2="10" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="30" y1="42.5" x2="300" y2="42.5" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="30" y1="75" x2="300" y2="75" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="30" y1="107.5" x2="300" y2="107.5" stroke="#f0f0f0" stroke-width="1" />
-            <line x1="30" y1="140" x2="300" y2="140" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="30" y1="10" x2="280" y2="10" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="30" y1="42.5" x2="280" y2="42.5" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="30" y1="75" x2="280" y2="75" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="30" y1="107.5" x2="280" y2="107.5" stroke="#f0f0f0" stroke-width="1" />
+            <line x1="30" y1="140" x2="280" y2="140" stroke="#f0f0f0" stroke-width="1" />
 
             <!-- Y Axis Labels -->
             <text x="25" y="14" text-anchor="end" font-size="10" fill="#999">10</text>
@@ -92,7 +92,7 @@ const pointsData = computed(() => {
   const data = validHistory.value;
   if (data.length === 0) return [];
 
-  const width = 270; // 300 - 30 (margin left)
+  const width = 250; // 300 - 30 (margin left) - 20 (margin right)
   const height = 130; // 150 - 20 (margin top/bottom)
   const startX = 30;
   const startY = 10;

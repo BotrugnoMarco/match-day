@@ -17,16 +17,6 @@
         <div class="mini-stat-label">{{ t("profile.mvp") }}</div>
       </div>
     </div>
-
-    <!-- Form Row (Compact) -->
-    <div v-if="form && form.length > 0" class="form-row ion-margin-top">
-      <div class="form-label">{{ t("profile.form") }}:</div>
-      <div class="form-dots">
-        <div v-for="(result, index) in form" :key="index" class="form-dot-small" :class="result">
-          {{ result ? result.charAt(0).toUpperCase() : "-" }}
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
@@ -38,10 +28,6 @@ const props = defineProps({
   stats: {
     type: Object,
     required: true,
-  },
-  form: {
-    type: Array,
-    default: () => [],
   },
 });
 
@@ -92,50 +78,6 @@ const winRate = computed(() => {
 
 .text-warning {
   color: var(--ion-color-warning);
-}
-
-.form-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--space-2);
-  background: var(--ion-item-background);
-  padding: var(--space-2);
-  border-radius: var(--rounded-md);
-  box-shadow: var(--shadow-sm);
-}
-
-.form-label {
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: var(--ion-color-medium);
-}
-
-.form-dots {
-  display: flex;
-  gap: 4px;
-}
-
-.form-dot-small {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.65rem;
-  font-weight: bold;
-  color: white;
-}
-
-.form-dot-small.win {
-  background-color: var(--ion-color-success);
-}
-.form-dot-small.draw {
-  background-color: var(--ion-color-warning);
-}
-.form-dot-small.lost {
-  background-color: var(--ion-color-danger);
 }
 
 .sports-list {

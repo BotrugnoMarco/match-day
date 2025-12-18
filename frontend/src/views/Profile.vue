@@ -46,7 +46,7 @@
         @open-edit-modal="openEditModal"
       />
 
-      <ProfileStats :stats="stats" :form="formHistory" />
+      <ProfileStats :stats="stats" />
 
       <ProfileRatingChart :history="history" />
 
@@ -152,20 +152,6 @@ const saveProfile = async (formData) => {
 
 const stats = computed(() => (isOwnProfile.value ? store.getters.userStats : viewedUserStats.value));
 const history = computed(() => (isOwnProfile.value ? myHistory.value : viewedUserHistory.value));
-
-const formHistory = computed(() => {
-  if (!history.value || history.value.length === 0) return [];
-  // Sort by date desc just in case, though usually API returns sorted
-  const sorted = [...history.value].sort((a, b) => new Date(b.date_time) - new Date(a.date_time));
-  return sorted
-    .slice(0, 5)
-    .map((match) => match.result)
-    .reverse(); // Show oldest to newest (left to right) or newest to oldest? Usually newest is right.
-  // Let's return newest first (index 0) but for display we might want to reverse it to show timeline ->
-  // Actually, "Last 5 matches" usually shows: [Oldest of 5] ... [Newest]
-  // So if I take slice(0, 5), I get the 5 most recent.
-  // If I reverse them, I get [5th recent, 4th recent, ..., Most recent]
-});
 
 const myHistory = ref([]);
 

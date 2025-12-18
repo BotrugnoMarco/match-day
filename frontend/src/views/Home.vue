@@ -559,7 +559,7 @@ const formatTime = (dateString) => {
 .actions-grid {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-between;
   text-align: center;
   /* gap: 15px; */
 }

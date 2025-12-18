@@ -377,5 +377,14 @@ ion-item.selected {
 
 ion-menu ion-item {
   --color: var(--ion-text-color);
+  --background: var(--ion-item-background, transparent);
+}
+
+ion-menu ion-item ion-icon {
+  color: var(--ion-text-color);
+}
+
+ion-menu ion-item.selected ion-icon {
+  color: var(--ion-color-primary);
 }
 </style>

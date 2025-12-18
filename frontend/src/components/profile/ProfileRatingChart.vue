@@ -36,17 +36,13 @@
               stroke-linejoin="round"
             />
 
-            <!-- Data Points -->
-            <circle
-              v-for="(point, index) in pointsData"
-              :key="index"
-              :cx="point.x"
-              :cy="point.y"
-              r="4"
-              :fill="getResultColor(point.result)"
-              stroke="white"
-              stroke-width="1"
-            />
+            <!-- Data Points with Ratings -->
+            <g v-for="(point, index) in pointsData" :key="index">
+              <circle :cx="point.x" :cy="point.y" r="9" :fill="getResultColor(point.result)" stroke="white" stroke-width="2" />
+              <text :x="point.x" :y="point.y" dy="3" text-anchor="middle" font-size="8" font-weight="bold" fill="white">
+                {{ point.ratingLabel }}
+              </text>
+            </g>
           </svg>
         </div>
       </ion-card-content>
@@ -100,7 +96,10 @@ const pointsData = computed(() => {
     const date = new Date(match.date_time);
     const dateStr = `${date.getDate()}/${date.getMonth() + 1}`;
 
-    return { x, y, rating, result: match.result, date: dateStr };
+    // Format rating: remove .0 if integer
+    const ratingLabel = rating % 1 === 0 ? rating.toFixed(0) : rating.toFixed(1);
+
+    return { x, y, rating, ratingLabel, result: match.result, date: dateStr };
   });
 });
 

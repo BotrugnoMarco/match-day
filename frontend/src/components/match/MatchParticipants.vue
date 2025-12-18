@@ -333,7 +333,7 @@ defineEmits(["approve-request", "reject-request", "go-to-profile", "open-vote-mo
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 2px solid white;
+  border: 2px solid var(--ion-card-background);
   z-index: 10;
 }
 

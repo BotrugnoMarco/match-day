@@ -124,7 +124,7 @@ const displayedHistory = computed(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #f0f2f5;
+  background: var(--ion-color-light);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--rounded-sm);
   min-width: 50px;

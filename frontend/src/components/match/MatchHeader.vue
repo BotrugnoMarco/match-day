@@ -62,7 +62,7 @@ const getSportIcon = (type) => {
 
 <style scoped>
 .match-header {
-  background: white;
+  background: var(--ion-card-background);
   padding: 20px;
   display: flex;
   align-items: center;

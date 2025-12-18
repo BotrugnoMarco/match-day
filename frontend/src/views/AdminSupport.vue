@@ -247,14 +247,14 @@ const getStatusColor = (status) => {
 }
 
 .message-box {
-  background: #f8f9fa;
+  background: var(--ion-color-light);
   padding: 15px;
   border-radius: 10px;
   margin-bottom: 15px;
 }
 
 .response-box {
-  background: #e8f5e9;
+  background: rgba(var(--ion-color-success-rgb), 0.1);
   padding: 15px;
   border-radius: 10px;
   margin-top: 15px;
@@ -262,7 +262,7 @@ const getStatusColor = (status) => {
 }
 
 .custom-item {
-  --background: #f8f9fa;
+  --background: var(--ion-color-light);
   --border-radius: 12px;
   margin-bottom: 15px;
 }

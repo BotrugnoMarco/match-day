@@ -368,6 +368,8 @@
     "score_team_b": "Score Team B",
     "set": "Set",
     "set_scores": "Set Scores",
+    "add_set": "Add Set",
+    "no_sets_added": "No sets added.",
     "my_feedback": "My Feedback",
     "winner": "Winner",
     "team": "Team",

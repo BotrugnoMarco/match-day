@@ -370,6 +370,8 @@
     "score_team_b": "Punteggio Squadra B",
     "set": "Set",
     "set_scores": "Punteggi Set",
+    "add_set": "Aggiungi Set",
+    "no_sets_added": "Nessun set aggiunto.",
     "my_feedback": "I miei Feedback",
     "winner": "Vincitore",
     "team": "Squadra",

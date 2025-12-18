@@ -26,20 +26,38 @@
       <div v-if="['volleyball', 'padel', 'tennis'].includes(match.sport_type)" class="sets-section">
         <div class="section-header">
           <h4>{{ t("match_details.set_scores") }}</h4>
-          <ion-button size="small" fill="clear" @click="addSet">
-            <ion-icon :icon="addCircleOutline"></ion-icon>
+          <ion-button size="small" fill="outline" @click="addSet">
+            <ion-icon slot="start" :icon="addCircleOutline"></ion-icon>
+            {{ t("match_details.add_set") }}
           </ion-button>
         </div>
-        <div v-for="(set, index) in sets" :key="index" class="set-row">
-          <span class="set-label">Set {{ index + 1 }}</span>
-          <div class="set-inputs">
-            <ion-input type="number" v-model="set.a" class="set-input" placeholder="A"></ion-input>
-            <span class="set-divider">:</span>
-            <ion-input type="number" v-model="set.b" class="set-input" placeholder="B"></ion-input>
+
+        <div class="sets-container" v-if="sets.length > 0">
+          <div class="sets-header-row">
+            <div class="col-num">#</div>
+            <div class="col-team team-a-header">{{ t("match_details.team_a") }}</div>
+            <div class="col-team team-b-header">{{ t("match_details.team_b") }}</div>
+            <div class="col-action"></div>
           </div>
-          <ion-button size="small" color="danger" fill="clear" @click="removeSet(index)">
-            <ion-icon :icon="removeCircleOutline"></ion-icon>
-          </ion-button>
+
+          <div v-for="(set, index) in sets" :key="index" class="set-row">
+            <div class="set-num">{{ index + 1 }}</div>
+            <div class="set-input-wrapper">
+              <ion-input type="number" v-model="set.a" class="set-input team-a-input"></ion-input>
+            </div>
+            <div class="set-divider">-</div>
+            <div class="set-input-wrapper">
+              <ion-input type="number" v-model="set.b" class="set-input team-b-input"></ion-input>
+            </div>
+            <div class="set-action">
+              <ion-button size="small" color="danger" fill="clear" @click="removeSet(index)">
+                <ion-icon slot="icon-only" :icon="trashOutline"></ion-icon>
+              </ion-button>
+            </div>
+          </div>
+        </div>
+        <div v-else class="no-sets-message">
+          {{ t("match_details.no_sets_added") }}
         </div>
       </div>
 
@@ -110,7 +128,7 @@ import {
   IonItem,
   IonIcon,
 } from "@ionic/vue";
-import { addCircleOutline, removeCircleOutline } from "ionicons/icons";
+import { addCircleOutline, removeCircleOutline, trashOutline } from "ionicons/icons";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -318,5 +336,117 @@ const save = () => {
   font-size: 1.1rem;
   min-width: 24px;
   text-align: center;
+}
+
+.sets-section {
+  margin-top: 24px;
+  border-top: 1px solid var(--ion-color-light-shade);
+  padding-top: 16px;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.section-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.sets-container {
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.sets-header-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+}
+
+.col-num {
+  width: 30px;
+  text-align: center;
+}
+
+.col-team {
+  flex: 1;
+  text-align: center;
+}
+
+.team-a-header {
+  color: var(--ion-color-danger);
+}
+
+.team-b-header {
+  color: var(--ion-color-primary);
+}
+
+.col-action {
+  width: 40px;
+}
+
+.set-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  background: var(--ion-card-background);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.set-num {
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  color: var(--ion-color-medium);
+}
+
+.set-input-wrapper {
+  flex: 1;
+}
+
+.set-input {
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.team-a-input {
+  color: var(--ion-color-danger);
+}
+
+.team-b-input {
+  color: var(--ion-color-primary);
+}
+
+.set-divider {
+  font-weight: bold;
+  color: var(--ion-color-medium);
+  margin: 0 8px;
+}
+
+.set-action {
+  width: 40px;
+  display: flex;
+  justify-content: center;
+}
+
+.no-sets-message {
+  text-align: center;
+  color: var(--ion-color-medium);
+  font-style: italic;
+  padding: 20px;
 }
 </style>

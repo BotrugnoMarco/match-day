@@ -557,7 +557,7 @@ const formatTime = (dateString) => {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  width: 70px;
+  width: 60px;
 }
 
 .action-icon {

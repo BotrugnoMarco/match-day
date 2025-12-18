@@ -27,35 +27,12 @@
         </div>
       </div>
     </div>
-
-    <!-- Sports Breakdown List -->
-    <div v-if="hasActiveSports" class="sports-list ion-margin-top">
-      <div v-for="(data, sport) in activeSports" :key="sport" class="sport-item">
-        <div class="sport-icon-wrapper">
-          <ion-icon :icon="getSportIcon(sport)" class="sport-icon" />
-        </div>
-        <div class="sport-details">
-          <div class="sport-name">{{ t("sports." + sport) }}</div>
-          <div class="sport-stats-line">
-            <span>{{ data.matchesPlayed }} {{ t("profile.matches") }}</span>
-            <span class="dot">•</span>
-            <span>{{ calculateWinRate(data) }}% Win</span>
-            <span v-if="data.goals > 0" class="dot">•</span>
-            <span v-if="data.goals > 0">{{ data.goals }} Goal</span>
-            <span v-if="data.assists > 0" class="dot">•</span>
-            <span v-if="data.assists > 0">{{ data.assists }} Assist</span>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { IonIcon } from "@ionic/vue";
-import { football, baseballOutline, tennisball } from "ionicons/icons";
 
 const props = defineProps({
   stats: {
@@ -70,42 +47,10 @@ const props = defineProps({
 
 const { t } = useI18n();
 
-const activeSports = computed(() => {
-  if (!props.stats || !props.stats.statsBySport) return {};
-  const active = {};
-  for (const [sport, data] of Object.entries(props.stats.statsBySport)) {
-    if (data.matchesPlayed > 0) {
-      active[sport] = data;
-    }
-  }
-  return active;
-});
-
-const hasActiveSports = computed(() => Object.keys(activeSports.value).length > 0);
-
 const winRate = computed(() => {
   if (!props.stats || !props.stats.matchesPlayed) return 0;
   return Math.round((props.stats.matchesWon / props.stats.matchesPlayed) * 100);
 });
-
-const calculateWinRate = (data) => {
-  if (!data.matchesPlayed) return 0;
-  return Math.round((data.matchesWon / data.matchesPlayed) * 100);
-};
-
-const getSportIcon = (sport) => {
-  switch (sport) {
-    case "soccer":
-      return football;
-    case "volleyball":
-      return baseballOutline;
-    case "padel":
-    case "tennis":
-      return tennisball;
-    default:
-      return football;
-  }
-};
 </script>
 
 <style scoped>

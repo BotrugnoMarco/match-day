@@ -15,6 +15,20 @@
                 <span class="skill-rating">{{ skill.rating }}</span>
               </div>
               <ion-progress-bar :value="skill.rating / 10" :color="getSkillColor(skill.rating)"></ion-progress-bar>
+
+              <div class="skill-stats" v-if="getSportStats(skill.sport_type)">
+                <span>{{ getSportStats(skill.sport_type).matchesPlayed }} {{ t("profile.matches") }}</span>
+                <span class="dot">•</span>
+                <span>{{ calculateWinRate(getSportStats(skill.sport_type)) }}% Win</span>
+                <template v-if="getSportStats(skill.sport_type).goals > 0">
+                  <span class="dot">•</span>
+                  <span>{{ getSportStats(skill.sport_type).goals }} Goal</span>
+                </template>
+                <template v-if="getSportStats(skill.sport_type).assists > 0">
+                  <span class="dot">•</span>
+                  <span>{{ getSportStats(skill.sport_type).assists }} Assist</span>
+                </template>
+              </div>
             </ion-label>
           </ion-item>
         </ion-list>
@@ -28,14 +42,30 @@ import { useI18n } from "vue-i18n";
 import { IonCard, IonCardContent, IonList, IonItem, IonIcon, IonLabel, IonProgressBar } from "@ionic/vue";
 import { trophy, football, tennisballOutline, baseballOutline } from "ionicons/icons";
 
-defineProps({
+const props = defineProps({
   skills: {
     type: Array,
     default: () => [],
   },
+  stats: {
+    type: Object,
+    default: () => ({}),
+  },
 });
 
 const { t } = useI18n();
+
+const getSportStats = (sport) => {
+  if (!props.stats || !props.stats.statsBySport) return null;
+  const data = props.stats.statsBySport[sport];
+  if (data && data.matchesPlayed > 0) return data;
+  return null;
+};
+
+const calculateWinRate = (data) => {
+  if (!data.matchesPlayed) return 0;
+  return Math.round((data.matchesWon / data.matchesPlayed) * 100);
+};
 
 const getSportIcon = (sport) => {
   switch (sport) {
@@ -84,6 +114,7 @@ const getSkillColor = (rating) => {
   margin: 0;
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
+  background: var(--ion-item-background);
 }
 
 .skill-header {
@@ -96,6 +127,21 @@ const getSkillColor = (rating) => {
   margin: 0;
   font-size: 0.95rem;
   font-weight: 600;
+}
+
+.skill-stats {
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--ion-color-medium);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dot {
+  margin: 0 6px;
+  font-size: 0.6rem;
+  opacity: 0.7;
 }
 
 .skill-rating {

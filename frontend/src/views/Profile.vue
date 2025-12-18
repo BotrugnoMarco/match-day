@@ -50,7 +50,7 @@
 
       <ProfileRatingChart :history="history" />
 
-      <ProfileSkills :skills="user?.skills" />
+      <ProfileSkills :skills="user?.skills" :stats="stats" />
 
       <ProfileBadges :tags="stats?.tags" />
 

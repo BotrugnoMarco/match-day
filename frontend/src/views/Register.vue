@@ -183,7 +183,7 @@ const handleRegister = async () => {
 .icon-container {
   width: 80px;
   height: 80px;
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -211,7 +211,7 @@ const handleRegister = async () => {
 }
 
 .auth-form-container {
-  background: white;
+  background: var(--ion-card-background);
   padding: var(--space-8);
   border-radius: var(--rounded-lg);
   box-shadow: var(--shadow-lg);
@@ -225,7 +225,7 @@ const handleRegister = async () => {
 }
 
 .custom-input {
-  --background: #f5f7fa;
+  --background: var(--ion-color-light);
   --border-radius: var(--rounded-md);
   --padding-start: var(--space-4);
   border-radius: var(--rounded-md);
@@ -244,7 +244,7 @@ const handleRegister = async () => {
 }
 
 .input-icon {
-  color: #a0aec0;
+  color: var(--ion-color-medium);
   margin-right: var(--space-3);
 }
 

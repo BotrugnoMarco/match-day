@@ -408,10 +408,10 @@ const formatTime = (dateString) => {
 
 /* Next Match Card */
 .next-match-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   display: flex;
   align-items: center;
   gap: 15px;
@@ -427,7 +427,7 @@ const formatTime = (dateString) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: #f8f9fa;
+  background: var(--ion-color-light);
   padding: 10px;
   border-radius: 12px;
   min-width: 70px;
@@ -478,7 +478,7 @@ const formatTime = (dateString) => {
   align-items: center;
   justify-content: center;
   margin-right: 5px;
-  background: #f0f8ff;
+  background: rgba(var(--ion-color-primary-rgb), 0.1);
   padding: 8px;
   border-radius: 12px;
   min-width: 50px;
@@ -497,20 +497,20 @@ const formatTime = (dateString) => {
 }
 
 .empty-match-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 20px;
   padding: 30px;
   text-align: center;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   color: var(--ion-color-medium);
 }
 
 /* Stats Card */
 .stats-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   display: flex;
   align-items: center;
   justify-content: space-around;
@@ -539,7 +539,7 @@ const formatTime = (dateString) => {
 .stat-divider {
   width: 1px;
   height: 40px;
-  background: #f0f0f0;
+  background: var(--ion-color-light);
 }
 
 /* Quick Actions Grid */
@@ -569,7 +569,7 @@ const formatTime = (dateString) => {
   justify-content: center;
   font-size: 1.5rem;
   color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
   transition: transform 0.2s;
 }
 
@@ -607,20 +607,20 @@ const formatTime = (dateString) => {
 }
 
 .activity-item {
-  background: white;
+  background: var(--ion-card-background);
   padding: 15px;
   border-radius: 15px;
   display: flex;
   align-items: center;
   gap: 15px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow-sm);
 }
 
 .activity-icon {
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  background: #f0f0f0;
+  background: var(--ion-color-light);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -657,10 +657,10 @@ const formatTime = (dateString) => {
 .welcome-text {
   text-align: center;
   margin-bottom: 30px;
-  background: white;
+  background: var(--ion-card-background);
   padding: 20px;
   border-radius: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-lg);
   width: 100%;
 }
 
@@ -688,7 +688,7 @@ const formatTime = (dateString) => {
   --border-radius: 15px;
   font-weight: 700;
   height: 55px;
-  --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --box-shadow: var(--shadow-md);
 }
 
 .primary-btn {

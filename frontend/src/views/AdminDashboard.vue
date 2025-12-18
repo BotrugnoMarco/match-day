@@ -200,7 +200,7 @@ export default {
   justify-content: center;
   font-size: 32px;
   margin-bottom: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow-md);
 }
 
 .item-label {
@@ -217,37 +217,37 @@ export default {
 
 /* Icon Colors */
 .users-icon {
-  background: rgba(var(--ion-color-primary-rgb), 0.1);
+  background: rgba(var(--ion-color-primary-rgb), 0.2);
   color: var(--ion-color-primary);
 }
 
 .matches-icon {
-  background: rgba(var(--ion-color-success-rgb), 0.1);
+  background: rgba(var(--ion-color-success-rgb), 0.2);
   color: var(--ion-color-success);
 }
 
 .support-icon {
-  background: rgba(var(--ion-color-warning-rgb), 0.1);
+  background: rgba(var(--ion-color-warning-rgb), 0.2);
   color: var(--ion-color-warning);
 }
 
 .votes-icon {
-  background: rgba(var(--ion-color-tertiary-rgb), 0.1);
+  background: rgba(var(--ion-color-tertiary-rgb), 0.2);
   color: var(--ion-color-tertiary);
 }
 
 .friends-icon {
-  background: rgba(var(--ion-color-danger-rgb), 0.1);
+  background: rgba(var(--ion-color-danger-rgb), 0.2);
   color: var(--ion-color-danger);
 }
 
 .participants-icon {
-  background: rgba(var(--ion-color-secondary-rgb), 0.1);
+  background: rgba(var(--ion-color-secondary-rgb), 0.2);
   color: var(--ion-color-secondary);
 }
 
 .notifications-icon {
-  background: rgba(var(--ion-color-medium-rgb), 0.1);
+  background: rgba(var(--ion-color-medium-rgb), 0.2);
   color: var(--ion-color-medium);
 }
 </style>

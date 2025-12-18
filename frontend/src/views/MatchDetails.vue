@@ -916,7 +916,7 @@ onUnmounted(() => {
 }
 
 .info-card {
-  background: white;
+  background: var(--ion-card-background);
   border-radius: var(--rounded-lg);
   padding: 20px;
   box-shadow: var(--shadow-md);
@@ -942,7 +942,7 @@ onUnmounted(() => {
 .info-icon {
   font-size: 1.4rem;
   color: var(--ion-color-primary);
-  background: rgba(var(--ion-color-primary-rgb), 0.08);
+  background: rgba(var(--ion-color-primary-rgb), 0.2);
   padding: 10px;
   border-radius: var(--rounded-sm);
 }
@@ -987,7 +987,7 @@ onUnmounted(() => {
 
 .divider {
   height: 1px;
-  background: #f0f2f5;
+  background: var(--ion-color-light);
   margin: 16px 0;
 }
 

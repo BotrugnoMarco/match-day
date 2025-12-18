@@ -1,6 +1,16 @@
 const db = require('../config/db');
 const filter = require('leo-profanity');
 
+exports.getSupporters = async (req, res) => {
+    try {
+        const [supporters] = await db.query('SELECT id, username, avatar_url FROM users WHERE is_supporter = TRUE ORDER BY username ASC');
+        res.json(supporters);
+    } catch (error) {
+        console.error('Get supporters error:', error);
+        res.status(500).json({ error: 'Server error fetching supporters' });
+    }
+};
+
 exports.uploadAvatar = async (req, res) => {
     if (!req.file) {
         return res.status(400).json({ error: 'No file uploaded' });

@@ -8,6 +8,7 @@ router.get('/profile', authMiddleware, userController.getProfile);
 router.put('/profile', authMiddleware, userController.updateProfile);
 router.delete('/profile', authMiddleware, userController.deleteAccount);
 router.get('/export', authMiddleware, userController.exportData);
+router.get('/supporters', authMiddleware, userController.getSupporters);
 router.get('/stats', authMiddleware, userController.getUserStats);
 router.get('/history', authMiddleware, userController.getMatchHistory);
 router.get('/search', authMiddleware, userController.searchUsers);

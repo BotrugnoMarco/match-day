@@ -139,6 +139,18 @@
               {{ t("support.support_kofi") }}
             </ion-button>
           </div>
+
+          <div class="supporters-section" v-if="supporters.length > 0">
+            <h3>{{ t("support.supporters_wall") }}</h3>
+            <div class="supporters-grid">
+              <div v-for="supporter in supporters" :key="supporter.id" class="supporter-item" @click="router.push(`/profile/${supporter.id}`)">
+                <ion-avatar class="supporter-avatar">
+                  <img :src="supporter.avatar_url || '/default-avatar.svg'" />
+                </ion-avatar>
+                <span class="supporter-name">{{ supporter.username }}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </ion-content>
@@ -146,8 +158,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import { useRouter } from "vue-router";
 import api from "../services/api";
 import {
   IonPage,
@@ -171,14 +184,17 @@ import {
   IonAccordionGroup,
   IonAccordion,
   IonBadge,
+  IonAvatar,
   toastController,
 } from "@ionic/vue";
 import { mailOutline, beer } from "ionicons/icons";
 
 const { t } = useI18n();
+const router = useRouter();
 const activeTab = ref("contact");
 const isSubmitting = ref(false);
 const tickets = ref([]);
+const supporters = ref([]);
 const form = ref({
   category: "bug",
   subject: "",
@@ -194,8 +210,23 @@ const fetchTickets = async () => {
   }
 };
 
+const fetchSupporters = async () => {
+  try {
+    const response = await api.get("/users/supporters");
+    supporters.value = response.data;
+  } catch (error) {
+    console.error("Error fetching supporters:", error);
+  }
+};
+
 onMounted(() => {
   fetchTickets();
+});
+
+watch(activeTab, (newTab) => {
+  if (newTab === "donate") {
+    fetchSupporters();
+  }
 });
 
 const submitTicket = async () => {
@@ -436,5 +467,55 @@ const getStatusColor = (status) => {
   --background-hover: #ff4f4c;
   --border-radius: 12px;
   font-weight: 700;
+}
+
+.supporters-section {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.supporters-section h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--ion-color-dark);
+}
+
+.supporters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 16px;
+  justify-items: center;
+}
+
+.supporter-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.supporter-item:active {
+  transform: scale(0.95);
+}
+
+.supporter-avatar {
+  width: 60px;
+  height: 60px;
+  border: 3px solid #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.4);
+  margin-bottom: 8px;
+}
+
+.supporter-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ion-color-dark);
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
 }
 </style>

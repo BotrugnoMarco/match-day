@@ -623,7 +623,7 @@ exports.searchUsers = async (req, res) => {
 
     try {
         const [users] = await db.query(
-            `SELECT id, username, avatar_url, status, is_supporter 
+            `SELECT id, username, avatar_url, status, is_supporter, role 
              FROM users 
              WHERE username LIKE ? AND id != ?
              LIMIT 10`,

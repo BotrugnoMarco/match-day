@@ -39,7 +39,7 @@
           <div v-if="searchResults.length > 0" class="search-results">
             <ion-list lines="none">
               <ion-item v-for="user in searchResults" :key="user.id" button @click="goToProfile(user.id)">
-                <ion-avatar slot="start">
+                <ion-avatar slot="start" :class="{ 'supporter-border': user.is_supporter || user.role === 'admin' }">
                   <img :src="user.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
@@ -89,7 +89,7 @@
           <div v-if="friendsList.length > 0">
             <ion-card class="custom-card" v-for="friend in friendsList" :key="friend.id" button @click="goToProfile(friend.id)">
               <ion-item lines="none">
-                <ion-avatar slot="start">
+                <ion-avatar slot="start" :class="{ 'supporter-border': friend.is_supporter || friend.role === 'admin' }">
                   <img :src="friend.avatar_url || '/default-avatar.svg'" />
                 </ion-avatar>
                 <ion-label>
@@ -388,12 +388,37 @@ onMounted(() => {
   opacity: 0.5;
 }
 
+ion-searchbar {
+  --background: var(--ion-card-background);
+  --box-shadow: var(--shadow-sm);
+  padding-top: 0;
+  padding-bottom: 10px;
+}
+
 .search-results {
   background: var(--ion-card-background);
   border-radius: var(--rounded-md);
   box-shadow: var(--shadow-sm);
   margin-top: var(--space-3);
   overflow: hidden;
+}
+
+.supporter-border {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  animation: pulse-gold 2s infinite;
+}
+
+@keyframes pulse-gold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 215, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+  }
 }
 
 /* Leaderboard Styles */

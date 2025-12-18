@@ -122,6 +122,8 @@ exports.getFriends = async (req, res) => {
                 u.avatar_url, 
                 u.status, 
                 u.birth_date,
+                u.is_supporter,
+                u.role,
                 (SELECT COUNT(*) 
                  FROM participants p 
                  JOIN matches m ON p.match_id = m.id 

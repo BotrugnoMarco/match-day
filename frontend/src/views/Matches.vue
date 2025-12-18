@@ -44,6 +44,9 @@
           <ion-spinner></ion-spinner>
         </div>
         <div v-else-if="displayedMatches.length > 0">
+          <div v-if="nearbyOnly && userLocation" class="map-container" style="margin-bottom: 20px">
+            <MatchesMap :matches="displayedMatches" :userLocation="userLocation" />
+          </div>
           <div v-for="match in displayedMatches" :key="match.id" @click="viewMatch(match.id)" class="match-card">
             <div class="match-card-header">
               <div class="sport-info">
@@ -134,6 +137,7 @@ import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
 import socket from "../services/socket";
+import MatchesMap from "../components/MatchesMap.vue";
 import {
   IonPage,
   IonHeader,
@@ -182,6 +186,7 @@ const { t, locale } = useI18n();
 const filter = ref("all");
 const nearbyOnly = ref(false);
 const isLoading = ref(false);
+const userLocation = ref(null);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
 
 const displayedMatches = computed(() => {
@@ -244,6 +249,10 @@ const getUserLocationAndFetch = () => {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
       (position) => {
+        userLocation.value = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
         store
           .dispatch("fetchMatches", {
             lat: position.coords.latitude,

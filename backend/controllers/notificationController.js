@@ -156,14 +156,30 @@ exports.createNotification = async (userId, message, type = 'info', relatedMatch
                             const dateStr = !isNaN(dateObj) ? `${day}/${month} ${hours}:${minutes}` : parsed.params.date;
 
                             bodyText = `${parsed.params.inviter} ti ha invitato a una partita il ${dateStr}`;
-                        } else if (parsed.key === 'notifications.friend_request') {
-                            bodyText = `${parsed.params.username} ti ha inviato una richiesta di amicizia`;
-                        } else if (parsed.key === 'notifications.friend_accepted') {
-                            bodyText = `${parsed.params.username} ha accettato la tua richiesta di amicizia`;
+                        } else if (parsed.key === 'notifications.friend_request' || parsed.key === 'notifications.friend_request_new') {
+                            bodyText = `Hai ricevuto una nuova richiesta di amicizia`;
+                        } else if (parsed.key === 'notifications.friend_accepted' || parsed.key === 'notifications.friend_request_accepted') {
+                            bodyText = `La tua richiesta di amicizia è stata accettata`;
                         } else if (parsed.key === 'notifications.match_joined') {
                             bodyText = `${parsed.params.username} si è unito alla partita`;
                         } else if (parsed.key === 'notifications.match_left') {
                             bodyText = `${parsed.params.username} ha lasciato la partita`;
+                        } else if (parsed.key === 'notifications.waitlist_promoted') {
+                            bodyText = `Sei stato promosso dalla lista d'attesa!`;
+                        } else if (parsed.key === 'notifications.voting_started') {
+                            bodyText = `Le votazioni per la partita sono aperte`;
+                        } else if (parsed.key === 'notifications.match_finished') {
+                            bodyText = `La partita è terminata`;
+                        } else if (parsed.key === 'notifications.teams_generated') {
+                            bodyText = `Le squadre sono state generate`;
+                        } else if (parsed.key === 'notifications.join_approved') {
+                            bodyText = `La tua richiesta di partecipazione è stata approvata`;
+                        } else if (parsed.key === 'notifications.join_declined') {
+                            bodyText = `La tua richiesta di partecipazione è stata rifiutata`;
+                        } else if (parsed.key === 'notifications.match_cancelled') {
+                            bodyText = `La partita è stata cancellata`;
+                        } else if (parsed.key === 'notifications.match_updated') {
+                            bodyText = `La partita è stata aggiornata`;
                         } else {
                             bodyText = "Hai una nuova notifica su MatchDay!";
                         }

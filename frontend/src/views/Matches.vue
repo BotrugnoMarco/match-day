@@ -32,9 +32,9 @@
         </div>
         <div class="filters-container" v-if="filter === 'all'">
           <ion-item lines="none" class="filter-item">
-            <ion-icon :icon="locationOutline" slot="start" size="small" color="medium"></ion-icon>
+            <ion-icon :icon="locationOutline" slot="start" size="small"></ion-icon>
             <ion-label>{{ t("matches.nearby") }}</ion-label>
-            <ion-toggle v-model="nearbyOnly" @ionChange="onNearbyChange" slot="end"></ion-toggle>
+            <ion-toggle v-model="nearbyOnly" @ionChange="onNearbyChange" slot="end" color="light"></ion-toggle>
           </ion-item>
         </div>
       </div>
@@ -567,7 +567,7 @@ const createMatch = () => {
 }
 
 .filters-container {
-  padding: 0 16px 10px;
+  padding: 10px 4px 0;
 }
 
 .filter-item {
@@ -579,8 +579,13 @@ const createMatch = () => {
 
 .filter-item ion-label {
   font-size: 0.9rem;
-  color: var(--ion-color-medium);
+  color: white;
   margin-left: 8px;
+  font-weight: 500;
+}
+
+.filter-item ion-icon {
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .notification-button {

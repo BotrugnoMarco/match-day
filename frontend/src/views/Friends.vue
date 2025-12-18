@@ -44,7 +44,7 @@
                 </ion-avatar>
                 <ion-label>
                   <h2>{{ user.username }}</h2>
-                  <p>{{ user.status }}</p>
+                  <p>{{ t("profile." + (user.status || "available")) }}</p>
                 </ion-label>
                 <ion-icon :icon="chevronForwardOutline" slot="end" color="medium"></ion-icon>
               </ion-item>
@@ -95,7 +95,7 @@
                 <ion-label>
                   <h2>{{ friend.username }}</h2>
                   <p>
-                    <span :class="'status-text ' + friend.status">{{ friend.status }}</span>
+                    <span :class="'status-text ' + friend.status">{{ t("profile." + (friend.status || "available")) }}</span>
                   </p>
                 </ion-label>
                 <ion-button slot="end" fill="clear" color="danger" @click.stop="confirmRemoveFriend(friend)">

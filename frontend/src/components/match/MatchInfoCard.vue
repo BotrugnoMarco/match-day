@@ -104,6 +104,31 @@
       </div>
     </div>
 
+    <div class="divider" v-if="match.status !== 'finished'"></div>
+
+    <div class="info-row" v-if="match.status !== 'finished'">
+      <div class="info-block full-width post-match-row">
+        <div class="pm-left">
+          <ion-icon :icon="beerOutline" class="info-icon pm-icon"></ion-icon>
+          <div class="info-text">
+            <span class="label">{{ t("match_details.post_match") }}</span>
+            <span class="value">{{ postMatchCount }} {{ t("match_details.people_staying") }}</span>
+          </div>
+        </div>
+        <ion-button
+          v-if="isParticipant"
+          size="small"
+          :fill="myPostMatchStatus ? 'solid' : 'outline'"
+          :color="myPostMatchStatus ? 'warning' : 'medium'"
+          @click="$emit('toggle-post-match')"
+          shape="round"
+          class="pm-btn"
+        >
+          {{ myPostMatchStatus ? t("match_details.im_in") : t("match_details.join") }}
+        </ion-button>
+      </div>
+    </div>
+
     <div class="divider" v-if="match.is_covered || match.has_showers || averageAge"></div>
 
     <div class="features-row" v-if="match.is_covered || match.has_showers || averageAge">
@@ -140,6 +165,7 @@ import {
   homeOutline,
   shirtOutline,
   peopleOutline,
+  beerOutline,
   sunny,
   partlySunny,
   cloudy,
@@ -167,9 +193,21 @@ const props = defineProps({
     type: [String, Number],
     default: null,
   },
+  postMatchCount: {
+    type: Number,
+    default: 0,
+  },
+  myPostMatchStatus: {
+    type: Boolean,
+    default: false,
+  },
+  isParticipant: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["open-maps", "go-to-profile"]);
+const emit = defineEmits(["open-maps", "go-to-profile", "toggle-post-match"]);
 
 const { t, locale } = useI18n();
 
@@ -321,5 +359,27 @@ const formatTime = (dateString) => {
   margin-top: 4px;
   font-size: 0.85rem;
   color: var(--ion-color-medium);
+}
+.post-match-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pm-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pm-icon {
+  color: var(--ion-color-warning);
+}
+
+.pm-btn {
+  margin: 0;
+  height: 32px;
+  font-size: 0.8rem;
+  font-weight: 600;
 }
 </style>

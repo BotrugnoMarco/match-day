@@ -19,13 +19,7 @@
 
     <ion-content class="page-content" v-if="match">
       <!-- Header Section -->
-      <MatchHeader
-        :match="match"
-        :post-match-count="postMatchCount"
-        :my-post-match-status="myPostMatchStatus"
-        :is-participant="isParticipant"
-        @toggle-post-match="togglePostMatch"
-      />
+      <MatchHeader :match="match" />
 
       <div class="details-wrapper">
         <!-- Main Info Card -->
@@ -34,8 +28,12 @@
           :weather="weather"
           :active-participants="activeParticipants"
           :average-age="averageAge"
+          :post-match-count="postMatchCount"
+          :my-post-match-status="myPostMatchStatus"
+          :is-participant="isParticipant"
           @open-maps="openMaps"
           @go-to-profile="goToProfile"
+          @toggle-post-match="togglePostMatch"
         />
 
         <MatchActions

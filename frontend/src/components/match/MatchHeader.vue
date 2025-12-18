@@ -14,55 +14,21 @@
         </div>
       </div>
     </div>
-
-    <div class="header-extras">
-      <div class="post-match-pill" v-if="match.status !== 'finished'">
-        <div class="pm-info">
-          <ion-icon :icon="beerOutline" class="pm-icon"></ion-icon>
-          <span class="pm-count">{{ postMatchCount }}</span>
-          <span class="pm-label">{{ t("match_details.post_match") }}</span>
-        </div>
-        <ion-button
-          v-if="isParticipant"
-          size="small"
-          :fill="myPostMatchStatus ? 'solid' : 'outline'"
-          :color="myPostMatchStatus ? 'warning' : 'medium'"
-          @click="$emit('toggle-post-match')"
-          class="pm-btn"
-        >
-          {{ myPostMatchStatus ? t("match_details.im_in") : t("match_details.join") }}
-        </ion-button>
-      </div>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { defineProps, defineEmits } from "vue";
+import { defineProps } from "vue";
 import { useI18n } from "vue-i18n";
-import { IonIcon, IonBadge, IonButton } from "@ionic/vue";
-import { football, baseballOutline, tennisball, calendarOutline, beerOutline } from "ionicons/icons";
+import { IonIcon, IonBadge } from "@ionic/vue";
+import { football, baseballOutline, tennisball, calendarOutline } from "ionicons/icons";
 
 const props = defineProps({
   match: {
     type: Object,
     required: true,
   },
-  postMatchCount: {
-    type: Number,
-    default: 0,
-  },
-  myPostMatchStatus: {
-    type: Boolean,
-    default: false,
-  },
-  isParticipant: {
-    type: Boolean,
-    default: false,
-  },
 });
-
-defineEmits(["toggle-post-match"]);
 
 const { t } = useI18n();
 
@@ -113,55 +79,6 @@ const getSportIcon = (type) => {
   display: flex;
   align-items: center;
   gap: 20px;
-}
-
-.header-extras {
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid var(--ion-color-light);
-  padding-top: 12px;
-}
-
-.post-match-pill {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--ion-color-light);
-  padding: 4px 4px 4px 16px;
-  border-radius: 50px;
-}
-
-.pm-info {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--ion-color-medium);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.pm-icon {
-  color: var(--ion-color-warning);
-  font-size: 1.2rem;
-}
-
-.pm-count {
-  color: var(--ion-color-dark);
-  font-weight: 800;
-}
-
-.pm-label {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.pm-btn {
-  margin: 0;
-  height: 32px;
-  --border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 700;
 }
 
 .sport-icon-large {

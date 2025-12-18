@@ -192,48 +192,81 @@ exports.exportData = async (req, res) => {
 exports.getUserStats = async (req, res) => {
     const userId = req.user.id;
     try {
-        // Matches Played (Only finished matches)
+        // Matches Played by Sport
         const [matchesResult] = await db.query(
-            `SELECT COUNT(*) as count 
+            `SELECT m.sport_type, COUNT(*) as count 
              FROM participants p
              JOIN matches m ON p.match_id = m.id
              WHERE p.user_id = ? 
                AND p.status = 'confirmed'
-               AND m.status = 'finished'`,
+               AND m.status = 'finished'
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const matchesPlayed = matchesResult[0].count;
 
-        // Matches Won
+        // Matches Won by Sport
         const [winsResult] = await db.query(
-            `SELECT COUNT(*) as count 
+            `SELECT m.sport_type, COUNT(*) as count 
              FROM matches m
              JOIN participants p ON m.id = p.match_id
              WHERE p.user_id = ? 
                AND p.status = 'confirmed'
                AND m.status = 'finished'
-               AND m.winner = p.team`,
+               AND m.winner = p.team
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const matchesWon = winsResult[0].count;
 
-        // MVP Count (based on is_mvp flag in participants)
+        // MVP Count by Sport
         const [mvpResult] = await db.query(
-            `SELECT COUNT(*) as count FROM participants 
-             WHERE user_id = ? AND is_mvp = TRUE`,
+            `SELECT m.sport_type, COUNT(*) as count 
+             FROM participants p
+             JOIN matches m ON p.match_id = m.id
+             WHERE p.user_id = ? AND p.is_mvp = TRUE
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const mvpCount = mvpResult[0].count;
 
-        // Goals and Assists
+        // Goals and Assists by Sport
         const [statsResult] = await db.query(
-            `SELECT SUM(goals) as total_goals, SUM(assists) as total_assists 
-             FROM participants 
-             WHERE user_id = ?`,
+            `SELECT m.sport_type, SUM(p.goals) as total_goals, SUM(p.assists) as total_assists 
+             FROM participants p
+             JOIN matches m ON p.match_id = m.id
+             WHERE p.user_id = ?
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const totalGoals = statsResult[0].total_goals || 0;
-        const totalAssists = statsResult[0].total_assists || 0;
+
+        // Aggregate stats
+        const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
+        const statsBySport = {};
+        let totalMatches = 0;
+        let totalWins = 0;
+        let totalMvp = 0;
+        let totalGoals = 0;
+        let totalAssists = 0;
+
+        sports.forEach(sport => {
+            const matches = matchesResult.find(r => r.sport_type === sport)?.count || 0;
+            const wins = winsResult.find(r => r.sport_type === sport)?.count || 0;
+            const mvp = mvpResult.find(r => r.sport_type === sport)?.count || 0;
+            const goals = parseInt(statsResult.find(r => r.sport_type === sport)?.total_goals || 0);
+            const assists = parseInt(statsResult.find(r => r.sport_type === sport)?.total_assists || 0);
+
+            statsBySport[sport] = {
+                matchesPlayed: matches,
+                matchesWon: wins,
+                mvpCount: mvp,
+                goals: goals,
+                assists: assists
+            };
+
+            totalMatches += matches;
+            totalWins += wins;
+            totalMvp += mvp;
+            totalGoals += goals;
+            totalAssists += assists;
+        });
 
         // Get all tags
         const [tagsResult] = await db.query(
@@ -269,11 +302,12 @@ exports.getUserStats = async (req, res) => {
         );
 
         res.json({
-            matchesPlayed,
-            matchesWon,
-            mvpCount,
-            totalGoals,
-            totalAssists,
+            matchesPlayed: totalMatches,
+            matchesWon: totalWins,
+            mvpCount: totalMvp,
+            totalGoals: totalGoals,
+            totalAssists: totalAssists,
+            statsBySport,
             tags: tagsList,
             recentRatings
         });
@@ -370,48 +404,81 @@ exports.getUserProfileById = async (req, res) => {
 exports.getUserStatsById = async (req, res) => {
     const userId = req.params.id;
     try {
-        // Matches Played (Only finished matches)
+        // Matches Played by Sport
         const [matchesResult] = await db.query(
-            `SELECT COUNT(*) as count 
+            `SELECT m.sport_type, COUNT(*) as count 
              FROM participants p
              JOIN matches m ON p.match_id = m.id
              WHERE p.user_id = ? 
                AND p.status = 'confirmed'
-               AND m.status = 'finished'`,
+               AND m.status = 'finished'
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const matchesPlayed = matchesResult[0].count;
 
-        // Matches Won
+        // Matches Won by Sport
         const [winsResult] = await db.query(
-            `SELECT COUNT(*) as count 
+            `SELECT m.sport_type, COUNT(*) as count 
              FROM matches m
              JOIN participants p ON m.id = p.match_id
              WHERE p.user_id = ? 
                AND p.status = 'confirmed'
                AND m.status = 'finished'
-               AND m.winner = p.team`,
+               AND m.winner = p.team
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const matchesWon = winsResult[0].count;
 
-        // MVP Count (based on is_mvp flag in participants)
+        // MVP Count by Sport
         const [mvpResult] = await db.query(
-            `SELECT COUNT(*) as count FROM participants 
-             WHERE user_id = ? AND is_mvp = TRUE`,
+            `SELECT m.sport_type, COUNT(*) as count 
+             FROM participants p
+             JOIN matches m ON p.match_id = m.id
+             WHERE p.user_id = ? AND p.is_mvp = TRUE
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const mvpCount = mvpResult[0].count;
 
-        // Goals and Assists
+        // Goals and Assists by Sport
         const [statsResult] = await db.query(
-            `SELECT SUM(goals) as total_goals, SUM(assists) as total_assists 
-             FROM participants 
-             WHERE user_id = ?`,
+            `SELECT m.sport_type, SUM(p.goals) as total_goals, SUM(p.assists) as total_assists 
+             FROM participants p
+             JOIN matches m ON p.match_id = m.id
+             WHERE p.user_id = ?
+             GROUP BY m.sport_type`,
             [userId]
         );
-        const totalGoals = statsResult[0].total_goals || 0;
-        const totalAssists = statsResult[0].total_assists || 0;
+
+        // Aggregate stats
+        const sports = ['soccer', 'volleyball', 'padel', 'tennis'];
+        const statsBySport = {};
+        let totalMatches = 0;
+        let totalWins = 0;
+        let totalMvp = 0;
+        let totalGoals = 0;
+        let totalAssists = 0;
+
+        sports.forEach(sport => {
+            const matches = matchesResult.find(r => r.sport_type === sport)?.count || 0;
+            const wins = winsResult.find(r => r.sport_type === sport)?.count || 0;
+            const mvp = mvpResult.find(r => r.sport_type === sport)?.count || 0;
+            const goals = parseInt(statsResult.find(r => r.sport_type === sport)?.total_goals || 0);
+            const assists = parseInt(statsResult.find(r => r.sport_type === sport)?.total_assists || 0);
+
+            statsBySport[sport] = {
+                matchesPlayed: matches,
+                matchesWon: wins,
+                mvpCount: mvp,
+                goals: goals,
+                assists: assists
+            };
+
+            totalMatches += matches;
+            totalWins += wins;
+            totalMvp += mvp;
+            totalGoals += goals;
+            totalAssists += assists;
+        });
 
         // Get all tags
         const [tagsResult] = await db.query(
@@ -446,11 +513,12 @@ exports.getUserStatsById = async (req, res) => {
         );
 
         res.json({
-            matchesPlayed,
-            matchesWon,
-            mvpCount,
-            totalGoals,
-            totalAssists,
+            matchesPlayed: totalMatches,
+            matchesWon: totalWins,
+            mvpCount: totalMvp,
+            totalGoals: totalGoals,
+            totalAssists: totalAssists,
+            statsBySport,
             tags: tagsList,
             recentRatings
         });

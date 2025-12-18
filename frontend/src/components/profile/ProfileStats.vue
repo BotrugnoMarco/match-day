@@ -1,10 +1,22 @@
 <template>
   <div class="stats-container ion-padding-horizontal">
-    <ion-grid v-if="stats">
+    <!-- Sport Selector -->
+    <div class="sport-selector" v-if="stats && stats.statsBySport">
+      <ion-segment v-model="selectedSport" scrollable>
+        <ion-segment-button value="all">
+          <ion-label>{{ t("matches.all") }}</ion-label>
+        </ion-segment-button>
+        <ion-segment-button v-for="(data, sport) in activeSports" :key="sport" :value="sport">
+          <ion-label>{{ t("sports." + sport) }}</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <ion-grid v-if="currentStats">
       <ion-row>
         <ion-col size="4">
           <div class="stat-box">
-            <div class="stat-value">{{ stats.matchesPlayed }}</div>
+            <div class="stat-value">{{ currentStats.matchesPlayed }}</div>
             <div class="stat-label">{{ t("profile.matches") }}</div>
           </div>
         </ion-col>
@@ -35,23 +47,23 @@
         </ion-col>
         <ion-col size="4">
           <div class="stat-box">
-            <div class="stat-value text-warning">{{ stats.mvpCount }}</div>
+            <div class="stat-value text-warning">{{ currentStats.mvpCount }}</div>
             <div class="stat-label">{{ t("profile.mvp") }}</div>
           </div>
         </ion-col>
       </ion-row>
 
       <!-- Soccer Stats Row -->
-      <ion-row v-if="stats.totalGoals > 0 || stats.totalAssists > 0" class="ion-margin-top">
+      <ion-row v-if="currentStats.goals > 0 || currentStats.assists > 0" class="ion-margin-top">
         <ion-col size="6">
           <div class="stat-box">
-            <div class="stat-value">{{ stats.totalGoals }}</div>
+            <div class="stat-value">{{ currentStats.goals }}</div>
             <div class="stat-label">{{ t("profile.goals") }}</div>
           </div>
         </ion-col>
         <ion-col size="6">
           <div class="stat-box">
-            <div class="stat-value">{{ stats.totalAssists }}</div>
+            <div class="stat-value">{{ currentStats.assists }}</div>
             <div class="stat-label">{{ t("profile.assists") }}</div>
           </div>
         </ion-col>
@@ -75,9 +87,9 @@
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, ref } from "vue";
 import { useI18n } from "vue-i18n";
-import { IonGrid, IonRow, IonCol } from "@ionic/vue";
+import { IonGrid, IonRow, IonCol, IonSegment, IonSegmentButton, IonLabel } from "@ionic/vue";
 
 const props = defineProps({
   stats: {
@@ -91,10 +103,37 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
+const selectedSport = ref("all");
+
+const activeSports = computed(() => {
+  if (!props.stats || !props.stats.statsBySport) return {};
+  const active = {};
+  for (const [sport, data] of Object.entries(props.stats.statsBySport)) {
+    if (data.matchesPlayed > 0) {
+      active[sport] = data;
+    }
+  }
+  return active;
+});
+
+const currentStats = computed(() => {
+  if (!props.stats) return null;
+  if (selectedSport.value === "all") {
+    return {
+      matchesPlayed: props.stats.matchesPlayed,
+      matchesWon: props.stats.matchesWon,
+      mvpCount: props.stats.mvpCount,
+      goals: props.stats.totalGoals,
+      assists: props.stats.totalAssists,
+    };
+  } else {
+    return props.stats.statsBySport[selectedSport.value];
+  }
+});
 
 const winRate = computed(() => {
-  if (!props.stats || !props.stats.matchesPlayed) return 0;
-  return Math.round((props.stats.matchesWon / props.stats.matchesPlayed) * 100);
+  if (!currentStats.value || !currentStats.value.matchesPlayed) return 0;
+  return Math.round((currentStats.value.matchesWon / currentStats.value.matchesPlayed) * 100);
 });
 </script>
 
@@ -102,6 +141,11 @@ const winRate = computed(() => {
 .stats-container {
   margin-top: -20px;
   margin-bottom: var(--space-5);
+}
+
+.sport-selector {
+  margin-bottom: var(--space-4);
+  margin-top: var(--space-2);
 }
 
 .stat-box {

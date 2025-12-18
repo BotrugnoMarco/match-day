@@ -14,100 +14,70 @@
         <p>Welcome back, Admin</p>
       </div>
 
-      <ion-grid>
-        <ion-row>
-          <!-- Users -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/users')" class="admin-card users-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="peopleOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Users</ion-card-subtitle>
-                <ion-card-title>{{ stats.users }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
+      <div class="admin-grid">
+        <!-- Users -->
+        <div class="admin-item" @click="$router.push('/admin/users')">
+          <div class="icon-circle users-icon">
+            <ion-icon :icon="peopleOutline"></ion-icon>
+          </div>
+          <span class="item-label">Users</span>
+          <span class="item-count">{{ stats.users }}</span>
+        </div>
 
-          <!-- Matches -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/matches')" class="admin-card matches-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="footballOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Matches</ion-card-subtitle>
-                <ion-card-title>{{ stats.matches }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
+        <!-- Matches -->
+        <div class="admin-item" @click="$router.push('/admin/matches')">
+          <div class="icon-circle matches-icon">
+            <ion-icon :icon="footballOutline"></ion-icon>
+          </div>
+          <span class="item-label">Matches</span>
+          <span class="item-count">{{ stats.matches }}</span>
+        </div>
 
-          <!-- Support -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/support')" class="admin-card support-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="chatbubblesOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Tickets</ion-card-subtitle>
-                <ion-card-title>{{ stats.tickets }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
+        <!-- Support -->
+        <div class="admin-item" @click="$router.push('/admin/support')">
+          <div class="icon-circle support-icon">
+            <ion-icon :icon="chatbubblesOutline"></ion-icon>
+          </div>
+          <span class="item-label">Tickets</span>
+          <span class="item-count">{{ stats.tickets }}</span>
+        </div>
 
-          <!-- Votes -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/votes')" class="admin-card votes-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="starOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Votes</ion-card-subtitle>
-                <ion-card-title>{{ stats.votes }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
+        <!-- Votes -->
+        <div class="admin-item" @click="$router.push('/admin/votes')">
+          <div class="icon-circle votes-icon">
+            <ion-icon :icon="starOutline"></ion-icon>
+          </div>
+          <span class="item-label">Votes</span>
+          <span class="item-count">{{ stats.votes }}</span>
+        </div>
 
-          <!-- Friendships -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/friendships')" class="admin-card friends-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="heartOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Friendships</ion-card-subtitle>
-                <ion-card-title>{{ stats.friendships }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
+        <!-- Friendships -->
+        <div class="admin-item" @click="$router.push('/admin/friendships')">
+          <div class="icon-circle friends-icon">
+            <ion-icon :icon="heartOutline"></ion-icon>
+          </div>
+          <span class="item-label">Friends</span>
+          <span class="item-count">{{ stats.friendships }}</span>
+        </div>
 
-          <!-- Participants -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/participants')" class="admin-card participants-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="peopleCircleOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Participants</ion-card-subtitle>
-                <ion-card-title>{{ stats.participants }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
+        <!-- Participants -->
+        <div class="admin-item" @click="$router.push('/admin/participants')">
+          <div class="icon-circle participants-icon">
+            <ion-icon :icon="peopleCircleOutline"></ion-icon>
+          </div>
+          <span class="item-label">Participants</span>
+          <span class="item-count">{{ stats.participants }}</span>
+        </div>
 
-          <!-- Notifications -->
-          <ion-col size="12" size-sm="6" size-md="4">
-            <ion-card button @click="$router.push('/admin/notifications')" class="admin-card notifications-card">
-              <div class="card-icon-wrapper">
-                <ion-icon :icon="notificationsOutline"></ion-icon>
-              </div>
-              <div class="card-content-wrapper">
-                <ion-card-subtitle>Notifications</ion-card-subtitle>
-                <ion-card-title>{{ stats.notifications }}</ion-card-title>
-              </div>
-            </ion-card>
-          </ion-col>
-        </ion-row>
-      </ion-grid>
+        <!-- Notifications -->
+        <div class="admin-item" @click="$router.push('/admin/notifications')">
+          <div class="icon-circle notifications-icon">
+            <ion-icon :icon="notificationsOutline"></ion-icon>
+          </div>
+          <span class="item-label">Notifs</span>
+          <span class="item-count">{{ stats.notifications }}</span>
+        </div>
+      </div>
     </ion-content>
   </ion-page>
 </template>
@@ -183,8 +153,9 @@ export default {
 
 <style scoped>
 .dashboard-header {
-  margin-bottom: 20px;
+  margin-bottom: 30px;
   padding: 0 10px;
+  text-align: center;
 }
 
 .dashboard-header h1 {
@@ -199,82 +170,83 @@ export default {
   margin: 0;
 }
 
-.admin-card {
+.admin-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 20px;
+  padding: 10px;
+  justify-items: center;
+}
+
+.admin-item {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 20px;
-  margin: 10px;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
   transition: transform 0.2s ease;
+  width: 100%;
 }
 
-.admin-card:active {
-  transform: scale(0.98);
+.admin-item:active {
+  transform: scale(0.95);
 }
 
-.card-icon-wrapper {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
+.icon-circle {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 15px;
-  font-size: 24px;
+  font-size: 32px;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.card-content-wrapper {
-  flex: 1;
-}
-
-ion-card-subtitle {
+.item-label {
   font-size: 14px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 4px;
+  font-weight: 600;
+  color: var(--ion-text-color);
+  margin-bottom: 2px;
+}
+
+.item-count {
+  font-size: 12px;
   color: var(--ion-color-medium);
 }
 
-ion-card-title {
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--ion-text-color);
-}
-
-/* Card Specific Colors */
-.users-card .card-icon-wrapper {
+/* Icon Colors */
+.users-icon {
   background: rgba(var(--ion-color-primary-rgb), 0.1);
   color: var(--ion-color-primary);
 }
 
-.matches-card .card-icon-wrapper {
+.matches-icon {
   background: rgba(var(--ion-color-success-rgb), 0.1);
   color: var(--ion-color-success);
 }
 
-.support-card .card-icon-wrapper {
+.support-icon {
   background: rgba(var(--ion-color-warning-rgb), 0.1);
   color: var(--ion-color-warning);
 }
 
-.votes-card .card-icon-wrapper {
+.votes-icon {
   background: rgba(var(--ion-color-tertiary-rgb), 0.1);
   color: var(--ion-color-tertiary);
 }
 
-.friends-card .card-icon-wrapper {
+.friends-icon {
   background: rgba(var(--ion-color-danger-rgb), 0.1);
   color: var(--ion-color-danger);
 }
 
-.participants-card .card-icon-wrapper {
+.participants-icon {
   background: rgba(var(--ion-color-secondary-rgb), 0.1);
   color: var(--ion-color-secondary);
 }
 
-.notifications-card .card-icon-wrapper {
+.notifications-icon {
   background: rgba(var(--ion-color-medium-rgb), 0.1);
   color: var(--ion-color-medium);
 }

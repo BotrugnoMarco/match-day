@@ -1,95 +1,61 @@
 <template>
   <div class="stats-container ion-padding-horizontal">
-    <!-- Sport Selector -->
-    <div class="sport-selector" v-if="stats && stats.statsBySport">
-      <ion-segment v-model="selectedSport" scrollable>
-        <ion-segment-button value="all">
-          <ion-label>{{ t("matches.all") }}</ion-label>
-        </ion-segment-button>
-        <ion-segment-button v-for="(data, sport) in activeSports" :key="sport" :value="sport">
-          <ion-label>{{ t("sports." + sport) }}</ion-label>
-        </ion-segment-button>
-      </ion-segment>
+    <!-- Global Stats Row (Compact) -->
+    <div class="global-stats-row" v-if="stats">
+      <div class="mini-stat-card">
+        <div class="mini-stat-value">{{ stats.matchesPlayed }}</div>
+        <div class="mini-stat-label">{{ t("profile.matches") }}</div>
+      </div>
+
+      <div class="mini-stat-card">
+        <div class="mini-stat-value">{{ winRate }}%</div>
+        <div class="mini-stat-label">{{ t("profile.win_rate") }}</div>
+      </div>
+
+      <div class="mini-stat-card">
+        <div class="mini-stat-value text-warning">{{ stats.mvpCount }}</div>
+        <div class="mini-stat-label">{{ t("profile.mvp") }}</div>
+      </div>
     </div>
 
-    <ion-grid v-if="currentStats">
-      <ion-row>
-        <ion-col size="4">
-          <div class="stat-box">
-            <div class="stat-value">{{ currentStats.matchesPlayed }}</div>
-            <div class="stat-label">{{ t("profile.matches") }}</div>
-          </div>
-        </ion-col>
-        <ion-col size="4">
-          <div class="stat-box win-rate-box">
-            <div class="circular-chart">
-              <svg viewBox="0 0 36 36" class="circle-svg">
-                <path
-                  class="circle-bg"
-                  d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-                <path
-                  class="circle-progress"
-                  :stroke-dasharray="winRate + ', 100'"
-                  d="M18 2.0845
-                    a 15.9155 15.9155 0 0 1 0 31.831
-                    a 15.9155 15.9155 0 0 1 0 -31.831"
-                />
-              </svg>
-              <div class="percentage-text">
-                <span class="value">{{ winRate }}%</span>
-                <span class="label">{{ t("profile.win_rate") }}</span>
-              </div>
-            </div>
-          </div>
-        </ion-col>
-        <ion-col size="4">
-          <div class="stat-box">
-            <div class="stat-value text-warning">{{ currentStats.mvpCount }}</div>
-            <div class="stat-label">{{ t("profile.mvp") }}</div>
-          </div>
-        </ion-col>
-      </ion-row>
+    <!-- Form Row (Compact) -->
+    <div v-if="form && form.length > 0" class="form-row ion-margin-top">
+      <div class="form-label">{{ t("profile.form") }}:</div>
+      <div class="form-dots">
+        <div v-for="(result, index) in form" :key="index" class="form-dot-small" :class="result">
+          {{ result ? result.charAt(0).toUpperCase() : "-" }}
+        </div>
+      </div>
+    </div>
 
-      <!-- Soccer Stats Row -->
-      <ion-row v-if="currentStats.goals > 0 || currentStats.assists > 0" class="ion-margin-top">
-        <ion-col size="6">
-          <div class="stat-box">
-            <div class="stat-value">{{ currentStats.goals }}</div>
-            <div class="stat-label">{{ t("profile.goals") }}</div>
+    <!-- Sports Breakdown List -->
+    <div v-if="hasActiveSports" class="sports-list ion-margin-top">
+      <div v-for="(data, sport) in activeSports" :key="sport" class="sport-item">
+        <div class="sport-icon-wrapper">
+          <ion-icon :icon="getSportIcon(sport)" class="sport-icon" />
+        </div>
+        <div class="sport-details">
+          <div class="sport-name">{{ t("sports." + sport) }}</div>
+          <div class="sport-stats-line">
+            <span>{{ data.matchesPlayed }} {{ t("profile.matches") }}</span>
+            <span class="dot">•</span>
+            <span>{{ calculateWinRate(data) }}% Win</span>
+            <span v-if="data.goals > 0" class="dot">•</span>
+            <span v-if="data.goals > 0">{{ data.goals }} Goal</span>
+            <span v-if="data.assists > 0" class="dot">•</span>
+            <span v-if="data.assists > 0">{{ data.assists }} Assist</span>
           </div>
-        </ion-col>
-        <ion-col size="6">
-          <div class="stat-box">
-            <div class="stat-value">{{ currentStats.assists }}</div>
-            <div class="stat-label">{{ t("profile.assists") }}</div>
-          </div>
-        </ion-col>
-      </ion-row>
-
-      <!-- Form Status Row -->
-      <ion-row v-if="form && form.length > 0" class="ion-margin-top">
-        <ion-col size="12">
-          <div class="form-box">
-            <div class="form-label">{{ t("profile.form") }}</div>
-            <div class="form-indicators">
-              <div v-for="(result, index) in form" :key="index" class="form-dot" :class="result" :title="result">
-                {{ result ? result.charAt(0).toUpperCase() : "-" }}
-              </div>
-            </div>
-          </div>
-        </ion-col>
-      </ion-row>
-    </ion-grid>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed } from "vue";
 import { useI18n } from "vue-i18n";
-import { IonGrid, IonRow, IonCol, IonSegment, IonSegmentButton, IonLabel } from "@ionic/vue";
+import { IonIcon } from "@ionic/vue";
+import { football, baseballOutline, tennisball } from "ionicons/icons";
 
 const props = defineProps({
   stats: {
@@ -103,7 +69,6 @@ const props = defineProps({
 });
 
 const { t } = useI18n();
-const selectedSport = ref("all");
 
 const activeSports = computed(() => {
   if (!props.stats || !props.stats.statsBySport) return {};
@@ -116,203 +81,170 @@ const activeSports = computed(() => {
   return active;
 });
 
-const currentStats = computed(() => {
-  if (!props.stats) return null;
-  if (selectedSport.value === "all") {
-    return {
-      matchesPlayed: props.stats.matchesPlayed,
-      matchesWon: props.stats.matchesWon,
-      mvpCount: props.stats.mvpCount,
-      goals: props.stats.totalGoals,
-      assists: props.stats.totalAssists,
-    };
-  } else {
-    return props.stats.statsBySport[selectedSport.value];
-  }
-});
+const hasActiveSports = computed(() => Object.keys(activeSports.value).length > 0);
 
 const winRate = computed(() => {
-  if (!currentStats.value || !currentStats.value.matchesPlayed) return 0;
-  return Math.round((currentStats.value.matchesWon / currentStats.value.matchesPlayed) * 100);
+  if (!props.stats || !props.stats.matchesPlayed) return 0;
+  return Math.round((props.stats.matchesWon / props.stats.matchesPlayed) * 100);
 });
+
+const calculateWinRate = (data) => {
+  if (!data.matchesPlayed) return 0;
+  return Math.round((data.matchesWon / data.matchesPlayed) * 100);
+};
+
+const getSportIcon = (sport) => {
+  switch (sport) {
+    case "soccer":
+      return football;
+    case "volleyball":
+      return baseballOutline;
+    case "padel":
+    case "tennis":
+      return tennisball;
+    default:
+      return football;
+  }
+};
 </script>
 
 <style scoped>
 .stats-container {
-  margin-top: -20px;
-  margin-bottom: var(--space-5);
-}
-
-.sport-selector {
+  margin-top: -10px;
   margin-bottom: var(--space-4);
-  margin-top: var(--space-2);
 }
 
-.stat-box {
+.global-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.mini-stat-card {
   background: var(--ion-card-background);
   border-radius: var(--rounded-md);
-  padding: var(--space-4) var(--space-1);
-  text-align: center;
-  box-shadow: var(--shadow-md);
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.win-rate-box {
   padding: var(--space-2);
-}
-
-.circular-chart {
-  position: relative;
-  width: 100%;
-  max-width: 80px;
-  aspect-ratio: 1;
-}
-
-.circle-svg {
-  display: block;
-  margin: 0 auto;
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.circle-bg {
-  fill: none;
-  stroke: var(--ion-color-light);
-  stroke-width: 3.8;
-}
-
-.circle-progress {
-  fill: none;
-  stroke: var(--ion-color-primary);
-  stroke-width: 3.8;
-  stroke-linecap: round;
-  animation: progress 1s ease-out forwards;
-}
-
-.percentage-text {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  width: 100%;
+  align-items: center;
 }
 
-.percentage-text .value {
-  font-size: 0.9rem;
+.mini-stat-value {
+  font-size: 1.25rem;
   font-weight: 700;
-  color: var(--ion-color-dark);
-  line-height: 1;
-}
-
-.percentage-text .label {
-  font-size: 0.5rem;
-  color: var(--ion-color-medium);
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-@keyframes progress {
-  0% {
-    stroke-dasharray: 0 100;
-  }
-}
-
-.stat-value {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: var(--ion-color-dark);
+  color: var(--ion-text-color);
   line-height: 1.2;
 }
 
-.stat-label {
+.mini-stat-label {
   font-size: 0.75rem;
   color: var(--ion-color-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: var(--space-1);
-}
-
-.text-primary {
-  color: var(--ion-color-primary);
+  margin-top: 2px;
 }
 
 .text-warning {
   color: var(--ion-color-warning);
 }
 
-.form-box {
-  background: var(--ion-card-background);
-  border-radius: var(--rounded-md);
-  padding: var(--space-3) var(--space-4);
-  box-shadow: var(--shadow-md);
+.form-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: var(--space-2);
+  background: var(--ion-card-background);
+  padding: var(--space-2);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
 }
 
 .form-label {
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   font-weight: 600;
   color: var(--ion-color-medium);
-  text-transform: uppercase;
 }
 
-.form-indicators {
+.form-dots {
   display: flex;
-  gap: 8px;
+  gap: 4px;
 }
 
-.form-dot {
-  width: 24px;
-  height: 24px;
+.form-dot-small {
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
-  font-weight: 800;
+  font-size: 0.65rem;
+  font-weight: bold;
   color: white;
-  text-transform: uppercase;
 }
 
-.form-dot.win {
+.form-dot-small.win {
   background-color: var(--ion-color-success);
 }
-
-.form-dot.lost {
+.form-dot-small.draw {
+  background-color: var(--ion-color-warning);
+}
+.form-dot-small.lost {
   background-color: var(--ion-color-danger);
 }
 
-.form-dot.draw {
-  background-color: var(--ion-color-medium);
+.sports-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
 }
 
-.stat-value {
-  font-size: 1.4rem;
-  font-weight: 800;
+.sport-item {
+  display: flex;
+  align-items: center;
+  background: var(--ion-card-background);
+  padding: var(--space-3);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.sport-icon-wrapper {
+  width: 36px;
+  height: 36px;
+  background: var(--ion-color-light);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--space-3);
+}
+
+.sport-icon {
+  font-size: 1.2rem;
   color: var(--ion-color-dark);
 }
 
-.stat-label {
-  font-size: 0.8rem;
-  color: var(--ion-color-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: var(--space-1);
+.sport-details {
+  flex: 1;
 }
 
-.text-primary {
-  color: var(--ion-color-primary);
+.sport-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 2px;
 }
-.text-warning {
-  color: var(--ion-color-warning);
+
+.sport-stats-line {
+  font-size: 0.8rem;
+  color: var(--ion-color-medium);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.dot {
+  margin: 0 6px;
+  font-size: 0.6rem;
+  opacity: 0.7;
 }
 </style>

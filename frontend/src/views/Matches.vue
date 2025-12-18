@@ -470,7 +470,7 @@ const createMatch = () => {
 }
 
 .match-card-footer {
-  background: #f9f9f9;
+  background: var(--ion-color-light);
   padding: var(--space-3) var(--space-4);
   display: flex;
   justify-content: space-between;

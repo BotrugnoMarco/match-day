@@ -237,7 +237,7 @@ const fetchNearbyMatches = async () => {
     if (userLocation.value) {
       params.lat = userLocation.value.lat;
       params.lng = userLocation.value.lng;
-      params.radius = 50; // 50km radius
+      params.radius = 100; // 100km radius
     }
     const response = await api.get("/matches", { params });
     // Filter only future matches

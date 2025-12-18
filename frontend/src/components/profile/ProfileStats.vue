@@ -41,6 +41,22 @@
         </ion-col>
       </ion-row>
 
+      <!-- Soccer Stats Row -->
+      <ion-row v-if="stats.totalGoals > 0 || stats.totalAssists > 0" class="ion-margin-top">
+        <ion-col size="6">
+          <div class="stat-box">
+            <div class="stat-value">{{ stats.totalGoals }}</div>
+            <div class="stat-label">{{ t("profile.goals") }}</div>
+          </div>
+        </ion-col>
+        <ion-col size="6">
+          <div class="stat-box">
+            <div class="stat-value">{{ stats.totalAssists }}</div>
+            <div class="stat-label">{{ t("profile.assists") }}</div>
+          </div>
+        </ion-col>
+      </ion-row>
+
       <!-- Form Status Row -->
       <ion-row v-if="form && form.length > 0" class="ion-margin-top">
         <ion-col size="12">

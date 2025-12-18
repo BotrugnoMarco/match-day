@@ -225,6 +225,16 @@ exports.getUserStats = async (req, res) => {
         );
         const mvpCount = mvpResult[0].count;
 
+        // Goals and Assists
+        const [statsResult] = await db.query(
+            `SELECT SUM(goals) as total_goals, SUM(assists) as total_assists 
+             FROM participants 
+             WHERE user_id = ?`,
+            [userId]
+        );
+        const totalGoals = statsResult[0].total_goals || 0;
+        const totalAssists = statsResult[0].total_assists || 0;
+
         // Get all tags
         const [tagsResult] = await db.query(
             `SELECT tags FROM votes WHERE target_id = ? AND tags IS NOT NULL AND tags != ''`,
@@ -262,6 +272,8 @@ exports.getUserStats = async (req, res) => {
             matchesPlayed,
             matchesWon,
             mvpCount,
+            totalGoals,
+            totalAssists,
             tags: tagsList,
             recentRatings
         });
@@ -391,6 +403,16 @@ exports.getUserStatsById = async (req, res) => {
         );
         const mvpCount = mvpResult[0].count;
 
+        // Goals and Assists
+        const [statsResult] = await db.query(
+            `SELECT SUM(goals) as total_goals, SUM(assists) as total_assists 
+             FROM participants 
+             WHERE user_id = ?`,
+            [userId]
+        );
+        const totalGoals = statsResult[0].total_goals || 0;
+        const totalAssists = statsResult[0].total_assists || 0;
+
         // Get all tags
         const [tagsResult] = await db.query(
             `SELECT tags FROM votes WHERE target_id = ? AND tags IS NOT NULL AND tags != ''`,
@@ -427,6 +449,8 @@ exports.getUserStatsById = async (req, res) => {
             matchesPlayed,
             matchesWon,
             mvpCount,
+            totalGoals,
+            totalAssists,
             tags: tagsList,
             recentRatings
         });

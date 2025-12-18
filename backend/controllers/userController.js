@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const filter = require('leo-profanity');
 
 exports.uploadAvatar = async (req, res) => {
     if (!req.file) {
@@ -54,6 +55,10 @@ exports.updateProfile = async (req, res) => {
     const { username, email, birth_date, gender, status, preferred_number } = req.body;
 
     try {
+        if (username && filter.check(username)) {
+            return res.status(400).json({ error: 'Username contains inappropriate language' });
+        }
+
         // Check if username or email already exists (if changed)
         if (username || email) {
             const [existing] = await db.query(

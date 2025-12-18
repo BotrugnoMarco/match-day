@@ -5,6 +5,13 @@ const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const bodyParser = require('body-parser');
+const filter = require('leo-profanity');
+
+// Configure profanity filter (English + Italian)
+const englishWords = filter.list();
+filter.loadDictionary('it');
+filter.add(englishWords);
+
 const db = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
 const matchRoutes = require('./routes/matchRoutes');

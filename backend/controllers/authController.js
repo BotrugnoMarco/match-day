@@ -3,12 +3,17 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
+const filter = require('leo-profanity');
 
 exports.register = async (req, res) => {
     const { username, password, email, birth_date, gender, terms_accepted } = req.body;
 
     if (!username || !password || !email || !birth_date || !gender) {
         return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (filter.check(username)) {
+        return res.status(400).json({ error: 'Username contains inappropriate language' });
     }
 
     if (!terms_accepted) {

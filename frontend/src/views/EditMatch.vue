@@ -293,6 +293,9 @@ const fetchMatch = async () => {
     dateTime.value = new Date(match.value.date_time).toISOString();
 
     location.value = match.value.location;
+    if (match.value.latitude && match.value.longitude) {
+      mapCoords.value = { lat: parseFloat(match.value.latitude), lng: parseFloat(match.value.longitude) };
+    }
     sportType.value = match.value.sport_type;
     priceTotal.value = match.value.price_total;
     maxPlayers.value = match.value.max_players;

@@ -246,28 +246,48 @@ const onNearbyChange = () => {
 
 const getUserLocationAndFetch = () => {
   isLoading.value = true;
+
+  // Safety timeout to ensure loading doesn't stick forever
+  const safetyTimeout = setTimeout(() => {
+    if (isLoading.value) {
+      console.warn("Geolocation timed out via safety mechanism");
+      isLoading.value = false;
+      // Fallback fetch if stuck
+      store.dispatch("fetchMatches");
+    }
+  }, 8000);
+
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        userLocation.value = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        };
-        store
-          .dispatch("fetchMatches", {
+    try {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          clearTimeout(safetyTimeout);
+          userLocation.value = {
             lat: position.coords.latitude,
             lng: position.coords.longitude,
-            radius: 100, // 100km
-          })
-          .finally(() => (isLoading.value = false));
-      },
-      (error) => {
-        console.error("Geolocation error:", error);
-        store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
-      },
-      { timeout: 5000, maximumAge: 60000 }
-    );
+          };
+          store
+            .dispatch("fetchMatches", {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+              radius: 100, // 100km
+            })
+            .finally(() => (isLoading.value = false));
+        },
+        (error) => {
+          clearTimeout(safetyTimeout);
+          console.error("Geolocation error:", error);
+          store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
+        },
+        { timeout: 5000, maximumAge: 60000, enableHighAccuracy: false }
+      );
+    } catch (e) {
+      clearTimeout(safetyTimeout);
+      console.error("Geolocation exception:", e);
+      store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
+    }
   } else {
+    clearTimeout(safetyTimeout);
     store.dispatch("fetchMatches").finally(() => (isLoading.value = false));
   }
 };

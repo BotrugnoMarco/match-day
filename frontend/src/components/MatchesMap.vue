@@ -13,6 +13,9 @@ import { useRouter } from "vue-router";
 import { IonSpinner } from "@ionic/vue";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import "leaflet.markercluster";
+import "leaflet.markercluster/dist/MarkerCluster.css";
+import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 // Fix for default marker icons in Leaflet with Vite/Webpack
 import icon from "leaflet/dist/images/marker-icon.png";
@@ -34,6 +37,7 @@ const props = defineProps({
 
 const router = useRouter();
 let map = null;
+let markerClusterGroup = null;
 const mapReady = ref(false);
 const markers = [];
 let userMarker = null;
@@ -61,6 +65,9 @@ const initMap = () => {
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
   }).addTo(map);
+
+  markerClusterGroup = L.markerClusterGroup();
+  map.addLayer(markerClusterGroup);
 
   // User location marker (if available)
   if (props.userLocation) {
@@ -92,15 +99,15 @@ const addUserMarker = (loc) => {
 };
 
 const updateMarkers = () => {
-  if (!map) return;
+  if (!map || !markerClusterGroup) return;
 
   // Clear existing markers
-  markers.forEach((m) => map.removeLayer(m));
+  markerClusterGroup.clearLayers();
   markers.length = 0;
 
   props.matches.forEach((match) => {
     if (match.latitude && match.longitude) {
-      const marker = L.marker([match.latitude, match.longitude]).addTo(map).bindPopup(`
+      const marker = L.marker([match.latitude, match.longitude]).bindPopup(`
           <div style="text-align: center; min-width: 120px;">
             <strong style="color: #3880ff;">${match.sport_type.toUpperCase()}</strong><br>
             <span style="font-size: 0.9em;">${new Date(match.date_time).toLocaleDateString()}</span><br>
@@ -118,6 +125,7 @@ const updateMarkers = () => {
         }
       });
 
+      markerClusterGroup.addLayer(marker);
       markers.push(marker);
     }
   });

@@ -423,4 +423,24 @@ const getRoleLabel = (role, sportType) => {
   padding: 16px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
+
+/* Supporter Border Styles */
+ion-avatar.supporter-border,
+.avatar-wrapper.supporter-border ion-avatar {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+  animation: pulse-gold 2s infinite;
+}
+
+@keyframes pulse-gold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 215, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+  }
+}
 </style>

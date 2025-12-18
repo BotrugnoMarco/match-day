@@ -577,6 +577,19 @@ const createMatch = () => {
 .organizer-avatar.supporter-border {
   border: 2px solid #ffd700;
   box-shadow: 0 0 5px rgba(255, 215, 0, 0.6);
+  animation: pulse-gold 2s infinite;
+}
+
+@keyframes pulse-gold {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(255, 215, 0, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0);
+  }
 }
 
 .organizer-name {

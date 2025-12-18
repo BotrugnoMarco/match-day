@@ -30,6 +30,31 @@
             {{ getRoleLabel(skill) }}
           </ion-badge>
         </div>
+
+        <!-- Friend Actions Inline -->
+        <div class="friend-actions-inline" v-if="!isOwnProfile">
+          <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
+            <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
+            {{ t("profile.add_friend") }}
+          </ion-button>
+          <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
+            <ion-icon :icon="timeOutline" slot="start"></ion-icon>
+            {{ t("profile.request_sent") }}
+          </ion-button>
+          <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
+            <ion-button size="small" color="success" @click="$emit('accept-friend-request')">
+              <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
+              {{ t("profile.accept") }}
+            </ion-button>
+            <ion-button size="small" color="danger" @click="$emit('reject-friend-request')">
+              <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+              {{ t("profile.reject") }}
+            </ion-button>
+          </div>
+          <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
+            <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
+          </ion-badge>
+        </div>
       </div>
     </div>
 
@@ -41,31 +66,6 @@
           <ion-icon :icon="alertCircleOutline" slot="start"></ion-icon>
           {{ t("profile.complete_profile") }}
         </ion-button>
-      </div>
-
-      <!-- Friend Actions Inline -->
-      <div class="friend-actions-inline" v-if="!isOwnProfile">
-        <ion-button v-if="friendshipStatus === 'none'" size="small" color="light" fill="outline" @click="$emit('send-friend-request')">
-          <ion-icon :icon="personAddOutline" slot="start"></ion-icon>
-          {{ t("profile.add_friend") }}
-        </ion-button>
-        <ion-button v-if="friendshipStatus === 'sent'" size="small" color="light" fill="outline" disabled>
-          <ion-icon :icon="timeOutline" slot="start"></ion-icon>
-          {{ t("profile.request_sent") }}
-        </ion-button>
-        <div v-if="friendshipStatus === 'received'" class="friend-request-actions">
-          <ion-button size="small" color="success" @click="$emit('accept-friend-request')">
-            <ion-icon :icon="checkmarkCircleOutline" slot="start"></ion-icon>
-            {{ t("profile.accept") }}
-          </ion-button>
-          <ion-button size="small" color="danger" @click="$emit('reject-friend-request')">
-            <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-            {{ t("profile.reject") }}
-          </ion-button>
-        </div>
-        <ion-badge v-if="friendshipStatus === 'accepted'" color="success" class="friend-badge">
-          <ion-icon :icon="checkmarkCircleOutline"></ion-icon> {{ t("profile.friends_badge") }}
-        </ion-badge>
       </div>
     </div>
 

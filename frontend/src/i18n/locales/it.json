@@ -492,6 +492,7 @@
   },
   "status": {
     "open": "Aperta",
+    "locked": "Bloccata",
     "full": "Completa",
     "finished": "Terminata",
     "cancelled": "Annullata",

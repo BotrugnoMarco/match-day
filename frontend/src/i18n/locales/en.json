@@ -490,6 +490,7 @@
   },
   "status": {
     "open": "Open",
+    "locked": "Locked",
     "full": "Full",
     "finished": "Finished",
     "cancelled": "Cancelled",

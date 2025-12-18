@@ -10,14 +10,14 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item v-for="match in matches" :key="match.id">
+        <ion-item v-for="match in matches" :key="match.id" button @click="goToMatch(match.id)">
           <ion-label>
             <h2>{{ match.sport_type }} - {{ new Date(match.date_time).toLocaleDateString() }}</h2>
             <p>Location: {{ match.location }}</p>
             <p>Creator: {{ match.creator_name || "Unknown" }}</p>
             <p>Status: {{ match.status }}</p>
           </ion-label>
-          <ion-button fill="clear" color="danger" slot="end" @click="deleteMatch(match.id)">
+          <ion-button fill="clear" color="danger" slot="end" @click.stop="deleteMatch(match.id)">
             <ion-icon :icon="trashOutline"></ion-icon>
           </ion-button>
         </ion-item>
@@ -74,6 +74,9 @@ export default {
         console.error(e);
         alert("Failed to delete match");
       }
+    },
+    goToMatch(id) {
+      this.$router.push(`/matches/${id}`);
     },
   },
 };

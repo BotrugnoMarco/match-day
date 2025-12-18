@@ -10,13 +10,13 @@
     </ion-header>
     <ion-content>
       <ion-list>
-        <ion-item v-for="user in users" :key="user.id">
+        <ion-item v-for="user in users" :key="user.id" button @click="goToProfile(user.id)">
           <ion-label>
             <h2>{{ user.username }} <span v-if="user.role === 'admin'" style="color: red">(Admin)</span></h2>
             <p>{{ user.email }}</p>
             <p>Status: {{ user.status }}</p>
           </ion-label>
-          <ion-button fill="clear" color="danger" slot="end" @click="deleteUser(user.id)">
+          <ion-button fill="clear" color="danger" slot="end" @click.stop="deleteUser(user.id)">
             <ion-icon :icon="trashOutline"></ion-icon>
           </ion-button>
         </ion-item>
@@ -73,6 +73,9 @@ export default {
         console.error(e);
         alert("Failed to delete user");
       }
+    },
+    goToProfile(id) {
+      this.$router.push(`/profile/${id}`);
     },
   },
 };

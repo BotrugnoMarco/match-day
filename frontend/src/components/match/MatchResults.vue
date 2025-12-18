@@ -11,6 +11,12 @@
         <div class="winner-label">{{ t("match_details.winner") }}</div>
         <h1 class="winner-team" v-if="match.winner !== 'Draw'">{{ t("match_details.team") }} {{ match.winner }}</h1>
         <h1 class="winner-team draw" v-else>{{ t("match_details.draw") }}</h1>
+
+        <div class="score-display" v-if="match.score_team_a != null && match.score_team_b != null">
+          <span class="score-team-a">{{ match.score_team_a }}</span>
+          <span class="score-divider">-</span>
+          <span class="score-team-b">{{ match.score_team_b }}</span>
+        </div>
       </div>
 
       <div class="participants-card" v-if="results.length > 0">
@@ -140,6 +146,17 @@ const isMvp = (userId) => {
   margin: 0;
   font-size: 2rem;
   font-weight: 800;
+}
+
+.score-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 3.5rem;
+  font-weight: 900;
+  line-height: 1;
 }
 
 .participants-card,

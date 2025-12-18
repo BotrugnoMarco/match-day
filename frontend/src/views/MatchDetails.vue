@@ -590,6 +590,8 @@ const deleteMatch = async () => {
 const changeStatus = async (newStatus) => {
   try {
     let winner = null;
+    let scoreA = 0;
+    let scoreB = 0;
 
     if (newStatus === "voting") {
       const alert = await alertController.create({
@@ -616,46 +618,67 @@ const changeStatus = async (newStatus) => {
 
     if (newStatus === "finished") {
       const alert = await alertController.create({
-        header: t("match_details.select_winner"),
+        header: t("match_details.enter_score"),
+        inputs: [
+          {
+            name: "scoreA",
+            type: "number",
+            placeholder: t("match_details.score_team_a"),
+            min: 0,
+          },
+          {
+            name: "scoreB",
+            type: "number",
+            placeholder: t("match_details.score_team_b"),
+            min: 0,
+          },
+        ],
         buttons: [
           {
-            text: t("match_details.team_a"),
-            role: "A",
-            handler: () => {
-              winner = "A";
-            },
+            text: t("common.cancel"),
+            role: "cancel",
           },
           {
-            text: t("match_details.team_b"),
-            role: "B",
-            handler: () => {
-              winner = "B";
-            },
-          },
-          {
-            text: t("match_details.draw"),
-            role: "Draw",
-            handler: () => {
-              winner = "Draw";
+            text: t("common.confirm"),
+            handler: (data) => {
+              if (data.scoreA === "" || data.scoreB === "") {
+                presentToast(t("common.fill_all_fields"), "warning");
+                return false;
+              }
+              return true;
             },
           },
         ],
       });
 
       await alert.present();
-      const { role } = await alert.onDidDismiss();
-      if (role && role !== "backdrop") {
-        winner = role;
-      } else {
-        return; // Cancelled
+      const { role, data } = await alert.onDidDismiss();
+
+      if (role === "cancel" || !data) {
+        return;
       }
+
+      scoreA = parseInt(data.values.scoreA);
+      scoreB = parseInt(data.values.scoreB);
+
+      if (scoreA > scoreB) winner = "A";
+      else if (scoreB > scoreA) winner = "B";
+      else winner = "Draw";
     }
 
-    await api.put(`/matches/${route.params.id}/status`, { status: newStatus, winner });
+    const payload = { status: newStatus };
+    if (winner) {
+      payload.winner = winner;
+      payload.score_team_a = scoreA;
+      payload.score_team_b = scoreB;
+    }
+
+    await api.put(`/matches/${route.params.id}/status`, payload);
     await fetchMatch();
+    presentToast(t("match_details.status_updated"), "success");
   } catch (error) {
     console.error("Error updating status:", error);
-    presentToast(t("match_details.status_error"));
+    presentToast(t("match_details.status_error"), "danger");
   }
 };
 

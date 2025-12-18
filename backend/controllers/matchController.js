@@ -334,7 +334,7 @@ exports.leaveMatch = async (req, res) => {
 // Update match status (Admin/Creator only - simplified to just authenticated for now)
 exports.updateMatchStatus = async (req, res) => {
     const matchId = req.params.id;
-    const { status, winner } = req.body;
+    const { status, winner, score_team_a, score_team_b } = req.body;
     const userId = req.user.id;
 
     if (!['open', 'locked', 'finished', 'voting'].includes(status)) {
@@ -359,13 +359,16 @@ exports.updateMatchStatus = async (req, res) => {
         }
 
         if (winner) {
-            await db.query('UPDATE matches SET status = ?, winner = ? WHERE id = ?', [status, winner, matchId]);
+            await db.query(
+                'UPDATE matches SET status = ?, winner = ?, score_team_a = ?, score_team_b = ? WHERE id = ?',
+                [status, winner, score_team_a || 0, score_team_b || 0, matchId]
+            );
         } else {
             await db.query('UPDATE matches SET status = ? WHERE id = ?', [status, matchId]);
         }
 
         const io = req.app.get('io');
-        io.emit('match_updated', { matchId, status, winner });
+        io.emit('match_updated', { matchId, status, winner, score_team_a, score_team_b });
 
         // Notify participants about status change
         if (status === 'voting' || status === 'finished') {

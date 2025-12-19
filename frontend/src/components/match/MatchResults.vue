@@ -93,6 +93,7 @@
         :position="currentUser?.preferred_position || 'AT'"
         :avatar-url="currentUser?.avatar_url"
         :stats="myStats"
+        :tags="myTags"
       />
     </div>
   </div>
@@ -137,28 +138,26 @@ const myResult = computed(() => {
 });
 
 const myStats = computed(() => {
-  if (!myResult.value) return null;
+  if (!myResult.value) return {};
 
-  // Get real stats from participant data
   const myParticipant = props.match.participants?.find((p) => p.user_id === currentUser.value.id);
+  const isSoccer = props.match.sport_type === "soccer";
 
-  // Count badges to find top badge
-  const badges = myResult.value.badges || [];
-  let topBadge = "---";
-  if (badges.length > 0) {
-    // Sort by count desc
-    const sorted = [...badges].sort((a, b) => b.count - a.count);
-    // Get localized name or raw name, truncated
-    const badgeName = t("vote.tags." + sorted[0].name);
-    topBadge = badgeName.length > 8 ? badgeName.substring(0, 6) + "." : badgeName;
+  const stats = {};
+
+  if (isSoccer) {
+    stats.GOL = myParticipant?.goals || 0;
+    stats.AST = myParticipant?.assists || 0;
   }
 
-  return {
-    GOL: myParticipant?.goals || 0,
-    AST: myParticipant?.assists || 0,
-    MVP: myParticipant?.is_mvp ? 1 : 0,
-    TAG: topBadge,
-  };
+  stats.MVP = myParticipant?.is_mvp ? 1 : 0;
+
+  return stats;
+});
+
+const myTags = computed(() => {
+  if (!myResult.value || !myResult.value.badges) return [];
+  return myResult.value.badges.map((b) => t("vote.tags." + b.name));
 });
 
 const generateAndShareCard = async () => {

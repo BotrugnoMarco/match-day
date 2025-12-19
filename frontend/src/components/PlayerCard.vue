@@ -24,6 +24,10 @@
             <span class="stat-val">{{ value }}</span>
             <span class="stat-label">{{ label }}</span>
           </div>
+          <div class="stat-item" v-for="tag in tags" :key="tag">
+            <span class="stat-val" style="font-size: 14px; line-height: 1.2; white-space: normal">{{ tag }}</span>
+            <span class="stat-label">TAG</span>
+          </div>
         </div>
       </div>
 
@@ -52,6 +56,10 @@ const props = defineProps({
       VOT: 0,
       // Add more if needed
     }),
+  },
+  tags: {
+    type: Array,
+    default: () => [],
   },
   rarity: { type: String, default: "gold" }, // gold, silver, bronze, special
 });

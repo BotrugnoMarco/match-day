@@ -23,7 +23,7 @@
       </div>
 
       <div class="card-image">
-        <img :src="avatarUrl || '/default-avatar.svg'" alt="Player" crossorigin="anonymous" />
+        <img :src="localAvatarUrl" alt="Player" crossorigin="anonymous" />
         <div class="mvp-badge" v-if="isMvp">
           <ion-icon :icon="trophy"></ion-icon>
         </div>
@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { football, basketball, tennisball, baseballOutline, trophy, handLeft, handRight, footsteps } from "ionicons/icons";
 
@@ -80,6 +80,34 @@ const props = defineProps({
 });
 
 const cardRef = ref(null);
+const localAvatarUrl = ref("");
+
+const convertToBase64 = async (url) => {
+  if (!url) return "/default-avatar.svg";
+  if (url.startsWith("data:")) return url;
+
+  try {
+    const response = await fetch(url, { mode: "cors" });
+    const blob = await response.blob();
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+  } catch (e) {
+    console.warn("Could not convert image to base64, using original url:", e);
+    return url;
+  }
+};
+
+watch(
+  () => props.avatarUrl,
+  async (newVal) => {
+    localAvatarUrl.value = await convertToBase64(newVal);
+  },
+  { immediate: true }
+);
 
 const sportIcon = computed(() => {
   switch (props.sport) {
@@ -235,8 +263,9 @@ defineExpose({ cardRef });
 .card-date {
   position: absolute;
   top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  width: 100%;
+  text-align: center;
   font-size: 14px;
   font-weight: bold;
   opacity: 0.8;

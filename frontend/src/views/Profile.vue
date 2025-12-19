@@ -133,6 +133,8 @@ const saveProfile = async (formData) => {
       gender: formData.gender,
       status: formData.status,
       preferred_number: formData.preferred_number !== null && formData.preferred_number !== "" ? parseInt(formData.preferred_number) : null,
+      preferred_foot: formData.preferred_foot,
+      preferred_hand: formData.preferred_hand,
       skills: formData.skills,
     };
 

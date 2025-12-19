@@ -37,7 +37,7 @@ exports.uploadAvatar = async (req, res) => {
 exports.getProfile = async (req, res) => {
     const userId = req.user.id;
     try {
-        const [users] = await db.query('SELECT id, username, email, birth_date, gender, avatar_url, role, status, preferred_number, is_supporter FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, email, birth_date, gender, avatar_url, role, status, preferred_number, preferred_foot, preferred_hand, is_supporter FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -388,7 +388,7 @@ exports.getMatchHistory = async (req, res) => {
 exports.getUserProfileById = async (req, res) => {
     const userId = req.params.id;
     try {
-        const [users] = await db.query('SELECT id, username, avatar_url, role, status, preferred_number, is_supporter FROM users WHERE id = ?', [userId]);
+        const [users] = await db.query('SELECT id, username, avatar_url, role, status, preferred_number, preferred_foot, preferred_hand, is_supporter FROM users WHERE id = ?', [userId]);
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }

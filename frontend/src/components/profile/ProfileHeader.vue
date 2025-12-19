@@ -140,7 +140,16 @@ const isProfileIncomplete = computed(() => {
   if (!playsAnySport) return false;
 
   const hasNumber = props.user?.preferred_number != null;
-  return !hasNumber;
+  if (!hasNumber) return true;
+
+  // Check for preferred foot/hand based on sports played
+  const playsSoccer = roles.some((s) => s.sport_type === "soccer" && s.role && s.role.toLowerCase() !== "none");
+  if (playsSoccer && !props.user?.preferred_foot) return true;
+
+  const playsHandSport = roles.some((s) => ["volleyball", "tennis", "padel"].includes(s.sport_type) && s.role && s.role.toLowerCase() !== "none");
+  if (playsHandSport && !props.user?.preferred_hand) return true;
+
+  return false;
 });
 
 const getRoleLabel = (skill) => {

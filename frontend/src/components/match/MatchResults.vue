@@ -156,7 +156,6 @@ const myStats = computed(() => {
   return {
     GOL: myParticipant?.goals || 0,
     AST: myParticipant?.assists || 0,
-    VOT: myResult.value.voteCount || 0,
     MVP: myParticipant?.is_mvp ? 1 : 0,
     TAG: topBadge,
   };

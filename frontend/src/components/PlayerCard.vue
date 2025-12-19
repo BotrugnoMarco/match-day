@@ -9,7 +9,7 @@
           <ion-icon :icon="football"></ion-icon>
         </div>
         <div class="club">
-          <img src="/logo.jpg" alt="MatchDay" />
+          <img src="/icon.png" alt="MatchDay" />
         </div>
       </div>
 
@@ -59,9 +59,9 @@ const props = defineProps({
 const cardRef = ref(null);
 
 const rarityClass = computed(() => {
-  if (props.rating >= 90) return "special";
-  if (props.rating >= 80) return "gold";
-  if (props.rating >= 70) return "silver";
+  if (props.rating >= 80) return "special";
+  if (props.rating >= 70) return "gold";
+  if (props.rating >= 60) return "silver";
   return "bronze";
 });
 
@@ -208,11 +208,9 @@ defineExpose({ cardRef });
 .stat-val {
   font-weight: 700;
   margin-right: 6px;
-  width: 30px; /* Increased width for text like TAG */
+  min-width: 25px;
   text-align: right;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .stat-label {

@@ -4,15 +4,17 @@
       <div class="card-top">
         <div class="rating">{{ rating }}</div>
         <div class="position">{{ position }}</div>
-        <div class="nation">
-          <ion-icon :icon="sportIcon"></ion-icon>
-        </div>
-        <div class="side-icon" v-if="preferredSide">
-          <ion-icon :icon="sideIcon" v-if="sideIcon"></ion-icon>
-          <span v-else class="side-text">{{ sideText }}</span>
-        </div>
-        <div class="club">
-          <img src="/icon.png" alt="MatchDay" />
+        <div class="icons-row">
+          <div class="nation">
+            <ion-icon :icon="sportIcon"></ion-icon>
+          </div>
+          <div class="side-icon" v-if="preferredSide">
+            <ion-icon :icon="sideIcon" v-if="sideIcon"></ion-icon>
+            <span v-else class="side-text">{{ sideText }}</span>
+          </div>
+          <div class="club">
+            <img src="/icon.png" alt="MatchDay" />
+          </div>
         </div>
       </div>
 
@@ -200,12 +202,20 @@ defineExpose({ cardRef });
 .nation,
 .side-icon,
 .club {
-  margin-top: 8px;
+  margin-top: 0;
   width: 24px;
   height: 24px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.icons-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
 }
 
 .side-icon {
@@ -225,8 +235,9 @@ defineExpose({ cardRef });
 
 .card-date {
   position: absolute;
-  top: 35px;
-  right: 30px;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 14px;
   font-weight: bold;
   opacity: 0.8;

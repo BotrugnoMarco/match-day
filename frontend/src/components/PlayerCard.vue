@@ -214,7 +214,7 @@ defineExpose({ cardRef });
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 8px;
+  gap: 2px;
   margin-top: 5px;
 }
 

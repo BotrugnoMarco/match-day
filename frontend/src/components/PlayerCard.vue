@@ -109,7 +109,8 @@ const sideIcon = computed(() => {
   } else {
     // Soccer - Foot
     // footsteps is usually two feet.
-    return footsteps;
+    if (side === "Both") return footsteps;
+    return null;
   }
 });
 
@@ -264,7 +265,7 @@ defineExpose({ cardRef });
 
 .card-info {
   position: absolute;
-  bottom: 40px;
+  bottom: 65px;
   left: 0;
   width: 100%;
   text-align: center;

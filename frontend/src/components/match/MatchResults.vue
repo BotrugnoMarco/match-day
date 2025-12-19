@@ -4,7 +4,14 @@
     <div v-if="match.status === 'finished'" class="results-section">
       <div class="section-title">
         <h3>{{ t("match_details.match_results") }}</h3>
-        <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
+        <div style="display: flex; align-items: center; gap: 10px">
+          <ion-button v-if="myResult" size="small" fill="outline" @click="generateAndShareCard" :disabled="isGeneratingCard">
+            <ion-icon :icon="shareSocialOutline" slot="start" v-if="!isGeneratingCard"></ion-icon>
+            <ion-spinner v-if="isGeneratingCard" name="crescent" style="width: 16px; height: 16px; margin-right: 8px"></ion-spinner>
+            Card
+          </ion-button>
+          <ion-icon :icon="trophyOutline" color="warning"></ion-icon>
+        </div>
       </div>
 
       <div class="winner-card">
@@ -76,15 +83,36 @@
         </ion-list>
       </div>
     </div>
+
+    <!-- Hidden Player Card for Generation -->
+    <div style="position: absolute; left: -9999px; top: -9999px" v-if="myResult">
+      <PlayerCard
+        ref="playerCardRef"
+        :name="currentUser?.username || 'Player'"
+        :rating="Math.round(myResult.averageRating * 10)"
+        :position="currentUser?.preferred_position || 'AT'"
+        :avatar-url="currentUser?.avatar_url"
+        :stats="myStats"
+      />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { IonList, IonItem, IonLabel, IonIcon, IonBadge } from "@ionic/vue";
-import { trophyOutline, chatboxEllipsesOutline } from "ionicons/icons";
+import { IonList, IonItem, IonLabel, IonIcon, IonBadge, IonButton, IonSpinner } from "@ionic/vue";
+import { trophyOutline, chatboxEllipsesOutline, shareSocialOutline } from "ionicons/icons";
 import { useI18n } from "vue-i18n";
+import { useStore } from "vuex";
+import { computed, ref } from "vue";
+import PlayerCard from "../PlayerCard.vue";
+import html2canvas from "html2canvas";
+import { Share } from "@capacitor/share";
 
 const { t } = useI18n();
+const store = useStore();
+const currentUser = computed(() => store.getters.currentUser);
+const isGeneratingCard = ref(false);
+const playerCardRef = ref(null);
 
 const props = defineProps({
   match: {
@@ -101,7 +129,70 @@ const props = defineProps({
   },
 });
 
-defineEmits(["go-to-profile"]);
+const emit = defineEmits(["go-to-profile"]);
+
+const myResult = computed(() => {
+  if (!currentUser.value || !props.results) return null;
+  return props.results.find((r) => r.target_id === currentUser.value.id);
+});
+
+const myStats = computed(() => {
+  if (!myResult.value) return null;
+  // Mock stats generation based on rating and role
+  const rating = myResult.value.averageRating * 10; // 0-100
+  const base = Math.round(rating);
+
+  return {
+    pac: Math.min(99, base + Math.floor(Math.random() * 10 - 2)),
+    sho: Math.min(99, base + Math.floor(Math.random() * 10 - 5)),
+    pas: Math.min(99, base + Math.floor(Math.random() * 10)),
+    dri: Math.min(99, base + Math.floor(Math.random() * 10 + 2)),
+    def: Math.min(99, base + Math.floor(Math.random() * 20 - 10)),
+    phy: Math.min(99, base + Math.floor(Math.random() * 10)),
+  };
+});
+
+const generateAndShareCard = async () => {
+  if (!playerCardRef.value || !playerCardRef.value.cardRef) return;
+
+  isGeneratingCard.value = true;
+  try {
+    // Wait for render
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const element = playerCardRef.value.cardRef;
+    const canvas = await html2canvas(element, {
+      backgroundColor: null,
+      scale: 2, // Better quality
+      useCORS: true, // For images
+    });
+
+    const dataUrl = canvas.toDataURL("image/png");
+
+    const blob = await (await fetch(dataUrl)).blob();
+    const file = new File([blob], "my-match-card.png", { type: "image/png" });
+
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: "La mia prestazione su MatchDay",
+        text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
+      });
+    } else {
+      // Fallback
+      await Share.share({
+        title: "La mia prestazione su MatchDay",
+        text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
+        url: "https://matchday.botrugno.dev",
+        dialogTitle: "Condividi la tua card",
+      });
+    }
+  } catch (error) {
+    console.error("Error generating card:", error);
+  } finally {
+    isGeneratingCard.value = false;
+  }
+};
 
 const getPlayerTeam = (userId) => {
   const player = props.match.participants?.find((p) => p.user_id === userId);

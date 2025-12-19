@@ -138,17 +138,27 @@ const myResult = computed(() => {
 
 const myStats = computed(() => {
   if (!myResult.value) return null;
-  // Mock stats generation based on rating and role
-  const rating = myResult.value.averageRating * 10; // 0-100
-  const base = Math.round(rating);
+
+  // Get real stats from participant data
+  const myParticipant = props.match.participants?.find((p) => p.user_id === currentUser.value.id);
+
+  // Count badges to find top badge
+  const badges = myResult.value.badges || [];
+  let topBadge = "---";
+  if (badges.length > 0) {
+    // Sort by count desc
+    const sorted = [...badges].sort((a, b) => b.count - a.count);
+    // Get localized name or raw name, truncated
+    const badgeName = t("vote.tags." + sorted[0].name);
+    topBadge = badgeName.length > 8 ? badgeName.substring(0, 6) + "." : badgeName;
+  }
 
   return {
-    pac: Math.min(99, base + Math.floor(Math.random() * 10 - 2)),
-    sho: Math.min(99, base + Math.floor(Math.random() * 10 - 5)),
-    pas: Math.min(99, base + Math.floor(Math.random() * 10)),
-    dri: Math.min(99, base + Math.floor(Math.random() * 10 + 2)),
-    def: Math.min(99, base + Math.floor(Math.random() * 20 - 10)),
-    phy: Math.min(99, base + Math.floor(Math.random() * 10)),
+    GOL: myParticipant?.goals || 0,
+    AST: myParticipant?.assists || 0,
+    VOT: myResult.value.voteCount || 0,
+    MVP: myParticipant?.is_mvp ? 1 : 0,
+    TAG: topBadge,
   };
 });
 

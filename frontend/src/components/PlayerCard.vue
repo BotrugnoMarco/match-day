@@ -21,29 +21,9 @@
       <div class="card-info">
         <div class="name">{{ name }}</div>
         <div class="stats-grid">
-          <div class="stat-item">
-            <span class="stat-val">{{ pac }}</span>
-            <span class="stat-label">PAC</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">{{ sho }}</span>
-            <span class="stat-label">TIR</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">{{ pas }}</span>
-            <span class="stat-label">PAS</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">{{ dri }}</span>
-            <span class="stat-label">DRI</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">{{ def }}</span>
-            <span class="stat-label">DIF</span>
-          </div>
-          <div class="stat-item">
-            <span class="stat-val">{{ phy }}</span>
-            <span class="stat-label">FIS</span>
+          <div class="stat-item" v-for="(value, label) in stats" :key="label">
+            <span class="stat-val">{{ value }}</span>
+            <span class="stat-label">{{ label }}</span>
           </div>
         </div>
       </div>
@@ -68,25 +48,16 @@ const props = defineProps({
   stats: {
     type: Object,
     default: () => ({
-      pac: 90,
-      sho: 85,
-      pas: 88,
-      dri: 92,
-      def: 45,
-      phy: 78,
+      GOL: 0,
+      AST: 0,
+      VOT: 0,
+      // Add more if needed
     }),
   },
   rarity: { type: String, default: "gold" }, // gold, silver, bronze, special
 });
 
 const cardRef = ref(null);
-
-const pac = computed(() => props.stats.pac || 0);
-const sho = computed(() => props.stats.sho || 0);
-const pas = computed(() => props.stats.pas || 0);
-const dri = computed(() => props.stats.dri || 0);
-const def = computed(() => props.stats.def || 0);
-const phy = computed(() => props.stats.phy || 0);
 
 const rarityClass = computed(() => {
   if (props.rating >= 90) return "special";
@@ -238,8 +209,11 @@ defineExpose({ cardRef });
 .stat-val {
   font-weight: 700;
   margin-right: 6px;
-  width: 22px;
+  width: 30px; /* Increased width for text like TAG */
   text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-label {

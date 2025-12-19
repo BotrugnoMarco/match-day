@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS users (
     status ENUM('available', 'injured', 'unavailable') DEFAULT 'available',
     skill_rating DECIMAL(3, 1) DEFAULT 6.0,
     preferred_number INT DEFAULT NULL,
+    preferred_foot ENUM('Right', 'Left', 'Both') DEFAULT NULL,
+    preferred_hand ENUM('Right', 'Left', 'Both') DEFAULT NULL,
     terms_accepted_at DATETIME DEFAULT NULL,
     reset_password_token VARCHAR(255) DEFAULT NULL,
     reset_password_expires DATETIME DEFAULT NULL,

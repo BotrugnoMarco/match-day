@@ -62,7 +62,7 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
-    const { username, email, birth_date, gender, status, preferred_number, skills } = req.body;
+    const { username, email, birth_date, gender, status, preferred_number, preferred_foot, preferred_hand, skills } = req.body;
 
     try {
         if (username && filter.check(username)) {
@@ -78,6 +78,24 @@ exports.updateProfile = async (req, res) => {
             if (existing.length > 0) {
                 return res.status(400).json({ error: 'Username or email already taken' });
             }
+        }
+
+        // Update main user fields
+        const updates = [];
+        const values = [];
+
+        if (username) { updates.push('username = ?'); values.push(username); }
+        if (email) { updates.push('email = ?'); values.push(email); }
+        if (birth_date) { updates.push('birth_date = ?'); values.push(birth_date); }
+        if (gender) { updates.push('gender = ?'); values.push(gender); }
+        if (status) { updates.push('status = ?'); values.push(status); }
+        if (preferred_number !== undefined) { updates.push('preferred_number = ?'); values.push(preferred_number); }
+        if (preferred_foot) { updates.push('preferred_foot = ?'); values.push(preferred_foot); }
+        if (preferred_hand) { updates.push('preferred_hand = ?'); values.push(preferred_hand); }
+
+        if (updates.length > 0) {
+            values.push(userId);
+            await db.query(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`, values);
         }
 
         // Update Skills (Roles)
@@ -120,32 +138,14 @@ exports.updateProfile = async (req, res) => {
             }
         }
 
-        // Build dynamic query
-        let fields = [];
-        let values = [];
-
-        if (username) { fields.push('username = ?'); values.push(username); }
-        if (email) { fields.push('email = ?'); values.push(email); }
-        if (birth_date) { fields.push('birth_date = ?'); values.push(birth_date); }
-        if (gender) { fields.push('gender = ?'); values.push(gender); }
-        if (status) { fields.push('status = ?'); values.push(status); }
-        if (preferred_number !== undefined) { fields.push('preferred_number = ?'); values.push(preferred_number); }
-
-        if (fields.length === 0 && (!skills || skills.length === 0)) {
-            return res.json({ message: 'No changes to update' });
-        }
-
-        if (fields.length > 0) {
-            values.push(userId);
-            await db.query(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values);
-        }
-
         res.json({ message: 'Profile updated successfully' });
     } catch (error) {
         console.error('Update profile error:', error);
         res.status(500).json({ error: 'Server error updating profile' });
     }
 };
+
+
 
 exports.deleteAccount = async (req, res) => {
     const userId = req.user.id;

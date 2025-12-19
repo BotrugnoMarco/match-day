@@ -43,6 +43,8 @@
     "status": "Stato",
     "role": "Ruolo",
     "jersey_number": "Numero Maglia",
+    "preferred_foot": "Piede Preferito",
+    "preferred_hand": "Mano Preferita",
     "save_changes": "Salva Modifiche",
     "export_data": "Esporta Dati",
     "delete_account": "Elimina Account",
@@ -166,7 +168,10 @@
     "confirm": "Conferma",
     "delete_confirm_message": "Sei sicuro di voler eliminare tutte le notifiche?",
     "donate": "Offri una birra",
-    "select": "Seleziona"
+    "select": "Seleziona",
+    "right": "Destro",
+    "left": "Sinistro",
+    "both": "Entrambi"
   },
   "home": {
     "welcome": "Ciao, {name}!",

@@ -50,6 +50,24 @@
         <ion-input type="number" v-model="localForm.preferred_number" :placeholder="t('profile.jersey_placeholder')"></ion-input>
       </ion-item>
 
+      <ion-item>
+        <ion-label position="stacked">{{ t("profile.preferred_foot") }}</ion-label>
+        <ion-select v-model="localForm.preferred_foot" interface="popover" :placeholder="t('common.select')">
+          <ion-select-option value="Right">{{ t("common.right") }}</ion-select-option>
+          <ion-select-option value="Left">{{ t("common.left") }}</ion-select-option>
+          <ion-select-option value="Both">{{ t("common.both") }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">{{ t("profile.preferred_hand") }}</ion-label>
+        <ion-select v-model="localForm.preferred_hand" interface="popover" :placeholder="t('common.select')">
+          <ion-select-option value="Right">{{ t("common.right") }}</ion-select-option>
+          <ion-select-option value="Left">{{ t("common.left") }}</ion-select-option>
+          <ion-select-option value="Both">{{ t("common.both") }}</ion-select-option>
+        </ion-select>
+      </ion-item>
+
       <!-- Roles Selection -->
       <ion-item>
         <ion-label position="stacked">{{ t("sports.soccer") }} - {{ t("profile.role") }}</ion-label>
@@ -136,6 +154,8 @@ watch(
         gender: newUser.gender || "",
         status: newUser.status || "available",
         preferred_number: newUser.preferred_number,
+        preferred_foot: newUser.preferred_foot || "",
+        preferred_hand: newUser.preferred_hand || "",
         soccer_role: soccerSkill?.role || "",
         volleyball_role: volleyballSkill?.role || "",
       };

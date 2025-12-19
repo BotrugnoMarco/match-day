@@ -5,12 +5,19 @@
         <div class="rating">{{ rating }}</div>
         <div class="position">{{ position }}</div>
         <div class="nation">
-          <!-- Placeholder for flag -->
           <ion-icon :icon="sportIcon"></ion-icon>
+        </div>
+        <div class="side-icon" v-if="preferredSide">
+          <ion-icon :icon="sideIcon" v-if="sideIcon"></ion-icon>
+          <span v-else class="side-text">{{ sideText }}</span>
         </div>
         <div class="club">
           <img src="/icon.png" alt="MatchDay" />
         </div>
+      </div>
+
+      <div class="card-date" v-if="matchDate">
+        {{ matchDate }}
       </div>
 
       <div class="card-image">
@@ -27,20 +34,14 @@
             <span class="stat-val">{{ value }}</span>
             <span class="stat-label">{{ label }}</span>
           </div>
-          <div class="stat-item" v-if="preferredSide">
-            <span class="stat-val">{{ preferredSide }}</span>
-            <span class="stat-label">{{ preferredSideLabel }}</span>
-          </div>
           <div class="stat-item" v-for="tag in tags" :key="tag">
             <span class="stat-val" style="font-size: 14px; line-height: 1.2; white-space: normal">{{ tag }}</span>
-            <span class="stat-label">TAG</span>
           </div>
         </div>
       </div>
 
       <div class="card-bottom-logo">
         <span>MATCHDAY</span>
-        <div v-if="matchDate" class="match-date">{{ matchDate }}</div>
       </div>
     </div>
   </div>
@@ -49,7 +50,7 @@
 <script setup>
 import { computed, ref } from "vue";
 import { IonIcon } from "@ionic/vue";
-import { football, basketball, tennisball, baseballOutline, trophy } from "ionicons/icons";
+import { football, basketball, tennisball, baseballOutline, trophy, handLeft, handRight, footsteps } from "ionicons/icons";
 
 const props = defineProps({
   name: { type: String, default: "Player" },
@@ -93,10 +94,30 @@ const sportIcon = computed(() => {
   }
 });
 
-const preferredSideLabel = computed(() => {
-  if (props.sport === "soccer") return "PIEDE";
-  if (props.sport === "volleyball") return "MANO";
-  return "LATO";
+const sideIcon = computed(() => {
+  if (!props.preferredSide) return null;
+  const side = props.preferredSide; // Right, Left, Both
+  const isHand = ["volleyball", "tennis", "padel"].includes(props.sport);
+
+  if (isHand) {
+    if (side === "Right" || side === "R") return handRight;
+    if (side === "Left" || side === "L") return handLeft;
+    // For Both, maybe return null and use text? Or just handRight
+    return handRight;
+  } else {
+    // Soccer - Foot
+    // footsteps is usually two feet.
+    return footsteps;
+  }
+});
+
+const sideText = computed(() => {
+  if (!props.preferredSide) return "";
+  const side = props.preferredSide;
+  if (side === "Right" || side === "R") return "DX";
+  if (side === "Left" || side === "L") return "SX";
+  if (side === "Both") return "LR";
+  return side;
 });
 
 const rarityClass = computed(() => {
@@ -177,6 +198,7 @@ defineExpose({ cardRef });
 }
 
 .nation,
+.side-icon,
 .club {
   margin-top: 8px;
   width: 24px;
@@ -186,10 +208,30 @@ defineExpose({ cardRef });
   align-items: center;
 }
 
+.side-icon {
+  font-size: 20px;
+}
+
+.side-text {
+  font-size: 14px;
+  font-weight: bold;
+}
+
 .nation img,
 .club img {
   width: 100%;
   height: auto;
+}
+
+.card-date {
+  position: absolute;
+  top: 35px;
+  right: 30px;
+  font-size: 14px;
+  font-weight: bold;
+  opacity: 0.8;
+  z-index: 2;
+  letter-spacing: 1px;
 }
 
 .card-image {

@@ -154,7 +154,8 @@ const myStats = computed(() => {
     stats.AST = myParticipant?.assists || 0;
   }
 
-  stats.MVP = myParticipant?.is_mvp ? 1 : 0;
+  // MVP removed from stats as requested
+  // stats.MVP = myParticipant?.is_mvp ? 1 : 0;
 
   return stats;
 });
@@ -175,19 +176,11 @@ const formattedDate = computed(() => {
 
 const myPreferredSide = computed(() => {
   if (!currentUser.value) return "";
-  // Assuming these fields exist or will exist on user profile
   if (props.match.sport_type === "soccer") {
-    // Map 'Right'/'Left' to 'DX'/'SX' if needed, or just pass value
-    const foot = currentUser.value.preferred_foot;
-    if (foot === "Right" || foot === "R") return "DX";
-    if (foot === "Left" || foot === "L") return "SX";
-    return foot || "";
+    return currentUser.value.preferred_foot || "";
   }
-  if (props.match.sport_type === "volleyball" || props.match.sport_type === "tennis" || props.match.sport_type === "padel") {
-    const hand = currentUser.value.preferred_hand;
-    if (hand === "Right" || hand === "R") return "DX";
-    if (hand === "Left" || hand === "L") return "SX";
-    return hand || "";
+  if (["volleyball", "tennis", "padel"].includes(props.match.sport_type)) {
+    return currentUser.value.preferred_hand || "";
   }
   return "";
 });

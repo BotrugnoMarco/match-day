@@ -113,6 +113,7 @@ import PlayerCard from "../PlayerCard.vue";
 import html2canvas from "html2canvas";
 import { Share } from "@capacitor/share";
 import { Filesystem, Directory } from "@capacitor/filesystem";
+import { Capacitor } from "@capacitor/core";
 
 const { t } = useI18n();
 const store = useStore();
@@ -203,21 +204,41 @@ const generateAndShareCard = async () => {
 
     const dataUrl = canvas.toDataURL("image/png");
 
-    // Save to filesystem
-    const fileName = `match-card-${Date.now()}.png`;
-    const savedFile = await Filesystem.writeFile({
-      path: fileName,
-      data: dataUrl,
-      directory: Directory.Cache,
-    });
+    if (Capacitor.isNativePlatform()) {
+      // Save to filesystem (Android/iOS)
+      const fileName = `match-card-${Date.now()}.png`;
+      const savedFile = await Filesystem.writeFile({
+        path: fileName,
+        data: dataUrl,
+        directory: Directory.Cache,
+      });
 
-    // Share the file
-    await Share.share({
-      title: "La mia prestazione su MatchDay",
-      text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
-      url: savedFile.uri,
-      dialogTitle: "Condividi la tua card",
-    });
+      // Share the file
+      await Share.share({
+        title: "La mia prestazione su MatchDay",
+        text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
+        url: savedFile.uri,
+        dialogTitle: "Condividi la tua card",
+      });
+    } else {
+      // Web implementation
+      const blob = await (await fetch(dataUrl)).blob();
+      const file = new File([blob], "my-match-card.png", { type: "image/png" });
+
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        await navigator.share({
+          files: [file],
+          title: "La mia prestazione su MatchDay",
+          text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
+        });
+      } else {
+        // Download fallback for desktop/unsupported browsers
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = "match-card.png";
+        link.click();
+      }
+    }
   } catch (error) {
     console.error("Error generating card:", error);
   } finally {

@@ -5,12 +5,11 @@
         <div class="rating">{{ rating }}</div>
         <div class="position">{{ position }}</div>
         <div class="nation">
-          <img src="/assets/flags/it.png" alt="IT" v-if="false" />
           <!-- Placeholder for flag -->
-          <ion-icon :icon="football" v-else></ion-icon>
+          <ion-icon :icon="football"></ion-icon>
         </div>
         <div class="club">
-          <img src="/assets/logo.png" alt="MatchDay" />
+          <img src="/logo.jpg" alt="MatchDay" />
         </div>
       </div>
 
@@ -81,7 +80,7 @@ defineExpose({ cardRef });
 .fut-card {
   width: 280px;
   height: 420px;
-  background-image: url("/assets/card-bg-gold.png"); /* Fallback */
+  /* background-image: url("/assets/card-bg-gold.png"); Fallback removed */
   background-size: cover;
   background-position: center;
   position: relative;

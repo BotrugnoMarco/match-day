@@ -53,6 +53,7 @@
 import { computed, ref, watch } from "vue";
 import { IonIcon } from "@ionic/vue";
 import { football, basketball, tennisball, baseballOutline, trophy, handLeft, handRight, footsteps } from "ionicons/icons";
+import { Capacitor, CapacitorHttp } from "@capacitor/core";
 
 const props = defineProps({
   name: { type: String, default: "Player" },
@@ -87,14 +88,25 @@ const convertToBase64 = async (url) => {
   if (url.startsWith("data:")) return url;
 
   try {
-    const response = await fetch(url, { mode: "cors" });
-    const blob = await response.blob();
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
+    if (Capacitor.isNativePlatform()) {
+      // Use CapacitorHttp to bypass CORS on native
+      const response = await CapacitorHttp.get({
+        url: url,
+        responseType: "blob",
+      });
+      // response.data is base64 string when responseType is blob
+      const mimeType = response.headers["Content-Type"] || response.headers["content-type"] || "image/jpeg";
+      return `data:${mimeType};base64,${response.data}`;
+    } else {
+      const response = await fetch(url, { mode: "cors" });
+      const blob = await response.blob();
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      });
+    }
   } catch (e) {
     console.warn("Could not convert image to base64, using original url:", e);
     return url;

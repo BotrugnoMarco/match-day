@@ -1,6 +1,6 @@
 <template>
   <div class="map-wrapper">
-    <div id="matches-map" class="map"></div>
+    <div :id="mapId" class="map"></div>
     <div class="map-overlay" v-if="!mapReady">
       <ion-spinner></ion-spinner>
     </div>
@@ -36,6 +36,7 @@ const props = defineProps({
 });
 
 const router = useRouter();
+const mapId = `map-${Math.random().toString(36).substr(2, 9)}`;
 let map = null;
 let markerClusterGroup = null;
 const mapReady = ref(false);
@@ -57,29 +58,42 @@ onUnmounted(() => {
 const initMap = () => {
   if (map) return;
 
-  // Default center (Rome) if no user location
-  const center = props.userLocation ? [props.userLocation.lat, props.userLocation.lng] : [41.9028, 12.4964];
+  try {
+    const mapElement = document.getElementById(mapId);
+    if (!mapElement) {
+      console.warn("Map element not found, retrying...");
+      setTimeout(initMap, 500);
+      return;
+    }
 
-  map = L.map("matches-map").setView(center, 11);
+    // Default center (Rome) if no user location
+    const center = props.userLocation ? [props.userLocation.lat, props.userLocation.lng] : [41.9028, 12.4964];
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+    map = L.map(mapId).setView(center, 11);
 
-  markerClusterGroup = L.markerClusterGroup();
-  map.addLayer(markerClusterGroup);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(map);
 
-  // User location marker (if available)
-  if (props.userLocation) {
-    addUserMarker(props.userLocation);
+    markerClusterGroup = L.markerClusterGroup();
+    map.addLayer(markerClusterGroup);
+
+    // User location marker (if available)
+    if (props.userLocation) {
+      addUserMarker(props.userLocation);
+    }
+
+    updateMarkers();
+    mapReady.value = true;
+
+    setTimeout(() => {
+      if (map) map.invalidateSize();
+    }, 100);
+  } catch (error) {
+    console.error("Error initializing map:", error);
+    // Stop spinner even if map fails
+    mapReady.value = true;
   }
-
-  updateMarkers();
-  mapReady.value = true;
-
-  setTimeout(() => {
-    if (map) map.invalidateSize();
-  }, 100);
 };
 
 const addUserMarker = (loc) => {

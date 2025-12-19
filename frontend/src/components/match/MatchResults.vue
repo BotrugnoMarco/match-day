@@ -112,6 +112,7 @@ import { computed, ref } from "vue";
 import PlayerCard from "../PlayerCard.vue";
 import html2canvas from "html2canvas";
 import { Share } from "@capacitor/share";
+import { Filesystem, Directory } from "@capacitor/filesystem";
 
 const { t } = useI18n();
 const store = useStore();
@@ -202,24 +203,21 @@ const generateAndShareCard = async () => {
 
     const dataUrl = canvas.toDataURL("image/png");
 
-    const blob = await (await fetch(dataUrl)).blob();
-    const file = new File([blob], "my-match-card.png", { type: "image/png" });
+    // Save to filesystem
+    const fileName = `match-card-${Date.now()}.png`;
+    const savedFile = await Filesystem.writeFile({
+      path: fileName,
+      data: dataUrl,
+      directory: Directory.Cache,
+    });
 
-    if (navigator.canShare && navigator.canShare({ files: [file] })) {
-      await navigator.share({
-        files: [file],
-        title: "La mia prestazione su MatchDay",
-        text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
-      });
-    } else {
-      // Fallback
-      await Share.share({
-        title: "La mia prestazione su MatchDay",
-        text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
-        url: "https://matchday.botrugno.dev",
-        dialogTitle: "Condividi la tua card",
-      });
-    }
+    // Share the file
+    await Share.share({
+      title: "La mia prestazione su MatchDay",
+      text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
+      url: savedFile.uri,
+      dialogTitle: "Condividi la tua card",
+    });
   } catch (error) {
     console.error("Error generating card:", error);
   } finally {

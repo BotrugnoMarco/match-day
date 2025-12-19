@@ -36,9 +36,9 @@
             <span class="stat-val">{{ value }}</span>
             <span class="stat-label">{{ label }}</span>
           </div>
-          <div class="stat-item" v-for="tag in tags" :key="tag">
-            <span class="stat-val" style="font-size: 14px; line-height: 1.2; white-space: normal">{{ tag }}</span>
-          </div>
+        </div>
+        <div class="tags-container" v-if="tags && tags.length > 0">
+          <span class="tag-pill" v-for="tag in tags" :key="tag">{{ tag }}</span>
         </div>
       </div>
 
@@ -346,5 +346,28 @@ defineExpose({ cardRef });
   z-index: 10;
   font-size: 18px;
   border: 2px solid #fff;
+}
+
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding: 0 20px;
+}
+
+.tag-pill {
+  font-size: 12px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.special .tag-pill {
+  background: rgba(255, 255, 255, 0.2);
 }
 </style>

@@ -17,13 +17,15 @@
       "goalkeeper": "Goalkeeper",
       "defender": "Defender",
       "midfielder": "Midfielder",
-      "forward": "Forward"
+      "forward": "Forward",
+      "none": "I don't play"
     },
     "volleyball": {
       "setter": "Setter",
       "hitter": "Hitter",
       "libero": "Libero",
-      "middle_blocker": "Middle Blocker"
+      "middle_blocker": "Middle Blocker",
+      "none": "I don't play"
     }
   },
   "calendar": {

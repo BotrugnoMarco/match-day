@@ -17,13 +17,15 @@
       "goalkeeper": "Portiere",
       "defender": "Difensore",
       "midfielder": "Centrocampista",
-      "forward": "Attaccante"
+      "forward": "Attaccante",
+      "none": "Non gioco"
     },
     "volleyball": {
       "setter": "Palleggiatore",
       "hitter": "Schiacciatore",
       "libero": "Libero",
-      "middle_blocker": "Centrale"
+      "middle_blocker": "Centrale",
+      "none": "Non gioco"
     }
   },
   "calendar": {

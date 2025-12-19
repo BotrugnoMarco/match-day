@@ -25,7 +25,7 @@
         </div>
 
         <div class="roles-row">
-          <ion-badge v-for="skill in userRoles" :key="skill.sport_type" color="secondary" class="role-badge">
+          <ion-badge v-for="skill in displayRoles" :key="skill.sport_type" color="secondary" class="role-badge">
             <ion-icon :icon="getSportIcon(skill.sport_type)" style="margin-right: 4px; vertical-align: text-bottom"></ion-icon>
             {{ getRoleLabel(skill) }}
           </ion-badge>
@@ -126,11 +126,21 @@ const userRoles = computed(() => {
   return props.user?.skills?.filter((s) => s.role) || [];
 });
 
+const displayRoles = computed(() => {
+  return userRoles.value.filter((s) => s.role && s.role.toLowerCase() !== "none");
+});
+
 const isProfileIncomplete = computed(() => {
   if (!props.isOwnProfile) return false;
+
+  const roles = userRoles.value;
+  if (roles.length === 0) return true;
+
+  const playsAnySport = roles.some((s) => s.role && s.role.toLowerCase() !== "none");
+  if (!playsAnySport) return false;
+
   const hasNumber = props.user?.preferred_number != null;
-  const hasRoles = userRoles.value.length > 0;
-  return !hasNumber || !hasRoles;
+  return !hasNumber;
 });
 
 const getRoleLabel = (skill) => {

@@ -58,6 +58,7 @@
           <ion-select-option value="Defender">{{ t("roles.soccer.defender") }}</ion-select-option>
           <ion-select-option value="Midfielder">{{ t("roles.soccer.midfielder") }}</ion-select-option>
           <ion-select-option value="Forward">{{ t("roles.soccer.forward") }}</ion-select-option>
+          <ion-select-option value="None">{{ t("roles.soccer.none") }}</ion-select-option>
         </ion-select>
       </ion-item>
 
@@ -68,6 +69,7 @@
           <ion-select-option value="Hitter">{{ t("roles.volleyball.hitter") }}</ion-select-option>
           <ion-select-option value="Libero">{{ t("roles.volleyball.libero") }}</ion-select-option>
           <ion-select-option value="Middle Blocker">{{ t("roles.volleyball.middle_blocker") }}</ion-select-option>
+          <ion-select-option value="None">{{ t("roles.volleyball.none") }}</ion-select-option>
         </ion-select>
       </ion-item>
 

@@ -94,6 +94,10 @@
         :avatar-url="currentUser?.avatar_url"
         :stats="myStats"
         :tags="myTags"
+        :sport="match.sport_type"
+        :is-mvp="myStats.MVP === 1"
+        :match-date="formattedDate"
+        :preferred-side="myPreferredSide"
       />
     </div>
   </div>
@@ -158,6 +162,34 @@ const myStats = computed(() => {
 const myTags = computed(() => {
   if (!myResult.value || !myResult.value.badges) return [];
   return myResult.value.badges.map((b) => t("vote.tags." + b.name));
+});
+
+const formattedDate = computed(() => {
+  if (!props.match.date_time) return "";
+  return new Date(props.match.date_time).toLocaleDateString("it-IT", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+});
+
+const myPreferredSide = computed(() => {
+  if (!currentUser.value) return "";
+  // Assuming these fields exist or will exist on user profile
+  if (props.match.sport_type === "soccer") {
+    // Map 'Right'/'Left' to 'DX'/'SX' if needed, or just pass value
+    const foot = currentUser.value.preferred_foot;
+    if (foot === "Right" || foot === "R") return "DX";
+    if (foot === "Left" || foot === "L") return "SX";
+    return foot || "";
+  }
+  if (props.match.sport_type === "volleyball" || props.match.sport_type === "tennis" || props.match.sport_type === "padel") {
+    const hand = currentUser.value.preferred_hand;
+    if (hand === "Right" || hand === "R") return "DX";
+    if (hand === "Left" || hand === "L") return "SX";
+    return hand || "";
+  }
+  return "";
 });
 
 const generateAndShareCard = async () => {

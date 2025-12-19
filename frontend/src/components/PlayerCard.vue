@@ -6,7 +6,7 @@
         <div class="position">{{ position }}</div>
         <div class="nation">
           <!-- Placeholder for flag -->
-          <ion-icon :icon="football"></ion-icon>
+          <ion-icon :icon="sportIcon"></ion-icon>
         </div>
         <div class="club">
           <img src="/icon.png" alt="MatchDay" />
@@ -15,6 +15,9 @@
 
       <div class="card-image">
         <img :src="avatarUrl || '/default-avatar.svg'" alt="Player" crossorigin="anonymous" />
+        <div class="mvp-badge" v-if="isMvp">
+          <ion-icon :icon="trophy"></ion-icon>
+        </div>
       </div>
 
       <div class="card-info">
@@ -23,6 +26,10 @@
           <div class="stat-item" v-for="(value, label) in stats" :key="label">
             <span class="stat-val">{{ value }}</span>
             <span class="stat-label">{{ label }}</span>
+          </div>
+          <div class="stat-item" v-if="preferredSide">
+            <span class="stat-val">{{ preferredSide }}</span>
+            <span class="stat-label">{{ preferredSideLabel }}</span>
           </div>
           <div class="stat-item" v-for="tag in tags" :key="tag">
             <span class="stat-val" style="font-size: 14px; line-height: 1.2; white-space: normal">{{ tag }}</span>
@@ -33,6 +40,7 @@
 
       <div class="card-bottom-logo">
         <span>MATCHDAY</span>
+        <div v-if="matchDate" class="match-date">{{ matchDate }}</div>
       </div>
     </div>
   </div>
@@ -41,13 +49,17 @@
 <script setup>
 import { computed, ref } from "vue";
 import { IonIcon } from "@ionic/vue";
-import { football } from "ionicons/icons";
+import { football, basketball, tennisball, baseballOutline, trophy } from "ionicons/icons";
 
 const props = defineProps({
   name: { type: String, default: "Player" },
   rating: { type: [Number, String], default: 99 },
   position: { type: String, default: "AT" },
   avatarUrl: { type: String, default: "" },
+  sport: { type: String, default: "soccer" },
+  isMvp: { type: Boolean, default: false },
+  matchDate: { type: String, default: "" },
+  preferredSide: { type: String, default: "" },
   stats: {
     type: Object,
     default: () => ({
@@ -65,6 +77,27 @@ const props = defineProps({
 });
 
 const cardRef = ref(null);
+
+const sportIcon = computed(() => {
+  switch (props.sport) {
+    case "basketball":
+      return basketball;
+    case "volleyball":
+      return baseballOutline;
+    case "tennis":
+    case "padel":
+      return tennisball;
+    case "soccer":
+    default:
+      return football;
+  }
+});
+
+const preferredSideLabel = computed(() => {
+  if (props.sport === "soccer") return "PIEDE";
+  if (props.sport === "volleyball") return "MANO";
+  return "LATO";
+});
 
 const rarityClass = computed(() => {
   if (props.rating >= 80) return "special";
@@ -235,5 +268,30 @@ defineExpose({ cardRef });
   font-size: 12px;
   opacity: 0.6;
   letter-spacing: 2px;
+}
+
+.match-date {
+  font-size: 10px;
+  margin-top: 2px;
+  opacity: 0.8;
+  letter-spacing: 1px;
+}
+
+.mvp-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: linear-gradient(135deg, #ffd700 0%, #fdb931 100%);
+  color: #000;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  z-index: 10;
+  font-size: 18px;
+  border: 2px solid #fff;
 }
 </style>

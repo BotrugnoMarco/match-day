@@ -102,10 +102,8 @@ const sideIcon = computed(() => {
   const isHand = ["volleyball", "tennis", "padel"].includes(props.sport);
 
   if (isHand) {
-    if (side === "Right" || side === "R") return handRight;
-    if (side === "Left" || side === "L") return handLeft;
-    // For Both, maybe return null and use text? Or just handRight
-    return handRight;
+    // User requested DX/SX for volleyball instead of hand.
+    return null;
   } else {
     // Soccer - Foot
     // footsteps is usually two feet.

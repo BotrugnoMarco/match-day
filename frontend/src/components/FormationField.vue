@@ -78,6 +78,10 @@ const props = defineProps({
     type: String,
     default: "soccer",
   },
+  editableTeam: {
+    type: String,
+    default: null,
+  },
 });
 
 const emit = defineEmits(["save"]);
@@ -148,6 +152,7 @@ const getPlayerLabel = (name) => {
 // Drag and Drop Logic
 const startDrag = (event, player) => {
   if (!props.isEditable) return;
+  if (props.editableTeam && player.team !== props.editableTeam) return;
 
   draggedPlayerId.value = player.user_id;
 

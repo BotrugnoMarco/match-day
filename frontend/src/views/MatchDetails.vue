@@ -68,6 +68,7 @@
           :team-a-average-skill="teamAAverageSkill"
           :team-b-average-skill="teamBAverageSkill"
           :is-admin="isAdmin"
+          :is-captain="isCaptain"
           :is-confirmed="isConfirmed"
           :current-user="currentUser"
           :my-votes="myVotes"
@@ -256,6 +257,12 @@ const isAdmin = computed(() => {
   if (match.value.creator_id == currentUser.value.id) return true;
   const me = match.value.participants?.find((p) => p.user_id === currentUser.value.id);
   return me && me.is_admin;
+});
+
+const isCaptain = computed(() => {
+  if (!match.value || !currentUser.value) return false;
+  const me = match.value.participants?.find((p) => p.user_id === currentUser.value.id);
+  return me && me.is_captain;
 });
 
 const postMatchCount = computed(() => {

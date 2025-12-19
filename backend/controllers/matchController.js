@@ -1047,23 +1047,48 @@ exports.updateMatch = async (req, res) => {
 exports.updatePlayerPositions = async (req, res) => {
     const matchId = req.params.id;
     const { positions } = req.body; // Array of { userId, x, y }
-    const adminId = req.user.id;
+    const requesterId = req.user.id;
 
     try {
-        // Check if match exists and user is creator or admin
+        // Check if match exists
         const [matches] = await db.query('SELECT creator_id FROM matches WHERE id = ?', [matchId]);
         if (matches.length === 0) return res.status(404).json({ error: 'Match not found' });
 
-        const [adminCheck] = await db.query(
-            'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
-            [matchId, adminId]
+        // Get requester participant info
+        const [requesterParticipant] = await db.query(
+            'SELECT is_admin, is_captain, team FROM participants WHERE match_id = ? AND user_id = ?',
+            [matchId, requesterId]
         );
-        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === adminId);
 
-        if (!isAdmin) return res.status(403).json({ error: 'Only admins can update formation' });
+        const isCreator = matches[0].creator_id === requesterId;
+        const isAdmin = (requesterParticipant.length > 0 && requesterParticipant[0].is_admin) || isCreator;
+        const isCaptain = requesterParticipant.length > 0 && requesterParticipant[0].is_captain;
+        const requesterTeam = requesterParticipant.length > 0 ? requesterParticipant[0].team : null;
+
+        if (!isAdmin && !isCaptain) {
+            return res.status(403).json({ error: 'Only admins or captains can update formation' });
+        }
+
+        // Fetch all participants to check teams efficiently
+        const [allParticipants] = await db.query(
+            'SELECT user_id, team FROM participants WHERE match_id = ?',
+            [matchId]
+        );
+
+        const participantsMap = new Map();
+        allParticipants.forEach(p => participantsMap.set(p.user_id, p.team));
 
         // Update positions
         for (const pos of positions) {
+            // If not admin, check if target user is in the same team
+            if (!isAdmin) {
+                const targetTeam = participantsMap.get(pos.userId);
+                // Captains can only move players in their own team
+                if (targetTeam !== requesterTeam) {
+                    continue;
+                }
+            }
+
             await db.query(
                 'UPDATE participants SET x_pos = ?, y_pos = ? WHERE match_id = ? AND user_id = ?',
                 [pos.x, pos.y, matchId, pos.userId]

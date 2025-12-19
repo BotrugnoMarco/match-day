@@ -224,7 +224,8 @@
         </div>
         <FormationField
           :players="[...teamAParticipants, ...teamBParticipants]"
-          :is-editable="isAdmin"
+          :is-editable="isAdmin || isCaptain"
+          :editable-team="editableTeam"
           :sport-type="match.sport_type"
           @save="$emit('save-formation', $event)"
         />
@@ -237,11 +238,12 @@
 import { IonList, IonItem, IonAvatar, IonLabel, IonButton, IonIcon, IonBadge } from "@ionic/vue";
 import { checkmarkOutline, closeOutline, trophyOutline, shieldCheckmarkOutline, beer, cashOutline, ellipsisVertical } from "ionicons/icons";
 import { useI18n } from "vue-i18n";
+import { computed } from "vue";
 import FormationField from "../FormationField.vue";
 
 const { t } = useI18n();
 
-defineProps({
+const props = defineProps({
   match: {
     type: Object,
     required: true,
@@ -270,6 +272,7 @@ defineProps({
   teamAAverageSkill: [Number, String],
   teamBAverageSkill: [Number, String],
   isAdmin: Boolean,
+  isCaptain: Boolean,
   isConfirmed: Boolean,
   currentUser: Object,
   myVotes: {
@@ -285,6 +288,18 @@ const getRoleLabel = (role, sportType) => {
   const roleKey = role.toLowerCase().replace(" ", "_");
   return t(`roles.${sportType}.${roleKey}`);
 };
+
+const currentUserTeam = computed(() => {
+  if (!props.currentUser) return null;
+  const me = props.activeParticipants.find((p) => p.user_id === props.currentUser.id);
+  return me ? me.team : null;
+});
+
+const editableTeam = computed(() => {
+  if (props.isAdmin) return null; // Admin can edit all
+  if (props.isCaptain) return currentUserTeam.value;
+  return null;
+});
 </script>
 
 <style scoped>

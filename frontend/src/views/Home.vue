@@ -103,9 +103,9 @@
         <div class="actions-grid">
           <div class="action-item" @click="router.push('/matches')">
             <div class="action-icon blue">
-              <ion-icon :icon="calendarOutline"></ion-icon>
+              <ion-icon :icon="searchOutline"></ion-icon>
             </div>
-            <span>{{ t("menu.my_matches") }}</span>
+            <span>{{ t("home.find_match") }}</span>
           </div>
           <div class="action-item" @click="router.push('/calendar')">
             <div class="action-icon orange">
@@ -188,6 +188,7 @@ import {
   thunderstorm,
   partlySunny,
   helpCircleOutline,
+  searchOutline,
 } from "ionicons/icons";
 
 const store = useStore();

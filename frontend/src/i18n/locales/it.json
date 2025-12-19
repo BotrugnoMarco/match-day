@@ -184,7 +184,8 @@
     "monthly_stats": "Statistiche del Mese",
     "matches_played": "Partite Giocate",
     "win_rate": "Vittorie",
-    "nearby_matches": "Partite nelle vicinanze"
+    "nearby_matches": "Partite nelle vicinanze",
+    "find_match": "Trova Partita"
   },
 
   "auth": {

@@ -100,11 +100,40 @@
         :preferred-side="myPreferredSide"
       />
     </div>
+
+    <ion-modal :is-open="isModalOpen" @didDismiss="isModalOpen = false">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title>La tua Card</ion-title>
+          <ion-buttons slot="end">
+            <ion-button @click="isModalOpen = false">Chiudi</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding ion-text-center">
+        <p class="ion-margin-bottom">Tieni premuto sull'immagine per salvarla o condividerla</p>
+        <img :src="generatedImage" v-if="generatedImage" style="max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1)" />
+      </ion-content>
+    </ion-modal>
   </div>
 </template>
 
 <script setup>
-import { IonList, IonItem, IonLabel, IonIcon, IonBadge, IonButton, IonSpinner } from "@ionic/vue";
+import {
+  IonList,
+  IonItem,
+  IonLabel,
+  IonIcon,
+  IonBadge,
+  IonButton,
+  IonSpinner,
+  IonModal,
+  IonHeader,
+  IonToolbar,
+  IonTitle,
+  IonButtons,
+  IonContent,
+} from "@ionic/vue";
 import { trophyOutline, chatboxEllipsesOutline, shareSocialOutline } from "ionicons/icons";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
@@ -120,6 +149,8 @@ const store = useStore();
 const currentUser = computed(() => store.getters.currentUser);
 const isGeneratingCard = ref(false);
 const playerCardRef = ref(null);
+const isModalOpen = ref(false);
+const generatedImage = ref(null);
 
 const props = defineProps({
   match: {
@@ -225,27 +256,33 @@ const generateAndShareCard = async () => {
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], "my-match-card.png", { type: "image/png" });
 
+      let shared = false;
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        await navigator.share({
-          files: [file],
-          title: "La mia prestazione su MatchDay",
-          text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
-        });
-      } else {
+        try {
+          await navigator.share({
+            files: [file],
+            title: "La mia prestazione su MatchDay",
+            text: `Ho preso ${myResult.value.averageRating.toFixed(1)} in pagella! ⚽🔥`,
+          });
+          shared = true;
+        } catch (err) {
+          console.log("Share failed or cancelled", err);
+          // If user cancelled, we don't necessarily need to show fallback, but if it failed for other reasons we might.
+          // For simplicity, if share fails, we try fallback only if it wasn't an abort
+          if (err.name !== "AbortError") {
+            shared = false;
+          } else {
+            shared = true; // Treat abort as "handled"
+          }
+        }
+      }
+
+      if (!shared) {
         // Download fallback for desktop/unsupported browsers
         const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         if (isIOS) {
-          const win = window.open("", "_blank");
-          if (win) {
-            win.document.write(
-              '<html><body style="margin:0; display:flex; justify-content:center; align-items:center; background:#333;"><img src="' +
-                dataUrl +
-                '" style="max-width:100%; max-height:100vh;"/></body></html>'
-            );
-            win.document.title = "Match Card";
-          } else {
-            window.location.href = dataUrl;
-          }
+          generatedImage.value = dataUrl;
+          isModalOpen.value = true;
         } else {
           const link = document.createElement("a");
           link.href = dataUrl;

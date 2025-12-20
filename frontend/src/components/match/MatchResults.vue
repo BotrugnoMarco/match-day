@@ -233,10 +233,25 @@ const generateAndShareCard = async () => {
         });
       } else {
         // Download fallback for desktop/unsupported browsers
-        const link = document.createElement("a");
-        link.href = dataUrl;
-        link.download = "match-card.png";
-        link.click();
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if (isIOS) {
+          const win = window.open("", "_blank");
+          if (win) {
+            win.document.write(
+              '<html><body style="margin:0; display:flex; justify-content:center; align-items:center; background:#333;"><img src="' +
+                dataUrl +
+                '" style="max-width:100%; max-height:100vh;"/></body></html>'
+            );
+            win.document.title = "Match Card";
+          } else {
+            window.location.href = dataUrl;
+          }
+        } else {
+          const link = document.createElement("a");
+          link.href = dataUrl;
+          link.download = "match-card.png";
+          link.click();
+        }
       }
     }
   } catch (error) {

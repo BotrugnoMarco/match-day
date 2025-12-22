@@ -143,6 +143,7 @@ const saveProfile = async (formData) => {
       preferred_foot: formData.preferred_foot,
       preferred_hand: formData.preferred_hand,
       skills: formData.skills,
+      zen_mode: formData.zen_mode,
     };
 
     await api.put("/users/profile", payload);

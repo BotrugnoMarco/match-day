@@ -343,7 +343,14 @@ const fetchMatch = async () => {
     }
 
     if (match.value.location && match.value.date_time) {
-      fetchWeather();
+      const matchDate = new Date(match.value.date_time);
+      const now = new Date();
+      // Fetch weather only if match is future or recent (within last 4 hours)
+      const fourHoursAgo = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+
+      if (matchDate > fourHoursAgo) {
+        fetchWeather();
+      }
     }
 
     if (match.value.status === "finished") {

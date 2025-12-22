@@ -84,9 +84,7 @@
                     <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
                   <p v-if="p.role">
-                    <span style="font-weight: 600; color: var(--ion-color-primary)">
-                      {{ getRoleLabel(p.role, match.sport_type) }}</span
-                    >
+                    <span style="font-weight: 600; color: var(--ion-color-primary)"> {{ getRoleLabel(p.role, match.sport_type) }}</span>
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">
@@ -138,9 +136,7 @@
                     <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
                   <p v-if="p.role">
-                    <span style="font-weight: 600; color: var(--ion-color-danger)">
-                      {{ getRoleLabel(p.role, match.sport_type) }}</span
-                    >
+                    <span style="font-weight: 600; color: var(--ion-color-danger)"> {{ getRoleLabel(p.role, match.sport_type) }}</span>
                   </p>
                 </ion-label>
                 <div slot="end" class="item-actions">

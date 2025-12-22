@@ -83,10 +83,9 @@
                     <h2>{{ p.username }}</h2>
                     <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
-                  <p>
-                    {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
-                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-primary)">
-                      • {{ getRoleLabel(p.role, match.sport_type) }}</span
+                  <p v-if="p.role">
+                    <span style="font-weight: 600; color: var(--ion-color-primary)">
+                      {{ getRoleLabel(p.role, match.sport_type) }}</span
                     >
                   </p>
                 </ion-label>
@@ -138,10 +137,9 @@
                     <h2>{{ p.username }}</h2>
                     <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
                   </div>
-                  <p>
-                    {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
-                    <span v-if="p.role" style="font-weight: 600; color: var(--ion-color-danger)">
-                      • {{ getRoleLabel(p.role, match.sport_type) }}</span
+                  <p v-if="p.role">
+                    <span style="font-weight: 600; color: var(--ion-color-danger)">
+                      {{ getRoleLabel(p.role, match.sport_type) }}</span
                     >
                   </p>
                 </ion-label>
@@ -184,9 +182,8 @@
                 <h2>{{ p.username }}</h2>
                 <span v-if="p.preferred_number != null" class="jersey-number">#{{ p.preferred_number }}</span>
               </div>
-              <p>
-                {{ t("match_details.skill") }}: {{ p.skill_rating || "N/A" }}
-                <span v-if="p.role"> • {{ getRoleLabel(p.role, match.sport_type) }}</span>
+              <p v-if="p.role">
+                <span>{{ getRoleLabel(p.role, match.sport_type) }}</span>
               </p>
               <p v-if="p.status !== 'confirmed' || p.user_status">
                 <span v-if="p.status !== 'confirmed'">{{ p.status }}</span>

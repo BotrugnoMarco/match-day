@@ -52,7 +52,7 @@
             <div class="mvp-content">
               <div class="mvp-label">MVP Match</div>
               <div class="mvp-name">{{ results[0].target_name }}</div>
-              <div class="mvp-rating">{{ results[0].averageRating.toFixed(1) }}</div>
+              <div class="mvp-rating" v-if="!currentUser?.zen_mode">{{ results[0].averageRating.toFixed(1) }}</div>
             </div>
           </div>
 
@@ -66,7 +66,7 @@
             <div class="mvp-content">
               <div class="mvp-label">MVP {{ t("match_details.opponent_team") }}</div>
               <div class="mvp-name">{{ mvpOpponent.target_name }}</div>
-              <div class="mvp-rating">{{ mvpOpponent.averageRating.toFixed(1) }}</div>
+              <div class="mvp-rating" v-if="!currentUser?.zen_mode">{{ mvpOpponent.averageRating.toFixed(1) }}</div>
             </div>
           </div>
         </div>
@@ -87,7 +87,7 @@
                 </h2>
                 <ion-icon v-if="isMvp(r.target_id)" :icon="trophyOutline" color="warning" class="status-icon"></ion-icon>
               </div>
-              <div class="rating-bar-container">
+              <div class="rating-bar-container" v-if="!currentUser?.zen_mode">
                 <div class="rating-bar" :style="{ width: r.averageRating * 10 + '%' }"></div>
               </div>
               <div class="badges-row" v-if="r.badges && r.badges.length > 0">
@@ -96,7 +96,7 @@
                 </ion-badge>
               </div>
             </ion-label>
-            <div slot="end" class="rating-score">
+            <div slot="end" class="rating-score" v-if="!currentUser?.zen_mode">
               <span class="score">{{ r.averageRating.toFixed(1) }}</span>
               <span class="votes">{{ t("match_details.votes_count", { count: r.voteCount }) }}</span>
             </div>

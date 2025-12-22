@@ -63,7 +63,9 @@
           <div class="participants-card team-a-card">
             <div class="team-header-label team-a">
               {{ t("match_details.team_a") }}
-              <span v-if="teamAAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamAAverageSkill }}) </span>
+              <span v-if="teamAAverageSkill > 0 && !currentUser?.zen_mode" class="team-avg">
+                ({{ t("match_details.average_skill") }}: {{ teamAAverageSkill }})
+              </span>
             </div>
             <ion-list lines="none">
               <ion-item v-for="p in teamAParticipants" :key="p.id">
@@ -115,7 +117,9 @@
           <div class="participants-card team-b-card">
             <div class="team-header-label team-b">
               {{ t("match_details.team_b") }}
-              <span v-if="teamBAverageSkill > 0" class="team-avg"> ({{ t("match_details.average_skill") }}: {{ teamBAverageSkill }}) </span>
+              <span v-if="teamBAverageSkill > 0 && !currentUser?.zen_mode" class="team-avg">
+                ({{ t("match_details.average_skill") }}: {{ teamBAverageSkill }})
+              </span>
             </div>
             <ion-list lines="none">
               <ion-item v-for="p in teamBParticipants" :key="p.id">

@@ -38,9 +38,42 @@
       </div>
 
       <div class="participants-card" v-if="results.length > 0">
+        <!-- MVP Grid -->
+        <div class="mvp-grid">
+          <!-- Overall MVP -->
+          <div class="mvp-card overall-mvp" @click="$emit('go-to-profile', results[0].target_id)">
+            <div class="mvp-icon"><ion-icon :icon="trophyOutline"></ion-icon></div>
+            <div class="mvp-content">
+              <div class="mvp-label">MVP Match</div>
+              <div class="mvp-name">{{ results[0].target_name }}</div>
+              <div class="mvp-rating">{{ results[0].averageRating.toFixed(1) }}</div>
+            </div>
+          </div>
+
+          <!-- Opponent MVP -->
+          <div
+            class="mvp-card opponent-mvp"
+            v-if="mvpOpponent && mvpOpponent.target_id !== results[0].target_id"
+            @click="$emit('go-to-profile', mvpOpponent.target_id)"
+          >
+            <div class="mvp-icon"><ion-icon :icon="ribbonOutline"></ion-icon></div>
+            <div class="mvp-content">
+              <div class="mvp-label">MVP {{ t("match_details.opponent_team") }}</div>
+              <div class="mvp-name">{{ mvpOpponent.target_name }}</div>
+              <div class="mvp-rating">{{ mvpOpponent.averageRating.toFixed(1) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="list-header">{{ t("match_details.podium") }}</div>
         <ion-list lines="none">
-          <ion-item v-for="(r, index) in results" :key="r.target_id" button @click="$emit('go-to-profile', r.target_id)">
-            <div slot="start" class="rank-number">{{ index + 1 }}</div>
+          <ion-item v-for="(r, index) in top3" :key="r.target_id" button @click="$emit('go-to-profile', r.target_id)">
+            <div slot="start" class="rank-number">
+              <span v-if="index === 0">🥇</span>
+              <span v-else-if="index === 1">🥈</span>
+              <span v-else-if="index === 2">🥉</span>
+              <span v-else>{{ index + 1 }}</span>
+            </div>
             <ion-label>
               <div class="name-container">
                 <h2 :class="{ 'text-team-a': getPlayerTeam(r.target_id) === 'A', 'text-team-b': getPlayerTeam(r.target_id) === 'B' }">
@@ -63,6 +96,36 @@
             </div>
           </ion-item>
         </ion-list>
+
+        <!-- My Result (if not in top 3) -->
+        <div v-if="myResult && !isInTop3">
+          <div class="divider"></div>
+          <div class="list-header">{{ t("match_details.your_performance") }}</div>
+          <ion-list lines="none">
+            <ion-item button @click="$emit('go-to-profile', myResult.target_id)">
+              <div slot="start" class="rank-number">-</div>
+              <ion-label>
+                <div class="name-container">
+                  <h2 :class="{ 'text-team-a': getPlayerTeam(myResult.target_id) === 'A', 'text-team-b': getPlayerTeam(myResult.target_id) === 'B' }">
+                    {{ myResult.target_name }}
+                  </h2>
+                </div>
+                <div class="rating-bar-container">
+                  <div class="rating-bar" :style="{ width: myResult.averageRating * 10 + '%' }"></div>
+                </div>
+                <div class="badges-row" v-if="myResult.badges && myResult.badges.length > 0">
+                  <ion-badge v-for="badge in myResult.badges" :key="badge.name" color="secondary" class="result-badge-chip">
+                    {{ t("vote.tags." + badge.name) }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
+                  </ion-badge>
+                </div>
+              </ion-label>
+              <div slot="end" class="rating-score">
+                <span class="score">{{ myResult.averageRating.toFixed(1) }}</span>
+                <span class="votes">{{ t("match_details.votes_count", { count: myResult.voteCount }) }}</span>
+              </div>
+            </ion-item>
+          </ion-list>
+        </div>
       </div>
     </div>
 
@@ -134,7 +197,7 @@ import {
   IonButtons,
   IonContent,
 } from "@ionic/vue";
-import { trophyOutline, chatboxEllipsesOutline, shareSocialOutline } from "ionicons/icons";
+import { trophyOutline, chatboxEllipsesOutline, shareSocialOutline, ribbonOutline } from "ionicons/icons";
 import { useI18n } from "vue-i18n";
 import { useStore } from "vuex";
 import { computed, ref } from "vue";
@@ -172,6 +235,24 @@ const emit = defineEmits(["go-to-profile"]);
 const myResult = computed(() => {
   if (!currentUser.value || !props.results) return null;
   return props.results.find((r) => r.target_id === currentUser.value.id);
+});
+
+const top3 = computed(() => {
+  return props.results.slice(0, 3);
+});
+
+const isInTop3 = computed(() => {
+  if (!myResult.value) return false;
+  return top3.value.some((r) => r.target_id === myResult.value.target_id);
+});
+
+const mvpOpponent = computed(() => {
+  if (!currentUser.value || !props.results.length) return null;
+  const myTeam = getPlayerTeam(currentUser.value.id);
+  if (!myTeam) return null;
+
+  const opponentTeam = myTeam === "A" ? "B" : "A";
+  return props.results.find((r) => getPlayerTeam(r.target_id) === opponentTeam);
 });
 
 const myStats = computed(() => {
@@ -489,5 +570,97 @@ const isMvp = (userId) => {
   color: var(--ion-color-dark);
   font-size: 1rem;
   line-height: 1.5;
+}
+
+.mvp-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mvp-card {
+  background: var(--ion-card-background);
+  border-radius: 16px;
+  padding: 16px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 16px;
+}
+
+.mvp-card.overall-mvp {
+  background: linear-gradient(135deg, #ffd700 0%, #ffaa00 100%);
+  color: white;
+}
+
+.mvp-card.opponent-mvp {
+  background: var(--ion-card-background);
+  border: 1px solid var(--ion-color-light-shade);
+}
+
+.mvp-icon {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.overall-mvp .mvp-icon {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+}
+
+.opponent-mvp .mvp-icon {
+  background: var(--ion-color-light);
+  color: var(--ion-color-medium);
+}
+
+.mvp-content {
+  flex: 1;
+  text-align: left;
+}
+
+.mvp-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.9;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.mvp-name {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin-bottom: 4px;
+}
+
+.mvp-rating {
+  font-size: 1.4rem;
+  font-weight: 900;
+  opacity: 0.9;
+}
+
+.list-header {
+  padding: 16px 16px 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--ion-color-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.divider {
+  height: 1px;
+  background: var(--ion-color-light);
+  margin: 8px 0;
 }
 </style>

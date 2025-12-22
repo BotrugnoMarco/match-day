@@ -389,7 +389,10 @@
     "my_feedback": "I miei Feedback",
     "winner": "Vincitore",
     "team": "Squadra",
-    "draw": "Pareggio"
+    "draw": "Pareggio",
+    "opponent_team": "Squadra Avversaria",
+    "podium": "Podio",
+    "your_performance": "La tua prestazione"
   },
   "notifications": {
     "title": "Notifiche",

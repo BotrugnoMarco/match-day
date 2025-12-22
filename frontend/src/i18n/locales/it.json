@@ -376,6 +376,7 @@
     "skill": "Abilità",
     "match_results": "Risultati Partita",
     "score_points": "Segna Punti",
+    "score_required_to_finish": "Devi inserire il punteggio prima di terminare la partita",
     "score_updated": "Punteggio aggiornato con successo",
     "score_error": "Impossibile aggiornare il punteggio",
     "enter_score": "Inserisci Punteggio",

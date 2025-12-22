@@ -632,49 +632,19 @@ const changeStatus = async (newStatus) => {
     }
 
     if (newStatus === "finished") {
-      const alert = await alertController.create({
-        header: t("match_details.enter_score"),
-        inputs: [
-          {
-            name: "scoreA",
-            type: "number",
-            placeholder: t("match_details.score_team_a"),
-            min: 0,
-          },
-          {
-            name: "scoreB",
-            type: "number",
-            placeholder: t("match_details.score_team_b"),
-            min: 0,
-          },
-        ],
-        buttons: [
-          {
-            text: t("common.cancel"),
-            role: "cancel",
-          },
-          {
-            text: t("common.confirm"),
-            handler: (data) => {
-              if (data.scoreA === "" || data.scoreB === "") {
-                presentToast(t("common.fill_all_fields"), "warning");
-                return false;
-              }
-              return true;
-            },
-          },
-        ],
-      });
-
-      await alert.present();
-      const { role, data } = await alert.onDidDismiss();
-
-      if (role === "cancel" || !data) {
+      // Check if scores are set
+      if (
+        match.value.score_team_a === null ||
+        match.value.score_team_a === undefined ||
+        match.value.score_team_b === null ||
+        match.value.score_team_b === undefined
+      ) {
+        presentToast(t("match_details.score_required_to_finish"), "warning");
         return;
       }
 
-      scoreA = parseInt(data.values.scoreA);
-      scoreB = parseInt(data.values.scoreB);
+      scoreA = match.value.score_team_a;
+      scoreB = match.value.score_team_b;
 
       if (scoreA > scoreB) winner = "A";
       else if (scoreB > scoreA) winner = "B";

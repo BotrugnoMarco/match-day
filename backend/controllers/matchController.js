@@ -12,7 +12,7 @@ exports.createMatch = async (req, res) => {
 
     try {
         const [result] = await db.query(
-            'INSERT INTO matches (date_time, location, latitude, longitude, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration, creator_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO matches (date_time, location, latitude, longitude, sport_type, price_total, max_players, is_covered, has_showers, is_private, access_code, duration, creator_id, score_team_a, score_team_b) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)',
             [date_time, location, latitude || null, longitude || null, sport_type, price_total, max_players || 10, is_covered || false, has_showers || false, is_private || false, access_code || null, duration || 60, creator_id]
         );
 
@@ -378,7 +378,7 @@ exports.updateMatchStatus = async (req, res) => {
         if (winner) {
             await db.query(
                 'UPDATE matches SET status = ?, winner = ?, score_team_a = ?, score_team_b = ? WHERE id = ?',
-                [status, winner, score_team_a || 0, score_team_b || 0, matchId]
+                [status, winner, score_team_a, score_team_b, matchId]
             );
         } else {
             await db.query('UPDATE matches SET status = ? WHERE id = ?', [status, matchId]);
@@ -502,7 +502,7 @@ exports.updateMatchStats = async (req, res) => {
         // Update Match Score
         await db.query(
             'UPDATE matches SET score_team_a = ?, score_team_b = ?, set_scores = ? WHERE id = ?',
-            [score_team_a || 0, score_team_b || 0, set_scores ? JSON.stringify(set_scores) : null, matchId]
+            [score_team_a, score_team_b, set_scores ? JSON.stringify(set_scores) : null, matchId]
         );
 
         // Update Player Stats

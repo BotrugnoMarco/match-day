@@ -141,8 +141,8 @@ const props = defineProps({
 
 const emit = defineEmits(["close", "save"]);
 
-const scoreA = ref(0);
-const scoreB = ref(0);
+const scoreA = ref(null);
+const scoreB = ref(null);
 const selectedTeam = ref("A");
 const playerStats = ref({});
 const sets = ref([]);
@@ -152,8 +152,8 @@ watch(
   () => props.isOpen,
   (newVal) => {
     if (newVal && props.match) {
-      scoreA.value = props.match.score_team_a || 0;
-      scoreB.value = props.match.score_team_b || 0;
+      scoreA.value = props.match.score_team_a !== undefined && props.match.score_team_a !== null ? props.match.score_team_a : null;
+      scoreB.value = props.match.score_team_b !== undefined && props.match.score_team_b !== null ? props.match.score_team_b : null;
 
       // Initialize sets
       if (props.match.set_scores) {
@@ -240,8 +240,8 @@ const save = () => {
   }));
 
   emit("save", {
-    score_team_a: parseInt(scoreA.value),
-    score_team_b: parseInt(scoreB.value),
+    score_team_a: scoreA.value !== null && scoreA.value !== "" ? parseInt(scoreA.value) : null,
+    score_team_b: scoreB.value !== null && scoreB.value !== "" ? parseInt(scoreB.value) : null,
     player_stats: statsArray,
     set_scores: sets.value,
   });

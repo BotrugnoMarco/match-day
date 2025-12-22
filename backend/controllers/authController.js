@@ -121,6 +121,7 @@ exports.login = async (req, res) => {
                 username: user.username,
                 role: user.role,
                 avatar_url: user.avatar_url,
+                zen_mode: user.zen_mode,
                 skills: completeSkills
             }
         });

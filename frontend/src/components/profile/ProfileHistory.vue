@@ -25,7 +25,7 @@
             <div class="result-badge" :class="match.result">
               {{ match.result ? t("results." + match.result).toUpperCase() : t("profile.played") }}
             </div>
-            <div class="rating-mini" v-if="match.avg_rating">
+            <div class="rating-mini" v-if="match.avg_rating && isOwnProfile">
               <ion-icon :icon="star" color="warning"></ion-icon>
               <span>{{ match.avg_rating }}</span>
             </div>
@@ -60,6 +60,10 @@ const props = defineProps({
   limit: {
     type: Number,
     default: 0,
+  },
+  isOwnProfile: {
+    type: Boolean,
+    default: false,
   },
 });
 

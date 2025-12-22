@@ -48,13 +48,13 @@
 
       <ProfileStats :stats="stats" />
 
-      <ProfileRatingChart :history="history" />
+      <ProfileRatingChart :history="history" v-if="isOwnProfile" />
 
       <ProfileSkills :skills="user?.skills" :stats="stats" />
 
       <ProfileBadges :tags="stats?.tags" />
 
-      <ProfileHistory :history="history" :limit="5" @go-to-match="goToMatch" @view-all="goToAllMatches" />
+      <ProfileHistory :history="history" :limit="5" :is-own-profile="isOwnProfile" @go-to-match="goToMatch" @view-all="goToAllMatches" />
     </ion-content>
   </ion-page>
 </template>

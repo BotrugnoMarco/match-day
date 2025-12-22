@@ -62,7 +62,7 @@ exports.getProfile = async (req, res) => {
 
 exports.updateProfile = async (req, res) => {
     const userId = req.user.id;
-    const { username, email, birth_date, gender, status, preferred_number, preferred_foot, preferred_hand, skills } = req.body;
+    const { username, email, birth_date, gender, status, preferred_number, preferred_foot, preferred_hand, skills, zen_mode } = req.body;
 
     try {
         if (username && filter.check(username)) {
@@ -92,6 +92,7 @@ exports.updateProfile = async (req, res) => {
         if (preferred_number !== undefined) { updates.push('preferred_number = ?'); values.push(preferred_number); }
         if (preferred_foot) { updates.push('preferred_foot = ?'); values.push(preferred_foot); }
         if (preferred_hand) { updates.push('preferred_hand = ?'); values.push(preferred_hand); }
+        if (zen_mode !== undefined) { updates.push('zen_mode = ?'); values.push(zen_mode); }
 
         if (updates.length > 0) {
             values.push(userId);

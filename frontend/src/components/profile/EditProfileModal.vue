@@ -91,6 +91,14 @@
         </ion-select>
       </ion-item>
 
+      <ion-item lines="none" class="ion-margin-top">
+        <ion-label class="ion-text-wrap">
+          <h2>{{ t("profile.zen_mode") }}</h2>
+          <p>{{ t("profile.zen_mode_desc") }}</p>
+        </ion-label>
+        <ion-toggle v-model="localForm.zen_mode" slot="end"></ion-toggle>
+      </ion-item>
+
       <div class="ion-padding-top">
         <ion-button expand="block" @click="save">{{ t("profile.save_changes") }}</ion-button>
         <ion-button expand="block" color="secondary" fill="outline" class="ion-margin-top" @click="$emit('export')">
@@ -122,6 +130,7 @@ import {
   IonDatetime,
   IonSelect,
   IonSelectOption,
+  IonToggle,
 } from "@ionic/vue";
 
 const props = defineProps({
@@ -158,6 +167,7 @@ watch(
         preferred_hand: newUser.preferred_hand || "",
         soccer_role: soccerSkill?.role || "",
         volleyball_role: volleyballSkill?.role || "",
+        zen_mode: !!newUser.zen_mode,
       };
     }
   },

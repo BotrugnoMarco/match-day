@@ -5,7 +5,13 @@
       <div class="section-title">
         <h3>{{ t("match_details.match_results") }}</h3>
         <div style="display: flex; align-items: center; gap: 10px">
-          <ion-button v-if="myResult" size="small" fill="outline" @click="generateAndShareCard" :disabled="isGeneratingCard">
+          <ion-button
+            v-if="myResult && !currentUser?.zen_mode"
+            size="small"
+            fill="outline"
+            @click="generateAndShareCard"
+            :disabled="isGeneratingCard"
+          >
             <ion-icon :icon="shareSocialOutline" slot="start" v-if="!isGeneratingCard"></ion-icon>
             <ion-spinner v-if="isGeneratingCard" name="crescent" style="width: 16px; height: 16px; margin-right: 8px"></ion-spinner>
             Card
@@ -110,16 +116,23 @@
                     {{ myResult.target_name }}
                   </h2>
                 </div>
-                <div class="rating-bar-container">
-                  <div class="rating-bar" :style="{ width: myResult.averageRating * 10 + '%' }"></div>
+                <div v-if="!currentUser?.zen_mode">
+                  <div class="rating-bar-container">
+                    <div class="rating-bar" :style="{ width: myResult.averageRating * 10 + '%' }"></div>
+                  </div>
+                  <div class="badges-row" v-if="myResult.badges && myResult.badges.length > 0">
+                    <ion-badge v-for="badge in myResult.badges" :key="badge.name" color="secondary" class="result-badge-chip">
+                      {{ t("vote.tags." + badge.name) }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
+                    </ion-badge>
+                  </div>
                 </div>
-                <div class="badges-row" v-if="myResult.badges && myResult.badges.length > 0">
-                  <ion-badge v-for="badge in myResult.badges" :key="badge.name" color="secondary" class="result-badge-chip">
-                    {{ t("vote.tags." + badge.name) }} <span v-if="badge.count > 1">x{{ badge.count }}</span>
-                  </ion-badge>
+                <div v-else>
+                  <p style="font-size: 0.8rem; color: var(--ion-color-medium); margin-top: 4px">
+                    {{ t("profile.zen_mode_active") }}
+                  </p>
                 </div>
               </ion-label>
-              <div slot="end" class="rating-score">
+              <div slot="end" class="rating-score" v-if="!currentUser?.zen_mode">
                 <span class="score">{{ myResult.averageRating.toFixed(1) }}</span>
                 <span class="votes">{{ t("match_details.votes_count", { count: myResult.voteCount }) }}</span>
               </div>

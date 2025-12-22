@@ -12,9 +12,9 @@
             <ion-label>
               <div class="skill-header">
                 <h3>{{ t("sports." + skill.sport_type) }}</h3>
-                <span class="skill-rating">{{ skill.rating }}</span>
+                <span class="skill-rating" v-if="!zenMode">{{ skill.rating }}</span>
               </div>
-              <ion-progress-bar :value="skill.rating / 10" :color="getSkillColor(skill.rating)"></ion-progress-bar>
+              <ion-progress-bar :value="skill.rating / 10" :color="getSkillColor(skill.rating)" v-if="!zenMode"></ion-progress-bar>
 
               <div class="skill-stats" v-if="getSportStats(skill.sport_type)">
                 <span>{{ getSportStats(skill.sport_type).matchesPlayed }} {{ t("profile.matches") }}</span>
@@ -51,6 +51,10 @@ const props = defineProps({
   stats: {
     type: Object,
     default: () => ({}),
+  },
+  zenMode: {
+    type: Boolean,
+    default: false,
   },
 });
 

@@ -48,9 +48,9 @@
 
       <ProfileStats :stats="stats" />
 
-      <ProfileRatingChart :history="history" v-if="isOwnProfile" />
+      <ProfileRatingChart :history="history" v-if="isOwnProfile && !user?.zen_mode" />
 
-      <ProfileSkills :skills="user?.skills" :stats="stats" />
+      <ProfileSkills :skills="user?.skills" :stats="stats" :zen-mode="!!user?.zen_mode" />
 
       <ProfileBadges :tags="stats?.tags" />
 

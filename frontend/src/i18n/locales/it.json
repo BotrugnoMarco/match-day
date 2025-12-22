@@ -78,7 +78,10 @@
     "form": "Stato di Forma",
     "history": "Cronologia",
     "played": "GIOCATA",
-    "no_matches": "Nessuna partita giocata ancora."
+    "no_matches": "Nessuna partita giocata ancora.",
+    "zen_mode": "Modalità Zen",
+    "zen_mode_desc": "Nascondi i tuoi voti e le tue statistiche di valutazione. Continuerai a ricevere voti per il bilanciamento delle squadre, ma non li vedrai.",
+    "zen_mode_active": "Modalità Zen attiva. Il tuo voto è nascosto."
   },
   "support": {
     "title": "Supporto",

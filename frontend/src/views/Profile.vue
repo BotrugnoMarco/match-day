@@ -54,7 +54,14 @@
 
       <ProfileBadges :tags="stats?.tags" />
 
-      <ProfileHistory :history="history" :limit="5" :is-own-profile="isOwnProfile" @go-to-match="goToMatch" @view-all="goToAllMatches" />
+      <ProfileHistory
+        :history="history"
+        :limit="5"
+        :is-own-profile="isOwnProfile"
+        :zen-mode="!!user?.zen_mode"
+        @go-to-match="goToMatch"
+        @view-all="goToAllMatches"
+      />
     </ion-content>
   </ion-page>
 </template>

@@ -10,7 +10,12 @@
     </ion-header>
 
     <ion-content class="ion-padding-vertical">
-      <ProfileHistory :history="history" :is-own-profile="isOwnProfile" @go-to-match="goToMatch" />
+      <ProfileHistory
+        :history="history"
+        :is-own-profile="isOwnProfile"
+        :zen-mode="isOwnProfile && !!currentUser?.zen_mode"
+        @go-to-match="goToMatch"
+      />
     </ion-content>
   </ion-page>
 </template>

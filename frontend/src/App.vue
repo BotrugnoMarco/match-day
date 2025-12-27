@@ -286,6 +286,30 @@ onMounted(() => {
     }
   });
 
+  // Handle Deep Links
+  App.addListener("appUrlOpen", (event) => {
+    try {
+      const url = new URL(event.url);
+      let slug = url.pathname;
+
+      // Handle custom scheme double slashes (e.g. matchday://matches/123 -> //matches/123)
+      if (slug.startsWith("//")) {
+        slug = slug.substring(1);
+      }
+
+      // Append query parameters if any
+      if (url.search) {
+        slug += url.search;
+      }
+
+      if (slug) {
+        router.push(slug);
+      }
+    } catch (error) {
+      console.error("Error handling deep link:", error);
+    }
+  });
+
   if (currentUser.value) {
     joinUserRoom(currentUser.value.id);
   }

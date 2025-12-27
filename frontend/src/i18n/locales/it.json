@@ -67,6 +67,9 @@
     "friends_badge": "Amici",
     "friends_btn": "Amici",
     "matches": "Partite",
+    "head_to_head": "Faccia a Faccia",
+    "together": "Insieme",
+    "against": "Contro",
     "won": "Vinte",
     "win_rate": "Vittorie",
     "rating_trend": "Andamento Voto",
@@ -174,7 +177,13 @@
     "select": "Seleziona",
     "right": "Destro",
     "left": "Sinistro",
-    "both": "Entrambi"
+    "both": "Entrambi",
+    "matches": "Partite"
+  },
+  "stats": {
+    "win_short": "V",
+    "draw_short": "N",
+    "loss_short": "P"
   },
   "home": {
     "welcome": "Ciao, {name}!",

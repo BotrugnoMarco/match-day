@@ -65,6 +65,9 @@
     "friends_badge": "Friends",
     "friends_btn": "Friends",
     "matches": "Matches",
+    "head_to_head": "Head to Head",
+    "together": "Together",
+    "against": "Against",
     "won": "Won",
     "win_rate": "Win Rate",
     "rating_trend": "Rating Trend",
@@ -165,7 +168,13 @@
     "confirm": "Confirm",
     "delete_confirm_message": "Are you sure you want to delete all notifications?",
     "donate": "Buy us a beer",
-    "select": "Select"
+    "select": "Select",
+    "matches": "Matches"
+  },
+  "stats": {
+    "win_short": "W",
+    "draw_short": "D",
+    "loss_short": "L"
   },
   "home": {
     "welcome": "Hi, {name}!",

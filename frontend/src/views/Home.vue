@@ -31,8 +31,8 @@
 
       <div class="dashboard-container" v-if="isAuthenticated">
         <!-- Next Match Card -->
-        <div class="section-title">
-          <h3>{{ nextMatch && new Date(nextMatch.date_time) <= new Date() ? t("home.last_match") : t("home.next_match") }}</h3>
+        <div class="section-title" v-if="nextMatch">
+          <h3>{{ t("home.next_match") }}</h3>
         </div>
 
         <div v-if="nextMatch" class="next-match-card" @click="router.push(`/matches/${nextMatch.id}`)">
@@ -69,6 +69,32 @@
           </ion-button>
         </div>
 
+        <!-- Last Match Card -->
+        <div class="section-title" v-if="lastMatch">
+          <h3>{{ t("home.last_match") }}</h3>
+        </div>
+
+        <div v-if="lastMatch" class="next-match-card" @click="router.push(`/matches/${lastMatch.id}`)">
+          <div class="match-time">
+            <span class="day">{{ formatDate(lastMatch.date_time) }}</span>
+            <span class="time">{{ formatTime(lastMatch.date_time) }}</span>
+          </div>
+          <div class="match-info">
+            <div class="sport-badge" :class="lastMatch.sport_type">
+              <ion-icon :icon="getSportIcon(lastMatch.sport_type)"></ion-icon>
+              {{ t("sports." + lastMatch.sport_type) }}
+            </div>
+            <div class="location">
+              <ion-icon :icon="locationOutline"></ion-icon>
+              {{ lastMatch.location }}
+            </div>
+          </div>
+
+          <div class="match-action">
+            <ion-icon :icon="chevronForwardOutline"></ion-icon>
+          </div>
+        </div>
+
         <!-- Nearby Matches Map -->
         <div class="section-title" v-if="nearbyMatches.length > 0 || isLoadingNearby">
           <h3>{{ t("home.nearby_matches") }}</h3>
@@ -78,22 +104,6 @@
         </div>
         <div class="map-container" v-else-if="nearbyMatches.length > 0" style="margin-bottom: 20px">
           <MatchesMap :matches="nearbyMatches" :userLocation="userLocation" />
-        </div>
-
-        <!-- Monthly Stats -->
-        <div class="section-title" v-if="monthlyStats.played > 0">
-          <h3>{{ t("home.monthly_stats") }}</h3>
-        </div>
-        <div class="stats-card" v-if="monthlyStats.played > 0">
-          <div class="stat-item">
-            <span class="stat-value">{{ monthlyStats.played }}</span>
-            <span class="stat-label">{{ t("home.matches_played") }}</span>
-          </div>
-          <div class="stat-divider"></div>
-          <div class="stat-item">
-            <span class="stat-value">{{ monthlyStats.winRate }}%</span>
-            <span class="stat-label">{{ t("home.win_rate") }}</span>
-          </div>
         </div>
 
         <!-- Quick Actions Grid -->
@@ -251,43 +261,26 @@ const nextMatch = computed(() => {
   if (!myMatches.value || myMatches.value.length === 0) return null;
 
   const now = new Date();
-  // Filter for future matches OR the most recent finished match
   const futureMatches = myMatches.value.filter((m) => new Date(m.date_time) > now);
 
   if (futureMatches.length > 0) {
-    // Sort by date ascending (closest future match first)
     return futureMatches.sort((a, b) => new Date(a.date_time) - new Date(b.date_time))[0];
-  }
-
-  // If no future matches, show the last finished match
-  const pastMatches = myMatches.value.filter((m) => new Date(m.date_time) <= now);
-  if (pastMatches.length > 0) {
-    // Sort by date descending (most recent past match first)
-    return pastMatches.sort((a, b) => new Date(b.date_time) - new Date(a.date_time))[0];
   }
 
   return null;
 });
 
-const monthlyStats = computed(() => {
-  if (!myMatches.value) return { played: 0, winRate: 0 };
+const lastMatch = computed(() => {
+  if (!myMatches.value || myMatches.value.length === 0) return null;
 
   const now = new Date();
-  const currentMonth = now.getMonth();
-  const currentYear = now.getFullYear();
+  const pastMatches = myMatches.value.filter((m) => new Date(m.date_time) <= now);
 
-  const finishedMatches = myMatches.value.filter((m) => {
-    const d = new Date(m.date_time);
-    return m.status === "finished" && d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-  });
+  if (pastMatches.length > 0) {
+    return pastMatches.sort((a, b) => new Date(b.date_time) - new Date(a.date_time))[0];
+  }
 
-  const played = finishedMatches.length;
-  if (played === 0) return { played: 0, winRate: 0 };
-
-  const won = finishedMatches.filter((m) => m.winner && m.user_team && m.winner === m.user_team).length;
-  const winRate = Math.round((won / played) * 100);
-
-  return { played, winRate };
+  return null;
 });
 
 watch(

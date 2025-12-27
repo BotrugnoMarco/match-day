@@ -19,85 +19,75 @@
       </ion-toolbar>
     </ion-header>
     <ion-content class="home-content" :fullscreen="true">
-      <div class="home-header ion-padding-horizontal ion-padding-top">
-        <div class="logo-wrapper" v-if="!isAuthenticated">
+      <div class="home-header ion-padding-horizontal ion-padding-top" v-if="!isAuthenticated">
+        <div class="logo-wrapper">
           <img :src="logoUrl" alt="MatchDay Logo" class="main-logo" />
-        </div>
-        <div v-else class="user-welcome">
-          <h2>{{ t("home.welcome", { name: user?.username }) }}</h2>
-          <p>{{ t("home.ready_to_play") }}</p>
         </div>
       </div>
 
       <div class="dashboard-container" v-if="isAuthenticated">
-        <div class="matches-row">
-          <!-- Next Match Card -->
-          <div class="match-column">
-            <div class="section-title" v-if="nextMatch">
-              <h3>{{ t("home.next_match") }}</h3>
+        <!-- Next Match Card -->
+        <div class="section-title" v-if="nextMatch">
+          <h3>{{ t("home.next_match") }}</h3>
+        </div>
+
+        <div v-if="nextMatch" class="next-match-card" @click="router.push(`/matches/${nextMatch.id}`)">
+          <div class="match-time">
+            <span class="day">{{ formatDate(nextMatch.date_time) }}</span>
+            <span class="time">{{ formatTime(nextMatch.date_time) }}</span>
+          </div>
+          <div class="match-info">
+            <div class="sport-badge" :class="nextMatch.sport_type">
+              <ion-icon :icon="getSportIcon(nextMatch.sport_type)"></ion-icon>
+              {{ t("sports." + nextMatch.sport_type) }}
             </div>
-
-            <div v-if="nextMatch" class="next-match-card" @click="router.push(`/matches/${nextMatch.id}`)">
-              <div class="match-time">
-                <span class="day">{{ formatDate(nextMatch.date_time) }}</span>
-                <span class="time">{{ formatTime(nextMatch.date_time) }}</span>
-              </div>
-              <div class="match-info">
-                <div class="sport-badge" :class="nextMatch.sport_type">
-                  <ion-icon :icon="getSportIcon(nextMatch.sport_type)"></ion-icon>
-                  {{ t("sports." + nextMatch.sport_type) }}
-                </div>
-                <div class="location">
-                  <ion-icon :icon="locationOutline"></ion-icon>
-                  {{ nextMatch.location }}
-                </div>
-              </div>
-
-              <div class="weather-widget" v-if="nextMatchWeather">
-                <ion-icon :icon="getWeatherIconName(nextMatchWeather.weatherCode)" class="weather-icon"></ion-icon>
-                <span class="weather-temp">{{ Math.round(nextMatchWeather.maxTemp) }}°</span>
-              </div>
-
-              <div class="match-action">
-                <ion-icon :icon="chevronForwardOutline"></ion-icon>
-              </div>
-            </div>
-
-            <div v-else class="empty-match-card">
-              <p>{{ t("home.no_upcoming_matches") }}</p>
-              <ion-button size="small" fill="outline" router-link="/matches/create">
-                {{ t("home.schedule_one") }}
-                <ion-icon slot="end" :icon="addCircleOutline"></ion-icon>
-              </ion-button>
+            <div class="location">
+              <ion-icon :icon="locationOutline"></ion-icon>
+              {{ nextMatch.location }}
             </div>
           </div>
 
-          <!-- Last Match Card -->
-          <div class="match-column" v-if="lastMatch">
-            <div class="section-title">
-              <h3>{{ t("home.last_match") }}</h3>
-            </div>
+          <div class="weather-widget" v-if="nextMatchWeather">
+            <ion-icon :icon="getWeatherIconName(nextMatchWeather.weatherCode)" class="weather-icon"></ion-icon>
+            <span class="weather-temp">{{ Math.round(nextMatchWeather.maxTemp) }}°</span>
+          </div>
 
-            <div class="next-match-card" @click="router.push(`/matches/${lastMatch.id}`)">
-              <div class="match-time">
-                <span class="day">{{ formatDate(lastMatch.date_time) }}</span>
-                <span class="time">{{ formatTime(lastMatch.date_time) }}</span>
-              </div>
-              <div class="match-info">
-                <div class="sport-badge" :class="lastMatch.sport_type">
-                  <ion-icon :icon="getSportIcon(lastMatch.sport_type)"></ion-icon>
-                  {{ t("sports." + lastMatch.sport_type) }}
-                </div>
-                <div class="location">
-                  <ion-icon :icon="locationOutline"></ion-icon>
-                  {{ lastMatch.location }}
-                </div>
-              </div>
+          <div class="match-action">
+            <ion-icon :icon="chevronForwardOutline"></ion-icon>
+          </div>
+        </div>
 
-              <div class="match-action">
-                <ion-icon :icon="chevronForwardOutline"></ion-icon>
-              </div>
+        <div v-else class="empty-match-card">
+          <p>{{ t("home.no_upcoming_matches") }}</p>
+          <ion-button size="small" fill="outline" router-link="/matches/create">
+            {{ t("home.schedule_one") }}
+            <ion-icon slot="end" :icon="addCircleOutline"></ion-icon>
+          </ion-button>
+        </div>
+
+        <!-- Last Match Card -->
+        <div class="section-title" v-if="lastMatch">
+          <h3>{{ t("home.last_match") }}</h3>
+        </div>
+
+        <div v-if="lastMatch" class="next-match-card" @click="router.push(`/matches/${lastMatch.id}`)">
+          <div class="match-time">
+            <span class="day">{{ formatDate(lastMatch.date_time) }}</span>
+            <span class="time">{{ formatTime(lastMatch.date_time) }}</span>
+          </div>
+          <div class="match-info">
+            <div class="sport-badge" :class="lastMatch.sport_type">
+              <ion-icon :icon="getSportIcon(lastMatch.sport_type)"></ion-icon>
+              {{ t("sports." + lastMatch.sport_type) }}
             </div>
+            <div class="location">
+              <ion-icon :icon="locationOutline"></ion-icon>
+              {{ lastMatch.location }}
+            </div>
+          </div>
+
+          <div class="match-action">
+            <ion-icon :icon="chevronForwardOutline"></ion-icon>
           </div>
         </div>
 
@@ -417,18 +407,6 @@ const formatTime = (dateString) => {
   font-weight: 700;
   color: var(--ion-color-dark);
   margin: 0;
-}
-
-.matches-row {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 5px;
-}
-
-.match-column {
-  flex: 1;
-  min-width: 280px;
 }
 
 /* Next Match Card */

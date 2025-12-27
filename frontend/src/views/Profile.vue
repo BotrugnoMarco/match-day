@@ -46,7 +46,7 @@
         @open-edit-modal="openEditModal"
       />
 
-      <HeadToHeadCard :user-id="user?.id" v-if="!isOwnProfile && user?.id" />
+      <HeadToHeadCard :user-id="user?.id" v-if="!isOwnProfile && user?.id && !currentUser?.zen_mode" />
 
       <ProfileStats :stats="stats" />
 

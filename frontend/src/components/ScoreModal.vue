@@ -180,12 +180,33 @@ watch(
 );
 
 const addSet = () => {
-  sets.value.push({ a: 0, b: 0 });
+  sets.value.push({ a: null, b: null });
 };
 
 const removeSet = (index) => {
   sets.value.splice(index, 1);
 };
+
+watch(
+  sets,
+  (newSets) => {
+    if (props.match && ["volleyball", "padel", "tennis"].includes(props.match.sport_type)) {
+      let winsA = 0;
+      let winsB = 0;
+      newSets.forEach((set) => {
+        const valA = parseInt(set.a);
+        const valB = parseInt(set.b);
+        if (!isNaN(valA) && !isNaN(valB)) {
+          if (valA > valB) winsA++;
+          else if (valB > valA) winsB++;
+        }
+      });
+      scoreA.value = winsA;
+      scoreB.value = winsB;
+    }
+  },
+  { deep: true }
+);
 
 const currentTeamPlayers = computed(() => {
   if (!props.participants) return [];

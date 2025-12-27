@@ -112,6 +112,59 @@ const addUserMarker = (loc) => {
     .bindPopup("Tu sei qui");
 };
 
+const createSportMarker = (sport) => {
+  let color = "#3880ff";
+  let emoji = "🏆";
+
+  switch (sport?.toLowerCase()) {
+    case "soccer":
+      color = "#2dd36f";
+      emoji = "⚽";
+      break;
+    case "basketball":
+      color = "#ffc409";
+      emoji = "🏀";
+      break;
+    case "tennis":
+      color = "#d7d728";
+      emoji = "🎾";
+      break;
+    case "padel":
+      color = "#3dc2ff";
+      emoji = "🎾";
+      break;
+    case "volleyball":
+      color = "#eb445a";
+      emoji = "🏐";
+      break;
+  }
+
+  const html = `
+    <div style="
+      background-color: ${color};
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    ">
+      ${emoji}
+    </div>
+  `;
+
+  return L.divIcon({
+    className: "sport-marker-icon",
+    html: html,
+    iconSize: [36, 36],
+    iconAnchor: [18, 18],
+    popupAnchor: [0, -18],
+  });
+};
+
 const updateMarkers = () => {
   if (!map || !markerClusterGroup) return;
 
@@ -121,11 +174,16 @@ const updateMarkers = () => {
 
   props.matches.forEach((match) => {
     if (match.latitude && match.longitude) {
-      const marker = L.marker([match.latitude, match.longitude]).bindPopup(`
+      const marker = L.marker([match.latitude, match.longitude], {
+        icon: createSportMarker(match.sport_type),
+      }).bindPopup(`
           <div style="text-align: center; min-width: 120px;">
             <strong style="color: #3880ff;">${match.sport_type.toUpperCase()}</strong><br>
             <span style="font-size: 0.9em;">${new Date(match.date_time).toLocaleDateString()}</span><br>
             <span style="font-size: 0.9em;">${new Date(match.date_time).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span><br>
+            <span style="font-size: 0.9em; font-weight: bold; color: #555;">
+              <i class="icon ion-md-people"></i> ${match.participants_count || 0} / ${match.max_players}
+            </span><br>
             <button id="btn-match-${
               match.id
             }" style="margin-top: 8px; background: #3880ff; color: white; border: none; padding: 6px 12px; border-radius: 12px; cursor: pointer; font-size: 0.9em;">Vedi Partita</button>

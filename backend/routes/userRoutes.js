@@ -16,6 +16,7 @@ router.get('/search', authMiddleware, userController.searchUsers);
 router.get('/:id/profile', authMiddleware, userController.getUserProfileById);
 router.get('/:id/stats', authMiddleware, userController.getUserStatsById);
 router.get('/:id/stats/h2h', authMiddleware, statsController.getHeadToHead);
+router.get('/:id/stats/rivals', authMiddleware, statsController.getRivals);
 router.get('/:id/history', authMiddleware, userController.getUserHistoryById);
 router.put('/status', authMiddleware, userController.updateStatus);
 router.post('/avatar', authMiddleware, upload.single('avatar'), userController.uploadAvatar);

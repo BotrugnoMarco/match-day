@@ -68,6 +68,11 @@
     "friends_btn": "Amici",
     "matches": "Partite",
     "head_to_head": "Faccia a Faccia",
+    "rivals_title": "Rivalità & Intesa",
+    "ideal_partner": "Partner Ideale",
+    "nemesis": "Bestia Nera",
+    "win_rate_together": "Vittorie Insieme",
+    "loss_rate_against": "Sconfitte Contro",
     "together": "Insieme",
     "against": "Contro",
     "won": "Vinte",
@@ -157,6 +162,7 @@
     "send_reply": "Invia Risposta e Chiudi"
   },
   "common": {
+    "matches": "Partite",
     "loading": "Caricamento...",
     "save": "Salva",
     "cancel": "Annulla",

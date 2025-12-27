@@ -48,6 +48,8 @@
 
       <HeadToHeadCard :user-id="user?.id" v-if="!isOwnProfile && user?.id && !currentUser?.zen_mode" />
 
+      <RivalsCard :user-id="user?.id" v-if="isOwnProfile && user?.id && !user?.zen_mode" />
+
       <ProfileStats :stats="stats" />
 
       <ProfileRatingChart :history="history" v-if="isOwnProfile && !user?.zen_mode" />
@@ -94,6 +96,7 @@ import { createOutline, notificationsOutline } from "ionicons/icons";
 
 import ProfileHeader from "../components/profile/ProfileHeader.vue";
 import HeadToHeadCard from "../components/profile/HeadToHeadCard.vue";
+import RivalsCard from "../components/profile/RivalsCard.vue";
 import ProfileStats from "../components/profile/ProfileStats.vue";
 import ProfileRatingChart from "../components/profile/ProfileRatingChart.vue";
 import ProfileSkills from "../components/profile/ProfileSkills.vue";

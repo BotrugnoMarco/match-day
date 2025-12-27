@@ -66,6 +66,11 @@
     "friends_btn": "Friends",
     "matches": "Matches",
     "head_to_head": "Head to Head",
+    "rivals_title": "Rivalry & Chemistry",
+    "ideal_partner": "Ideal Partner",
+    "nemesis": "Nemesis",
+    "win_rate_together": "Win Rate Together",
+    "loss_rate_against": "Loss Rate Against",
     "together": "Together",
     "against": "Against",
     "won": "Won",
@@ -151,6 +156,7 @@
     "send_reply": "Send Reply & Close"
   },
   "common": {
+    "matches": "Matches",
     "loading": "Loading...",
     "save": "Save",
     "cancel": "Cancel",

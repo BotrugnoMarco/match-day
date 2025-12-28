@@ -102,8 +102,13 @@ const sendMessage = async () => {
   sending.value = true;
 
   try {
-    await api.post(`/matches/${props.matchId}/chat`, { message: text });
-    // Message will be added via socket event
+    const response = await api.post(`/matches/${props.matchId}/chat`, { message: text });
+    // Add message immediately from response to ensure sender sees it
+    const msg = response.data;
+    if (!messages.value.find((m) => m.id === msg.id)) {
+      messages.value.push(msg);
+      scrollToBottom();
+    }
   } catch (error) {
     console.error("Error sending message:", error);
     newMessage.value = text; // Restore on error
@@ -121,15 +126,21 @@ const onNewMessage = (msg) => {
   }
 };
 
+const joinRoom = () => {
+  socket.emit("join_match_room", props.matchId);
+};
+
 onMounted(() => {
   fetchMessages();
-  socket.emit("join_match_room", props.matchId);
+  joinRoom();
   socket.on("chat_message", onNewMessage);
+  socket.on("connect", joinRoom); // Re-join on reconnect
 });
 
 onUnmounted(() => {
   socket.emit("leave_match_room", props.matchId);
   socket.off("chat_message", onNewMessage);
+  socket.off("connect", joinRoom);
 });
 </script>
 

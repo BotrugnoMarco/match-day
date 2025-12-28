@@ -1503,7 +1503,6 @@ onUnmounted(() => {
   top: 0;
   z-index: 100;
   border-bottom: 0.0625rem solid var(--ion-border-color);
-  margin-top: 0.5rem;
 }
 
 ion-segment {

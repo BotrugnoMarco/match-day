@@ -1,6 +1,10 @@
 <template>
   <div class="chat-container">
     <div class="messages-area" ref="messagesContainer">
+      <div v-if="!isConnected" class="connection-warning">
+        <ion-icon :icon="warningOutline"></ion-icon>
+        <span>{{ t("match_chat.connecting") }}</span>
+      </div>
       <div v-if="loading" class="ion-text-center ion-padding">
         <ion-spinner></ion-spinner>
       </div>
@@ -45,7 +49,7 @@ import { useI18n } from "vue-i18n";
 import api from "../../services/api";
 import socket from "../../services/socket";
 import { IonSpinner, IonIcon, IonAvatar, IonItem, IonInput, IonButton } from "@ionic/vue";
-import { chatbubblesOutline, send } from "ionicons/icons";
+import { chatbubblesOutline, send, warningOutline } from "ionicons/icons";
 
 const props = defineProps({
   matchId: {
@@ -61,6 +65,7 @@ const newMessage = ref("");
 const loading = ref(true);
 const sending = ref(false);
 const messagesContainer = ref(null);
+const isConnected = ref(socket.connected);
 
 const currentUser = computed(() => store.state.user);
 
@@ -129,34 +134,35 @@ const onNewMessage = (msg) => {
 };
 
 const joinRoom = () => {
-  // Force matchId to string for consistency with server room names
   if (socket.connected) {
-    socket.emit("join_match_room", String(props.matchId));
+    socket.emit("join_match_room", props.matchId);
+  }
+};
+
+const updateConnectionStatus = () => {
+  isConnected.value = socket.connected;
+  if (socket.connected) {
+    joinRoom();
   }
 };
 
 onMounted(() => {
   fetchMessages();
 
-  // Ensure socket is connected
-  if (!socket.connected) {
-    socket.connect();
-  }
+  // Initial check
+  updateConnectionStatus();
 
-  // Setup listeners
-  socket.on("connect", joinRoom);
+  // Listeners
+  socket.on("connect", updateConnectionStatus);
+  socket.on("disconnect", updateConnectionStatus);
   socket.on("chat_message", onNewMessage);
-
-  // Try joining immediately if already connected
-  if (socket.connected) {
-    joinRoom();
-  }
 });
 
 onUnmounted(() => {
-  socket.emit("leave_match_room", String(props.matchId));
+  socket.emit("leave_match_room", props.matchId);
+  socket.off("connect", updateConnectionStatus);
+  socket.off("disconnect", updateConnectionStatus);
   socket.off("chat_message", onNewMessage);
-  socket.off("connect", joinRoom);
 });
 
 // Watch for matchId changes just in case
@@ -316,6 +322,20 @@ watch(
   --padding-start: 16px;
   --inner-padding-end: 8px;
   --min-height: 44px;
+}
+
+.connection-warning {
+  background-color: var(--ion-color-warning);
+  color: var(--ion-color-warning-contrast);
+  padding: 8px;
+  text-align: center;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
 ion-input {

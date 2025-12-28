@@ -555,5 +555,23 @@
     "placeholder": "Scrivi un messaggio...",
     "connecting": "Connessione in corso...",
     "tap_to_reconnect": "Tocca per riconnettere"
+  },
+  "report": {
+    "title": "Segnala Utente",
+    "description": "Stai segnalando {name}. Le segnalazioni sono anonime e verranno esaminate dagli amministratori.",
+    "reason": "Motivo",
+    "select_reason": "Seleziona un motivo",
+    "details": "Dettagli aggiuntivi",
+    "details_placeholder": "Descrivi cosa è successo...",
+    "submit": "Invia Segnalazione",
+    "success": "Segnalazione inviata con successo",
+    "error": "Errore nell'invio della segnalazione",
+    "reasons": {
+      "abusive_language": "Linguaggio offensivo",
+      "unsportsmanlike": "Comportamento antisportivo",
+      "spam": "Spam / Pubblicità",
+      "fake_profile": "Profilo falso",
+      "other": "Altro"
+    }
   }
 }

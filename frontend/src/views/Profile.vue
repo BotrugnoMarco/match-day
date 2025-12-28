@@ -20,6 +20,9 @@
           <ion-button @click="openEditModal" v-if="isOwnProfile">
             <ion-icon :icon="createOutline"></ion-icon>
           </ion-button>
+          <ion-button @click="openReportModal" v-if="!isOwnProfile" color="danger">
+            <ion-icon :icon="warningOutline"></ion-icon>
+          </ion-button>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
@@ -91,8 +94,9 @@ import {
   IonMenuButton,
   toastController,
   alertController,
+  modalController
 } from "@ionic/vue";
-import { createOutline, notificationsOutline } from "ionicons/icons";
+import { createOutline, notificationsOutline, warningOutline } from "ionicons/icons";
 
 import ProfileHeader from "../components/profile/ProfileHeader.vue";
 import HeadToHeadCard from "../components/profile/HeadToHeadCard.vue";
@@ -103,6 +107,7 @@ import ProfileSkills from "../components/profile/ProfileSkills.vue";
 import ProfileBadges from "../components/profile/ProfileBadges.vue";
 import ProfileHistory from "../components/profile/ProfileHistory.vue";
 import EditProfileModal from "../components/profile/EditProfileModal.vue";
+import ReportModal from "../components/ReportModal.vue";
 
 const store = useStore();
 const router = useRouter();
@@ -135,6 +140,17 @@ const openEditModal = () => {
 
 const closeEditModal = () => {
   isEditModalOpen.value = false;
+};
+
+const openReportModal = async () => {
+  const modal = await modalController.create({
+    component: ReportModal,
+    componentProps: {
+      userId: user.value.id,
+      userName: user.value.username
+    }
+  });
+  await modal.present();
 };
 
 const saveProfile = async (formData) => {

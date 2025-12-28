@@ -1,6 +1,7 @@
 -- 1. ELIMINA TUTTE LE TABELLE (in ordine inverso per rispettare le Foreign Keys)
 DROP TABLE IF EXISTS user_fcm_tokens;
 DROP TABLE IF EXISTS support_tickets;
+DROP TABLE IF EXISTS reports;
 DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS notifications;
 DROP TABLE IF EXISTS votes;
@@ -162,4 +163,19 @@ CREATE TABLE IF NOT EXISTS match_chat_messages (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+-- Segnalazioni Utenti
+CREATE TABLE IF NOT EXISTS reports (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    reporter_id INT NOT NULL,
+    reported_user_id INT NOT NULL,
+    match_id INT,
+    reason VARCHAR(50) NOT NULL,
+    description TEXT,
+    status ENUM('pending', 'reviewed', 'resolved', 'dismissed') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (reporter_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (reported_user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE
+    SET NULL
 );

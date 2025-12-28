@@ -197,6 +197,8 @@ import MatchActions from "../components/match/MatchActions.vue";
 import MatchParticipants from "../components/match/MatchParticipants.vue";
 import MatchResults from "../components/match/MatchResults.vue";
 import MatchChat from "../components/match/MatchChat.vue";
+import ReportModal from "../components/ReportModal.vue";
+import { warningOutline } from "ionicons/icons";
 
 const route = useRoute();
 const router = useRouter();
@@ -853,12 +855,34 @@ const openPlayerActions = async (player) => {
     icon: closeOutline,
   });
 
+  // Report User (always available except for self)
+  if (player.user_id !== currentUser.value.id) {
+    buttons.splice(buttons.length - 1, 0, {
+      text: t("report.title"),
+      icon: warningOutline,
+      role: "destructive",
+      handler: () => openReportModal(player),
+    });
+  }
+
   const actionSheet = await actionSheetController.create({
     header: t("match_details.manage_player", { name: player.username }),
     buttons: buttons,
     cssClass: "player-action-sheet",
   });
   await actionSheet.present();
+};
+
+const openReportModal = async (player) => {
+  const modal = await modalController.create({
+    component: ReportModal,
+    componentProps: {
+      userId: player.user_id,
+      userName: player.username,
+      matchId: match.value.id,
+    },
+  });
+  await modal.present();
 };
 
 const saveFormation = async (positions) => {

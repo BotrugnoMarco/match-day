@@ -539,5 +539,23 @@
     "placeholder": "Type a message...",
     "connecting": "Connecting...",
     "tap_to_reconnect": "Tap to reconnect"
+  },
+  "report": {
+    "title": "Report User",
+    "description": "You are reporting {name}. Reports are anonymous and will be reviewed by administrators.",
+    "reason": "Reason",
+    "select_reason": "Select a reason",
+    "details": "Additional Details",
+    "details_placeholder": "Describe what happened...",
+    "submit": "Submit Report",
+    "success": "Report submitted successfully",
+    "error": "Error submitting report",
+    "reasons": {
+      "abusive_language": "Abusive Language",
+      "unsportsmanlike": "Unsportsmanlike Conduct",
+      "spam": "Spam / Advertising",
+      "fake_profile": "Fake Profile",
+      "other": "Other"
+    }
   }
 }

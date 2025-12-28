@@ -17,6 +17,13 @@ exports.getStats = async (req, res) => {
         const [participantCount] = await db.query('SELECT COUNT(*) as count FROM participants');
         const [notificationCount] = await db.query('SELECT COUNT(*) as count FROM notifications');
 
+        let reportCount = [{ count: 0 }];
+        try {
+            [reportCount] = await db.query("SELECT COUNT(*) as count FROM reports WHERE status = 'pending'");
+        } catch (e) {
+            console.log("Reports table might not exist yet");
+        }
+
         res.json({
             users: userCount[0].count,
             matches: matchCount[0].count,
@@ -24,7 +31,8 @@ exports.getStats = async (req, res) => {
             votes: voteCount[0].count,
             friendships: friendshipCount[0].count,
             participants: participantCount[0].count,
-            notifications: notificationCount[0].count
+            notifications: notificationCount[0].count,
+            reports: reportCount[0].count
         });
     } catch (err) {
         console.error(err);

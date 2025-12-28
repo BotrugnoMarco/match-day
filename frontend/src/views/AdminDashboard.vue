@@ -77,6 +77,15 @@
           <span class="item-label">Notifs</span>
           <span class="item-count">{{ stats.notifications }}</span>
         </div>
+
+        <!-- Reports -->
+        <div class="admin-item" @click="$router.push('/admin/reports')">
+          <div class="icon-circle reports-icon">
+            <ion-icon :icon="warningOutline"></ion-icon>
+          </div>
+          <span class="item-label">Reports</span>
+          <span class="item-count">{{ stats.reports || 0 }}</span>
+        </div>
       </div>
     </ion-content>
   </ion-page>
@@ -107,6 +116,7 @@ import {
   heartOutline,
   peopleCircleOutline,
   notificationsOutline,
+  warningOutline,
 } from "ionicons/icons";
 import api from "../services/api";
 
@@ -130,7 +140,7 @@ export default {
   },
   data() {
     return {
-      stats: { users: 0, matches: 0, tickets: 0, votes: 0, friendships: 0, participants: 0, notifications: 0 },
+      stats: { users: 0, matches: 0, tickets: 0, votes: 0, friendships: 0, participants: 0, notifications: 0, reports: 0 },
       peopleOutline,
       footballOutline,
       chatbubblesOutline,
@@ -138,6 +148,7 @@ export default {
       heartOutline,
       peopleCircleOutline,
       notificationsOutline,
+      warningOutline,
     };
   },
   async mounted() {
@@ -237,6 +248,21 @@ export default {
 }
 
 .friends-icon {
+  background: rgba(var(--ion-color-danger-rgb), 0.2);
+  color: var(--ion-color-danger);
+}
+
+.participants-icon {
+  background: rgba(var(--ion-color-secondary-rgb), 0.2);
+  color: var(--ion-color-secondary);
+}
+
+.notifications-icon {
+  background: rgba(var(--ion-color-medium-rgb), 0.2);
+  color: var(--ion-color-medium);
+}
+
+.reports-icon {
   background: rgba(var(--ion-color-danger-rgb), 0.2);
   color: var(--ion-color-danger);
 }

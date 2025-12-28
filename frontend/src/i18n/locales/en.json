@@ -295,6 +295,8 @@
   },
   "match_details": {
     "title": "Match Details",
+    "details": "Details",
+    "chat": "Chat",
     "average_skill": "Average Skill",
     "weather_forecast": "Weather Forecast",
     "precip_prob": "precip. prob.",
@@ -531,5 +533,9 @@
   "changelog": {
     "title": "What's New",
     "got_it": "Got it!"
+  },
+  "match_chat": {
+    "no_messages": "No messages yet. Start the conversation!",
+    "placeholder": "Type a message..."
   }
 }

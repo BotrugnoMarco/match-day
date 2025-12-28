@@ -307,6 +307,8 @@
   },
   "match_details": {
     "title": "Dettagli Partita",
+    "details": "Dettagli",
+    "chat": "Chat",
     "average_skill": "Media Abilità",
     "weather_forecast": "Previsioni Meteo",
     "precip_prob": "prob. precipitazioni",
@@ -547,5 +549,9 @@
   "changelog": {
     "title": "Novità",
     "got_it": "Ho capito!"
+  },
+  "match_chat": {
+    "no_messages": "Nessun messaggio ancora. Inizia la conversazione!",
+    "placeholder": "Scrivi un messaggio..."
   }
 }

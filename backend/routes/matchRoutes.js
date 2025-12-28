@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const matchController = require('../controllers/matchController');
+const chatController = require('../controllers/chatController');
 const authMiddleware = require('../middleware/authMiddleware');
 const optionalAuthMiddleware = require('../middleware/optionalAuthMiddleware');
 
@@ -28,5 +29,9 @@ router.put('/:id/captain', authMiddleware, matchController.setCaptain);
 router.put('/:id/admin', authMiddleware, matchController.toggleMatchAdmin);
 router.put('/:id', authMiddleware, matchController.updateMatch);
 router.delete('/:id', authMiddleware, matchController.deleteMatch);
+
+// Chat routes
+router.get('/:id/chat', authMiddleware, chatController.getMatchMessages);
+router.post('/:id/chat', authMiddleware, chatController.postMessage);
 
 module.exports = router;

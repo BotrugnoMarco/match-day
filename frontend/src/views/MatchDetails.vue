@@ -17,68 +17,87 @@
       </ion-toolbar>
     </ion-header>
 
-    <ion-content class="page-content" v-if="match">
-      <!-- Header Section -->
-      <MatchHeader :match="match" />
+    <ion-content class="page-content" v-if="match" :scrollY="activeSegment === 'details'">
+      <div :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; height: 100%' : ''">
+        <!-- Header Section -->
+        <MatchHeader :match="match" />
 
-      <div class="details-wrapper">
-        <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
+        <div class="ion-padding-horizontal ion-margin-bottom">
+          <ion-segment v-model="activeSegment">
+            <ion-segment-button value="details">
+              <ion-label>{{ t("match_details.details") }}</ion-label>
+              <ion-icon :icon="informationCircleOutline"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="chat">
+              <ion-label>{{ t("match_details.chat") }}</ion-label>
+              <ion-icon :icon="chatbubblesOutline"></ion-icon>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
 
-        <!-- Main Info Card -->
-        <MatchInfoCard
-          :match="match"
-          :weather="weather"
-          :active-participants="activeParticipants"
-          :average-age="averageAge"
-          :post-match-count="postMatchCount"
-          :my-post-match-status="myPostMatchStatus"
-          :is-participant="isParticipant"
-          @open-maps="openMaps"
-          @go-to-profile="goToProfile"
-          @toggle-post-match="togglePostMatch"
-        />
+        <div class="details-wrapper" v-show="activeSegment === 'details'">
+          <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
 
-        <MatchActions
-          :match="match"
-          :is-participant="isParticipant"
-          :is-confirmed="isConfirmed"
-          :is-waitlisted="isWaitlisted"
-          :is-full="isFull"
-          :is-admin="isAdmin"
-          :is-creator="isCreator"
-          :has-teams="hasTeams"
-          :vote-stats="voteStats"
-          @join="joinMatch"
-          @leave="leaveMatch"
-          @generate-teams="generateTeams"
-          @change-status="changeStatus"
-          @edit="editMatch"
-          @delete="deleteMatch"
-          @open-score-modal="isScoreModalOpen = true"
-        />
+          <!-- Main Info Card -->
+          <MatchInfoCard
+            :match="match"
+            :weather="weather"
+            :active-participants="activeParticipants"
+            :average-age="averageAge"
+            :post-match-count="postMatchCount"
+            :my-post-match-status="myPostMatchStatus"
+            :is-participant="isParticipant"
+            @open-maps="openMaps"
+            @go-to-profile="goToProfile"
+            @toggle-post-match="togglePostMatch"
+          />
 
-        <MatchParticipants
-          :match="match"
-          :pending-participants="pendingParticipants"
-          :waitlist-participants="waitlistParticipants"
-          :active-participants="activeParticipants"
-          :team-a-participants="teamAParticipants"
-          :team-b-participants="teamBParticipants"
-          :has-teams="hasTeams"
-          :team-a-average-skill="teamAAverageSkill"
-          :team-b-average-skill="teamBAverageSkill"
-          :is-admin="isAdmin"
-          :is-captain="isCaptain"
-          :is-confirmed="isConfirmed"
-          :current-user="currentUser"
-          :my-votes="myVotes"
-          @approve-request="approveRequest"
-          @reject-request="rejectRequest"
-          @go-to-profile="goToProfile"
-          @open-vote-modal="openVoteModal"
-          @open-player-actions="openPlayerActions"
-          @save-formation="saveFormation"
-        />
+          <MatchActions
+            :match="match"
+            :is-participant="isParticipant"
+            :is-confirmed="isConfirmed"
+            :is-waitlisted="isWaitlisted"
+            :is-full="isFull"
+            :is-admin="isAdmin"
+            :is-creator="isCreator"
+            :has-teams="hasTeams"
+            :vote-stats="voteStats"
+            @join="joinMatch"
+            @leave="leaveMatch"
+            @generate-teams="generateTeams"
+            @change-status="changeStatus"
+            @edit="editMatch"
+            @delete="deleteMatch"
+            @open-score-modal="isScoreModalOpen = true"
+          />
+
+          <MatchParticipants
+            :match="match"
+            :pending-participants="pendingParticipants"
+            :waitlist-participants="waitlistParticipants"
+            :active-participants="activeParticipants"
+            :team-a-participants="teamAParticipants"
+            :team-b-participants="teamBParticipants"
+            :has-teams="hasTeams"
+            :team-a-average-skill="teamAAverageSkill"
+            :team-b-average-skill="teamBAverageSkill"
+            :is-admin="isAdmin"
+            :is-captain="isCaptain"
+            :is-confirmed="isConfirmed"
+            :current-user="currentUser"
+            :my-votes="myVotes"
+            @approve-request="approveRequest"
+            @reject-request="rejectRequest"
+            @go-to-profile="goToProfile"
+            @open-vote-modal="openVoteModal"
+            @open-player-actions="openPlayerActions"
+            @save-formation="saveFormation"
+          />
+        </div>
+
+        <div class="chat-wrapper" v-if="activeSegment === 'chat'" style="flex: 1; overflow: hidden; border-top: 1px solid var(--ion-border-color)">
+          <MatchChat :match-id="match.id" />
+        </div>
       </div>
     </ion-content>
     <div v-else class="ion-padding">
@@ -121,6 +140,9 @@ import {
   toastController,
   IonIcon,
   IonSpinner,
+  IonSegment,
+  IonSegmentButton,
+  IonLabel,
 } from "@ionic/vue";
 import {
   cashOutline,
@@ -131,6 +153,8 @@ import {
   shareSocialOutline,
   personAddOutline,
   beerOutline,
+  chatbubblesOutline,
+  informationCircleOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";
@@ -140,6 +164,7 @@ import MatchInfoCard from "../components/match/MatchInfoCard.vue";
 import MatchActions from "../components/match/MatchActions.vue";
 import MatchParticipants from "../components/match/MatchParticipants.vue";
 import MatchResults from "../components/match/MatchResults.vue";
+import MatchChat from "../components/match/MatchChat.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -148,6 +173,7 @@ const { t, locale } = useI18n();
 const match = ref(null);
 const weather = ref(null);
 const votes = ref([]);
+const activeSegment = ref("details");
 const myVotes = ref([]);
 const myComments = ref([]);
 const voteStats = ref(null);

@@ -131,6 +131,16 @@ io.on('connection', (socket) => {
         console.log(`User ${userId} joined room user_${userId}`);
     });
 
+    socket.on('join_match_room', (matchId) => {
+        socket.join(`match_${matchId}`);
+        console.log(`Socket ${socket.id} joined match_${matchId}`);
+    });
+
+    socket.on('leave_match_room', (matchId) => {
+        socket.leave(`match_${matchId}`);
+        console.log(`Socket ${socket.id} left match_${matchId}`);
+    });
+
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
     });

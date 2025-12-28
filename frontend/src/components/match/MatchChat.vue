@@ -271,7 +271,7 @@ onUnmounted(() => {
 }
 
 .input-item {
-  --background: #f0f2f5;
+  --background: var(--ion-color-light);
   border-radius: 24px;
   --padding-start: 16px;
   --inner-padding-end: 8px;

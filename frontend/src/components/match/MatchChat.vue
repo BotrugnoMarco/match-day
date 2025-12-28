@@ -134,9 +134,8 @@ const onNewMessage = (msg) => {
 };
 
 const joinRoom = () => {
-  if (socket.connected) {
-    socket.emit("join_match_room", props.matchId);
-  }
+  // Always emit, Socket.IO will buffer if disconnected
+  socket.emit("join_match_room", String(props.matchId));
 };
 
 const updateConnectionStatus = () => {
@@ -149,8 +148,11 @@ const updateConnectionStatus = () => {
 onMounted(() => {
   fetchMessages();
 
-  // Initial check
-  updateConnectionStatus();
+  // Join immediately
+  joinRoom();
+
+  // Update status
+  isConnected.value = socket.connected;
 
   // Listeners
   socket.on("connect", updateConnectionStatus);

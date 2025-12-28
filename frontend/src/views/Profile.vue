@@ -94,7 +94,7 @@ import {
   IonMenuButton,
   toastController,
   alertController,
-  modalController
+  modalController,
 } from "@ionic/vue";
 import { createOutline, notificationsOutline, warningOutline } from "ionicons/icons";
 
@@ -147,8 +147,8 @@ const openReportModal = async () => {
     component: ReportModal,
     componentProps: {
       userId: user.value.id,
-      userName: user.value.username
-    }
+      userName: user.value.username,
+    },
   });
   await modal.present();
 };

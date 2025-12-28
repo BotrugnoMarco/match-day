@@ -132,9 +132,13 @@ const joinRoom = () => {
 
 onMounted(() => {
   fetchMessages();
-  joinRoom();
+
+  if (socket.connected) {
+    joinRoom();
+  }
+
   socket.on("chat_message", onNewMessage);
-  socket.on("connect", joinRoom); // Re-join on reconnect
+  socket.on("connect", joinRoom);
 });
 
 onUnmounted(() => {

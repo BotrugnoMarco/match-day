@@ -254,6 +254,7 @@ const isCreator = computed(() => {
 
 const isAdmin = computed(() => {
   if (!match.value || !currentUser.value) return false;
+  if (currentUser.value.role === "admin") return true;
   if (match.value.creator_id == currentUser.value.id) return true;
   const me = match.value.participants?.find((p) => p.user_id === currentUser.value.id);
   return me && me.is_admin;
@@ -722,7 +723,7 @@ const togglePostMatch = async () => {
 
 const togglePayment = async (participant) => {
   console.log("Toggling payment for:", participant.user_id);
-  if (!isCreator.value) return;
+  if (!isAdmin.value) return;
 
   // Optimistic update
   const originalStatus = participant.has_paid;

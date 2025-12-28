@@ -584,7 +584,9 @@ exports.generateTeams = async (req, res) => {
             'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
             [matchId, userId]
         );
-        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === userId);
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) ||
+            (matches[0].creator_id === userId) ||
+            (req.user.role === 'admin');
 
         if (!isAdmin) {
             return res.status(403).json({ error: 'Only match admins can generate teams' });
@@ -684,7 +686,9 @@ exports.movePlayer = async (req, res) => {
             'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
             [matchId, adminId]
         );
-        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === adminId);
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) ||
+            (matches[0].creator_id === adminId) ||
+            (req.user.role === 'admin');
 
         if (!isAdmin) return res.status(403).json({ error: 'Only admins can move players' });
 
@@ -801,7 +805,9 @@ exports.togglePaymentStatus = async (req, res) => {
             'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
             [matchId, requesterId]
         );
-        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (matches[0].creator_id === requesterId);
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) ||
+            (matches[0].creator_id === requesterId) ||
+            (req.user.role === 'admin');
 
         if (!isAdmin) {
             return res.status(403).json({ error: 'Only match admins can update payment status' });
@@ -1119,7 +1125,9 @@ exports.setCaptain = async (req, res) => {
             'SELECT is_admin FROM participants WHERE match_id = ? AND user_id = ?',
             [matchId, requesterId]
         );
-        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) || (match[0].creator_id === requesterId);
+        const isAdmin = (adminCheck.length > 0 && adminCheck[0].is_admin) ||
+            (match[0].creator_id === requesterId) ||
+            (req.user.role === 'admin');
 
         if (!isAdmin) {
             return res.status(403).json({ error: 'Only match admins can set captains' });
@@ -1159,7 +1167,9 @@ exports.toggleMatchAdmin = async (req, res) => {
             [matchId, requesterId]
         );
 
-        const isRequesterAdmin = (requester.length > 0 && requester[0].is_admin) || (match[0].creator_id === requesterId);
+        const isRequesterAdmin = (requester.length > 0 && requester[0].is_admin) ||
+            (match[0].creator_id === requesterId) ||
+            (req.user.role === 'admin');
 
         if (!isRequesterAdmin) {
             return res.status(403).json({ error: 'Only admins can manage admin roles' });

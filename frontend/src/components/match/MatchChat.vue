@@ -118,8 +118,10 @@ const sendMessage = async () => {
 };
 
 const onNewMessage = (msg) => {
-  if (msg.match_id == props.matchId) {
-    if (!messages.value.find((m) => m.id === msg.id)) {
+  // Ensure strict string comparison to avoid type issues
+  if (String(msg.match_id) === String(props.matchId)) {
+    const exists = messages.value.some((m) => m.id === msg.id);
+    if (!exists) {
       messages.value.push(msg);
       scrollToBottom();
     }
@@ -127,25 +129,48 @@ const onNewMessage = (msg) => {
 };
 
 const joinRoom = () => {
-  socket.emit("join_match_room", props.matchId);
+  // Force matchId to string for consistency with server room names
+  if (socket.connected) {
+    socket.emit("join_match_room", String(props.matchId));
+  }
 };
 
 onMounted(() => {
   fetchMessages();
 
+  // Ensure socket is connected
+  if (!socket.connected) {
+    socket.connect();
+  }
+
+  // Setup listeners
+  socket.on("connect", joinRoom);
+  socket.on("chat_message", onNewMessage);
+
+  // Try joining immediately if already connected
   if (socket.connected) {
     joinRoom();
   }
-
-  socket.on("chat_message", onNewMessage);
-  socket.on("connect", joinRoom);
 });
 
 onUnmounted(() => {
-  socket.emit("leave_match_room", props.matchId);
+  socket.emit("leave_match_room", String(props.matchId));
   socket.off("chat_message", onNewMessage);
   socket.off("connect", joinRoom);
 });
+
+// Watch for matchId changes just in case
+watch(
+  () => props.matchId,
+  (newId, oldId) => {
+    if (newId !== oldId) {
+      socket.emit("leave_match_room", String(oldId));
+      messages.value = [];
+      fetchMessages();
+      joinRoom();
+    }
+  }
+);
 </script>
 
 <style scoped>

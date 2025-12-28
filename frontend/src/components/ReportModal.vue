@@ -1,5 +1,5 @@
 <template>
-  <ion-modal :is-open="isOpen" @didDismiss="close">
+  <ion-page>
     <ion-header>
       <ion-toolbar>
         <ion-title>{{ t("report.title") }}</ion-title>
@@ -36,13 +36,13 @@
         </div>
       </div>
     </ion-content>
-  </ion-modal>
+  </ion-page>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import {
-  IonModal,
+  IonPage,
   IonHeader,
   IonToolbar,
   IonTitle,
@@ -56,18 +56,17 @@ import {
   IonTextarea,
   IonSpinner,
   toastController,
+  modalController,
 } from "@ionic/vue";
 import { useI18n } from "vue-i18n";
 import api from "../services/api";
 
 const props = defineProps({
-  isOpen: Boolean,
   userId: [Number, String],
   userName: String,
   matchId: [Number, String],
 });
 
-const emit = defineEmits(["close"]);
 const { t } = useI18n();
 
 const reason = ref("");
@@ -77,7 +76,7 @@ const loading = ref(false);
 const close = () => {
   reason.value = "";
   details.value = "";
-  emit("close");
+  modalController.dismiss();
 };
 
 const submitReport = async () => {

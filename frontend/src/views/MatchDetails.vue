@@ -36,7 +36,10 @@
           </ion-segment>
         </div>
 
-        <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1; overflow: hidden;' : ''">
+        <div
+          class="details-content"
+          :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1; overflow: hidden; min-height: 0;' : ''"
+        >
           <div class="tab-content" v-show="activeSegment === 'details'">
             <!-- Header Section moved inside details -->
             <MatchHeader :match="match" />

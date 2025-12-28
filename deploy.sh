@@ -15,6 +15,11 @@ echo "📥 Scaricando il codice aggiornato..."
 git pull origin master
 # Nota: Se usi un branch diverso da 'master', cambialo qui sopra (es. master)
 
+# Riavvia Redis
+echo "------------------------------------------"
+echo "🔄 Riavvio Redis Server..."
+sudo systemctl restart redis-server
+
 # 2. Aggiorna il Backend
 echo "------------------------------------------"
 echo "🛠️  Aggiornamento Backend..."

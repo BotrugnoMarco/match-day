@@ -207,6 +207,7 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-height: 0; /* Crucial for flexbox scrolling */
 }
 
 .empty-chat {

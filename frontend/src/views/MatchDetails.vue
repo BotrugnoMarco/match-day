@@ -18,7 +18,7 @@
     </ion-header>
 
     <ion-content class="page-content" v-if="match" :scrollY="activeSegment === 'details'">
-      <div :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; height: 100%; overflow: hidden;' : ''">
+      <div ref="contentRef" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; height: 100%; overflow: hidden;' : ''">
         <div class="segment-container">
           <ion-segment v-model="activeSegment" mode="ios">
             <ion-segment-button value="details">
@@ -147,7 +147,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useStore } from "vuex";
 import { useI18n } from "vue-i18n";
@@ -174,6 +174,7 @@ import {
   IonSegment,
   IonSegmentButton,
   IonLabel,
+  createGesture,
 } from "@ionic/vue";
 import {
   cashOutline,
@@ -214,6 +215,69 @@ const voteStats = ref(null);
 const isInviteModalOpen = ref(false);
 const isScoreModalOpen = ref(false);
 const currentUser = computed(() => store.getters.currentUser);
+const contentRef = ref(null);
+let gesture = null;
+
+const getAvailableSegments = () => {
+  const segments = ["details"];
+  if (isConfirmed.value || isWaitlisted.value || isAdmin.value) {
+    segments.push("chat");
+  }
+  if (isAdmin.value) {
+    segments.push("admin");
+  }
+  return segments;
+};
+
+const nextTab = () => {
+  const segments = getAvailableSegments();
+  const currentIndex = segments.indexOf(activeSegment.value);
+  if (currentIndex < segments.length - 1) {
+    activeSegment.value = segments[currentIndex + 1];
+  }
+};
+
+const prevTab = () => {
+  const segments = getAvailableSegments();
+  const currentIndex = segments.indexOf(activeSegment.value);
+  if (currentIndex > 0) {
+    activeSegment.value = segments[currentIndex - 1];
+  }
+};
+
+const initGesture = () => {
+  if (contentRef.value && !gesture) {
+    gesture = createGesture({
+      el: contentRef.value,
+      threshold: 15,
+      gestureName: "swipe-segment",
+      onEnd: (ev) => {
+        if (Math.abs(ev.deltaY) > Math.abs(ev.deltaX)) return; // Ignore vertical scrolls
+
+        if (ev.deltaX < -50) {
+          nextTab();
+        } else if (ev.deltaX > 50) {
+          prevTab();
+        }
+      },
+    });
+    gesture.enable(true);
+  }
+};
+
+watch(match, async (newVal) => {
+  if (newVal) {
+    await nextTick();
+    initGesture();
+  }
+});
+
+onUnmounted(() => {
+  if (gesture) {
+    gesture.destroy();
+    gesture = null;
+  }
+});
 
 const formatDate = (dateString) => {
   const date = new Date(dateString);

@@ -16,122 +16,124 @@
     </ion-header>
 
     <ion-content class="page-content">
-      <div class="page-banner">
-        <div class="segment-wrapper">
-          <ion-segment v-model="filter" @ionChange="segmentChanged" mode="ios" class="custom-segment">
-            <ion-segment-button value="all">
-              <ion-label>{{ t("matches.all") }}</ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="mine">
-              <ion-label>{{ t("matches.mine") }}</ion-label>
-            </ion-segment-button>
-            <ion-segment-button value="friends">
-              <ion-label>{{ t("matches.friends") }}</ion-label>
-            </ion-segment-button>
-          </ion-segment>
-        </div>
-        <div class="filters-container" v-if="filter === 'all'">
-          <ion-item lines="none" class="filter-item">
-            <ion-icon :icon="locationOutline" slot="start" size="small"></ion-icon>
-            <ion-label>{{ t("matches.nearby") }}</ion-label>
-            <ion-toggle v-model="nearbyOnly" @ionChange="onNearbyChange" slot="end" color="light"></ion-toggle>
-          </ion-item>
-        </div>
-      </div>
-
-      <div class="matches-container ion-padding-horizontal">
-        <div v-if="isLoading" class="ion-padding ion-text-center">
-          <ion-spinner></ion-spinner>
-        </div>
-        <div v-else-if="displayedMatches.length > 0">
-          <div v-if="nearbyOnly && userLocation && filter === 'all'" class="map-container" style="margin-bottom: 20px">
-            <MatchesMap :matches="displayedMatches" :userLocation="userLocation" />
+      <div ref="contentRef" style="min-height: 100%">
+        <div class="page-banner">
+          <div class="segment-wrapper">
+            <ion-segment v-model="filter" @ionChange="segmentChanged" mode="ios" class="custom-segment">
+              <ion-segment-button value="all">
+                <ion-label>{{ t("matches.all") }}</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="mine">
+                <ion-label>{{ t("matches.mine") }}</ion-label>
+              </ion-segment-button>
+              <ion-segment-button value="friends">
+                <ion-label>{{ t("matches.friends") }}</ion-label>
+              </ion-segment-button>
+            </ion-segment>
           </div>
-          <div v-for="match in displayedMatches" :key="match.id" @click="viewMatch(match.id)" class="match-card">
-            <div class="match-card-header">
-              <div class="sport-info">
-                <div class="sport-icon-wrapper" :class="match.sport_type">
-                  <ion-icon :icon="getSportIcon(match.sport_type)"></ion-icon>
-                </div>
-                <div class="sport-details">
-                  <span class="sport-name">{{ t("sports." + match.sport_type) }}</span>
-                  <div class="privacy-indicator">
-                    <ion-icon :icon="match.is_private ? lockClosedOutline : globeOutline" class="privacy-icon"></ion-icon>
-                    <span class="privacy-text">{{ match.is_private ? t("matches.private") : t("matches.public") }}</span>
+          <div class="filters-container" v-if="filter === 'all'">
+            <ion-item lines="none" class="filter-item">
+              <ion-icon :icon="locationOutline" slot="start" size="small"></ion-icon>
+              <ion-label>{{ t("matches.nearby") }}</ion-label>
+              <ion-toggle v-model="nearbyOnly" @ionChange="onNearbyChange" slot="end" color="light"></ion-toggle>
+            </ion-item>
+          </div>
+        </div>
+
+        <div class="matches-container ion-padding-horizontal">
+          <div v-if="isLoading" class="ion-padding ion-text-center">
+            <ion-spinner></ion-spinner>
+          </div>
+          <div v-else-if="displayedMatches.length > 0">
+            <div v-if="nearbyOnly && userLocation && filter === 'all'" class="map-container" style="margin-bottom: 20px">
+              <MatchesMap :matches="displayedMatches" :userLocation="userLocation" />
+            </div>
+            <div v-for="match in displayedMatches" :key="match.id" @click="viewMatch(match.id)" class="match-card">
+              <div class="match-card-header">
+                <div class="sport-info">
+                  <div class="sport-icon-wrapper" :class="match.sport_type">
+                    <ion-icon :icon="getSportIcon(match.sport_type)"></ion-icon>
+                  </div>
+                  <div class="sport-details">
+                    <span class="sport-name">{{ t("sports." + match.sport_type) }}</span>
+                    <div class="privacy-indicator">
+                      <ion-icon :icon="match.is_private ? lockClosedOutline : globeOutline" class="privacy-icon"></ion-icon>
+                      <span class="privacy-text">{{ match.is_private ? t("matches.private") : t("matches.public") }}</span>
+                    </div>
                   </div>
                 </div>
+                <ion-badge :color="getStatusColor(match)" class="status-badge">
+                  {{
+                    match.status === "finished"
+                      ? t("status.finished")
+                      : match.user_participation_status === "confirmed"
+                      ? t("match_details.im_in")
+                      : match.user_participation_status === "waitlist"
+                      ? t("match_details.waitlist")
+                      : match.user_participation_status === "pending_approval"
+                      ? t("match_details.waiting")
+                      : t("status." + match.status)
+                  }}
+                </ion-badge>
               </div>
-              <ion-badge :color="getStatusColor(match)" class="status-badge">
-                {{
-                  match.status === "finished"
-                    ? t("status.finished")
-                    : match.user_participation_status === "confirmed"
-                    ? t("match_details.im_in")
-                    : match.user_participation_status === "waitlist"
-                    ? t("match_details.waitlist")
-                    : match.user_participation_status === "pending_approval"
-                    ? t("match_details.waiting")
-                    : t("status." + match.status)
-                }}
-              </ion-badge>
-            </div>
 
-            <div class="match-card-body">
-              <div class="match-datetime">
-                <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
-                <span class="date">{{ formatDate(match.date_time) }}</span>
-                <span class="separator">•</span>
-                <span class="time">{{ formatTime(match.date_time) }}</span>
+              <div class="match-card-body">
+                <div class="match-datetime">
+                  <ion-icon :icon="calendarOutline" class="info-icon"></ion-icon>
+                  <span class="date">{{ formatDate(match.date_time) }}</span>
+                  <span class="separator">•</span>
+                  <span class="time">{{ formatTime(match.date_time) }}</span>
+                </div>
+                <div class="match-location">
+                  <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
+                  <span>{{ match.location }}</span>
+                </div>
+                <div class="match-participants">
+                  <ion-icon :icon="peopleOutline" class="info-icon"></ion-icon>
+                  <span>{{ match.participants_count || 0 }} / {{ match.max_players }}</span>
+                </div>
+                <div class="match-features" v-if="match.is_covered || match.has_showers">
+                  <ion-chip v-if="match.is_covered" outline color="medium" class="feature-chip">
+                    <ion-icon :icon="homeOutline"></ion-icon>
+                    <ion-label>{{ t("matches.covered") }}</ion-label>
+                  </ion-chip>
+                  <ion-chip v-if="match.has_showers" outline color="medium" class="feature-chip">
+                    <ion-icon :icon="shirtOutline"></ion-icon>
+                    <ion-label>{{ t("matches.showers") }}</ion-label>
+                  </ion-chip>
+                </div>
               </div>
-              <div class="match-location">
-                <ion-icon :icon="locationOutline" class="info-icon"></ion-icon>
-                <span>{{ match.location }}</span>
-              </div>
-              <div class="match-participants">
-                <ion-icon :icon="peopleOutline" class="info-icon"></ion-icon>
-                <span>{{ match.participants_count || 0 }} / {{ match.max_players }}</span>
-              </div>
-              <div class="match-features" v-if="match.is_covered || match.has_showers">
-                <ion-chip v-if="match.is_covered" outline color="medium" class="feature-chip">
-                  <ion-icon :icon="homeOutline"></ion-icon>
-                  <ion-label>{{ t("matches.covered") }}</ion-label>
-                </ion-chip>
-                <ion-chip v-if="match.has_showers" outline color="medium" class="feature-chip">
-                  <ion-icon :icon="shirtOutline"></ion-icon>
-                  <ion-label>{{ t("matches.showers") }}</ion-label>
-                </ion-chip>
-              </div>
-            </div>
 
-            <div class="match-card-footer">
-              <div class="organizer-info">
-                <ion-avatar class="organizer-avatar" :class="{ 'supporter-border': match.creator_is_supporter || match.creator_role === 'admin' }">
-                  <img :src="match.creator_avatar || '/default-avatar.svg'" />
-                </ion-avatar>
-                <span class="organizer-name">{{ t("matches.hosted_by", { name: match.creator_username }) }}</span>
+              <div class="match-card-footer">
+                <div class="organizer-info">
+                  <ion-avatar class="organizer-avatar" :class="{ 'supporter-border': match.creator_is_supporter || match.creator_role === 'admin' }">
+                    <img :src="match.creator_avatar || '/default-avatar.svg'" />
+                  </ion-avatar>
+                  <span class="organizer-name">{{ t("matches.hosted_by", { name: match.creator_username }) }}</span>
+                </div>
+                <ion-icon :icon="chevronForwardOutline" class="arrow-icon"></ion-icon>
               </div>
-              <ion-icon :icon="chevronForwardOutline" class="arrow-icon"></ion-icon>
             </div>
+          </div>
+
+          <div v-else class="ion-text-center ion-padding empty-state">
+            <ion-icon :icon="calendarOutline" class="empty-icon"></ion-icon>
+            <p>{{ t("matches.no_matches_found") }}</p>
           </div>
         </div>
 
-        <div v-else class="ion-text-center ion-padding empty-state">
-          <ion-icon :icon="calendarOutline" class="empty-icon"></ion-icon>
-          <p>{{ t("matches.no_matches_found") }}</p>
-        </div>
+        <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-above-footer">
+          <ion-fab-button @click="createMatch">
+            <ion-icon :icon="add"></ion-icon>
+          </ion-fab-button>
+        </ion-fab>
       </div>
-
-      <ion-fab vertical="bottom" horizontal="end" slot="fixed" class="fab-above-footer">
-        <ion-fab-button @click="createMatch">
-          <ion-icon :icon="add"></ion-icon>
-        </ion-fab-button>
-      </ion-fab>
     </ion-content>
   </ion-page>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed, watch } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from "vue";
 import { useStore } from "vuex";
 import { useRouter, useRoute } from "vue-router";
 import { useI18n } from "vue-i18n";
@@ -160,6 +162,7 @@ import {
   IonSpinner,
   IonToggle,
   IonItem,
+  createGesture,
 } from "@ionic/vue";
 import {
   add,
@@ -188,6 +191,71 @@ const nearbyOnly = ref(false);
 const isLoading = ref(false);
 const userLocation = ref(null);
 const unreadCount = computed(() => store.getters.unreadNotificationsCount);
+const contentRef = ref(null);
+let gesture = null;
+
+const segments = ["all", "mine", "friends"];
+
+const handleSegmentChange = (val) => {
+  if (val === "mine") {
+    store.dispatch("fetchMyMatches");
+  } else if (val === "friends") {
+    store.dispatch("fetchFriendsMatches");
+  } else {
+    if (nearbyOnly.value) {
+      getUserLocationAndFetch();
+    } else {
+      store.dispatch("fetchMatches");
+    }
+  }
+};
+
+const nextTab = () => {
+  const currentIndex = segments.indexOf(filter.value);
+  if (currentIndex < segments.length - 1) {
+    filter.value = segments[currentIndex + 1];
+    handleSegmentChange(filter.value);
+  }
+};
+
+const prevTab = () => {
+  const currentIndex = segments.indexOf(filter.value);
+  if (currentIndex > 0) {
+    filter.value = segments[currentIndex - 1];
+    handleSegmentChange(filter.value);
+  }
+};
+
+const initGesture = () => {
+  if (contentRef.value && !gesture) {
+    gesture = createGesture({
+      el: contentRef.value,
+      threshold: 15,
+      gestureName: "swipe-matches",
+      onEnd: (ev) => {
+        if (Math.abs(ev.deltaY) > Math.abs(ev.deltaX)) return;
+
+        if (ev.deltaX < -50) {
+          nextTab();
+        } else if (ev.deltaX > 50) {
+          prevTab();
+        }
+      },
+    });
+    gesture.enable(true);
+  }
+};
+
+onMounted(() => {
+  nextTick(() => initGesture());
+});
+
+onUnmounted(() => {
+  if (gesture) {
+    gesture.destroy();
+    gesture = null;
+  }
+});
 
 const displayedMatches = computed(() => {
   if (filter.value === "mine") return store.getters.myMatches;
@@ -222,17 +290,7 @@ const formatTime = (dateString) => {
 
 const segmentChanged = (ev) => {
   const val = ev.detail.value;
-  if (val === "mine") {
-    store.dispatch("fetchMyMatches");
-  } else if (val === "friends") {
-    store.dispatch("fetchFriendsMatches");
-  } else {
-    if (nearbyOnly.value) {
-      getUserLocationAndFetch();
-    } else {
-      store.dispatch("fetchMatches");
-    }
-  }
+  handleSegmentChange(val);
 };
 
 const onNearbyChange = () => {

@@ -1,89 +1,93 @@
 <template>
   <div class="actions-section">
-    <div v-if="match.status === 'open' && !isParticipant">
-      <ion-button expand="block" @click="$emit('join')" size="large" :color="isFull ? 'warning' : 'primary'" class="main-action-btn">
-        <ion-icon :icon="isFull ? timeOutline : personAddOutline" slot="start"></ion-icon>
-        {{ isFull ? t("match_details.join_waitlist") : t("match_details.join_match") }}
-      </ion-button>
-    </div>
-    <div v-if="match.status === 'open' && isConfirmed">
-      <ion-button expand="block" color="danger" fill="outline" @click="$emit('leave')" class="main-action-btn">
-        <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-        {{ t("match_details.leave_match") }}
-      </ion-button>
-    </div>
-    <div v-if="match.status === 'open' && isWaitlisted">
-      <ion-button expand="block" color="danger" fill="outline" @click="$emit('leave')" class="main-action-btn">
-        <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
-        {{ t("match_details.leave_waitlist") }}
-      </ion-button>
+    <div v-if="mode === 'all' || mode === 'user'">
+      <div v-if="match.status === 'open' && !isParticipant">
+        <ion-button expand="block" @click="$emit('join')" size="large" :color="isFull ? 'warning' : 'primary'" class="main-action-btn">
+          <ion-icon :icon="isFull ? timeOutline : personAddOutline" slot="start"></ion-icon>
+          {{ isFull ? t("match_details.join_waitlist") : t("match_details.join_match") }}
+        </ion-button>
+      </div>
+      <div v-if="match.status === 'open' && isConfirmed">
+        <ion-button expand="block" color="danger" fill="outline" @click="$emit('leave')" class="main-action-btn">
+          <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+          {{ t("match_details.leave_match") }}
+        </ion-button>
+      </div>
+      <div v-if="match.status === 'open' && isWaitlisted">
+        <ion-button expand="block" color="danger" fill="outline" @click="$emit('leave')" class="main-action-btn">
+          <ion-icon :icon="closeCircleOutline" slot="start"></ion-icon>
+          {{ t("match_details.leave_waitlist") }}
+        </ion-button>
+      </div>
     </div>
 
     <!-- Admin Controls -->
-    <div v-if="isAdmin && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
-      <ion-button expand="block" color="secondary" fill="solid" @click="$emit('generate-teams')" class="admin-btn">
-        <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
-        {{ hasTeams ? t("match_details.regenerate_teams") : t("match_details.generate_teams") }}
-      </ion-button>
-      <ion-button expand="block" color="warning" fill="solid" @click="$emit('change-status', 'voting')" class="admin-btn">
-        <ion-icon :icon="starOutline" slot="start"></ion-icon>
-        {{ t("match_details.voting") }}
-      </ion-button>
-      <ion-button expand="block" color="success" fill="solid" @click="$emit('open-score-modal')" class="admin-btn">
-        <ion-icon :icon="createOutline" slot="start"></ion-icon>
-        {{ t("match_details.score_points") }}
-      </ion-button>
-      <ion-button expand="block" color="tertiary" fill="solid" @click="$emit('edit')" class="admin-btn">
-        <ion-icon :icon="createOutline" slot="start"></ion-icon>
-        {{ t("common.edit") }}
-      </ion-button>
-      <ion-button v-if="isCreator" expand="block" color="danger" fill="clear" @click="$emit('delete')" class="admin-btn full-width">
-        <ion-icon :icon="trashOutline" slot="start"></ion-icon>
-        {{ t("match_details.delete_match") }}
-      </ion-button>
-    </div>
-    <div v-if="isAdmin && match.status === 'voting'">
-      <div v-if="voteStats" class="vote-stats-container ion-margin-bottom">
-        <div class="vote-progress-text">
-          {{ t("match_details.votes_progress") }}: <strong>{{ voteStats.total_votes }} / {{ voteStats.expected_votes }}</strong>
-        </div>
-        <div v-if="voteStats.missing_votes > 0">
-          <div class="missing-votes-text">
-            {{ t("match_details.missing_votes", { count: voteStats.missing_votes }) }}
+    <div v-if="mode === 'all' || mode === 'admin'">
+      <div v-if="isAdmin && (match.status === 'open' || match.status === 'locked')" class="admin-controls-grid">
+        <ion-button expand="block" color="secondary" fill="solid" @click="$emit('generate-teams')" class="admin-btn">
+          <ion-icon :icon="peopleOutline" slot="start"></ion-icon>
+          {{ hasTeams ? t("match_details.regenerate_teams") : t("match_details.generate_teams") }}
+        </ion-button>
+        <ion-button expand="block" color="warning" fill="solid" @click="$emit('change-status', 'voting')" class="admin-btn">
+          <ion-icon :icon="starOutline" slot="start"></ion-icon>
+          {{ t("match_details.voting") }}
+        </ion-button>
+        <ion-button expand="block" color="success" fill="solid" @click="$emit('open-score-modal')" class="admin-btn">
+          <ion-icon :icon="createOutline" slot="start"></ion-icon>
+          {{ t("match_details.score_points") }}
+        </ion-button>
+        <ion-button expand="block" color="tertiary" fill="solid" @click="$emit('edit')" class="admin-btn">
+          <ion-icon :icon="createOutline" slot="start"></ion-icon>
+          {{ t("common.edit") }}
+        </ion-button>
+        <ion-button v-if="isCreator" expand="block" color="danger" fill="clear" @click="$emit('delete')" class="admin-btn full-width">
+          <ion-icon :icon="trashOutline" slot="start"></ion-icon>
+          {{ t("match_details.delete_match") }}
+        </ion-button>
+      </div>
+      <div v-if="isAdmin && match.status === 'voting'">
+        <div v-if="voteStats" class="vote-stats-container ion-margin-bottom">
+          <div class="vote-progress-text">
+            {{ t("match_details.votes_progress") }}: <strong>{{ voteStats.total_votes }} / {{ voteStats.expected_votes }}</strong>
           </div>
-          <div v-if="voteStats.missing_voters && voteStats.missing_voters.length > 0" class="missing-voters-list">
-            <div class="missing-voters-title">{{ t("match_details.missing_voters_title") }}</div>
-            <div v-for="voter in voteStats.missing_voters" :key="voter.id" class="missing-voter-item">
-              <span>{{ voter.username }}</span>
-              <span class="missing-count">-{{ voter.votes_missing }}</span>
+          <div v-if="voteStats.missing_votes > 0">
+            <div class="missing-votes-text">
+              {{ t("match_details.missing_votes", { count: voteStats.missing_votes }) }}
+            </div>
+            <div v-if="voteStats.missing_voters && voteStats.missing_voters.length > 0" class="missing-voters-list">
+              <div class="missing-voters-title">{{ t("match_details.missing_voters_title") }}</div>
+              <div v-for="voter in voteStats.missing_voters" :key="voter.id" class="missing-voter-item">
+                <span>{{ voter.username }}</span>
+                <span class="missing-count">-{{ voter.votes_missing }}</span>
+              </div>
             </div>
           </div>
+          <div v-else class="all-voted-text">
+            <ion-icon :icon="checkmarkOutline" color="success"></ion-icon>
+            {{ t("match_details.all_voted") }}
+          </div>
         </div>
-        <div v-else class="all-voted-text">
-          <ion-icon :icon="checkmarkOutline" color="success"></ion-icon>
-          {{ t("match_details.all_voted") }}
-        </div>
+        <ion-button expand="block" color="success" @click="$emit('open-score-modal')" class="main-action-btn">
+          <ion-icon :icon="createOutline" slot="start"></ion-icon>
+          {{ t("match_details.score_points") }}
+        </ion-button>
+        <ion-button expand="block" color="danger" @click="$emit('change-status', 'finished')" class="main-action-btn">
+          <ion-icon :icon="flagOutline" slot="start"></ion-icon>
+          {{ t("match_details.finish_match") }}
+        </ion-button>
+        <ion-button expand="block" color="medium" fill="outline" @click="$emit('change-status', 'locked')" class="main-action-btn">
+          <ion-icon :icon="arrowUndoOutline" slot="start"></ion-icon>
+          {{ t("match_details.cancel_voting") }}
+        </ion-button>
       </div>
-      <ion-button expand="block" color="success" @click="$emit('open-score-modal')" class="main-action-btn">
-        <ion-icon :icon="createOutline" slot="start"></ion-icon>
-        {{ t("match_details.score_points") }}
-      </ion-button>
-      <ion-button expand="block" color="danger" @click="$emit('change-status', 'finished')" class="main-action-btn">
-        <ion-icon :icon="flagOutline" slot="start"></ion-icon>
-        {{ t("match_details.finish_match") }}
-      </ion-button>
-      <ion-button expand="block" color="medium" fill="outline" @click="$emit('change-status', 'locked')" class="main-action-btn">
-        <ion-icon :icon="arrowUndoOutline" slot="start"></ion-icon>
-        {{ t("match_details.cancel_voting") }}
-      </ion-button>
-    </div>
 
-    <!-- Finished Match Admin Controls -->
-    <div v-if="isAdmin && match.status === 'finished'" class="admin-controls-grid">
-      <ion-button expand="block" color="success" fill="solid" @click="$emit('open-score-modal')" class="admin-btn">
-        <ion-icon :icon="createOutline" slot="start"></ion-icon>
-        {{ t("match_details.score_points") }}
-      </ion-button>
+      <!-- Finished Match Admin Controls -->
+      <div v-if="isAdmin && match.status === 'finished'" class="admin-controls-grid">
+        <ion-button expand="block" color="success" fill="solid" @click="$emit('open-score-modal')" class="admin-btn">
+          <ion-icon :icon="createOutline" slot="start"></ion-icon>
+          {{ t("match_details.score_points") }}
+        </ion-button>
+      </div>
     </div>
   </div>
 </template>
@@ -119,6 +123,10 @@ defineProps({
   isCreator: Boolean,
   hasTeams: Boolean,
   voteStats: Object,
+  mode: {
+    type: String,
+    default: "all",
+  },
 });
 
 defineEmits(["join", "leave", "generate-teams", "change-status", "edit", "delete"]);

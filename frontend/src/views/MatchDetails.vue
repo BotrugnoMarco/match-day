@@ -29,6 +29,10 @@
               <ion-label>{{ t("match_details.chat") }}</ion-label>
               <ion-icon :icon="chatbubblesOutline"></ion-icon>
             </ion-segment-button>
+            <ion-segment-button value="admin" v-if="isAdmin">
+              <ion-label>Admin</ion-label>
+              <ion-icon :icon="settingsOutline"></ion-icon>
+            </ion-segment-button>
           </ion-segment>
         </div>
 
@@ -36,6 +40,19 @@
           <div class="tab-content" v-show="activeSegment === 'details'">
             <!-- Header Section moved inside details -->
             <MatchHeader :match="match" />
+
+            <div class="ion-padding-horizontal ion-padding-top">
+              <MatchActions
+                mode="user"
+                :match="match"
+                :is-participant="isParticipant"
+                :is-confirmed="isConfirmed"
+                :is-waitlisted="isWaitlisted"
+                :is-full="isFull"
+                @join="joinMatch"
+                @leave="leaveMatch"
+              />
+            </div>
 
             <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
 
@@ -80,30 +97,31 @@
           <div class="chat-wrapper" v-if="activeSegment === 'chat'" style="flex: 1; overflow: hidden; border-top: 1px solid var(--ion-border-color)">
             <MatchChat :match-id="match.id" />
           </div>
+
+          <div class="tab-content" v-show="activeSegment === 'admin'">
+            <MatchActions
+              mode="admin"
+              :match="match"
+              :is-participant="isParticipant"
+              :is-confirmed="isConfirmed"
+              :is-waitlisted="isWaitlisted"
+              :is-full="isFull"
+              :is-admin="isAdmin"
+              :is-creator="isCreator"
+              :has-teams="hasTeams"
+              :vote-stats="voteStats"
+              @join="joinMatch"
+              @leave="leaveMatch"
+              @generate-teams="generateTeams"
+              @change-status="changeStatus"
+              @edit="editMatch"
+              @delete="deleteMatch"
+              @open-score-modal="isScoreModalOpen = true"
+            />
+          </div>
         </div>
       </div>
     </ion-content>
-
-    <ion-footer v-if="match && activeSegment === 'details'" class="ion-no-border ion-padding">
-      <MatchActions
-        :match="match"
-        :is-participant="isParticipant"
-        :is-confirmed="isConfirmed"
-        :is-waitlisted="isWaitlisted"
-        :is-full="isFull"
-        :is-admin="isAdmin"
-        :is-creator="isCreator"
-        :has-teams="hasTeams"
-        :vote-stats="voteStats"
-        @join="joinMatch"
-        @leave="leaveMatch"
-        @generate-teams="generateTeams"
-        @change-status="changeStatus"
-        @edit="editMatch"
-        @delete="deleteMatch"
-        @open-score-modal="isScoreModalOpen = true"
-      />
-    </ion-footer>
 
     <div v-if="!match" class="ion-padding">
       <div class="ion-text-center ion-padding-top">
@@ -161,6 +179,7 @@ import {
   beerOutline,
   chatbubblesOutline,
   informationCircleOutline,
+  settingsOutline,
 } from "ionicons/icons";
 import VoteModal from "../components/VoteModal.vue";
 import InviteFriendModal from "../components/InviteFriendModal.vue";

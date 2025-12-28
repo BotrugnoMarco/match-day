@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const filter = require('leo-profanity');
 
 exports.getMatchMessages = async (req, res) => {
     const matchId = req.params.id;
@@ -50,6 +51,13 @@ exports.postMessage = async (req, res) => {
         return res.status(400).json({ error: 'Message cannot be empty' });
     }
 
+    if (message.length > 1000) {
+        return res.status(400).json({ error: 'Message is too long (max 1000 characters)' });
+    }
+
+    // Filter profanity
+    const cleanedMessage = filter.clean(message);
+
     try {
         // Check permissions (must be participant/creator/admin)
         const [participants] = await db.query(
@@ -68,7 +76,7 @@ exports.postMessage = async (req, res) => {
 
         const [result] = await db.query(
             'INSERT INTO match_chat_messages (match_id, user_id, message) VALUES (?, ?, ?)',
-            [matchId, userId, message]
+            [matchId, userId, cleanedMessage]
         );
 
         const newMessageId = result.insertId;

@@ -22,15 +22,14 @@
         <!-- Header Section -->
         <MatchHeader :match="match" />
 
-        <div class="ion-padding-horizontal ion-margin-bottom">
-          <ion-segment v-model="activeSegment">
+        <div class="ion-padding-horizontal ion-margin-bottom segment-container">
+          <ion-segment v-model="activeSegment" mode="ios">
             <ion-segment-button value="details">
               <ion-label>{{ t("match_details.details") }}</ion-label>
-              <ion-icon :icon="informationCircleOutline"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="chat">
               <ion-label>{{ t("match_details.chat") }}</ion-label>
-              <ion-icon :icon="chatbubblesOutline"></ion-icon>
+              <ion-icon :icon="chatbubblesOutline" v-if="activeSegment !== 'chat'"></ion-icon>
             </ion-segment-button>
           </ion-segment>
         </div>
@@ -1457,5 +1456,31 @@ onUnmounted(() => {
   background: #f0f2f5;
   padding: 1px 3px;
   border-radius: 4px;
+}
+
+.segment-container {
+  background: var(--ion-background-color);
+  padding-top: 8px;
+  padding-bottom: 8px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--ion-border-color);
+}
+
+ion-segment {
+  background: var(--ion-color-light);
+  border-radius: 12px;
+  padding: 4px;
+}
+
+ion-segment-button {
+  --indicator-color: var(--ion-background-color);
+  --indicator-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+  --color: var(--ion-color-medium);
+  --color-checked: var(--ion-color-primary);
+  min-height: 36px;
+  font-weight: 600;
 }
 </style>

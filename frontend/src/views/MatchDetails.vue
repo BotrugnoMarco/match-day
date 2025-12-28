@@ -15,6 +15,18 @@
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
+      <ion-toolbar>
+        <ion-segment v-model="activeSegment" mode="ios" :swipe-gesture="true">
+          <ion-segment-button value="details">
+            <ion-label>{{ t("match_details.details") }}</ion-label>
+            <ion-icon :icon="informationCircleOutline"></ion-icon>
+          </ion-segment-button>
+          <ion-segment-button value="chat">
+            <ion-label>{{ t("match_details.chat") }}</ion-label>
+            <ion-icon :icon="chatbubblesOutline"></ion-icon>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-toolbar>
     </ion-header>
 
     <ion-content class="page-content" v-if="match" :scrollY="activeSegment === 'details'">
@@ -23,19 +35,6 @@
         <MatchHeader :match="match" />
 
         <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1;' : ''">
-          <div class="segment-container">
-            <ion-segment v-model="activeSegment" mode="ios">
-              <ion-segment-button value="details" layout="icon-start">
-                <ion-label>{{ t("match_details.details") }}</ion-label>
-                <ion-icon :icon="informationCircleOutline"></ion-icon>
-              </ion-segment-button>
-              <ion-segment-button value="chat" layout="icon-start">
-                <ion-label>{{ t("match_details.chat") }}</ion-label>
-                <ion-icon :icon="chatbubblesOutline"></ion-icon>
-              </ion-segment-button>
-            </ion-segment>
-          </div>
-
           <div class="tab-content" v-show="activeSegment === 'details'">
             <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
 
@@ -1468,29 +1467,19 @@ onUnmounted(() => {
   border-radius: 4px;
 }
 
-.segment-container {
-  background: var(--ion-card-background);
-  padding: 8px 10px;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  border-bottom-left-radius: 0;
-  border-bottom-right-radius: 0;
-}
-
 ion-segment {
   background: var(--ion-color-light);
-  border-radius: 12px;
-  padding: 4px;
+  border-radius: 0.75rem;
+  padding: 0.25rem;
 }
 
 ion-segment-button {
   --indicator-color: var(--ion-background-color);
-  --indicator-box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  --border-radius: 8px;
+  --indicator-box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.1);
+  --border-radius: 0.5rem;
   --color: var(--ion-color-medium);
   --color-checked: var(--ion-color-primary);
-  min-height: 36px;
+  min-height: 2.25rem;
   font-weight: 600;
 }
 </style>

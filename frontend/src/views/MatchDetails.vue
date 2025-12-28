@@ -18,7 +18,7 @@
     </ion-header>
 
     <ion-content class="page-content" v-if="match" :scrollY="activeSegment === 'details'">
-      <div :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; height: 100%' : ''">
+      <div :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; height: 100%; overflow: hidden;' : ''">
         <div class="segment-container">
           <ion-segment v-model="activeSegment" mode="ios">
             <ion-segment-button value="details">
@@ -36,7 +36,7 @@
           </ion-segment>
         </div>
 
-        <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1;' : ''">
+        <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1; overflow: hidden;' : ''">
           <div class="tab-content" v-show="activeSegment === 'details'">
             <!-- Header Section moved inside details -->
             <MatchHeader :match="match" />

@@ -98,7 +98,7 @@
             <MatchChat :match-id="match.id" />
           </div>
 
-          <div class="tab-content" v-show="activeSegment === 'admin'">
+          <div class="tab-content" v-show="activeSegment === 'admin'" v-if="isAdmin">
             <MatchActions
               mode="admin"
               :match="match"

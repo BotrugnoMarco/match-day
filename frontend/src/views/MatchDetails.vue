@@ -19,24 +19,24 @@
 
     <ion-content class="page-content" v-if="match" :scrollY="activeSegment === 'details'">
       <div :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; height: 100%' : ''">
-        <!-- Header Section -->
-        <MatchHeader :match="match" />
+        <div class="segment-container">
+          <ion-segment v-model="activeSegment" mode="ios">
+            <ion-segment-button value="details">
+              <ion-label>{{ t("match_details.details") }}</ion-label>
+              <ion-icon :icon="informationCircleOutline"></ion-icon>
+            </ion-segment-button>
+            <ion-segment-button value="chat">
+              <ion-label>{{ t("match_details.chat") }}</ion-label>
+              <ion-icon :icon="chatbubblesOutline"></ion-icon>
+            </ion-segment-button>
+          </ion-segment>
+        </div>
 
         <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1;' : ''">
-          <div class="segment-container">
-            <ion-segment v-model="activeSegment" mode="ios">
-              <ion-segment-button value="details">
-                <ion-label>{{ t("match_details.details") }}</ion-label>
-                <ion-icon :icon="informationCircleOutline"></ion-icon>
-              </ion-segment-button>
-              <ion-segment-button value="chat">
-                <ion-label>{{ t("match_details.chat") }}</ion-label>
-                <ion-icon :icon="chatbubblesOutline"></ion-icon>
-              </ion-segment-button>
-            </ion-segment>
-          </div>
-
           <div class="tab-content" v-show="activeSegment === 'details'">
+            <!-- Header Section moved inside details -->
+            <MatchHeader :match="match" />
+
             <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
 
             <!-- Main Info Card -->
@@ -51,25 +51,6 @@
               @open-maps="openMaps"
               @go-to-profile="goToProfile"
               @toggle-post-match="togglePostMatch"
-            />
-
-            <MatchActions
-              :match="match"
-              :is-participant="isParticipant"
-              :is-confirmed="isConfirmed"
-              :is-waitlisted="isWaitlisted"
-              :is-full="isFull"
-              :is-admin="isAdmin"
-              :is-creator="isCreator"
-              :has-teams="hasTeams"
-              :vote-stats="voteStats"
-              @join="joinMatch"
-              @leave="leaveMatch"
-              @generate-teams="generateTeams"
-              @change-status="changeStatus"
-              @edit="editMatch"
-              @delete="deleteMatch"
-              @open-score-modal="isScoreModalOpen = true"
             />
 
             <MatchParticipants
@@ -102,7 +83,29 @@
         </div>
       </div>
     </ion-content>
-    <div v-else class="ion-padding">
+
+    <ion-footer v-if="match && activeSegment === 'details'" class="ion-no-border ion-padding">
+      <MatchActions
+        :match="match"
+        :is-participant="isParticipant"
+        :is-confirmed="isConfirmed"
+        :is-waitlisted="isWaitlisted"
+        :is-full="isFull"
+        :is-admin="isAdmin"
+        :is-creator="isCreator"
+        :has-teams="hasTeams"
+        :vote-stats="voteStats"
+        @join="joinMatch"
+        @leave="leaveMatch"
+        @generate-teams="generateTeams"
+        @change-status="changeStatus"
+        @edit="editMatch"
+        @delete="deleteMatch"
+        @open-score-modal="isScoreModalOpen = true"
+      />
+    </ion-footer>
+
+    <div v-if="!match" class="ion-padding">
       <div class="ion-text-center ion-padding-top">
         <ion-spinner></ion-spinner>
         <p>{{ t("match_details.loading") }}</p>
@@ -130,6 +133,7 @@ import { getWeatherForLocation, getWeatherIcon, getWeatherDescription } from "..
 import {
   IonPage,
   IonHeader,
+  IonFooter,
   IonToolbar,
   IonTitle,
   IonContent,
@@ -967,11 +971,11 @@ onUnmounted(() => {
 }
 
 .info-card {
-  background: var(--ion-card-background);
-  border-radius: var(--rounded-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 1.25rem;
 }
 
 .info-row {
@@ -1118,10 +1122,10 @@ onUnmounted(() => {
 }
 
 .participants-card {
-  background: var(--ion-card-background);
-  border-radius: var(--rounded-lg);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .participants-card ion-item {

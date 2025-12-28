@@ -263,11 +263,11 @@ const addToCalendar = () => {
 
 <style scoped>
 .info-card {
-  background: var(--ion-card-background);
-  border-radius: var(--rounded-lg);
-  padding: 20px;
-  box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 1.25rem;
 }
 
 .info-row {

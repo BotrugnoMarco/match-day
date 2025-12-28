@@ -320,10 +320,10 @@ const editableTeam = computed(() => {
 }
 
 .participants-card {
-  background: var(--ion-card-background);
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-  overflow: hidden;
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
 }
 
 .action-buttons-small {

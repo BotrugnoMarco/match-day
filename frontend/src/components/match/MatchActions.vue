@@ -126,7 +126,7 @@ defineEmits(["join", "leave", "generate-teams", "change-status", "edit", "delete
 
 <style scoped>
 .actions-section {
-  margin-bottom: 20px;
+  margin-bottom: 0;
 }
 
 .main-action-btn {

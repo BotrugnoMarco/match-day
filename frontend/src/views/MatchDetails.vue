@@ -15,7 +15,7 @@
           </ion-button>
         </ion-buttons>
       </ion-toolbar>
-      <ion-toolbar>
+      <ion-toolbar color="primary">
         <ion-segment v-model="activeSegment" mode="ios" :swipe-gesture="true">
           <ion-segment-button value="details">
             <ion-label>{{ t("match_details.details") }}</ion-label>
@@ -1468,18 +1468,20 @@ onUnmounted(() => {
 }
 
 ion-segment {
-  background: var(--ion-color-light);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 0.75rem;
   padding: 0.25rem;
+  margin: 0 1rem 0.5rem;
+  width: auto;
 }
 
 ion-segment-button {
-  --indicator-color: var(--ion-background-color);
+  --indicator-color: #ffffff;
   --indicator-box-shadow: 0 0.125rem 0.375rem rgba(0, 0, 0, 0.1);
   --border-radius: 0.5rem;
-  --color: var(--ion-color-medium);
+  --color: rgba(255, 255, 255, 0.7);
   --color-checked: var(--ion-color-primary);
-  min-height: 2.25rem;
+  min-height: 2rem;
   font-weight: 600;
 }
 </style>

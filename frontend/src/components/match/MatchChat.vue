@@ -1,9 +1,9 @@
 <template>
   <div class="chat-container">
     <div class="messages-area" ref="messagesContainer">
-      <div v-if="!isConnected" class="connection-warning">
+      <div v-if="!isConnected" class="connection-warning" @click="reconnect">
         <ion-icon :icon="warningOutline"></ion-icon>
-        <span>{{ t("match_chat.connecting") }}</span>
+        <span>{{ t("match_chat.connecting") }} ({{ t("match_chat.tap_to_reconnect") }})</span>
       </div>
       <div v-if="loading" class="ion-text-center ion-padding">
         <ion-spinner></ion-spinner>
@@ -135,7 +135,14 @@ const onNewMessage = (msg) => {
 
 const joinRoom = () => {
   // Always emit, Socket.IO will buffer if disconnected
-  socket.emit("join_match_room", String(props.matchId));
+  socket.emit("join_match_room", String(props.matchId), (response) => {
+    // Optional: Handle acknowledgment
+  });
+};
+
+const reconnect = () => {
+  socket.disconnect();
+  socket.connect();
 };
 
 const updateConnectionStatus = () => {
@@ -157,13 +164,17 @@ onMounted(() => {
   // Listeners
   socket.on("connect", updateConnectionStatus);
   socket.on("disconnect", updateConnectionStatus);
+  socket.on("connect_error", () => {
+    isConnected.value = false;
+  });
   socket.on("chat_message", onNewMessage);
 });
 
 onUnmounted(() => {
-  socket.emit("leave_match_room", props.matchId);
+  socket.emit("leave_match_room", String(props.matchId));
   socket.off("connect", updateConnectionStatus);
   socket.off("disconnect", updateConnectionStatus);
+  socket.off("connect_error");
   socket.off("chat_message", onNewMessage);
 });
 

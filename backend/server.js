@@ -131,9 +131,13 @@ io.on('connection', (socket) => {
         console.log(`User ${userId} joined room user_${userId}`);
     });
 
-    socket.on('join_match_room', (matchId) => {
-        socket.join(`match_${matchId}`);
-        console.log(`Socket ${socket.id} joined match_${matchId}`);
+    socket.on('join_match_room', (matchId, callback) => {
+        const roomName = `match_${matchId}`;
+        socket.join(roomName);
+        console.log(`Socket ${socket.id} joined ${roomName}`);
+        if (typeof callback === 'function') {
+            callback({ status: 'joined', room: roomName });
+        }
     });
 
     socket.on('leave_match_room', (matchId) => {

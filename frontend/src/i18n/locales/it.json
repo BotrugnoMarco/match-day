@@ -552,6 +552,8 @@
   },
   "match_chat": {
     "no_messages": "Nessun messaggio ancora. Inizia la conversazione!",
-    "placeholder": "Scrivi un messaggio..."
+    "placeholder": "Scrivi un messaggio...",
+    "connecting": "Connessione in corso...",
+    "tap_to_reconnect": "Tocca per riconnettere"
   }
 }

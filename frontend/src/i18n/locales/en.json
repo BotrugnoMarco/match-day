@@ -536,6 +536,8 @@
   },
   "match_chat": {
     "no_messages": "No messages yet. Start the conversation!",
-    "placeholder": "Type a message..."
+    "placeholder": "Type a message...",
+    "connecting": "Connecting...",
+    "tap_to_reconnect": "Tap to reconnect"
   }
 }

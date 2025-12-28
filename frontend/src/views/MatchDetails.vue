@@ -24,13 +24,13 @@
 
         <div class="ion-padding-horizontal segment-container">
           <ion-segment v-model="activeSegment" mode="ios">
-            <ion-segment-button value="details">
+            <ion-segment-button value="details" layout="icon-start">
               <ion-label>{{ t("match_details.details") }}</ion-label>
-              <ion-icon :icon="informationCircleOutline" v-if="activeSegment !== 'details'"></ion-icon>
+              <ion-icon :icon="informationCircleOutline"></ion-icon>
             </ion-segment-button>
-            <ion-segment-button value="chat">
+            <ion-segment-button value="chat" layout="icon-start">
               <ion-label>{{ t("match_details.chat") }}</ion-label>
-              <ion-icon :icon="chatbubblesOutline" v-if="activeSegment !== 'chat'"></ion-icon>
+              <ion-icon :icon="chatbubblesOutline"></ion-icon>
             </ion-segment-button>
           </ion-segment>
         </div>
@@ -954,7 +954,7 @@ onUnmounted(() => {
 }
 
 .details-wrapper {
-  padding: 16px 16px 40px;
+  padding: 10px 10px 40px;
 }
 
 .info-card {
@@ -1460,7 +1460,7 @@ onUnmounted(() => {
 }
 
 .segment-container {
-  background: var(--ion-background-color);
+  background: var(--ion-card-background);
   padding-top: 8px;
   padding-bottom: 8px;
   position: sticky;

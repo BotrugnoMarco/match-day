@@ -138,7 +138,7 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
-  background-color: #f0f2f5;
+  background-color: var(--ion-card-background);
 }
 
 .messages-area {
@@ -214,7 +214,7 @@ onUnmounted(() => {
 }
 
 .message-content {
-  background-color: #fff;
+  background-color: var(--ion-color-light);
   padding: 8px 12px;
   border-radius: 18px;
   border-bottom-left-radius: 4px;
@@ -264,7 +264,7 @@ onUnmounted(() => {
 }
 
 .input-area {
-  background-color: #fff;
+  background-color: var(--ion-card-background);
   padding: 8px 10px;
   border-top: 1px solid rgba(0, 0, 0, 0.05);
   padding-bottom: calc(8px + var(--ion-safe-area-bottom));

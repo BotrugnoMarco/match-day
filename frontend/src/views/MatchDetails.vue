@@ -25,7 +25,7 @@
               <ion-label>{{ t("match_details.details") }}</ion-label>
               <ion-icon :icon="informationCircleOutline"></ion-icon>
             </ion-segment-button>
-            <ion-segment-button value="chat">
+            <ion-segment-button value="chat" v-if="isConfirmed || isWaitlisted || isAdmin">
               <ion-label>{{ t("match_details.chat") }}</ion-label>
               <ion-icon :icon="chatbubblesOutline"></ion-icon>
             </ion-segment-button>
@@ -94,7 +94,11 @@
             />
           </div>
 
-          <div class="chat-wrapper" v-if="activeSegment === 'chat'" style="flex: 1; overflow: hidden; border-top: 1px solid var(--ion-border-color)">
+          <div
+            class="chat-wrapper"
+            v-if="activeSegment === 'chat' && (isConfirmed || isWaitlisted || isAdmin)"
+            style="flex: 1; overflow: hidden; border-top: 1px solid var(--ion-border-color)"
+          >
             <MatchChat :match-id="match.id" />
           </div>
 

@@ -1,12 +1,14 @@
 import { io } from "socket.io-client";
 
-// In produzione usa l'URL del server reale, altrimenti localhost
-const URL = import.meta.env.PROD ? 'https://matchday.botrugno.dev' : 'http://localhost:3000';
+// URL del server Socket.io
+// Deve corrispondere all'URL utilizzato in api.js per garantire che i messaggi inviati tramite API
+// vengano ricevuti tramite lo stesso server socket.
+const URL = 'https://matchday.botrugno.dev';
 
 const socket = io(URL, {
     autoConnect: true,
     reconnection: true,
-    transports: ['websocket', 'polling'] // Forza prima websocket, poi polling
+    transports: ['websocket', 'polling']
 });
 
 export default socket;

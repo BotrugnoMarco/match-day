@@ -23,8 +23,8 @@
         <MatchHeader :match="match" />
 
         <div class="details-wrapper" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1;' : ''">
-          <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1; padding: 0;' : ''">
-            <div class="segment-container" :style="activeSegment === 'chat' ? 'padding: 10px 10px 0;' : ''">
+          <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1;' : ''">
+            <div class="segment-container">
               <ion-segment v-model="activeSegment" mode="ios">
                 <ion-segment-button value="details" layout="icon-start">
                   <ion-label>{{ t("match_details.details") }}</ion-label>
@@ -37,7 +37,7 @@
               </ion-segment>
             </div>
 
-            <div v-show="activeSegment === 'details'">
+            <div class="tab-content" v-show="activeSegment === 'details'">
               <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
 
               <!-- Main Info Card -->
@@ -967,8 +967,14 @@ onUnmounted(() => {
 }
 
 .details-content {
-  padding: 10px 10px 40px;
+  padding: 0;
   height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tab-content {
+  padding: 10px 10px 40px;
 }
 
 .info-card {
@@ -1475,12 +1481,10 @@ onUnmounted(() => {
 
 .segment-container {
   background: var(--ion-card-background);
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding: 8px 10px;
   position: sticky;
   top: 0;
   z-index: 100;
-  border-bottom: 1px solid var(--ion-border-color);
 }
 
 ion-segment {

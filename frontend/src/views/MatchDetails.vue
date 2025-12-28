@@ -23,81 +23,87 @@
         <MatchHeader :match="match" />
 
         <div class="details-wrapper" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1;' : ''">
-          <div class="segment-container ion-padding-horizontal">
-            <ion-segment v-model="activeSegment" mode="ios">
-              <ion-segment-button value="details" layout="icon-start">
-                <ion-label>{{ t("match_details.details") }}</ion-label>
-                <ion-icon :icon="informationCircleOutline"></ion-icon>
-              </ion-segment-button>
-              <ion-segment-button value="chat" layout="icon-start">
-                <ion-label>{{ t("match_details.chat") }}</ion-label>
-                <ion-icon :icon="chatbubblesOutline"></ion-icon>
-              </ion-segment-button>
-            </ion-segment>
-          </div>
+          <div class="details-content" :style="activeSegment === 'chat' ? 'display: flex; flex-direction: column; flex: 1; padding: 0;' : ''">
+            <div class="segment-container" :style="activeSegment === 'chat' ? 'padding: 10px 10px 0;' : ''">
+              <ion-segment v-model="activeSegment" mode="ios">
+                <ion-segment-button value="details" layout="icon-start">
+                  <ion-label>{{ t("match_details.details") }}</ion-label>
+                  <ion-icon :icon="informationCircleOutline"></ion-icon>
+                </ion-segment-button>
+                <ion-segment-button value="chat" layout="icon-start">
+                  <ion-label>{{ t("match_details.chat") }}</ion-label>
+                  <ion-icon :icon="chatbubblesOutline"></ion-icon>
+                </ion-segment-button>
+              </ion-segment>
+            </div>
 
-          <div class="details-content" v-show="activeSegment === 'details'">
-            <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
+            <div v-show="activeSegment === 'details'">
+              <MatchResults :match="match" :results="results" :my-comments="myComments" @go-to-profile="goToProfile" />
 
-            <!-- Main Info Card -->
-            <MatchInfoCard
-              :match="match"
-              :weather="weather"
-              :active-participants="activeParticipants"
-              :average-age="averageAge"
-              :post-match-count="postMatchCount"
-              :my-post-match-status="myPostMatchStatus"
-              :is-participant="isParticipant"
-              @open-maps="openMaps"
-              @go-to-profile="goToProfile"
-              @toggle-post-match="togglePostMatch"
-            />
+              <!-- Main Info Card -->
+              <MatchInfoCard
+                :match="match"
+                :weather="weather"
+                :active-participants="activeParticipants"
+                :average-age="averageAge"
+                :post-match-count="postMatchCount"
+                :my-post-match-status="myPostMatchStatus"
+                :is-participant="isParticipant"
+                @open-maps="openMaps"
+                @go-to-profile="goToProfile"
+                @toggle-post-match="togglePostMatch"
+              />
 
-            <MatchActions
-              :match="match"
-              :is-participant="isParticipant"
-              :is-confirmed="isConfirmed"
-              :is-waitlisted="isWaitlisted"
-              :is-full="isFull"
-              :is-admin="isAdmin"
-              :is-creator="isCreator"
-              :has-teams="hasTeams"
-              :vote-stats="voteStats"
-              @join="joinMatch"
-              @leave="leaveMatch"
-              @generate-teams="generateTeams"
-              @change-status="changeStatus"
-              @edit="editMatch"
-              @delete="deleteMatch"
-              @open-score-modal="isScoreModalOpen = true"
-            />
+              <MatchActions
+                :match="match"
+                :is-participant="isParticipant"
+                :is-confirmed="isConfirmed"
+                :is-waitlisted="isWaitlisted"
+                :is-full="isFull"
+                :is-admin="isAdmin"
+                :is-creator="isCreator"
+                :has-teams="hasTeams"
+                :vote-stats="voteStats"
+                @join="joinMatch"
+                @leave="leaveMatch"
+                @generate-teams="generateTeams"
+                @change-status="changeStatus"
+                @edit="editMatch"
+                @delete="deleteMatch"
+                @open-score-modal="isScoreModalOpen = true"
+              />
 
-            <MatchParticipants
-              :match="match"
-              :pending-participants="pendingParticipants"
-              :waitlist-participants="waitlistParticipants"
-              :active-participants="activeParticipants"
-              :team-a-participants="teamAParticipants"
-              :team-b-participants="teamBParticipants"
-              :has-teams="hasTeams"
-              :team-a-average-skill="teamAAverageSkill"
-              :team-b-average-skill="teamBAverageSkill"
-              :is-admin="isAdmin"
-              :is-captain="isCaptain"
-              :is-confirmed="isConfirmed"
-              :current-user="currentUser"
-              :my-votes="myVotes"
-              @approve-request="approveRequest"
-              @reject-request="rejectRequest"
-              @go-to-profile="goToProfile"
-              @open-vote-modal="openVoteModal"
-              @open-player-actions="openPlayerActions"
-              @save-formation="saveFormation"
-            />
-          </div>
+              <MatchParticipants
+                :match="match"
+                :pending-participants="pendingParticipants"
+                :waitlist-participants="waitlistParticipants"
+                :active-participants="activeParticipants"
+                :team-a-participants="teamAParticipants"
+                :team-b-participants="teamBParticipants"
+                :has-teams="hasTeams"
+                :team-a-average-skill="teamAAverageSkill"
+                :team-b-average-skill="teamBAverageSkill"
+                :is-admin="isAdmin"
+                :is-captain="isCaptain"
+                :is-confirmed="isConfirmed"
+                :current-user="currentUser"
+                :my-votes="myVotes"
+                @approve-request="approveRequest"
+                @reject-request="rejectRequest"
+                @go-to-profile="goToProfile"
+                @open-vote-modal="openVoteModal"
+                @open-player-actions="openPlayerActions"
+                @save-formation="saveFormation"
+              />
+            </div>
 
-          <div class="chat-wrapper" v-if="activeSegment === 'chat'" style="flex: 1; overflow: hidden; border-top: 1px solid var(--ion-border-color)">
-            <MatchChat :match-id="match.id" />
+            <div
+              class="chat-wrapper"
+              v-if="activeSegment === 'chat'"
+              style="flex: 1; overflow: hidden; border-top: 1px solid var(--ion-border-color)"
+            >
+              <MatchChat :match-id="match.id" />
+            </div>
           </div>
         </div>
       </div>
@@ -962,6 +968,7 @@ onUnmounted(() => {
 
 .details-content {
   padding: 10px 10px 40px;
+  height: 100%;
 }
 
 .info-card {

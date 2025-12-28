@@ -22,10 +22,11 @@
         <!-- Header Section -->
         <MatchHeader :match="match" />
 
-        <div class="ion-padding-horizontal ion-margin-bottom segment-container">
+        <div class="ion-padding-horizontal segment-container">
           <ion-segment v-model="activeSegment" mode="ios">
             <ion-segment-button value="details">
               <ion-label>{{ t("match_details.details") }}</ion-label>
+              <ion-icon :icon="informationCircleOutline" v-if="activeSegment !== 'details'"></ion-icon>
             </ion-segment-button>
             <ion-segment-button value="chat">
               <ion-label>{{ t("match_details.chat") }}</ion-label>
@@ -953,7 +954,7 @@ onUnmounted(() => {
 }
 
 .details-wrapper {
-  padding: 0 16px 40px;
+  padding: 16px 16px 40px;
 }
 
 .info-card {

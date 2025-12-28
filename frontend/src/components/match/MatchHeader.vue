@@ -72,7 +72,7 @@ const getSportIcon = (type) => {
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   box-shadow: var(--shadow-md);
-  margin-bottom: 20px;
+  margin-bottom: 0px;
 }
 
 .header-top {

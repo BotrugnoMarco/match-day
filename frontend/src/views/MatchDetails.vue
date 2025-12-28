@@ -853,6 +853,7 @@ const openPlayerActions = async (player) => {
   const actionSheet = await actionSheetController.create({
     header: t("match_details.manage_player", { name: player.username }),
     buttons: buttons,
+    cssClass: "player-action-sheet",
   });
   await actionSheet.present();
 };
@@ -1521,5 +1522,33 @@ ion-segment-button {
   --color-checked: var(--ion-color-primary);
   min-height: 2.25rem;
   font-weight: 600;
+}
+</style>
+
+<style>
+/* Global styles for Action Sheet in Dark Mode */
+body.dark .player-action-sheet {
+  --background: #1e1e1e; /* Dark background */
+  --color: #ffffff; /* White text */
+  --button-color: #ffffff;
+}
+
+body.dark .player-action-sheet .action-sheet-button {
+  color: #ffffff;
+  background: #1e1e1e;
+}
+
+body.dark .player-action-sheet .action-sheet-button.action-sheet-cancel {
+  background: #2c2c2c;
+  color: #ff4961; /* Danger color */
+}
+
+body.dark .player-action-sheet .action-sheet-title {
+  color: #989aa2; /* Medium color */
+  background: #1e1e1e;
+}
+
+body.dark .player-action-sheet .action-sheet-group {
+  background: #1e1e1e;
 }
 </style>
